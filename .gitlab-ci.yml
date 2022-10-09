@@ -8,6 +8,11 @@ stages:          # List of stages for jobs, and their order of execution
   - test
 #  - deploy
 
+default:
+    image: python:3.10
+    before_script:
+        - pip3 install -r requirements-dev.txt
+
 build-job:       # This job runs in the build stage, which runs first.
   stage: build
   script:
