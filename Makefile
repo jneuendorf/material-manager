@@ -14,7 +14,7 @@ install: venv
 install_prod: venv
 	. venv/bin/activate && pip install -r requirements.txt
 
-precommit: venv
+precommit: install
 	. venv/bin/activate && pre-commit run --all-files
 
 run: venv
