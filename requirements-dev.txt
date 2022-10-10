@@ -1,0 +1,4 @@
+-r requirements.txt
+
+pre-commit~=2.20
+# mypy==0.982
