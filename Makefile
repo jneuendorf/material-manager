@@ -18,9 +18,7 @@ precommit: install
 	. venv/bin/activate && pre-commit run --all-files
 
 run: venv
-	: # Run your app here, e.g. determine if we are in venv,
-	: # see https://stackoverflow.com/q/1871549
-	. venv/bin/activate && python
+	. venv/bin/activate && flask --app dav_material.app run
 
 clean:
 	rm -rf venv

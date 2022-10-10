@@ -1,0 +1,6 @@
+Flask~=2.2
+# provides support for Signals
+blinker~=1.5
+Flask-Babel~=2.0
+Flask-Login~=0.6
+Flask-SQLAlchemy~=3.0
