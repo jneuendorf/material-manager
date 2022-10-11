@@ -34,13 +34,3 @@ module = [
     "blinker",
 ]
 ignore_missing_imports = true
-
-
-
-[flake8]
-max-line-length = 88
-max-complexity = 18
-ignore = [
-    "E203",  # Whitespace before ':'
-    "F401",  # Module imported but unused
-]
