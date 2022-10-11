@@ -1,4 +1,7 @@
-from dav_material.app import db
+from flask_sqlalchemy import SQLAlchemy
+
+# create the extension
+db: SQLAlchemy = SQLAlchemy()
 
 # create_all() turns each class into a table
 # UserRole class name will be auto-renamed user_role in the DB
@@ -11,7 +14,7 @@ class Material(db.Model):
     SerialNumber = db.Column(db.String)
     InventoryNumber = db.Column(db.String)
     Manufacturer = db.Column(db.String)
-    MaxLifeExpactency = db.Column(db.String)
+    MaxLifeExpectancy = db.Column(db.String)
     MaxServiceDuration = db.Column(db.String)
     InstallationDate = db.Column(db.String)
     Instructions = db.Column(db.String)
@@ -97,7 +100,7 @@ class PSAInspection(db.Model):
 class PurchaseDetails(db.Model):
     MaterialID = db.Column(db.ForeignKey(Material.MaterialID), primary_key=True)
     PurchaseDate = db.Column(db.String)
-    Invocenumber = db.Column(db.Integer)
+    Invoicenumber = db.Column(db.Integer)
     Merchant = db.Column(db.String)
     ProductionDate = db.Column(db.String)
     PurchasePrice = db.Column(db.String)
