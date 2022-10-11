@@ -1,7 +1,4 @@
-from flask_sqlalchemy import SQLAlchemy
-
-# create the extension
-db: SQLAlchemy = SQLAlchemy()
+from dav_material.db import db
 
 # create_all() turns each class into a table
 # UserRole class name will be auto-renamed user_role in the DB

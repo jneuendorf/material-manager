@@ -1,6 +1,6 @@
 # See https://stackoverflow.com/a/59335943/6928824
 
-.PHONY: all venv install install_prod precommit run clean
+.PHONY: all venv install install_prod db precommit run clean
 
 all: install run
 
@@ -13,6 +13,9 @@ install: venv
 
 install_prod: venv
 	. venv/bin/activate && pip install -r requirements.txt
+
+db:
+	. venv/bin/activate && python -c 'from dav_material.app import create_db; create_db()'
 
 precommit: install
 	. venv/bin/activate && pre-commit run --all-files
