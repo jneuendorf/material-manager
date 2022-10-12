@@ -1,28 +1,34 @@
+from typing import TypedDict
+
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeMeta
+from sqlalchemy import Table
 
-from core.extension import Extension
+from core.extension import Extension, ModelWithId, ModelWithIdType
 
 
-class UserExtension(Extension):
+class UserModels(TypedDict):
+    User: ModelWithIdType
+    Role: ModelWithIdType
+    Right: ModelWithIdType
+    RoleRightMapping: Table
+    UserRoleMapping: Table
+
+
+class UserExtension(Extension[UserModels]):
     name = "user"
+    models: UserModels
 
-    def register_models(self, db: SQLAlchemy, existing_models: dict = None) -> dict:
-        Model: DeclarativeMeta = db.Model
-
-        class User(Model):
-            id = db.Column(db.Integer, primary_key=True)
+    def register_models(self, db: SQLAlchemy) -> UserModels:
+        class User(ModelWithId):
             firs_name = db.Column(db.String)
             last_name = db.Column(db.String)
             membership_number = db.Column(db.Integer)
 
-        class Role(Model):
-            id = db.Column(db.Integer, primary_key=True)
+        class Role(ModelWithId):
             name = db.Column(db.String)
             description = db.Column(db.String)
 
-        class Right(Model):
-            id = db.Column(db.Integer, primary_key=True)
+        class Right(ModelWithId):
             name = db.Column(db.String)
             description = db.Column(db.String)
 

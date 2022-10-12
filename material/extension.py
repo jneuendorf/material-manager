@@ -1,17 +1,24 @@
+from typing import TypedDict
+
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeMeta
+from sqlalchemy import Table
 
-from core.extension import Extension
+from core.extension import Extension, ModelWithId, ModelWithIdType
 
 
-class MaterialExtension(Extension):
+class MaterialModels(TypedDict):
+    Material: ModelWithIdType
+    PurchaseDetails: ModelWithIdType
+    EquipmentType: ModelWithIdType
+    Property: ModelWithIdType
+    MaterialPropertyMapping: Table
+
+
+class MaterialExtension(Extension[MaterialModels]):
     name = "material"
 
-    def register_models(self, db: SQLAlchemy, existing_models: dict = None) -> dict:
-        Model: DeclarativeMeta = db.Model
-
-        class Material(Model):
-            id = db.Column(db.Integer, primary_key=True)
+    def register_models(self, db: SQLAlchemy) -> MaterialModels:
+        class Material(ModelWithId):
             serial_number = db.Column(db.String)
             inventory_number = db.Column(db.String)
             manufacturer = db.Column(db.String)
@@ -24,8 +31,7 @@ class MaterialExtension(Extension):
             condition = db.Column(db.String)
             usage_in_days = db.Column(db.Integer)
 
-        class PurchaseDetails(Model):
-            id = db.Column(db.Integer, primary_key=True)
+        class PurchaseDetails(ModelWithId):
             material_id = db.Column(db.ForeignKey(Material.id))
             purchase_date = db.Column(db.Date)
             invoice_number = db.Column(db.String)
@@ -34,13 +40,11 @@ class MaterialExtension(Extension):
             purchase_price = db.Column(db.Float)
             suggested_retail_price = db.Column(db.Float)
 
-        class EquipmentType(Model):
-            id = db.Column(db.Integer, primary_key=True)
+        class EquipmentType(ModelWithId):
             material_id = db.Column(db.ForeignKey(Material.id))
             description = db.Column(db.String)
 
-        class Property(Model):
-            id = db.Column(db.Integer, primary_key=True)
+        class Property(ModelWithId):
             name = db.Column(db.String)
             description = db.Column(db.String)
             value = db.Column(db.String)

@@ -1,12 +1,11 @@
-from typing import Type
-
-from core.extension import Extension
 from inspection.extension import InspectionExtension
 from material.extension import MaterialExtension
+from rental.extension import RentalExtension
 from user.extension import UserExtension
 
-extension_classes: list[Type[Extension]] = [
+extension_classes = (
     MaterialExtension,
     UserExtension,
     InspectionExtension,
-]
+    RentalExtension,
+)

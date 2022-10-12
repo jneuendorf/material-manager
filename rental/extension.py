@@ -1,0 +1,52 @@
+from typing import TypedDict
+
+from flask import current_app
+from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy import Table
+
+from core.extension import Data, Extension, ModelWithId, ModelWithIdType
+from material.extension import MaterialModels
+from user.extension import UserModels
+
+
+class RentalModels(TypedDict):
+    RentalStatus: ModelWithIdType
+    Rental: ModelWithIdType
+    MaterialRentalMapping: Table
+
+
+class RentalExtension(Extension):
+    name = "rental"
+    dependencies = ["material", "user"]
+
+    def register_models(self, db: SQLAlchemy) -> RentalModels:
+        material: Data[MaterialModels] = current_app.extensions["material"]
+        user: Data[UserModels] = current_app.extensions["user"]
+        Material = material.models["Material"]
+        User = user.models["User"]
+
+        class RentalStatus(ModelWithId):
+            Name = db.Column(db.String)
+
+        class Rental(ModelWithId):
+            CustomerID = db.Column(db.ForeignKey(User.id))
+            LenderID = db.Column(db.ForeignKey(User.id))
+            TotalAmount = db.Column(db.Integer)
+            RentalStatusID = db.Column(db.ForeignKey(RentalStatus.id))
+            Date = db.Column(db.Integer)
+            RentalDuration = db.Column(db.Integer)
+            UsageDuration = db.Column(db.Integer)
+            ReturnToID = db.Column(db.ForeignKey(User.id))
+            Deposit = db.Column(db.Integer)
+
+        MaterialRentalMapping = db.Table(
+            "material_rental_mapping",
+            db.Column("rental_id", db.ForeignKey(Rental.id), primary_key=True),
+            db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
+        )
+
+        return {
+            "RentalStatus": RentalStatus,
+            "Rental": Rental,
+            "MaterialRentalMapping": MaterialRentalMapping,
+        }

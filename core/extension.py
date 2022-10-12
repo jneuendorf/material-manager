@@ -1,20 +1,37 @@
 from abc import ABC
 from collections.abc import Iterable
-from typing import final
+from dataclasses import dataclass
+from typing import Generic, Type, TypeVar, final
 
 from blinker import Signal
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy.model import Model
+from sqlalchemy import Column, Integer
+
+M = TypeVar("M")
 
 
-class Extension(ABC):
-    dependencies: list[str] = []
+class ModelWithId(Model):
+    id = Column(Integer, primary_key=True)
+
+
+ModelWithIdType = Type[ModelWithId]
+
+
+@dataclass
+class Data(Generic[M]):
+    models: M
+    signals: Iterable[Signal]
+
+
+class Extension(ABC, Generic[M]):
     name: str
     db: SQLAlchemy
-    models: dict
+    models: M
 
     @final
-    def __init__(self, app: Flask, db: SQLAlchemy, models: dict):
+    def __init__(self, app: Flask, db: SQLAlchemy):
         """Constructor is marked as final so that extending modules cannot accidentally
         set `self.app = app` since this is forbidden.
         See https://flask.palletsprojects.com/en/2.2.x/extensiondev/.
@@ -26,22 +43,20 @@ class Extension(ABC):
 
         self.db = db
         self.init_app(app)
-        models = self.register_models(db, existing_models=models)
+        models = self.register_models(db)
         # TODO: pass signals
         signals = self.subscribe_signals([])
 
-        app.extensions[self.name] = {
-            "models": models,
-            "subscribed_signals": signals,
-        }
+        data: Data[M] = Data(models, signals)
+        app.extensions[self.name] = data
 
     def init_app(self, app: Flask) -> None:
         """Returns the app instance."""
         ...
 
-    def register_models(self, db: SQLAlchemy, existing_models: dict) -> dict:
+    def register_models(self, db: SQLAlchemy) -> M:
         """Define your models here! They are then visible to the app."""
-        return {}
+        ...
 
     def subscribe_signals(self, signals: Iterable[Signal]) -> Iterable[Signal]:
         """Subscribe to signals if you need to.
