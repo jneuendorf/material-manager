@@ -49,12 +49,12 @@ class MaterialExtension(Extension):
         MaterialPropertyMapping = db.Table(
             "material_property_mapping",
             db.Column(
-                "MaterialID",
+                "material_id",
                 db.ForeignKey(Material.id),
                 primary_key=True,
             ),
             db.Column(
-                "PropertyID",
+                "property_id",
                 db.ForeignKey(Property.id),
                 primary_key=True,
             ),

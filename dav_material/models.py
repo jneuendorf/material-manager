@@ -12,25 +12,6 @@
 #     Description = db.Column(db.String)
 #
 #
-# class User(db.Model):
-#     UserID = db.Column(db.Integer, primary_key=True)
-#     FirsName = db.Column(db.String)
-#     LastName = db.Column(db.String)
-#     MembershipNumber = db.Column(db.Integer)
-#
-#
-# class Role(db.Model):
-#     RoleID = db.Column(db.Integer, primary_key=True)
-#     Name = db.Column(db.String)
-#     Description = db.Column(db.String)
-#
-#
-# class Rights(db.Model):
-#     RightID = db.Column(db.Integer, primary_key=True)
-#     Name = db.Column(db.String)
-#     Description = db.Column(db.String)
-#
-#
 # class RentalStatus(db.Model):
 #     RentalStatusID = db.Column(db.Integer, primary_key=True)
 #     Name = db.Column(db.String)
@@ -90,18 +71,6 @@
 #
 # # mapping tables m2m
 # # source: https://flask-sqlalchemy.palletsprojects.com/en/3.0.x/models/
-#
-# RoleRightsMapping = db.Table(
-#     "role_rights_mapping",
-#     db.Column("RightID", db.ForeignKey(Rights.RightID), primary_key=True),
-#     db.Column("RoleID", db.ForeignKey(Role.RoleID), primary_key=True),
-# )
-#
-# UserRoleMapping = db.Table(
-#     "user_role_mapping",
-#     db.Column("UserID", db.ForeignKey(User.UserID), primary_key=True),
-#     db.Column("RoleID", db.ForeignKey(Role.RoleID), primary_key=True),
-# )
 #
 # MaterialSetMapping = db.Table(
 #     "material_set_mapping",
