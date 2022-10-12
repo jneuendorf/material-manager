@@ -15,7 +15,7 @@ install_prod: venv
 	. venv/bin/activate && pip install -r requirements.txt
 
 db:
-	. venv/bin/activate && python -c 'from dav_material.app import create_db; create_db()'
+	. venv/bin/activate && python -c 'from core.app import commands; commands.create_db()'
 
 precommit: install
 	. venv/bin/activate && pre-commit run --all-files
