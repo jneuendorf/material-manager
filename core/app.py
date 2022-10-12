@@ -1,5 +1,3 @@
-from graphlib import TopologicalSorter
-
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
