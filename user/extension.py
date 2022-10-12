@@ -7,7 +7,7 @@ from core.extension import Extension
 class UserExtension(Extension):
     name = "user"
 
-    def register_models(self, db: SQLAlchemy) -> dict:
+    def register_models(self, db: SQLAlchemy, existing_models: dict = None) -> dict:
         Model: DeclarativeMeta = db.Model
 
         class User(Model):

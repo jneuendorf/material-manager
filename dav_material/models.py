@@ -40,22 +40,7 @@
 #     Deposit = db.Column(db.Integer)
 #
 #
-# class PSAInspection(db.Model):
-#     PSAID = db.Column(db.Integer, primary_key=True)
-#     InspectorID = db.Column(db.ForeignKey(User.UserID))
-#     Date = db.Column(db.String)
-#     Status = db.Column(db.String)
-#     RentalID = db.Column(db.ForeignKey(Rental.RentalID))
-#
-#
 # # tables with foreign key as primary key
-#
-#
-# class PSAComment(db.Model):
-#     PSAID = db.Column(db.ForeignKey(PSAInspection.PSAID), primary_key=True)
-#     MaterialID = db.Column(db.ForeignKey(Material.MaterialID), primary_key=True)
-#     Comment = db.Column(db.String)
-#     Photo = db.Column(db.String)
 #
 #
 # class Customer(db.Model):
