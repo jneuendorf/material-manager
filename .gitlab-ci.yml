@@ -9,7 +9,7 @@ stages:
 #  - deploy
 
 default:
-    image: python:3.10
+    image: python:3.9
 #    before_script:
 #        - pip3 install -r requirements-dev.txt
 
