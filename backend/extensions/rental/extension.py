@@ -4,9 +4,9 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
 
-from core.extension import Data, Extension, ModelWithId, ModelWithIdType
-from material.extension import MaterialModels
-from user.extension import UserModels
+from backend.core.extension import Data, Extension, ModelWithId, ModelWithIdType
+from backend.extensions.material.extension import MaterialModels
+from backend.extensions.user.extension import UserModels
 
 
 class RentalModels(TypedDict):

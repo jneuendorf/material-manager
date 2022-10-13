@@ -1,9 +1,9 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from core import installed_extensions
-from core.commands import Commands
-from core.config import flask_config
+from backend.core import installed_extensions
+from backend.core.commands import Commands
+from backend.core.config import flask_config
 
 app: Flask = Flask(__name__)
 app.config.update(flask_config)
