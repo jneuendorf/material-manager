@@ -17,7 +17,9 @@ try:
     for extension_cls in installed_extensions.extension_classes:
         extension = extension_cls(app, db)
 except Exception as e:
-    raise TypeError("Extensions might have cyclic dependencies") from e
+    print(str(e))
+    print("This may be a hint, that extensions could have cyclic dependencies")
+    raise
 
 # Convenience wrapper for running commands from Makefile.
 commands = Commands(db)

@@ -20,13 +20,13 @@ precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
 
 shell: venv
-	. venv/bin/activate && python -i -c 'from dav_core import signals'
+	. venv/bin/activate && python -i -c 'from core import signals'
 
 test: venv
 	. venv/bin/activate && python -m unittest
 
 run: venv
-	. venv/bin/activate && flask --app dav_material.app run
+	. venv/bin/activate && flask --app core.app run
 
 clean:
 	rm -rf venv

@@ -43,7 +43,7 @@ class Extension(ABC, Generic[M]):
 
         self.db = db
         self.init_app(app)
-        models = self.register_models(db)
+        models = self.register_models(app, db)
         # TODO: pass signals
         signals = self.subscribe_signals([])
 
@@ -54,8 +54,10 @@ class Extension(ABC, Generic[M]):
         """Returns the app instance."""
         ...
 
-    def register_models(self, db: SQLAlchemy) -> M:
-        """Define your models here! They are then visible to the app."""
+    def register_models(self, app: Flask, db: SQLAlchemy) -> M:
+        """Define your models here! They are then visible to the app.
+        DO NOT SAVE THE APP ON THE EXTENSION!
+        """
         ...
 
     def subscribe_signals(self, signals: Iterable[Signal]) -> Iterable[Signal]:

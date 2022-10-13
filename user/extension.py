@@ -1,5 +1,6 @@
 from typing import TypedDict
 
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
 
@@ -18,7 +19,7 @@ class UserExtension(Extension[UserModels]):
     name = "user"
     models: UserModels
 
-    def register_models(self, db: SQLAlchemy) -> UserModels:
+    def register_models(self, app: Flask, db: SQLAlchemy) -> UserModels:
         class User(ModelWithId):
             firs_name = db.Column(db.String)
             last_name = db.Column(db.String)

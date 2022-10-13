@@ -1,5 +1,6 @@
 from typing import TypedDict
 
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
 
@@ -18,7 +19,7 @@ class MaterialModels(TypedDict):
 class MaterialExtension(Extension[MaterialModels]):
     name = "material"
 
-    def register_models(self, db: SQLAlchemy) -> MaterialModels:
+    def register_models(self, app: Flask, db: SQLAlchemy) -> MaterialModels:
         class Material(ModelWithId):
             serial_number = db.Column(db.String)
             inventory_number = db.Column(db.String)

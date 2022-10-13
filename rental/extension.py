@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from flask import current_app
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
 
@@ -19,9 +19,9 @@ class RentalExtension(Extension):
     name = "rental"
     dependencies = ["material", "user"]
 
-    def register_models(self, db: SQLAlchemy) -> RentalModels:
-        material: Data[MaterialModels] = current_app.extensions["material"]
-        user: Data[UserModels] = current_app.extensions["user"]
+    def register_models(self, app: Flask, db: SQLAlchemy) -> RentalModels:
+        material: Data[MaterialModels] = app.extensions["material"]
+        user: Data[UserModels] = app.extensions["user"]
         Material = material.models["Material"]
         User = user.models["User"]
 

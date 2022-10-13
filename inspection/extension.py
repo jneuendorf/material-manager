@@ -1,6 +1,6 @@
 from typing import TypedDict
 
-from flask import current_app
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 from core.extension import Data, Extension, ModelWithId, ModelWithIdType
@@ -16,9 +16,9 @@ class InspectionModels(TypedDict):
 class InspectionExtension(Extension[InspectionModels]):
     name = "inspection"
 
-    def register_models(self, db: SQLAlchemy) -> InspectionModels:
-        material: Data[MaterialModels] = current_app.extensions["material"]
-        user: Data[UserModels] = current_app.extensions["user"]
+    def register_models(self, app: Flask, db: SQLAlchemy) -> InspectionModels:
+        material: Data[MaterialModels] = app.extensions["material"]
+        user: Data[UserModels] = app.extensions["user"]
 
         class Inspection(ModelWithId):
             inspector_id = db.Column(db.ForeignKey(user.models["User"].id))
