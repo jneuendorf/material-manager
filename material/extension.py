@@ -8,6 +8,7 @@ from core.extension import Extension, ModelWithId, ModelWithIdType
 
 class MaterialModels(TypedDict):
     Material: ModelWithIdType
+    SerialNumber: ModelWithIdType
     PurchaseDetails: ModelWithIdType
     EquipmentType: ModelWithIdType
     Property: ModelWithIdType
@@ -21,15 +22,18 @@ class MaterialExtension(Extension[MaterialModels]):
         class Material(ModelWithId):
             serial_number = db.Column(db.String)
             inventory_number = db.Column(db.String)
-            manufacturer = db.Column(db.String)
             max_life_expectancy = db.Column(db.String)
             max_service_duration = db.Column(db.String)
             installation_date = db.Column(db.Date)
             instructions = db.Column(db.String)
             next_inspection_date = db.Column(db.Date)
-            rental_fee = db.Column(db.String)
+            rental_fee = db.Column(db.Float)
             condition = db.Column(db.String)
-            usage_in_days = db.Column(db.Integer)
+            days_used = db.Column(db.Integer)
+
+        class SerialNumber(ModelWithId):
+            material_id = db.Column(db.ForeignKey(Material.id))
+            manufacturer = db.Column(db.String)
 
         class PurchaseDetails(ModelWithId):
             material_id = db.Column(db.ForeignKey(Material.id))
@@ -66,6 +70,7 @@ class MaterialExtension(Extension[MaterialModels]):
 
         return {
             "Material": Material,
+            "SerialNumber": SerialNumber,
             "PurchaseDetails": PurchaseDetails,
             "EquipmentType": EquipmentType,
             "Property": Property,

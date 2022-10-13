@@ -29,15 +29,17 @@ class RentalExtension(Extension):
             Name = db.Column(db.String)
 
         class Rental(ModelWithId):
-            CustomerID = db.Column(db.ForeignKey(User.id))
-            LenderID = db.Column(db.ForeignKey(User.id))
-            TotalAmount = db.Column(db.Integer)
-            RentalStatusID = db.Column(db.ForeignKey(RentalStatus.id))
-            Date = db.Column(db.Integer)
-            RentalDuration = db.Column(db.Integer)
-            UsageDuration = db.Column(db.Integer)
-            ReturnToID = db.Column(db.ForeignKey(User.id))
-            Deposit = db.Column(db.Integer)
+            customer_id = db.Column(db.ForeignKey(User.id))
+            lender_id = db.Column(db.ForeignKey(User.id))
+            cost = db.Column(db.Float)
+            deposit = db.Column(db.Float)  # Kaution
+            rental_status_id = db.Column(db.ForeignKey(RentalStatus.id))
+            created_at = db.Column(db.DateTime)
+            start_date = db.Column(db.Date)
+            end_date = db.Column(db.Date)
+            usage_start_date = db.Column(db.Date)
+            usage_end_date = db.Column(db.Date)
+            return_to_id = db.Column(db.ForeignKey(User.id))
 
         MaterialRentalMapping = db.Table(
             "material_rental_mapping",

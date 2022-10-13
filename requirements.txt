@@ -4,3 +4,4 @@ blinker~=1.5
 Flask-Babel~=2.0
 Flask-Login~=0.6
 Flask-SQLAlchemy~=3.0
+SQLAlchemy~=1.4

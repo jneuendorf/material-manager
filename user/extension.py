@@ -22,7 +22,7 @@ class UserExtension(Extension[UserModels]):
         class User(ModelWithId):
             firs_name = db.Column(db.String)
             last_name = db.Column(db.String)
-            membership_number = db.Column(db.Integer)
+            membership_number = db.Column(db.String)
 
         class Role(ModelWithId):
             name = db.Column(db.String)
