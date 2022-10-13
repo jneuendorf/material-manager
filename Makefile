@@ -1,6 +1,5 @@
 # See https://stackoverflow.com/a/59335943/6928824
-
-.PHONY: all venv install install_prod precommit run shell test clean
+.PHONY: all venv install install_prod db precommit run shell test clean
 
 all: install run
 
@@ -14,17 +13,20 @@ install: venv
 install_prod: venv
 	. venv/bin/activate && pip install -r requirements.txt
 
+db:
+	. venv/bin/activate && python -c 'from core.app import commands; commands.create_db()'
+
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
 
 shell: venv
-	. venv/bin/activate && python -i -c 'from dav_core import signals'
+	. venv/bin/activate && python -i -c 'from core import signals'
 
 test: venv
 	. venv/bin/activate && python -m unittest
 
 run: venv
-	. venv/bin/activate && flask --app dav_material.app run
+	. venv/bin/activate && flask --app core.app run
 
 clean:
 	rm -rf venv
