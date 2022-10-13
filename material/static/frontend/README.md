@@ -1,16 +1,21 @@
 # frontend
 
-A new Flutter project.
+## Running
 
-## Getting Started
+Run `flutter run -d <device>` to run on specific device.
 
-This project is a starting point for a Flutter application.
+**Example:** `flutter run -d chrome` to run in Chrome browser.
 
-A few resources to get you started if this is your first Flutter project:
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## Linting
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Active linting rules can be found in the `analysis_options.yaml` file.
+
+**List of rules:** https://dart-lang.github.io/linter/lints/index.html
+
+
+## StateManagement
+
+Currently using GetX (https://pub.dev/packages/get), which combines high-performance state management, intelligent dependency injection, and route management quickly and practically.
+
+**Note:** This package can later also be used for internationalization (https://medium.com/rajtechnologies/flutter-getx-localization-multi-languages-change-app-language-a73f6f62f50a).
