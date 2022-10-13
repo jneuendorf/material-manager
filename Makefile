@@ -5,7 +5,7 @@ all: install run
 
 venv:
 	@# Create venv if it doesn't exist
-	test -d venv || python3.10 -m venv venv
+	test -d venv || python3.9 -m venv venv
 
 install: venv
 	. venv/bin/activate && pip install -r requirements-dev.txt && pre-commit install

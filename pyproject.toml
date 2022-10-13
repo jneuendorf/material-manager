@@ -10,7 +10,7 @@ known_third_party = [
 
 [tool.black]
 line-length = 88
-target-version = ['py310']
+target-version = ['py39']
 include = '\.pyi?$'
 exclude = '''
 # A regex preceded with ^/ will apply only to files and directories
@@ -27,7 +27,7 @@ exclude = '''
 
 
 [tool.mypy]
-python_version = "3.10"
+python_version = "3.9"
 
 [[tool.mypy.overrides]]
 module = [
