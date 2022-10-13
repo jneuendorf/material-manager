@@ -5,8 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
 
 from backend.core.extension import Data, Extension, ModelWithId, ModelWithIdType
-from backend.material.extension import MaterialModels
-from backend.user.extension import UserModels
+from backend.extensions.material.extension import MaterialModels
+from backend.extensions.user.extension import UserModels
 
 
 class RentalModels(TypedDict):
