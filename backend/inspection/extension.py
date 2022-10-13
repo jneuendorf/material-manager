@@ -3,9 +3,9 @@ from typing import TypedDict
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
-from core.extension import Data, Extension, ModelWithId, ModelWithIdType
-from material.extension import MaterialModels
-from user.extension import UserModels
+from backend.core.extension import Data, Extension, ModelWithId, ModelWithIdType
+from backend.material.extension import MaterialModels
+from backend.user.extension import UserModels
 
 
 class InspectionModels(TypedDict):
