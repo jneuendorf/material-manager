@@ -19,15 +19,17 @@ default:
 #    - python3 --version
 #    - make install
 
-test:
+backend-test:
     stage: test
     script:
+        - cd backend
         - make install
         - make test
 
-lint:
+backend-lint:
     stage: test
     script:
+        - cd backend
         - make install
         - make precommit
 
