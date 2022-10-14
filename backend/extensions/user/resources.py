@@ -5,7 +5,7 @@ from sqlalchemy.orm import DeclarativeMeta
 from backend.core.helpers import ModelListResource, ModelResource, with_db
 
 
-def define_user_resources(db: SQLAlchemy, UserModel: DeclarativeMeta):
+def define_resources(db: SQLAlchemy, UserModel: DeclarativeMeta):
     @with_db(db)
     class UserResource(ModelResource):
         urls = ("/user/<int:user_id>",)
