@@ -27,12 +27,12 @@ class LoginPage extends GetView<LoginController> {
                     controller: controller.emailController,
                     cursorColor: Colors.black,
                     keyboardType: TextInputType.number,
-                    decoration: const InputDecoration(
-                      labelText: 'Email',
-                      labelStyle: TextStyle(color: Colors.black54),
-                      prefixIcon: Icon(Icons.numbers, color: Colors.black45),
-                      border: OutlineInputBorder(),
-                      focusedBorder: OutlineInputBorder(),
+                    decoration: InputDecoration(
+                      labelText: 'email'.tr,
+                      labelStyle: const TextStyle(color: Colors.black54),
+                      prefixIcon: const Icon(Icons.numbers, color: Colors.black45),
+                      border: const OutlineInputBorder(),
+                      focusedBorder: const OutlineInputBorder(),
                     ),
                   ),
                   const SizedBox(height: 18),
@@ -41,7 +41,7 @@ class LoginPage extends GetView<LoginController> {
                     cursorColor: Colors.black,
                     decoration: InputDecoration(
                       focusColor: Colors.white,
-                      labelText: 'Passwort',
+                      labelText: 'password'.tr,
                       labelStyle: const TextStyle(color: Colors.black54),
           
                       prefixIcon: const Icon(
@@ -51,6 +51,7 @@ class LoginPage extends GetView<LoginController> {
                       border: const OutlineInputBorder(),
                       focusedBorder: const OutlineInputBorder(),
                       suffixIcon: IconButton(
+                        tooltip: 'show_password'.tr,
                         icon: Icon(
                           controller.hideChars.value
                               ? CupertinoIcons.eye_fill
@@ -69,9 +70,9 @@ class LoginPage extends GetView<LoginController> {
                       child: ElevatedButton(
                         style: ElevatedButton.styleFrom(primary: Colors.black),
                         onPressed: controller.login,
-                        child: const Text(
-                          'Anmelden',
-                          style: TextStyle(
+                        child: Text(
+                          'login'.tr,
+                          style: const TextStyle(
                             fontWeight: FontWeight.w900,
                             fontSize: 20,
                             color: Colors.white,
