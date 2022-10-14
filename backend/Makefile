@@ -14,7 +14,6 @@ install_prod: venv
 	. venv/bin/activate && pip install -r requirements.txt
 
 db:
-	@#. venv/bin/activate && python -c 'from backend.core.app import commands; commands.create_db()'
 	. venv/bin/activate && flask --app backend.core.app create-db
 
 precommit: venv
