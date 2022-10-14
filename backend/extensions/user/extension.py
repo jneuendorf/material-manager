@@ -6,6 +6,7 @@ from sqlalchemy import Table
 from sqlalchemy.orm import DeclarativeMeta
 
 from backend.core.helpers import Extension, ModelListResource, ModelResource
+
 from .resources import define_resources
 
 
@@ -25,7 +26,6 @@ class UserResources(NamedTuple):
 
 class UserExtension(Extension[UserModels, UserResources]):
     name = "user"
-    # models: UserModels
 
     def register_models(self, db: SQLAlchemy):
         Model: DeclarativeMeta = db.Model
@@ -57,13 +57,15 @@ class UserExtension(Extension[UserModels, UserResources]):
             db.Column("role_id", db.ForeignKey(Role.id), primary_key=True),
         )
 
-        return UserModels(**{
-            "User": User,
-            "Role": Role,
-            "Right": Right,
-            "RoleRightMapping": RoleRightMapping,
-            "UserRoleMapping": UserRoleMapping,
-        })
+        return UserModels(
+            **{
+                "User": User,
+                "Role": Role,
+                "Right": Right,
+                "RoleRightMapping": RoleRightMapping,
+                "UserRoleMapping": UserRoleMapping,
+            }
+        )
 
     def get_resources(self, db: SQLAlchemy):
         UserResource, UserListResource = define_resources(db, self.models.User)

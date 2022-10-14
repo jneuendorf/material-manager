@@ -5,8 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
 from sqlalchemy.orm import DeclarativeMeta
 
-from backend.core.helpers import ModelResource, ModelListResource
+from backend.core.helpers import ModelListResource, ModelResource
 from backend.core.helpers.extension import Extension
+
 from .resources.material import define_material_resources
 
 
@@ -28,7 +29,7 @@ class MaterialResources(NamedTuple):
 class MaterialExtension(Extension[MaterialModels, MaterialResources]):
     name = "material"
 
-    def register_models(self, db: SQLAlchemy) -> MaterialModels:
+    def register_models(self, db: SQLAlchemy):
         Model: DeclarativeMeta = db.Model
 
         class Material(Model):
@@ -85,17 +86,21 @@ class MaterialExtension(Extension[MaterialModels, MaterialResources]):
             ),
         )
 
-        return MaterialModels(**{
-            "Material": Material,
-            "SerialNumber": SerialNumber,
-            "PurchaseDetails": PurchaseDetails,
-            "EquipmentType": EquipmentType,
-            "Property": Property,
-            "MaterialPropertyMapping": MaterialPropertyMapping,
-        })
+        return MaterialModels(
+            **{
+                "Material": Material,
+                "SerialNumber": SerialNumber,
+                "PurchaseDetails": PurchaseDetails,
+                "EquipmentType": EquipmentType,
+                "Property": Property,
+                "MaterialPropertyMapping": MaterialPropertyMapping,
+            }
+        )
 
     def get_resources(self, db: SQLAlchemy):
-        MaterialResource, MaterialListResource = define_material_resources(db, self.models.Material)
+        MaterialResource, MaterialListResource = define_material_resources(
+            db, self.models.Material
+        )
         return MaterialResources(
             MaterialResource=MaterialResource,
             MaterialListResource=MaterialListResource,

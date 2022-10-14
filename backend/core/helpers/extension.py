@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections.abc import Iterable
 from typing import Generic, Type, TypeVar, final
 
@@ -8,7 +8,6 @@ from flask_sqlalchemy import SQLAlchemy
 
 from .resource import ModelResource
 
-T_co = TypeVar("T_co", covariant=True)
 M = TypeVar("M")
 R = TypeVar("R", bound=Iterable[Type[ModelResource]])
 
@@ -46,10 +45,12 @@ class Extension(ABC, Generic[M, R]):
         """Returns the app instance."""
         ...
 
+    @abstractmethod
     def register_models(self, db: SQLAlchemy) -> M:
         """Define your models here! They are then visible to the app."""
         ...
 
+    @abstractmethod
     def get_resources(self, db: SQLAlchemy) -> R:
         """Define your model resources here. See backend.core.helpers.ModelResource"""
         ...

@@ -8,7 +8,7 @@ from backend.core.helpers import ModelListResource, ModelResource, with_db
 def define_material_resources(db: SQLAlchemy, MaterialModel: DeclarativeMeta):
     @with_db(db)
     class MaterialResource(ModelResource):
-        urls = ("/material/<int:material_id>",)
+        urls = ("/{ext_name}/<int:material_id>",)
 
         class Schema(SQLAlchemySchema):
             class Meta:
@@ -21,7 +21,7 @@ def define_material_resources(db: SQLAlchemy, MaterialModel: DeclarativeMeta):
 
     @with_db(db)
     class MaterialListResource(ModelListResource):
-        urls = ("/materials",)
+        urls = ("/{ext_name}/materials",)
 
         class Schema(SQLAlchemySchema):
             class Meta:

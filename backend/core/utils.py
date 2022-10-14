@@ -1,7 +1,9 @@
-from collections.abc import Collection, Iterable
-from typing import Type, cast
+import re
+from collections.abc import Iterable
+from typing import Collection, Type, cast
 
 from flask import Flask
+from flask_marshmallow import Marshmallow
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
@@ -13,6 +15,7 @@ def install_extensions(
     app: Flask,
     db: SQLAlchemy,
     api: Api,
+    ma: Marshmallow,
     base_url: str = "/",
 ) -> None:
     try:
@@ -23,10 +26,15 @@ def install_extensions(
                 extension.resources,
             )
             for resource in resources:
-                api.add_resource(
-                    resource,
-                    *[url_join(base_url, extension.name, url) for url in resource.urls],
-                )
+                urls = [
+                    url_join(
+                        base_url,
+                        url.format(ext_name=extension.name),
+                    )
+                    for url in resource.urls
+                ]
+                api.add_resource(resource, *urls)
+                print(f"URLs for {resource.__name__}: {str(urls)}")
     except Exception as e:
         print(str(e))
         print("Maybe you extensions have cyclic dependencies")
@@ -38,4 +46,4 @@ def url_join(*parts: str) -> str:
     because that function requires the base url to contain the scheme etc.
     """
 
-    return "/".join(part.lstrip("/").rstrip("/") for part in parts)
+    return re.sub(r"/+", "/", "/".join(parts))
