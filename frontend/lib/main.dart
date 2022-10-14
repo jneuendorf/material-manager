@@ -8,6 +8,7 @@ import 'package:frontend/home/controller.dart';
 import 'package:frontend/home/page.dart';
 import 'package:frontend/login/controller.dart';
 import 'package:frontend/login/page.dart';
+import 'package:frontend/internationalization/locale_string.dart';
 
 
 void main() {
@@ -35,6 +36,9 @@ class DavApp extends StatelessWidget {
         binding: LoginBinding(),
       ),
     ],
+    locale: const Locale('en', 'US'),
+    translations: LocaleString(),
+    fallbackLocale: const Locale('de', 'DE'),
   );
 }
 

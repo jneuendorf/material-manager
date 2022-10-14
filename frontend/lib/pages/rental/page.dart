@@ -11,10 +11,10 @@ class RentalPage extends GetView<RentalController> {
   const RentalPage({Key? key}) : super(key: key);
 
  @override
-  Widget build(BuildContext context) => const Scaffold(
-    appBar: kIsWeb ? DavAppBar() : null,
+  Widget build(BuildContext context) => Scaffold(
+    appBar: kIsWeb ? const DavAppBar() : null,
     body: Center(
-      child: Text('Rental'),
+      child: Text('rental'.tr),
     ),
   );
 }

@@ -12,10 +12,10 @@ class LenderPage extends GetView<LenderController> {
   const LenderPage({Key? key}) : super(key: key);
 
  @override
-  Widget build(BuildContext context) => const Scaffold(
-    appBar: kIsWeb ? DavAppBar() : null,
+  Widget build(BuildContext context) => Scaffold(
+    appBar: kIsWeb ? const DavAppBar() : null,
     body: Center(
-      child: Text('Lender'),
+      child: Text('lender'.tr),
     ),
   );
 }

@@ -29,35 +29,35 @@ class HomePage extends GetView<HomeController> {
           children: [
             const SizedBox(height: 100),
             ListTile(
-              title: const Text('Rental'),
+              title: Text('rental'.tr),
               onTap: () {
                 Get.back();
                 Get.offNamed(homeRoute + rentalRoute, id: HomeController.navigatorKey);
               },
             ),
             ListTile(
-              title: const Text('Inventroy'),
+              title: Text('inventroy'.tr),
               onTap: () {
                 Get.back();
                 Get.offNamed(homeRoute + inventoryRoute, id: HomeController.navigatorKey);
               },
             ),
             ListTile(
-              title: const Text('Inspection'),
+              title: Text('inspection'.tr),
               onTap: () {
                 Get.back();
                 Get.offNamed(homeRoute + inspectionRoute, id: HomeController.navigatorKey);
               },
             ),
             ListTile(
-              title: const Text('Lender'),
+              title: Text('lender'.tr),
               onTap: () {
                 Get.back();
                 Get.offNamed(homeRoute + lenderRoute, id: HomeController.navigatorKey);
               },
             ),
             ListTile(
-              title: const Text('Administration'),
+              title: Text('administration'.tr),
               onTap: () {
                 Get.back();
                 Get.offNamed(homeRoute + administrationRoute, id: HomeController.navigatorKey);
