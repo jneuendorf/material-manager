@@ -19,3 +19,11 @@ Active linting rules can be found in the `analysis_options.yaml` file.
 Currently using GetX (https://pub.dev/packages/get), which combines high-performance state management, intelligent dependency injection, and route management quickly and practically.
 
 **Note:** This package can later also be used for internationalization (https://medium.com/rajtechnologies/flutter-getx-localization-multi-languages-change-app-language-a73f6f62f50a).
+
+
+## Internationalization
+
+Translations must be registerd in the `lib/translations/translations.dart` file.
+
+These can  be accessed via `'<key>'.tr` in the code.
+
