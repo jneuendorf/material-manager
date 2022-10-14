@@ -8,7 +8,7 @@ from flask_marshmallow import Marshmallow
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
-from backend.core.helpers import Extension, ModelResource
+from core.helpers import Extension, ModelResource
 
 
 def install_extensions(

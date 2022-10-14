@@ -1,1 +1,1 @@
-from . import inspection, model, rental
+from . import model

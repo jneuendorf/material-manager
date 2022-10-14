@@ -2,7 +2,7 @@ from flask_marshmallow.sqla import SQLAlchemySchema
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeMeta
 
-from backend.core.helpers import ModelListResource, ModelResource, with_db
+from core.helpers import ModelListResource, ModelResource, with_db
 
 
 def define_resources(db: SQLAlchemy, UserModel: DeclarativeMeta):

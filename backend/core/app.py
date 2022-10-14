@@ -7,11 +7,11 @@ from flask_marshmallow import Marshmallow
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 
-from backend.core.commands import Commands
-from backend.core.config import flask_config
-from backend.core.helpers import Extension
-from backend.core.installed_extensions import extensions
-from backend.core.utils import install_extensions
+from core.commands import Commands
+from core.config import flask_config
+from core.helpers import Extension
+from core.installed_extensions import extensions
+from core.utils import install_extensions
 
 app: Flask = Flask(__name__)
 app.config.update(flask_config)

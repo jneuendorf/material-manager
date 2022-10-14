@@ -5,8 +5,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
 from sqlalchemy.orm import DeclarativeMeta
 
-from backend.core.helpers import ModelListResource, ModelResource
-from backend.core.helpers.extension import Extension
+from core.helpers import ModelListResource, ModelResource
+from core.helpers.extension import Extension
 
 from .resources.material import define_material_resources
 
