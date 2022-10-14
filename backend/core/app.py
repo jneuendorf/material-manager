@@ -2,6 +2,7 @@ from collections.abc import Collection
 from typing import Type, cast
 
 from flask import Flask
+from flask_apispec import FlaskApiSpec
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -19,6 +20,7 @@ app.config.update(flask_config)
 db: SQLAlchemy = SQLAlchemy(app)
 api: Api = Api(app)
 ma = Marshmallow(app)
+api_docs = FlaskApiSpec(app)
 
 install_extensions(
     cast(Collection[Type[Extension]], extensions),
@@ -26,6 +28,7 @@ install_extensions(
     db,
     api,
     ma,
+    api_docs,
 )
 
 # Convenience wrapper for running commands from Makefile.

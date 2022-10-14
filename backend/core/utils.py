@@ -3,6 +3,7 @@ from collections.abc import Iterable
 from typing import Collection, Type, cast
 
 from flask import Flask
+from flask_apispec import FlaskApiSpec, MethodResource
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
@@ -16,6 +17,7 @@ def install_extensions(
     db: SQLAlchemy,
     api: Api,
     ma: Marshmallow,
+    api_docs: FlaskApiSpec,
     base_url: str = "/",
 ) -> None:
     try:
@@ -35,6 +37,8 @@ def install_extensions(
                 ]
                 api.add_resource(resource, *urls)
                 print(f"URLs for {resource.__name__}: {str(urls)}")
+                if issubclass(resource, MethodResource):
+                    api_docs.register(resource)
     except Exception as e:
         print(str(e))
         print("Maybe you extensions have cyclic dependencies")

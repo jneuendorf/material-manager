@@ -2,6 +2,7 @@ from collections.abc import Callable, Collection
 from functools import cached_property
 from typing import Generic, Type, TypeVar
 
+from flask_apispec import MethodResource
 from flask_marshmallow import Schema as BaseSchema
 from flask_marshmallow.sqla import SQLAlchemySchema
 from flask_restful import Resource
@@ -21,7 +22,7 @@ class ModelMetaSchema(SQLAlchemySchema, Generic[M]):
     Meta: ModelMeta[M]
 
 
-class ModelResource(Resource, Generic[M]):
+class ModelResource(MethodResource, Resource, Generic[M]):
     """
     Binds URLs to a model resource. Example:
 
