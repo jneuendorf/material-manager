@@ -26,7 +26,23 @@ class DavApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) => GetMaterialApp(
     title: 'Material Verleih',
-    // theme: ThemeData(), // TODO: Add theme
+    theme: ThemeData(
+      fontFamily: 'FiraSans',
+      primaryColor: const Color(0x0061b732),
+      colorScheme: const ColorScheme(
+        primary:  Color(0x0061b732),
+        secondary: Color(0x0089c965),
+        surface: Color(0x003f3f3f),
+        background: Color(0x00d8d8d8),
+        error: Color(0x00e34348),
+        onPrimary: Color(0x0061b732),
+        onSecondary: Color(0x0061b732),
+        onSurface: Color(0x003f3f3f),
+        onBackground: Color(0x00d8d8d8),
+        onError: Color(0x00e34348),
+        brightness: Brightness.light,
+      ),
+    ),
     initialRoute: loginRoute,
     getPages: [
       GetPage(name: homeRoute, page: () => const HomePage(),
