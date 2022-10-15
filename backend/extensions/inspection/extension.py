@@ -6,8 +6,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import DeclarativeMeta
 
 from core.helpers.extension import Extension
-from extensions.material.extension import MaterialExtension
-from extensions.user.extension import UserExtension
+from extensions.material import MaterialExtension
+from extensions.user import UserExtension
 
 
 @dataclass
