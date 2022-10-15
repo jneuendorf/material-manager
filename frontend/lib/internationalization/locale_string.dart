@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+
 class LocaleString extends Translations {
 
     @override
@@ -15,6 +16,10 @@ class LocaleString extends Translations {
       'inventory': 'Inventory',
       'lender': 'Lender',
       'rental': 'Rental',
+      'imprint': 'Imprint',
+      'privacy_policy': 'Privacy Policy',
+      'links': 'Links',
+      'other': 'Other',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -27,6 +32,10 @@ class LocaleString extends Translations {
       'inventory': 'Inventar',
       'lender': 'Ausleiher',
       'rental': 'Verleih',
+      'imprint': 'Impressum',
+      'privacy_policy': 'Datenschutzerklärung',
+      'links': 'Links',
+      'other': 'Andere',
     }
   };
 }

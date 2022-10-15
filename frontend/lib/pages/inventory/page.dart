@@ -13,7 +13,7 @@ class InventoryPage extends GetView<InventoryController> {
 
  @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: kIsWeb ? DavAppBar() : null,
+    appBar: kIsWeb ? const DavAppBar() : null,
     body: Center(
       child: Text('inventory'.tr),
     ),

@@ -19,36 +19,37 @@ class DavAppBar extends StatelessWidget with PreferredSizeWidget{
 
   @override
   Widget build(BuildContext context) => AppBar(
+    backgroundColor: Get.theme.primaryColor,
     title: const Text('Material Verleih'),
     actions: kIsWeb ? [
       TextButton(
         onPressed: () => Get.offNamed(homeRoute + rentalRoute), 
-        child: const Text('Rental', 
-          style: TextStyle(color: Colors.white),
+        child: Text('rental'.tr, 
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
         onPressed: () => Get.offNamed(homeRoute + inventoryRoute),
-        child: const Text('Inventroy', 
-          style: TextStyle(color: Colors.white),
+        child: Text('inventory'.tr, 
+          style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
         onPressed: () => Get.offNamed(homeRoute + inspectionRoute),
-        child: const Text('Inspection', 
-        style: TextStyle(color: Colors.white),
+        child: Text('inspection'.tr, 
+        style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
         onPressed: () => Get.offNamed(homeRoute + lenderRoute),
-        child: const Text('Lender', 
-        style: TextStyle(color: Colors.white),
+        child: Text('lender'.tr, 
+        style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
         onPressed: () => Get.offNamed(homeRoute + administrationRoute),
-        child: const Text('Administration', 
-        style: TextStyle(color: Colors.white),
+        child: Text('administration'.tr, 
+        style: const TextStyle(color: Colors.white),
         ),
       ),
     ] : null,
