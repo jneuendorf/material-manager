@@ -32,6 +32,8 @@ python_version = "3.9"
 [[tool.mypy.overrides]]
 module = [
     "blinker",
+    "flask_marshmallow.*",
+    "flask_restful.*",
     "flask_sqlalchemy.*",
     "sqlalchemy.*",
 ]

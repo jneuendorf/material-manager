@@ -1,34 +1,26 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from collections.abc import Iterable
-from dataclasses import dataclass
 from typing import Generic, Type, TypeVar, final
 
 from blinker import Signal
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
-from flask_sqlalchemy.model import Model
-from sqlalchemy import Column, Integer
+
+from .resource import ModelResource
 
 M = TypeVar("M")
+R = TypeVar("R", bound=Iterable[Type[ModelResource]])
 
 
-class ModelWithId(Model):
-    id = Column(Integer, primary_key=True)
-
-
-ModelWithIdType = Type[ModelWithId]
-
-
-@dataclass
-class Data(Generic[M]):
-    models: M
-    signals: Iterable[Signal]
-
-
-class Extension(ABC, Generic[M]):
+class Extension(ABC, Generic[M, R]):
     name: str
-    db: SQLAlchemy
+    """The extension's name.
+    The extension can be accessed using `app.extensions[name]`.
+    """
+
     models: M
+    resources: R
+    signals: Iterable[Signal]
 
     @final
     def __init__(self, app: Flask, db: SQLAlchemy):
@@ -41,23 +33,26 @@ class Extension(ABC, Generic[M]):
         if not self.name:
             raise TypeError("extension has no name")
 
-        self.db = db
         self.init_app(app)
-        models = self.register_models(app, db)
-        # TODO: pass signals
-        signals = self.subscribe_signals([])
+        self.models = self.register_models(db)
+        self.resources = self.get_resources(db)
+        # TODO: pass actual signals
+        self.signals = self.subscribe_signals([])
 
-        data: Data[M] = Data(models, signals)
-        app.extensions[self.name] = data
+        app.extensions[self.name] = self
 
     def init_app(self, app: Flask) -> None:
         """Returns the app instance."""
         ...
 
-    def register_models(self, app: Flask, db: SQLAlchemy) -> M:
-        """Define your models here! They are then visible to the app.
-        DO NOT SAVE THE APP ON THE EXTENSION!
-        """
+    @abstractmethod
+    def register_models(self, db: SQLAlchemy) -> M:
+        """Define your models here! They are then visible to the app."""
+        ...
+
+    @abstractmethod
+    def get_resources(self, db: SQLAlchemy) -> R:
+        """Define your model resources here. See backend.core.helpers.ModelResource"""
         ...
 
     def subscribe_signals(self, signals: Iterable[Signal]) -> Iterable[Signal]:

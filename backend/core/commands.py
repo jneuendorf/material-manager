@@ -1,13 +1,11 @@
-from flask import current_app
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
 class Commands:
-    db: SQLAlchemy
-
-    def __init__(self, db: SQLAlchemy):
-        self.db = db
-
-    def create_db(self):
-        with current_app.app_context():
-            self.db.create_all()
+    def __init__(self, app: Flask, db: SQLAlchemy):
+        @app.cli.command("create-db")
+        # @click.argument("name")
+        def create_db():
+            with app.app_context():
+                db.create_all()

@@ -1,35 +1,48 @@
-from typing import TypedDict
+from dataclasses import dataclass
+from typing import NamedTuple, Type
 
-from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import Table
+from sqlalchemy.orm import DeclarativeMeta
 
-from backend.core.extension import Extension, ModelWithId, ModelWithIdType
+from core.helpers import Extension, ModelListResource, ModelResource
+
+from .resources import define_resources
 
 
-class UserModels(TypedDict):
-    User: ModelWithIdType
-    Role: ModelWithIdType
-    Right: ModelWithIdType
+@dataclass
+class UserModels:
+    User: DeclarativeMeta
+    Role: DeclarativeMeta
+    Right: DeclarativeMeta
     RoleRightMapping: Table
     UserRoleMapping: Table
 
 
-class UserExtension(Extension[UserModels]):
-    name = "user"
-    models: UserModels
+class UserResources(NamedTuple):
+    UserResource: Type[ModelResource]
+    UserListResource: Type[ModelListResource]
 
-    def register_models(self, app: Flask, db: SQLAlchemy) -> UserModels:
-        class User(ModelWithId):
+
+class UserExtension(Extension[UserModels, UserResources]):
+    name = "user"
+
+    def register_models(self, db: SQLAlchemy):
+        Model: DeclarativeMeta = db.Model
+
+        class User(Model):
+            id = db.Column(db.Integer, primary_key=True)
             firs_name = db.Column(db.String)
             last_name = db.Column(db.String)
             membership_number = db.Column(db.String)
 
-        class Role(ModelWithId):
+        class Role(Model):
+            id = db.Column(db.Integer, primary_key=True)
             name = db.Column(db.String)
             description = db.Column(db.String)
 
-        class Right(ModelWithId):
+        class Right(Model):
+            id = db.Column(db.Integer, primary_key=True)
             name = db.Column(db.String)
             description = db.Column(db.String)
 
@@ -44,10 +57,19 @@ class UserExtension(Extension[UserModels]):
             db.Column("role_id", db.ForeignKey(Role.id), primary_key=True),
         )
 
-        return {
-            "User": User,
-            "Role": Role,
-            "Right": Right,
-            "RoleRightMapping": RoleRightMapping,
-            "UserRoleMapping": UserRoleMapping,
-        }
+        return UserModels(
+            **{
+                "User": User,
+                "Role": Role,
+                "Right": Right,
+                "RoleRightMapping": RoleRightMapping,
+                "UserRoleMapping": UserRoleMapping,
+            }
+        )
+
+    def get_resources(self, db: SQLAlchemy):
+        UserResource, UserListResource = define_resources(db, self.models.User)
+        return UserResources(
+            UserResource=UserResource,
+            UserListResource=UserListResource,
+        )

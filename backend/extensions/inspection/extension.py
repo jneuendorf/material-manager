@@ -1,37 +1,60 @@
-from typing import TypedDict
+from dataclasses import dataclass
+from typing import NamedTuple
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.orm import DeclarativeMeta
 
-from backend.core.extension import Data, Extension, ModelWithId, ModelWithIdType
-from backend.extensions.material.extension import MaterialModels
-from backend.extensions.user.extension import UserModels
-
-
-class InspectionModels(TypedDict):
-    Inspection: ModelWithIdType
-    Comment: ModelWithIdType
+from core.helpers.extension import Extension
+from extensions.material.extension import MaterialExtension
+from extensions.user.extension import UserExtension
 
 
-class InspectionExtension(Extension[InspectionModels]):
+@dataclass
+class InspectionModels:
+    Inspection: DeclarativeMeta
+    Comment: DeclarativeMeta
+
+
+class InspectionResources(NamedTuple):
+    ...
+
+
+class InspectionExtension(Extension[InspectionModels, InspectionResources]):
     name = "inspection"
+    material: MaterialExtension
+    user: UserExtension
 
-    def register_models(self, app: Flask, db: SQLAlchemy) -> InspectionModels:
-        material: Data[MaterialModels] = app.extensions["material"]
-        user: Data[UserModels] = app.extensions["user"]
+    def init_app(self, app: Flask) -> None:
+        self.material = app.extensions["material"]
+        self.user = app.extensions["user"]
 
-        class Inspection(ModelWithId):
-            inspector_id = db.Column(db.ForeignKey(user.models["User"].id))
-            material_id = db.Column(db.ForeignKey(material.models["Material"].id))
+    def register_models(self, db: SQLAlchemy):
+        Model: DeclarativeMeta = db.Model
+
+        class Inspection(Model):
+            id = db.Column(db.Integer, primary_key=True)
+            inspector_id = db.Column(
+                db.ForeignKey(self.user.models.User.id)  # type: ignore
+            )
+            material_id = db.Column(
+                db.ForeignKey(self.material.models.Material.id)  # type: ignore
+            )
             date = db.Column(db.Date)
             type = db.Column(db.String)  # PSA- / Sichtprüfung
 
-        class Comment(ModelWithId):
+        class Comment(Model):
+            id = db.Column(db.Integer, primary_key=True)
             inspection_id = db.Column(db.ForeignKey(Inspection.id))
             comment = db.Column(db.String)
             photo = db.Column(db.String)  # URL
 
-        return {
-            "Inspection": Inspection,
-            "Comment": Comment,
-        }
+        return InspectionModels(
+            **{
+                "Inspection": Inspection,
+                "Comment": Comment,
+            }
+        )
+
+    def get_resources(self, db: SQLAlchemy):
+        return InspectionResources()
