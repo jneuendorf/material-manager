@@ -23,7 +23,7 @@ Currently using GetX (https://pub.dev/packages/get), which combines high-perform
 
 ## Internationalization
 
-Translations must be registerd in the `lib/translations/translations.dart` file.
+Translations must be registerd in the `lib/translations/locale_string.dart` file.
 
 These can  be accessed via `'<key>'.tr` in the code.
 

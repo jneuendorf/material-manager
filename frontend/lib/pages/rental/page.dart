@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/common/components/dav_app_bar.dart';
+import 'package:frontend/common/components/dav_footer.dart';
 
 
 class RentalPage extends GetView<RentalController> {
@@ -13,8 +14,15 @@ class RentalPage extends GetView<RentalController> {
  @override
   Widget build(BuildContext context) => Scaffold(
     appBar: kIsWeb ? const DavAppBar() : null,
-    body: Center(
-      child: Text('rental'.tr),
+    body: Column(
+      children: [
+        Expanded(
+          child: Center(
+            child: Text('rental'.tr),
+          ),
+        ),
+        if (kIsWeb) const DavFooter(),
+      ],
     ),
   );
 }
