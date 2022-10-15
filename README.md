@@ -1,30 +1,16 @@
-# material-verleih
+# Material Manager
 
+This project contains the backend as well as the frontend part.
+For more details for each part, see the according documentations:
 
-## Running
-
-### Production
-
-Run `make install_prod && make run` from the project root.
-
-### Development
-
-Run `make install && make run` from the project root.
-
-
-
-## Contributing
-
-### Development setup
-
-Run `make install` from the project root.
+- [backend documentation](./backend/core/README.md)
+- [frontend documentation](./frontend/README.md)
 
 
 
 ## Authors and acknowledgment
 
-Contributors are:
-- ...
+Contributors to this project: See the [LICENSE](./LICENSE) file.
 
 Thanks also to
 - R.-Bodo Riediger-Klaus for providing a server
