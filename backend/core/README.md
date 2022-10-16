@@ -4,7 +4,9 @@
 
 ## Extension development - an example
 
-Let's assume, we want to write an extension `material-notifier` 
+### Create a new extension
+
+Let's assume, we want to write an extension `material-notifier`
 that informs certain users when new material has been ordered.
 
 Create a python package with the following structure:
@@ -12,133 +14,113 @@ Create a python package with the following structure:
 ```
 extensions/material-notifier
 ├── __init__.py
-└── extension.py
+├── models.py
+└── resources.py
 ```
 
-In order to store which users want to get the e-mail, 
-we create a new database model whose instances relate to user instances 
-(_composition vs inheritance_). This way, we don't need to take care of 
-extending the user model and telling our app that our extended user model 
+In order to store which users want to get the e-mail,
+we create a new database model `UserNotificationInfo` whose instances relate to user instances
+(_composition vs inheritance_). This way, we don't need to take care of
+extending the user model and telling our app that our extended user model
 should be used instead of the built-in one.
 
-This means, we need to use the `user` extension that is built-in.
+For the user to be able to update their preference on whether to get notified or not,
+we want to add a new API endpoint (aka. URL). Since this new URL relates to our new
+model, we need to add a resource for the model.
 
-The core module provides an abstract `Extension` class and some helpers 
-that we can use for implementing new extensions. It is a generic class that
-takes 2 type variables:
+:warning: Watch out that you don't create cyclic dependencies between extensions
+when importing models from other modules.
 
-1. One for the defined models (=> database tables) and
-2. the other one for the defined resources (=> API endpoints).
-
-Furthermore, 2 abstract method must be implemented:
-
-1. `register_models`
-2. `get_resources`
-
-Let's define our extension by subclassing the abstract class `Extension[M, R]`.
+So now, we can create our new extension like this in the `__init__.py` file:
 
 ```python
-class MaterialNotifierExtension(Extension[M, R]):
-    name = "material-notifier"
-```
-
-For our models we need to define what models we have with which type.
-For our extension we only need 1 model `UserNotificationInfo`.
-
-We don't need any resources, so we can just use `tuple` 
-(the resources type is bound by `Iterable[Type[ModelResource]]`, 
-mean it must be an iterable of resource classes).
-
-```python
-# Used for the generic variable M
-@dataclass
-class Models:
-    UserNotificationInfo: DeclarativeMeta
-
-
-# Used for the generic variable R
-Resources = tuple
-```
-
-So our class actually inherits like this:
-
-```python
-class MaterialNotifierExtension(Extension[Models, Resources]):
-    ...
-```
-
-Because our `UserNotificationInfo` model requires the `user` extension, 
-we need reference to it. Extensions can be accessed via the `app.extensions` 
-dictionary. So, we can save the `user` extension in our extension by overriding
-the `init_app` method. Since we need to import the `UserExtension` for typing anyway,
-we can avoid hard-coding its name:
-
-```python
-def init_app(self, app: Flask) -> None:
-    # The key 'user' comes from the user extension's 'name' attribute.
-    self.user = app.extensions[UserExtension.name]
-```
-
-So now, we have access to the initialized `user` extension and 
-can use all of its public API. In particular, we can access the `User` model
-to create a foreign key to it.
-
-
-### `extension.py`
-
-```python
-from dataclasses import dataclass
-
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.orm import DeclarativeMeta
-
-# Abstract class
 from core.helpers.extension import Extension
-# Use other extensions (avoid cycles yourself!)
-from extensions.user import UserExtension
 
+from . import models, resources
 
-@dataclass
-class Models:
-    UserNotificationInfo: DeclarativeMeta
-
-    
-Resources = tuple
-
-
-class MaterialNotifierExtension(Extension[Models, Resources]):
-    name = "material-notifier"
-    user: UserExtension
-    
-    def init_app(self, app: Flask) -> None:
-        self.user = app.extensions[UserExtension.name]
-
-    def register_models(self, db: SQLAlchemy):
-        Model: DeclarativeMeta = db.Model  # typing stuff only
-        User = self.user.models.User
-
-        class UserNotificationInfo(Model):
-            id = db.Column(db.Integer, primary_key=True)
-            user_id = db.Column(db.ForeignKey(
-                User.id  # type: ignore
-            ))
-            notify = db.Column(db.Boolean)
-
-        return Models(
-            UserNotificationInfo=UserNotificationInfo,
-        )
-
-    def get_resources(self, db: SQLAlchemy):
-        return ()
+Extension(
+    "material-notifier",
+    __name__,
+    models=(models.UserNotificationInfo,),
+    resources=(resources.UserNotificationInfo,),
+)
 ```
 
+In the following, we define our `models` and `resources`.
 
-Finally, in the `__init__.py` we provide the extension class on the package level for convenience:
+### Define models
+
+Let's fill our `models.py` file.
+Note, how we create the foreign key referencing the `user` extension.
 
 
-### `__init__.py`
+#### `models.py`
 
 ```python
-from .extension import MaterialNotifierExtension
+from typing import Type
+
+from core.app import db
+from core.helpers.orm import CrudModel
+from extensions.user.models import User
+
+Model: Type[CrudModel] = db.Model  # Help mypy with dynamic types
+
+
+class UserNotificationInfo(Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.ForeignKey(User.id))
+    notify = db.Column(db.Boolean)
+```
+
+### Define resource
+
+For convenience the module `core.helpers` provides a `ModelResource` that 
+specifies how a model gets serialized. In order to do so, we must define 
+an inner class `Meta` that specifies the serialization. 
+Usually, that means specifying the model and some of its fields, for example
+
+```python
+class Meta:
+    model = UserNotificationInfoModel
+    fields = ("id", "user_id", "notify")
+```
+
+See 
+[marshmallow_sqlalchemy.SQLAlchemySchema](https://marshmallow-sqlalchemy.readthedocs.io/en/latest/api_reference.html#marshmallow_sqlalchemy.SQLAlchemySchema)
+for details.
+
+Furthermore, we can specify methods for the HTTP verbs we need.
+If want to resource to be queryable via a `GET` request, 
+we must implement a `get` method.
+
+For our resource, we want to be able to read from and write to the database,
+thus we implement a method for both a `GET` and a `POST` request:
+
+
+
+#### `resource.py`
+
+```python
+from flask import request
+
+from core.helpers import ModelResource
+
+from .models import UserNotificationInfo as UserNotificationInfoModel
+
+class UserNotificationInfo(ModelResource):
+    url = "/{ext_name}/<int:user_id>"
+
+    class Meta:
+        model = UserNotificationInfoModel
+        fields = ("id", "user_id", "notify")
+
+    def get(self, user_id: int):
+        user_notification_info = UserNotificationInfoModel.get(user_id=user_id)
+        return self.serialize(user_notification_info)
+
+    def post(self, user_id: int):
+        notify: bool = request.form["notify"]
+        user_notification_info = UserNotificationInfoModel.get(user_id=user_id)
+        user_notification_info.update(notify=notify).save()
+        return "success"
 ```
