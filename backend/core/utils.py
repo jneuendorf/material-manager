@@ -1,39 +1,30 @@
 import re
 from collections.abc import Iterable
-from typing import Collection, Type, cast
+from typing import cast
 
 from flask import Flask
 from flask_apispec import FlaskApiSpec, MethodResource
-from flask_marshmallow import Marshmallow
 from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
 
-from core.helpers import Extension, ModelResource
+from core.helpers import Extension
 
 
 def install_extensions(
-    extensions: Collection[Type[Extension]],
     app: Flask,
-    db: SQLAlchemy,
     api: Api,
-    ma: Marshmallow,
     api_docs: FlaskApiSpec,
     base_url: str = "/",
 ) -> None:
+    # Avoid cyclic imports at load-time
+    from core.installed_extensions import extensions
+
     try:
-        for extension_cls in extensions:
-            extension = extension_cls(app, db)
-            resources = cast(
-                Iterable[Type[ModelResource]],
-                extension.resources,
-            )
-            for resource in resources:
+        for extension in cast(Iterable[Extension], extensions):
+            app.register_blueprint(extension)
+            for resource in extension.resources:
                 urls = [
-                    url_join(
-                        base_url,
-                        url.format(ext_name=extension.name),
-                    )
-                    for url in resource.urls
+                    url_join(base_url, url.format(ext_name=extension.name))
+                    for url in ([resource.url] if resource.url else resource.urls)
                 ]
                 api.add_resource(resource, *urls)
                 print(f"URLs for {resource.__name__}: {str(urls)}")

@@ -1,11 +1,11 @@
-from extensions.inspection import InspectionExtension
-from extensions.material import MaterialExtension
-from extensions.rental import RentalExtension
-from extensions.user import UserExtension
+from extensions.inspection import inspection
+from extensions.material import material
+from extensions.rental import rental
+from extensions.user import user
 
 extensions = (
-    MaterialExtension,
-    UserExtension,
-    InspectionExtension,
-    RentalExtension,
+    material,
+    user,
+    inspection,
+    rental,
 )
