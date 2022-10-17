@@ -1,6 +1,16 @@
 # Material Manager Backend - core
 
-## Running
+## Running the development server
+
+```bash
+cd backend
+# make install
+make run
+```
+
+This will start the flask app at http://localhost:5000.
+
+
 
 ## Extension development - an example
 
@@ -38,7 +48,6 @@ from core.helpers.extension import Extension
 
 from . import models, resources
 
-
 material_notifier = Extension(
     "material-notifier",
     __name__,
@@ -48,6 +57,8 @@ material_notifier = Extension(
 ```
 
 In the following, we define our `models` and `resources`.
+
+
 
 ### Define models
 
@@ -67,13 +78,15 @@ from extensions.user.models import User
 Model: Type[CrudModel] = db.Model  # Help mypy with dynamic types
 
 
-class UserNotificationInfo(Model):
+class UserNotificationInfo(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.ForeignKey(User.id))
     notify = db.Column(db.Boolean)
 ```
 
-### Define resource
+
+
+### Define resources
 
 For convenience the module `core.helpers` provides a `ModelResource` that 
 specifies how a model gets serialized. In order to do so, we must define 
@@ -95,7 +108,12 @@ If want to resource to be queryable via a `GET` request,
 we must implement a `get` method.
 
 For our resource, we want to be able to read from and write to the database,
-thus we implement a method for both a `GET` and a `POST` request:
+thus we implement a method for both a `GET` and a `POST` request.
+We want to make them available at `/user/\<int:user_id\>/notify`, thus for getting 
+the state of the user with ID 1, we could access `/user/1/notify`. This can be done
+using the `url` attribute of the resource.
+
+:warning: Of course, this would be a security issue because everyone could access other users' data!
 
 
 
@@ -109,7 +127,7 @@ from core.helpers import ModelResource
 from .models import UserNotificationInfo as UserNotificationInfoModel
 
 class UserNotificationInfo(ModelResource):
-    url = "/{ext_name}/<int:user_id>"
+    url = "/user/<int:user_id>/notify"
 
     class Meta:
         model = UserNotificationInfoModel
@@ -125,3 +143,41 @@ class UserNotificationInfo(ModelResource):
         user_notification_info.update(notify=notify).save()
         return "success"
 ```
+
+
+
+# Listen to new material
+
+For sending an e-mail when new material was added to the database, 
+we need to know somehow when this happens. For achieving this, we make
+use of the `model-created` signal.
+
+```python
+from typing import cast
+
+from core.signals.model import Sender, Kwargs, model_created
+from extensions.user.models import User
+
+from .models import UserNotificationInfo
+
+
+def send_mail(email: str, subject: str, message: str):
+    ...
+
+
+def receiver(sender: Sender, data: Kwargs):
+    instance = cast(UserNotificationInfo, data["instance"])
+    for user_info in UserNotificationInfo.filter(notify=True):
+        user = User.get(id=user_info.user_id)
+        send_mail(
+            user.email, 
+            "New material", 
+            "New material has arrived!\n\nCheck out https://superawesomematerial.org/material/" + instance.id,
+        )
+
+model_created.connect(receiver, sender=UserNotificationInfo)
+```
+
+Of course, this is by far now an optimal solution as each receiver gets 1 e-mail 
+per added material (no batching). Also, it is very inefficient because each user is
+queried separately.
