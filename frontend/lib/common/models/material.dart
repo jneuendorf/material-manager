@@ -1,5 +1,5 @@
 
-class Material {
+class MaterialModel {
   final int id;
   List<SerialNumber> serialNumbers;
   String inventoryNumber;
@@ -16,7 +16,7 @@ class Material {
   List<EquipmentType> equipmentTypes;
 
 
-  Material({
+  MaterialModel({
     required this.id,
     required this.serialNumbers,
     required this.inventoryNumber,
@@ -33,7 +33,7 @@ class Material {
     required this.equipmentTypes,
   });
 
-  factory Material.fromJson(Map<String, dynamic> json) => Material(
+  factory MaterialModel.fromJson(Map<String, dynamic> json) => MaterialModel(
     id: json['id'],
     serialNumbers: List<SerialNumber>.from(json['serialNumbers'].map((x) => SerialNumber.fromJson(x))),
     inventoryNumber: json['inventoryNumber'],

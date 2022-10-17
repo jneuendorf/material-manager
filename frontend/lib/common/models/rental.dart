@@ -1,5 +1,5 @@
 
-class Rental {
+class RentalModel {
   final int id;
   final int customerId;  // references User.id
   final int lenderId;   // references User.id
@@ -14,7 +14,7 @@ class Rental {
   DateTime usageStartDate;
   DateTime usageEndDate;
 
-  Rental({
+  RentalModel({
     required this.id,
     required this.customerId,
     required this.lenderId,
@@ -30,7 +30,7 @@ class Rental {
     required this.usageEndDate,
   });
 
-  factory Rental.fromJson(Map<String, dynamic> json) => Rental(
+  factory RentalModel.fromJson(Map<String, dynamic> json) => RentalModel(
     id: json['id'],
     customerId: json['customerId'],
     lenderId: json['lenderId'],

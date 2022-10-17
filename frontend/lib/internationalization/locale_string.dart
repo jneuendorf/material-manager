@@ -22,6 +22,9 @@ class LocaleString extends Translations {
       'other': 'Other',
       'remember_me': 'Remember me',
       'signup': 'Sign up',
+      'single_material': 'Single Material',
+      'sets': 'Sets',
+      'items': 'Items',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -40,6 +43,9 @@ class LocaleString extends Translations {
       'other': 'Andere',
       'remember_me': 'Angemeldet bleiben',
       'signup': 'Registrieren',
+      'single_material': 'Einzelmaterial',
+      'sets': 'Sets',
+      'items': 'Artikel',
     }
   };
 }
