@@ -22,6 +22,14 @@ class LocaleString extends Translations {
       'other': 'Other',
       'remember_me': 'Remember me',
       'signup': 'Sign up',
+      'membership_number': 'Membership Number',
+      'first_name': 'First Name',
+      'last_name': 'Last Name',
+      'streetname': 'Streetname',
+      'house_number': 'Housenumber',
+      'city': 'City',
+      'zip': 'ZIP',
+      'next': 'Next',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -40,6 +48,14 @@ class LocaleString extends Translations {
       'other': 'Andere',
       'remember_me': 'Angemeldet bleiben',
       'signup': 'Registrieren',
+      'membership_number': 'Mitgliedsnummer',
+      'first_name': 'Vorname',
+      'last_name': 'Nachname',
+      'streetname': 'Straßenname',
+      'house_number': 'Hausnummer',
+      'city': 'Stadt',
+      'zip': 'PLZ.',
+      'next': 'Weiter',
     }
   };
 }
