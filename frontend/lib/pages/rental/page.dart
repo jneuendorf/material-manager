@@ -11,7 +11,7 @@ import 'package:frontend/common/components/dav_footer.dart';
 class RentalPage extends GetView<RentalController> {
   const RentalPage({Key? key}) : super(key: key);
 
- @override
+  @override
   Widget build(BuildContext context) => Scaffold(
     appBar: kIsWeb ? const DavAppBar() : null,
     body: Column(

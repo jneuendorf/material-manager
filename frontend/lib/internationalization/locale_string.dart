@@ -20,6 +20,8 @@ class LocaleString extends Translations {
       'privacy_policy': 'Privacy Policy',
       'links': 'Links',
       'other': 'Other',
+      'remember_me': 'Remember me',
+      'signup': 'Sign up',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -36,6 +38,8 @@ class LocaleString extends Translations {
       'privacy_policy': 'Datenschutzerklärung',
       'links': 'Links',
       'other': 'Andere',
+      'remember_me': 'Angemeldet bleiben',
+      'signup': 'Registrieren',
     }
   };
 }
