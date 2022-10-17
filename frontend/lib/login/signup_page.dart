@@ -45,11 +45,10 @@ class SignupPage extends GetView<LoginController> {
     child: Container(
       constraints: const BoxConstraints(
         maxWidth: 500,
-        minHeight: 800,
       ),
-      padding: const EdgeInsetsDirectional.all(10),
+      padding: const EdgeInsetsDirectional.all(16),
       decoration: BoxDecoration(
-        color: Get.theme.colorScheme.surface,
+        color: const Color.fromRGBO(176, 219, 153, 1),
         borderRadius: BorderRadius.circular(20),
       ),
       child: child,
@@ -62,7 +61,7 @@ class SignupPage extends GetView<LoginController> {
         TextFormField(
           controller: controller.membershipNumberController,
           decoration: InputDecoration(
-            fillColor: Colors.white,
+            fillColor: Colors.red,
             focusColor: Colors.white,
             labelText: 'membership_number'.tr,
             labelStyle: const TextStyle(color: Colors.black54),
@@ -71,6 +70,7 @@ class SignupPage extends GetView<LoginController> {
             focusedBorder: const OutlineInputBorder(),
           ),
         ),
+        const SizedBox(height: 16.0),
         TextFormField(
           controller: controller.firstNameController,
           decoration: InputDecoration(
@@ -81,6 +81,7 @@ class SignupPage extends GetView<LoginController> {
             focusedBorder: const OutlineInputBorder(),
           ),
         ),
+        const SizedBox(height: 16.0),
         TextFormField(
           controller: controller.lastNameController,
           decoration: InputDecoration(
@@ -91,6 +92,7 @@ class SignupPage extends GetView<LoginController> {
             focusedBorder: const OutlineInputBorder(),
           ),
         ),
+        const SizedBox(height: 16.0),
         CupertinoButton(
           onPressed: () {
             controller.pageController.animateToPage(1,
