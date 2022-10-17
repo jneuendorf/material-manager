@@ -8,7 +8,7 @@ from sqlalchemy import Table
 from .orm import CrudModel
 from .resource import ModelResource
 
-M = TypeVar("M", bound=Iterable[Type[Union[CrudModel, Table]]])
+M = TypeVar("M", bound=Iterable[Union[Type[CrudModel], Table]])
 R = TypeVar("R", bound=Iterable[Type[ModelResource]])
 
 

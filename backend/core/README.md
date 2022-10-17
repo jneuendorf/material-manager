@@ -38,7 +38,8 @@ from core.helpers.extension import Extension
 
 from . import models, resources
 
-Extension(
+
+material_notifier = Extension(
     "material-notifier",
     __name__,
     models=(models.UserNotificationInfo,),
