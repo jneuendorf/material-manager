@@ -14,7 +14,7 @@ class SignupBinding implements Bindings {
 
 class SignupController extends GetxController {
   final PageController pageController = PageController();
-  
+
   final TextEditingController membershipNumberController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
@@ -44,7 +44,7 @@ class SignupController extends GetxController {
       return 'membership_num_is_mandatory'.tr;
     }
     final membershipNum = RegExp(r'\d{5}');
-    if(!membershipNum.hasMatch(value!)){
+    if(!membershipNum.hasMatch(value)){
       return 'invalid_membership_num'.tr;
     }
     return null;
