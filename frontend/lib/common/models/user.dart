@@ -24,11 +24,11 @@ class UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     id: json['id'],
-    firstName: json['firstName'],
-    lastName: json['lastName'],
+    firstName: json['first_name'],
+    lastName: json['last_name'],
     email: json['email'],
     phone: json['phone'],
-    membershipNumber: json['membershipNumber'],
+    membershipNumber: json['membership_number'],
     address: Address.fromJson(json['address']),
     roles: List<Role>.from(json['roles'].map((x) => Role.fromJson(x))),
     category: json['category'],

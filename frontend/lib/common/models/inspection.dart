@@ -18,8 +18,8 @@ class InspectionModel {
 
   factory InspectionModel.fromJson(Map<String, dynamic> json) => InspectionModel(
     id: json['id'],
-    inspectorId: json['inspectorId'],
-    materialId: json['materialId'],
+    inspectorId: json['inspector_id'],
+    materialId: json['material_id'],
     date: DateTime.parse(json['date']),
     type: InspectionType.values.byName(json['type']),
     comments: List<Comment>.from(json['comments'].map((x) => Comment.fromJson(x))),
@@ -48,6 +48,6 @@ class Comment {
     id: json['id'],
     date: DateTime.parse(json['date']),
     text: json['text'],
-    imagePath: json['imagePath'],
+    imagePath: json['image_path'],
   );
 }
