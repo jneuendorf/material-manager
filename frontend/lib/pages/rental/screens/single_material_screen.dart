@@ -18,12 +18,15 @@ class SingleMaterialScreen extends StatelessWidget {
     headerWidget: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        DropDownFilterButton(
-          title: 'Art', 
-          options: const ['All', 'Seile', 'Karabiener', 'Helme'], //mock
-          selected: 'All', 
-          onSelected: (String value) {},
-        ),
+        Obx(() => DropDownFilterButton(
+          title: 'type'.tr, 
+          options: [
+            'all'.tr, 
+            ...rentalController.filterOptions.values,
+          ],
+          selected: rentalController.selectedFilter.value?.description ?? 'all'.tr, 
+          onSelected: rentalController.onFilterSelected,
+        )),
         const SizedBox(width: 16.0),
         Flexible(
           child: ConstrainedBox(
@@ -33,7 +36,10 @@ class SingleMaterialScreen extends StatelessWidget {
             ),
             child: CupertinoSearchTextField(
               placeholder: 'search'.tr,
-              onChanged: (String text) => rentalController.runFilter(text),
+              onChanged: (String text) {
+                rentalController.searchTerm.value = text;
+                rentalController.runFilter();
+              },
             ),
           ),
         ),

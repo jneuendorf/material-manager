@@ -26,6 +26,8 @@ class LocaleString extends Translations {
       'sets': 'Sets',
       'items': 'Items',
       'search': 'Search',
+      'type': 'Type',
+      'all': 'All',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -48,6 +50,8 @@ class LocaleString extends Translations {
       'sets': 'Sets',
       'items': 'Artikel',
       'search': 'Suchen',
+      'type': 'Art',
+      'all': 'Alle',
     }
   };
 }

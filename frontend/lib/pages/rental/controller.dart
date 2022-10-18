@@ -22,6 +22,10 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   final RxList<MaterialModel> shoppingCart = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredSets = <MaterialModel>[].obs;
+  final RxMap<EquipmentType, String> filterOptions = <EquipmentType, String>{}.obs;
+
+  final Rxn<EquipmentType> selectedFilter = Rxn<EquipmentType>();
+  final RxString searchTerm = ''.obs;
 
   List<MaterialModel> availibleMaterial = [];
   List<MaterialModel> availibleSets = [];
@@ -29,6 +33,7 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   @override
   Future<void> onInit() async {
     super.onInit();
+
     tabController = TabController(length: 2, vsync: this);
     tabController.addListener(() {
       tabIndex.value = tabController.index;
@@ -36,11 +41,21 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
 
     availibleMaterial = await getAllMaterial();
     filteredMaterial.value = availibleMaterial;
+
+    // get all types of material
+    for (MaterialModel item in availibleMaterial) {
+      for (EquipmentType type in item.equipmentTypes) {
+        if (!filterOptions.keys.contains(type)) {
+          filterOptions[type] = type.description;
+        }
+      }
+    }
   }
 
   @override
   void onClose() {
     tabController.dispose();
+
     super.onClose();
   }
 
@@ -57,31 +72,61 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   double get totalPrice => shoppingCart.fold(0.0, 
     (double previousValue, MaterialModel item) => previousValue + item.rentalFee);
 
-  /// Filters the [availibleMaterial] by the [searchTerm].
-  void runFilter(String searchTerm) {
+  /// Filters the [availibleMaterial] by the [searchTerm] and the [selectedFilter].
+  void runFilter() {
+    final String term = searchTerm.value.toLowerCase();
     filteredMaterial.value = availibleMaterial.where((MaterialModel item) {
-      /// Checks if the [searchTerm] is contained in [equipmentTypes] of the [item].
-      bool typeCondition() {
+      /// Checks if the [selectedFilter] is contained in [equipmentTypes] of the [item].
+      bool equipmentTypeFilterCondition() {
+        if (selectedFilter.value == null) {
+          return true;
+        } else {
+          return item.equipmentTypes.contains(selectedFilter.value);
+        }
+      }
+
+      /// Checks if the [term] is contained in [equipmentTypes] of the [item].
+      bool equipmentTypeNameCondition() {
+        if (term.isEmpty) return true;
+
         for (EquipmentType type in item.equipmentTypes) {
-          if (type.description.toLowerCase().contains(searchTerm.toLowerCase())) {
+          if (type.description.toLowerCase().contains(term)) {
             return true; 
           }
         }
         return false;
       }
 
-      /// Checks if the [searchTerm] is contained in [properties] of the [item].
-      bool propertyCondition() {
+      /// Checks if the [term] is contained in [properties] of the [item].
+      bool propertyNameCondition() {
+        if (term.isEmpty) return true;
+
         for (Property property in item.properties) {
-          if (property.value.toLowerCase().contains(searchTerm.toLowerCase())) {
+          if (property.value.toLowerCase().contains(term)) {
             return true; 
           }
         }
         return false;
       }
 
-      return typeCondition() || propertyCondition(); 
+      return equipmentTypeFilterCondition() && 
+        (propertyNameCondition() || equipmentTypeNameCondition());
     }).toList();
+  }
+
+
+  /// Handles the selection of a [filterOption].
+  void onFilterSelected(String value) {
+    // set selected filter
+    if (value != 'all'.tr) {
+      selectedFilter.value = filterOptions.entries.firstWhere(
+        (MapEntry<EquipmentType, String> entry) => entry.value == value
+      ).key;
+    } else {
+      selectedFilter.value = null;
+    }
+
+    runFilter();
   }
 
 }
