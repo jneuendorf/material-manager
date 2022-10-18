@@ -1,5 +1,5 @@
 
-class Material {
+class MaterialModel {
   final int id;
   List<SerialNumber> serialNumbers;
   String inventoryNumber;
@@ -16,7 +16,7 @@ class Material {
   List<EquipmentType> equipmentTypes;
 
 
-  Material({
+  MaterialModel({
     required this.id,
     required this.serialNumbers,
     required this.inventoryNumber,
@@ -33,21 +33,21 @@ class Material {
     required this.equipmentTypes,
   });
 
-  factory Material.fromJson(Map<String, dynamic> json) => Material(
+  factory MaterialModel.fromJson(Map<String, dynamic> json) => MaterialModel(
     id: json['id'],
-    serialNumbers: List<SerialNumber>.from(json['serialNumbers'].map((x) => SerialNumber.fromJson(x))),
-    inventoryNumber: json['inventoryNumber'],
-    maxLifeExpectancy: json['maxLifeExpectancy'],
-    maxServiceDuration: json['maxServiceDuration'],
-    installationDate: DateTime.parse(json['installationDate']),
+    serialNumbers: List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
+    inventoryNumber: json['inventory_number'],
+    maxLifeExpectancy: json['max_life_expectancy'],
+    maxServiceDuration: json['max_service_duration'],
+    installationDate: DateTime.parse(json['installation_date']),
     instructions: json['instructions'],
-    nextInspectionDate: DateTime.parse(json['nextInspectionDate']),
-    rentalFee: json['rentalFee'],
+    nextInspectionDate: DateTime.parse(json['next_inspection_date']),
+    rentalFee: json['rental_fee'],
     condition: Condition.values.byName(json['condition']),
     usage: json['usage'],
-    purchaseDetails: PurchaseDetails.fromJson(json['purchaseDetails']),
+    purchaseDetails: PurchaseDetails.fromJson(json['purchase_details']),
     properties: List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
-    equipmentTypes: List<EquipmentType>.from(json['equipmentTypes'].map((x) => EquipmentType.fromJson(x))),
+    equipmentTypes: List<EquipmentType>.from(json['equipment_types'].map((x) => EquipmentType.fromJson(x))),
   );
 }
 
@@ -92,12 +92,12 @@ class PurchaseDetails {
 
   factory PurchaseDetails.fromJson(Map<String, dynamic> json) => PurchaseDetails(
     id: json['id'],
-    purchaseDate: DateTime.parse(json['purchaseDate']),
-    invoiceNumber: json['invoiceNumber'],
+    purchaseDate: DateTime.parse(json['purchase_date']),
+    invoiceNumber: json['invoice_number'],
     merchant: json['merchant'],
-    productionDate: DateTime.parse(json['productionDate']),
-    purchasePrice: json['purchasePrice'],
-    suggestedRetailPrice: json['suggestedRetailPrice'],
+    productionDate: DateTime.parse(json['production_date']),
+    purchasePrice: json['purchase_price'],
+    suggestedRetailPrice: json['suggested_retail_price'],
   );
 }
 

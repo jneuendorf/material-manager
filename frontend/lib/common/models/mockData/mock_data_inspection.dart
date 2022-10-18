@@ -22,8 +22,8 @@ final Comment mockComment3 = Comment(
   imagePath: 'https://www.bfgcdn.com/1500_1500_90/324-0051-0111/stubai-minikarabiner-materialkarabiner.jpg',
 );
 
-List<Inspection> mockInspections = [
-  Inspection(
+List<InspectionModel> mockInspections = [
+  InspectionModel(
     id: 1,
     inspectorId: 3,
     materialId: 1,
@@ -34,7 +34,7 @@ List<Inspection> mockInspections = [
       mockComment2,
     ],
   ),
-  Inspection(
+  InspectionModel(
     id: 2,
     inspectorId: 2,
     materialId: 1,
@@ -44,7 +44,7 @@ List<Inspection> mockInspections = [
       mockComment3,
     ],
   ),
-  Inspection(
+  InspectionModel(
     id: 3,
     inspectorId: 3,
     materialId: 1,

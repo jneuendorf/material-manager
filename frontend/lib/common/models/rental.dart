@@ -1,5 +1,5 @@
 
-class Rental {
+class RentalModel {
   final int id;
   final int customerId;  // references User.id
   final int lenderId;   // references User.id
@@ -14,7 +14,7 @@ class Rental {
   DateTime usageStartDate;
   DateTime usageEndDate;
 
-  Rental({
+  RentalModel({
     required this.id,
     required this.customerId,
     required this.lenderId,
@@ -30,20 +30,20 @@ class Rental {
     required this.usageEndDate,
   });
 
-  factory Rental.fromJson(Map<String, dynamic> json) => Rental(
+  factory RentalModel.fromJson(Map<String, dynamic> json) => RentalModel(
     id: json['id'],
-    customerId: json['customerId'],
-    lenderId: json['lenderId'],
-    returnToId: json['returnToId'],
-    materialIds: List<int>.from(json['materialIds'].map((x) => x)),
+    customerId: json['customer_id'],
+    lenderId: json['lender_id'],
+    returnToId: json['return_to_id'],
+    materialIds: List<int>.from(json['material_ids'].map((x) => x)),
     cost: json['cost'],
     deposit: json['deposit'],
     status: RentalStatus.fromJson(json['status']),
-    createdAt: DateTime.parse(json['createdAt']),
-    startDate: DateTime.parse(json['startDate']),
-    endDate: DateTime.parse(json['endDate']),
-    usageStartDate: DateTime.parse(json['usageStartDate']),
-    usageEndDate: DateTime.parse(json['usageEndDate']),
+    createdAt: DateTime.parse(json['created_at']),
+    startDate: DateTime.parse(json['start_date']),
+    endDate: DateTime.parse(json['end_date']),
+    usageStartDate: DateTime.parse(json['usage_start_date']),
+    usageEndDate: DateTime.parse(json['usage_end_date']),
   );
 }
 

@@ -22,6 +22,12 @@ class LocaleString extends Translations {
       'other': 'Other',
       'remember_me': 'Remember me',
       'signup': 'Sign up',
+      'single_material': 'Single Material',
+      'sets': 'Sets',
+      'items': 'Items',
+      'search': 'Search',
+      'type': 'Type',
+      'all': 'All',
       'membership_number': 'Membership Number',
       'first_name': 'First Name',
       'last_name': 'Last Name',
@@ -65,6 +71,12 @@ class LocaleString extends Translations {
       'other': 'Andere',
       'remember_me': 'Angemeldet bleiben',
       'signup': 'Registrieren',
+      'single_material': 'Einzelmaterial',
+      'sets': 'Sets',
+      'items': 'Artikel',
+      'search': 'Suchen',
+      'type': 'Art',
+      'all': 'Alle',
       'membership_number': 'Mitgliedsnummer',
       'first_name': 'Vorname',
       'last_name': 'Nachname',
@@ -87,7 +99,7 @@ class LocaleString extends Translations {
       'zip_not_valid': 'PLZ ist nicht Gültig',
       'phone_not_valid': 'Telefonnummer ist nicht Gültig',
       'password_is_mandatory':'Passwort ist verplichtend',
-      'passwords_not_equal': 'Passwörter stimmen nicht überein'
+      'passwords_not_equal': 'Passwörter stimmen nicht überein',
     }
   };
 }

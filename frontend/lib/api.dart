@@ -18,7 +18,7 @@ class ApiService extends GetxService {
     Interceptor interceptor = InterceptorsWrapper(
       onRequest: (options, handler) async {
         // vlaidate token
-        print("Interceptor checking token validity");
+        //print('Interceptor checking token validity');
         
         // if (aT != null) {
         //   options.headers['Authorization'] = 'Bearer $aT';

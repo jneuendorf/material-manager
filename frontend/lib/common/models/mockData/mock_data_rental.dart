@@ -17,8 +17,8 @@ final RentalStatus mockReturnedRentalStatus = RentalStatus(
 );
 
 
-final List<Rental> mockRentals = [
-  Rental(
+final List<RentalModel> mockRentals = [
+  RentalModel(
     id: 1, 
     customerId: 1, 
     lenderId: 2, 
@@ -33,7 +33,7 @@ final List<Rental> mockRentals = [
     usageStartDate: DateTime(2022, 2, 2), 
     usageEndDate: DateTime(2022, 2, 27),
     ),
-  Rental(
+  RentalModel(
     id: 2, 
     customerId: 1, 
     lenderId: 2, 
@@ -48,7 +48,7 @@ final List<Rental> mockRentals = [
     usageStartDate: DateTime(2022, 2, 2), 
     usageEndDate: DateTime(2022, 2, 27),
   ),
-  Rental(
+  RentalModel(
     id: 3, 
     customerId: 1, 
     lenderId: 2, 

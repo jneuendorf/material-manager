@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/home/controller.dart';
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inspection/controller.dart';
@@ -11,7 +10,7 @@ import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/pages/administration/controller.dart';
 
 
-class DavAppBar extends StatelessWidget with PreferredSizeWidget{
+class DavAppBar extends StatelessWidget with PreferredSizeWidget {
   final bool loggedIn;
 
   const DavAppBar({
@@ -25,34 +24,42 @@ class DavAppBar extends StatelessWidget with PreferredSizeWidget{
   @override
   Widget build(BuildContext context) => AppBar(
     backgroundColor: Get.theme.primaryColor,
+    leading: Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Image.asset('assets/images/dav_logo_small.png'),
+    ),
     title: const Text('Material Verleih'),
     actions: kIsWeb && loggedIn ? [
       TextButton(
-        onPressed: () => Get.offNamed(homeRoute + rentalRoute), 
+        onPressed: () {
+          Get.toNamed(rentalRoute);
+        },
         child: Text('rental'.tr, 
           style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
-        onPressed: () => Get.offNamed(homeRoute + inventoryRoute),
+        onPressed: () {
+          Get.toNamed(inventoryRoute);
+        },
         child: Text('inventory'.tr, 
           style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
-        onPressed: () => Get.offNamed(homeRoute + inspectionRoute),
+        onPressed: () => Get.toNamed(inspectionRoute),
         child: Text('inspection'.tr, 
         style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
-        onPressed: () => Get.offNamed(homeRoute + lenderRoute),
+        onPressed: () => Get.toNamed(lenderRoute),
         child: Text('lender'.tr, 
         style: const TextStyle(color: Colors.white),
         ),
       ),
       TextButton(
-        onPressed: () => Get.offNamed(homeRoute + administrationRoute),
+        onPressed: () => Get.toNamed(administrationRoute),
         child: Text('administration'.tr, 
         style: const TextStyle(color: Colors.white),
         ),

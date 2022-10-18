@@ -59,8 +59,8 @@ final SerialNumber mockSerialNumber = SerialNumber(
 );
 
 
-final List<Material> mockMterial = [
-  Material(
+final List<MaterialModel> mockMaterial = [
+  MaterialModel(
     id: 1,
     serialNumbers: [
       mockSerialNumber,
@@ -83,7 +83,7 @@ final List<Material> mockMterial = [
       mockThicknessProperty,
     ],
   ),
-  Material(
+  MaterialModel(
     id: 2,
     serialNumbers: [
       mockSerialNumber,
@@ -105,7 +105,7 @@ final List<Material> mockMterial = [
       mockSizeProperty,
     ],
   ),
-  Material(
+  MaterialModel(
     id: 3,
     serialNumbers: [
       mockSerialNumber,
@@ -127,7 +127,7 @@ final List<Material> mockMterial = [
       mockThicknessProperty,
     ],
   ),
-  Material(
+  MaterialModel(
     id: 4,
     serialNumbers: [
       mockSerialNumber,

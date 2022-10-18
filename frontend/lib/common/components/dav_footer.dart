@@ -11,7 +11,6 @@ class DavFooter extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Padding(
     padding: const EdgeInsets.symmetric(
-      horizontal: 20.0,
       vertical: 10.0,
     ),
     child: Row(
