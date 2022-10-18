@@ -25,6 +25,7 @@ class LocaleString extends Translations {
       'single_material': 'Single Material',
       'sets': 'Sets',
       'items': 'Items',
+      'search': 'Search',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -46,6 +47,7 @@ class LocaleString extends Translations {
       'single_material': 'Einzelmaterial',
       'sets': 'Sets',
       'items': 'Artikel',
+      'search': 'Suchen',
     }
   };
 }

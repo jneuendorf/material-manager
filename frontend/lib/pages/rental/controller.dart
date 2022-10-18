@@ -27,7 +27,7 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   final RxString searchTerm = ''.obs;
 
   @override
-  void onInit() async {
+  Future<void> onInit() async {
     super.onInit();
     tabController = TabController(length: 2, vsync: this);
     tabController.addListener(() {
@@ -49,7 +49,7 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   Future<List<MaterialModel>> getAllMaterial() async {
     await Future.delayed(const Duration(milliseconds: 500));
 
-    return mockMaterial;
+    return mockMaterial + mockMaterial;
   }
 
   /// Calculates the total price of all material in the [shoppingCart].
