@@ -49,6 +49,8 @@ class LoginController extends GetxController {
   final TextEditingController zipController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController signupEmailController = TextEditingController();
+  final TextEditingController signupPasswordController = TextEditingController();
+  final TextEditingController signupPasswordConfirmController = TextEditingController();
 
 
 
