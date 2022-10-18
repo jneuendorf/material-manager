@@ -115,7 +115,7 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   }
 
 
-  /// Handles the selection of a [filterOption].
+  /// Handles the selection of a [value] out of [filterOption].
   void onFilterSelected(String value) {
     // set selected filter
     if (value != 'all'.tr) {

@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/pages/rental/controller.dart';
-import 'package:frontend/pages/rental/screens/single_material_screen.dart';
-import 'package:frontend/pages/rental/screens/sets_screen.dart';
+import 'package:frontend/pages/rental/pages/main/screens/single_material_screen.dart';
+import 'package:frontend/pages/rental/pages/main/screens/sets_screen.dart';
 import 'package:frontend/common/components/dav_app_bar.dart';
 import 'package:frontend/common/components/dav_footer.dart';
 
