@@ -65,19 +65,16 @@ class CrudModel(Model):
             # TODO: send update signal
             ...
 
-    def save(self) -> bool:
+    def save(self) -> None:
         db = self.__fsa__
         db.session.add(self)
-        return db.session.commit()
+        db.session.commit()
 
-    def delete(self) -> bool:
+    def delete(self) -> None:
         db = self.__fsa__
         db.session.delete(self)
-        success = db.session.commit()
-        if success:
-            # TODO: send delete signal
-            ...
-        return success
+        db.session.commit()
+        # TODO: send delete signal
 
     def __repr__(self):
         return "<{} ({})>".format(self.__class__.__name__, getattr(self, self.pk))

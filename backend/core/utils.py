@@ -16,6 +16,7 @@ def install_extension(
     api_docs: FlaskApiSpec,
     base_url: str = "/",
 ) -> None:
+    print("Loading installed extension", extension.name)
     app.register_blueprint(extension)
     for resource in extension.resources:
         urls = [
