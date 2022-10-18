@@ -6,7 +6,7 @@ from flask_apispec import FlaskApiSpec, MethodResource
 from flask_restful import Api
 
 if TYPE_CHECKING:
-    from core.helpers import Extension
+    from core.helpers.extension import Extension
 
 
 def install_extension(

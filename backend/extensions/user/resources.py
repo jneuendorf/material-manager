@@ -1,4 +1,4 @@
-from core.helpers import ModelListResource, ModelResource
+from core.helpers.resource import ModelListResource, ModelResource
 
 from .models import User as UserModel
 

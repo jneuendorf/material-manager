@@ -8,8 +8,6 @@ from sqlalchemy.exc import MultipleResultsFound, NoResultFound
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql import Select
 
-from core.signals import model_created
-
 
 @dataclass
 class CrudModel(Model):
@@ -44,6 +42,9 @@ class CrudModel(Model):
 
     @classmethod
     def create(cls, **kwargs):
+        # Avoid cyclic imports
+        from core.signals import model_created
+
         instance = cls(**kwargs)
         instance.save()
         model_created.send(cls, instance=instance)
