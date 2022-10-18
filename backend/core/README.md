@@ -71,16 +71,15 @@ Note, how we create the foreign key referencing the `user` extension.
 ```python
 from typing import Type
 
-from core.app import db
+from core.db import db
 from core.helpers.orm import CrudModel
-from extensions.user.models import User
 
 Model: Type[CrudModel] = db.Model  # Help mypy with dynamic types
 
 
 class UserNotificationInfo(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.ForeignKey(User.id))
+    user_id = db.Column(db.ForeignKey("user.id"))
     notify = db.Column(db.Boolean)
 ```
 

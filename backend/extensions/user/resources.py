@@ -1,10 +1,12 @@
+from flask import request
+
 from core.helpers.resource import ModelListResource, ModelResource
 
 from .models import User as UserModel
 
 
 class User(ModelResource):
-    url = "/{ext_name}/<int:user_id>"
+    url = "/user/<int:user_id>"
 
     class Meta:
         model = UserModel
@@ -16,7 +18,7 @@ class User(ModelResource):
 
 
 class Users(ModelListResource):
-    url = "/{ext_name}s"
+    url = "/users"
 
     class Meta:
         model = UserModel
@@ -25,3 +27,13 @@ class Users(ModelListResource):
     def get(self):
         users = UserModel.all()
         return self.serialize(users)
+
+    def put(self) -> dict:
+        """Test with
+        curl -X PUT 'http://localhost:5000/users' -H 'Content-Type: application/json' -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
+        curl -X PUT 'http://localhost:5000/users' -F 'first_name=max' -F 'last_name=mustermann' -F 'membership_number=123'
+        """  # noqa
+        # TODO: decide on one convention
+        data = request.json or request.form
+        user = UserModel.create(**data)
+        return self.schema.dump(user, many=False)

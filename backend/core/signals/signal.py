@@ -15,7 +15,9 @@ class Signal(NamedSignal, Generic[S, K]):
         sender: S = ANY_SENDER,
         weak: bool = True,
     ):
+        print("connecting to", self.name, "of", sender)
         return super().connect(receiver, sender, weak)
 
     def send(self, sender: S, **kwargs: Any):
+        print("sending", self.name, "with", kwargs)
         return super().send(sender, data=kwargs)

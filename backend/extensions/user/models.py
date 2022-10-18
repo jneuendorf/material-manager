@@ -10,7 +10,7 @@ Model: Type[CrudModel] = db.Model
 
 class User(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    firs_name = db.Column(db.String)
+    first_name = db.Column(db.String)
     last_name = db.Column(db.String)
     membership_number = db.Column(db.String)
 

@@ -1,4 +1,5 @@
 from core.helpers.extension import Extension
+from core.signals import model_created
 
 from . import models, resources
 
@@ -16,4 +17,14 @@ user = Extension(
         resources.User,
         resources.Users,
     ),
+)
+
+
+def receiver(sender, data):
+    print("user instance created:", sender, data)
+
+
+model_created.connect(
+    receiver,
+    sender=models.User,
 )

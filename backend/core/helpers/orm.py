@@ -42,6 +42,21 @@ class CrudModel(Model):
 
     @classmethod
     def create(cls, **kwargs):
+        already_exists = False
+        try:
+            cls.get(**kwargs)
+            already_exists = True
+        except MultipleResultsFound:
+            already_exists = True
+        except NoResultFound:
+            pass
+
+        if already_exists:
+            raise ValueError(
+                f"Cannot create {cls.__name__} instance. "
+                f"One already exists with {str(kwargs)}"
+            )
+
         # Avoid cyclic imports
         from core.signals import model_created
 
