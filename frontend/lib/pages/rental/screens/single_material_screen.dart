@@ -14,7 +14,7 @@ class SingleMaterialScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => TemplateWidget(
-    materialList: rentalController.availibleMaterial,
+    materialList: rentalController.filteredMaterial,
     headerWidget: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
@@ -33,7 +33,8 @@ class SingleMaterialScreen extends StatelessWidget {
             ),
             child: CupertinoSearchTextField(
               placeholder: 'search'.tr,
-              onChanged: (String text) => rentalController.searchTerm.value = text,
+              onChanged: (String text) => rentalController.runFilter(text),
+              //rentalController.searchTerm.value = text,
             ),
           ),
         ),

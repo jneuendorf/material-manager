@@ -20,11 +20,11 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   late TabController tabController;
 
   final RxList<MaterialModel> shoppingCart = <MaterialModel>[].obs;
-  
-  final RxList<MaterialModel> availibleMaterial = <MaterialModel>[].obs;
-  final RxList<MaterialModel> availibleSets = <MaterialModel>[].obs;
+  final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
+  final RxList<MaterialModel> filteredSets = <MaterialModel>[].obs;
 
-  final RxString searchTerm = ''.obs;
+  List<MaterialModel> availibleMaterial = <MaterialModel>[].obs;
+  List<MaterialModel> availibleSets = <MaterialModel>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -34,7 +34,8 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
       tabIndex.value = tabController.index;
     });
 
-    availibleMaterial.value = await getAllMaterial();
+    availibleMaterial = await getAllMaterial();
+    filteredMaterial.value = availibleMaterial;
   }
 
   @override
@@ -55,4 +56,32 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   /// Calculates the total price of all material in the [shoppingCart].
   double get totalPrice => shoppingCart.fold(0.0, 
     (double previousValue, MaterialModel item) => previousValue + item.rentalFee);
+
+  /// Filters the [availibleMaterial] by the [searchTerm].
+  void runFilter(String searchTerm) {
+    filteredMaterial.value = availibleMaterial.where((MaterialModel item) {
+      /// Checks if the [searchTerm] is contained in [equipmentTypes] of the [item].
+      bool typeCondition() {
+        for (EquipmentType type in item.equipmentTypes) {
+          if (type.description.toLowerCase().contains(searchTerm.toLowerCase())) {
+            return true; 
+          }
+        }
+        return false;
+      }
+
+      /// Checks if the [searchTerm] is contained in [properties] of the [item].
+      bool propertyCondition() {
+        for (Property property in item.properties) {
+          if (property.value.toLowerCase().contains(searchTerm.toLowerCase())) {
+            return true; 
+          }
+        }
+        return false;
+      }
+
+      return typeCondition() || propertyCondition(); 
+    }).toList();
+  }
+
 }
