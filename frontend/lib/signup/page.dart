@@ -303,8 +303,8 @@ class SignupPage extends GetView<SignupController> {
         ],
       ),
       child: Text(currentIndex != 3 ? 'next'.tr : 'signup'.tr)
-  )
-);
+    ),
+  );
 
 }
 

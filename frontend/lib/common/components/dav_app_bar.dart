@@ -24,6 +24,10 @@ class DavAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) => AppBar(
     backgroundColor: Get.theme.primaryColor,
+    leading: Padding(
+      padding: const EdgeInsets.only(left: 8.0),
+      child: Image.asset('assets/images/dav_logo_small.png'),
+    ),
     title: const Text('Material Verleih'),
     actions: kIsWeb && loggedIn ? [
       TextButton(
