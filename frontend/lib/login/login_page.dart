@@ -72,11 +72,11 @@ class LoginPage extends GetView<LoginController> {
                       child: Obx(() => Checkbox(
                         activeColor: Get.theme.primaryColor,
                         shape: const CircleBorder(),
-                        value: controller.rememberMe.value, 
+                        value: controller.rememberMe.value,
                         onChanged: controller.rememberMe,
                       )),
                     ),
-                    Text('remember_me'.tr, 
+                    Text('remember_me'.tr,
                     style: TextStyle(
                       fontSize: 22,
                       color: Colors.grey.shade700,
