@@ -34,7 +34,6 @@ class SingleMaterialScreen extends StatelessWidget {
             child: CupertinoSearchTextField(
               placeholder: 'search'.tr,
               onChanged: (String text) => rentalController.runFilter(text),
-              //rentalController.searchTerm.value = text,
             ),
           ),
         ),

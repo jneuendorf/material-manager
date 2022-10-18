@@ -23,8 +23,8 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredSets = <MaterialModel>[].obs;
 
-  List<MaterialModel> availibleMaterial = <MaterialModel>[].obs;
-  List<MaterialModel> availibleSets = <MaterialModel>[].obs;
+  List<MaterialModel> availibleMaterial = [];
+  List<MaterialModel> availibleSets = [];
 
   @override
   Future<void> onInit() async {
