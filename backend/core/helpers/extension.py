@@ -5,6 +5,9 @@ from typing import Generic, Type, TypeVar, Union
 from flask import Blueprint
 from sqlalchemy import Table
 
+from core.app import api, api_docs, app
+
+from ..utils import install_extension
 from .orm import CrudModel
 from .resource import ModelResource
 
@@ -20,3 +23,7 @@ class Extension(Blueprint, ABC, Generic[M, R]):
         super().__init__(name, import_name, **kwargs)
         self.models = models
         self.resources = resources
+        self.install()
+
+    def install(self) -> None:
+        install_extension(self, app, api, api_docs)

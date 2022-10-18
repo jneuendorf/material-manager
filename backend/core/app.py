@@ -7,7 +7,6 @@ from flask_sqlalchemy import SQLAlchemy
 from core.commands import Commands
 from core.config import flask_config
 from core.helpers.orm import CrudModel
-from core.utils import install_extensions
 
 app: Flask = Flask(__name__)
 app.config.update(flask_config)
@@ -17,8 +16,6 @@ db: SQLAlchemy = SQLAlchemy(app, model_class=CrudModel)
 api: Api = Api(app)
 ma = Marshmallow(app)
 api_docs = FlaskApiSpec(app)
-
-install_extensions(app, api, api_docs)
 
 # Convenience wrapper for running commands from Makefile.
 commands = Commands(app, db)
