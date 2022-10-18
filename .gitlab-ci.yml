@@ -8,18 +8,36 @@ stages:
   - test
 #  - deploy
 
-default:
-    image: python:3.9
-#    before_script:
-#        - pip3 install -r requirements-dev.txt
+variables:
+    PIP_CACHE_DIR: "$CI_PROJECT_DIR/.cache/pip"
 
-#build:
-#  stage: build
-#  script:
-#    - python3 --version
-#    - make install
+cache:
+    paths:
+      - .cache/pip
+      - venv
+      - .pub-cache/global_packages
+
+
+# TEST
+
+frontend-test:
+    image: cirrusci/flutter:stable
+    stage: test
+    script:
+        - cd frontend
+        - flutter pub get
+        - flutter test --coverage
+
+frontend-analyze:
+    image: cirrusci/flutter:stable
+    stage: test
+    script:
+        - cd frontend
+        - flutter pub get
+        - flutter analyze
 
 backend-test:
+    image: python:3.9
     stage: test
     script:
         - cd backend
@@ -27,11 +45,15 @@ backend-test:
         - make test
 
 backend-lint:
+    image: python:3.9
     stage: test
     script:
         - cd backend
         - make install
         - make precommit
+
+
+# DEPLOY
 
 #deploy-job:
 #  stage: deploy
