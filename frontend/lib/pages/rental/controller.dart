@@ -20,8 +20,6 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
 
-  //final GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
-
   final RxList<MaterialModel> shoppingCart = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredSets = <MaterialModel>[].obs;

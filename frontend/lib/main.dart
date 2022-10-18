@@ -4,11 +4,20 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:frontend/api.dart';
-import 'package:frontend/home/controller.dart';
-import 'package:frontend/home/page.dart';
 import 'package:frontend/login/controller.dart';
 import 'package:frontend/login/login_page.dart';
 import 'package:frontend/login/signup_page.dart';
+import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/pages/administration/page.dart';
+import 'package:frontend/pages/inspection/controller.dart';
+import 'package:frontend/pages/inspection/page.dart';
+import 'package:frontend/pages/inventory/controller.dart';
+import 'package:frontend/pages/inventory/page.dart';
+import 'package:frontend/pages/lender/controller.dart';
+import 'package:frontend/pages/lender/page.dart';
+import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/pages/rental/page.dart';
+import 'package:frontend/pages/rental/subpages/shopping_cart_page.dart';
 import 'package:frontend/internationalization/locale_string.dart';
 
 
@@ -46,14 +55,29 @@ class DavApp extends StatelessWidget {
     ),
     initialRoute: loginRoute,
     getPages: [
-      GetPage(name: homeRoute, page: () => const HomePage(),
-        binding: HomeBinding(),
-      ),
       GetPage(name: loginRoute, page: () => const LoginPage(),
         binding: LoginBinding(),
       ),
       GetPage(name: signupRoute, page: () => const SignupPage(),
         binding: LoginBinding(),
+      ),
+      GetPage(name: rentalRoute, page: () => const RentalPage(),
+        binding: RentalBinding(),
+      ),
+      GetPage(name: rentalShoppingCartRoute, page: () => const ShoppingCartPage(),
+        binding: RentalBinding(),
+      ),
+      GetPage(name: inventoryRoute, page: () => const InventoryPage(),
+        binding: InventoryBinding(),
+      ),
+      GetPage(name: lenderRoute, page: () => const LenderPage(),
+        binding: LenderBinding(),
+      ),
+      GetPage(name: inspectionRoute, page: () => const InspectionPage(),
+        binding: InspectionBinding(),
+      ),
+      GetPage(name: administrationRoute, page: () => const AdministrationPage(),
+        binding: AdministrationBinding(),
       ),
     ],
     locale: const Locale('en', 'US'),
