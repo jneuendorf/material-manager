@@ -6,7 +6,6 @@ import 'package:frontend/pages/rental/controller.dart';
 
 
 const loginRoute = '/login';
-const signupRoute = '/signup';
 
 class LoginBinding implements Bindings {
   @override
@@ -38,20 +37,5 @@ class LoginController extends GetxController {
     // TODO implement login
     Get.toNamed(rentalRoute);
   } 
-
-
-  //variables for Sign-Up Page
-  final PageController pageController = PageController();
-  final TextEditingController membershipNumberController = TextEditingController();
-  final TextEditingController firstNameController = TextEditingController();
-  final TextEditingController lastNameController = TextEditingController();
-  final TextEditingController streetNameController = TextEditingController();
-  final TextEditingController houseNumberController = TextEditingController();
-  final TextEditingController cityController = TextEditingController();
-  final TextEditingController zipController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
-  final TextEditingController signupEmailController = TextEditingController();
-  final TextEditingController signupPasswordController = TextEditingController();
-  final TextEditingController signupPasswordConfirmController = TextEditingController();
 
 }

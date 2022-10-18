@@ -5,8 +5,9 @@ import 'package:get_storage/get_storage.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/login/controller.dart';
-import 'package:frontend/login/login_page.dart';
-import 'package:frontend/login/signup_page.dart';
+import 'package:frontend/login/page.dart';
+import 'package:frontend/signup/controller.dart';
+import 'package:frontend/signup/page.dart';
 import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/pages/administration/page.dart';
 import 'package:frontend/pages/inspection/controller.dart';
@@ -59,7 +60,7 @@ class DavApp extends StatelessWidget {
         binding: LoginBinding(),
       ),
       GetPage(name: signupRoute, page: () => const SignupPage(),
-        binding: LoginBinding(),
+        binding: SignupBinding(),
       ),
       GetPage(name: rentalRoute, page: () => const RentalPage(),
         binding: RentalBinding(),
