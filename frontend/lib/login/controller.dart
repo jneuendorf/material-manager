@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/home/controller.dart';
 
 import 'package:get/get.dart';
+
+import 'package:frontend/home/controller.dart';
 
 
 const loginRoute = '/login';
@@ -33,6 +34,7 @@ class LoginController extends GetxController {
 
   void login() {
     // TODO implement login
-    Get.toNamed(homeRoute);
+    //Get.toNamed(homeRoute + rentalRoute);
+    Navigator.of(Get.context!).pushNamed(homeRoute);
   } 
 }

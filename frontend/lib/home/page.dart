@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/components/nested_navigator.dart';
 
 import 'package:get/get.dart';
 
@@ -32,91 +33,101 @@ class HomePage extends GetView<HomeController> {
               title: Text('rental'.tr),
               onTap: () {
                 Get.back();
-                Get.offNamed(homeRoute + rentalRoute, id: HomeController.navigatorKey);
+                Get.offNamed(homeRoute + rentalRoute, id: HomeController.homeNavigatorKey);
               },
             ),
             ListTile(
               title: Text('inventroy'.tr),
               onTap: () {
                 Get.back();
-                Get.offNamed(homeRoute + inventoryRoute, id: HomeController.navigatorKey);
+                Get.offNamed(homeRoute + inventoryRoute, id: HomeController.homeNavigatorKey);
               },
             ),
             ListTile(
               title: Text('inspection'.tr),
               onTap: () {
                 Get.back();
-                Get.offNamed(homeRoute + inspectionRoute, id: HomeController.navigatorKey);
+                Get.offNamed(homeRoute + inspectionRoute, id: HomeController.homeNavigatorKey);
               },
             ),
             ListTile(
               title: Text('lender'.tr),
               onTap: () {
                 Get.back();
-                Get.offNamed(homeRoute + lenderRoute, id: HomeController.navigatorKey);
+                Get.offNamed(homeRoute + lenderRoute, id: HomeController.homeNavigatorKey);
               },
             ),
             ListTile(
               title: Text('administration'.tr),
               onTap: () {
                 Get.back();
-                Get.offNamed(homeRoute + administrationRoute, id: HomeController.navigatorKey);
+                Get.offNamed(homeRoute + administrationRoute, id: HomeController.homeNavigatorKey);
               },
             ),
           ],
         ),
       ),
     ) : null,
-    body: Navigator(
-      key: !kIsWeb ? Get.nestedKey(HomeController.navigatorKey) : null,
-      onGenerateRoute: (RouteSettings settings) {
-        late final String pathSegment; 
-
-        final String route = !kIsWeb 
-            ? settings.name.toString() 
-            : ModalRoute.of(context)!.settings.name.toString();
-
-        final uri = Uri.parse(route);
-  
-        if(uri.pathSegments.length <= 1) {
-          pathSegment = homeRoute + rentalRoute;
-        } else {
-          pathSegment = '/${uri.pathSegments[1]}';
-        }
-    
-        switch (pathSegment) {
-          case rentalRoute: return GetPageRoute(
-            settings: settings,
-            page: () => const RentalPage(),
-            binding: RentalBinding(),
-          );
-          case inventoryRoute: return GetPageRoute(
-            settings: settings,
-            page: () => const InventoryPage(),
-            binding: InventoryBinding(),
-          );
-          case inspectionRoute: return GetPageRoute(
-            settings: settings,
-            page: () => const InspectionPage(),
-            binding: InspectionBinding(),
-          );
-          case lenderRoute: return GetPageRoute(
-            settings: settings,
-            page: () => const LenderPage(),
-            binding: LenderBinding(),
-          );
-          case administrationRoute: return GetPageRoute(
-            settings: settings,
-            page: () => const AdministrationPage(),
-            binding: AdministrationBinding(),
-          );
-          default: return GetPageRoute(
-            settings: settings,
-            page: () => const RentalPage(),
-            binding: RentalBinding(),
-          );
-        }
+    body: NestedNavigator(
+      tag: 'HomePage',
+      initialRoute: '/',
+      routes: {
+        // default rout as '/' is necessary!
+        '/': (context) => const RentalPage(),
+        '/inventory': (context) => const InventoryPage(),
+        '/rental': (context) => const RentalPage(),
       },
     ),
+    // body: Navigator(
+    //   key: !kIsWeb ? Get.nestedKey(HomeController.homeNavigatorKey) : null,
+    //   onGenerateRoute: (RouteSettings settings) {
+    //     late final String pathSegment; 
+  
+    //     final String route = !kIsWeb 
+    //         ? settings.name.toString() 
+    //         : ModalRoute.of(context)!.settings.name.toString();
+  
+    //     final uri = Uri.parse(route);
+  
+    //     if(uri.pathSegments.length <= 1) {
+    //       pathSegment = homeRoute + rentalRoute;
+    //     } else {
+    //       pathSegment = '/${uri.pathSegments[1]}';
+    //     }
+    
+    //     switch (pathSegment) {
+    //       case rentalRoute: return GetPageRoute(
+    //         settings: settings,
+    //         page: () => const RentalPage(),
+    //         binding: RentalBinding(),
+    //       );
+    //       case inventoryRoute: return GetPageRoute(
+    //         settings: settings,
+    //         page: () => const InventoryPage(),
+    //         binding: InventoryBinding(),
+    //       );
+    //       case inspectionRoute: return GetPageRoute(
+    //         settings: settings,
+    //         page: () => const InspectionPage(),
+    //         binding: InspectionBinding(),
+    //       );
+    //       case lenderRoute: return GetPageRoute(
+    //         settings: settings,
+    //         page: () => const LenderPage(),
+    //         binding: LenderBinding(),
+    //       );
+    //       case administrationRoute: return GetPageRoute(
+    //         settings: settings,
+    //         page: () => const AdministrationPage(),
+    //         binding: AdministrationBinding(),
+    //       );
+    //       default: return GetPageRoute(
+    //         settings: settings,
+    //         page: () => const RentalPage(),
+    //         binding: RentalBinding(),
+    //       );
+    //     }
+    //   },
+    // ),
   );
 }

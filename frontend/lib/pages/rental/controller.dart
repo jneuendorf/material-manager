@@ -7,6 +7,7 @@ import 'package:frontend/common/models/mockData/mock_data_material.dart';
 
 
 const rentalRoute = '/rental';
+const rentalShoppingCartRoute = '/rental/shoppingCart';
 
 class RentalBinding implements Bindings {
   @override
@@ -18,6 +19,8 @@ class RentalBinding implements Bindings {
 class RentalController extends GetxController with GetSingleTickerProviderStateMixin {
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
+
+  //final GlobalKey<NavigatorState> navigationKey = GlobalKey<NavigatorState>();
 
   final RxList<MaterialModel> shoppingCart = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
