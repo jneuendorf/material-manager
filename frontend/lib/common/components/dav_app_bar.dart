@@ -12,7 +12,12 @@ import 'package:frontend/pages/administration/controller.dart';
 
 
 class DavAppBar extends StatelessWidget with PreferredSizeWidget{
-  const DavAppBar({super.key});
+  final bool loggedIn;
+
+  const DavAppBar({
+    Key? key, 
+    this.loggedIn = true,
+  }) : super(key: key);
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
@@ -21,7 +26,7 @@ class DavAppBar extends StatelessWidget with PreferredSizeWidget{
   Widget build(BuildContext context) => AppBar(
     backgroundColor: Get.theme.primaryColor,
     title: const Text('Material Verleih'),
-    actions: kIsWeb ? [
+    actions: kIsWeb && loggedIn ? [
       TextButton(
         onPressed: () => Get.offNamed(homeRoute + rentalRoute), 
         child: Text('rental'.tr, 

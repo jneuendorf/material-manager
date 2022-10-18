@@ -7,7 +7,8 @@ import 'package:frontend/api.dart';
 import 'package:frontend/home/controller.dart';
 import 'package:frontend/home/page.dart';
 import 'package:frontend/login/controller.dart';
-import 'package:frontend/login/page.dart';
+import 'package:frontend/login/login_page.dart';
+import 'package:frontend/login/signup_page.dart';
 import 'package:frontend/internationalization/locale_string.dart';
 
 
@@ -49,6 +50,9 @@ class DavApp extends StatelessWidget {
         binding: HomeBinding(),
       ),
       GetPage(name: loginRoute, page: () => const LoginPage(),
+        binding: LoginBinding(),
+      ),
+      GetPage(name: signupRoute, page: () => const SignupPage(),
         binding: LoginBinding(),
       ),
     ],
