@@ -1,6 +1,7 @@
 
 class MaterialModel {
   final int id;
+  final String imagePath;
   List<SerialNumber> serialNumbers;
   String inventoryNumber;
   String maxLifeExpectancy;
@@ -13,11 +14,12 @@ class MaterialModel {
   int usage;
   PurchaseDetails purchaseDetails;
   List<Property> properties;
-  List<EquipmentType> equipmentTypes;
+  EquipmentType equipmentType;
 
 
   MaterialModel({
     required this.id,
+    required this.imagePath,
     required this.serialNumbers,
     required this.inventoryNumber,
     required this.maxLifeExpectancy,
@@ -30,11 +32,12 @@ class MaterialModel {
     required this.usage,
     required this.purchaseDetails,
     required this.properties,
-    required this.equipmentTypes,
+    required this.equipmentType,
   });
 
   factory MaterialModel.fromJson(Map<String, dynamic> json) => MaterialModel(
     id: json['id'],
+    imagePath: json['image_path'],
     serialNumbers: List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
     inventoryNumber: json['inventory_number'],
     maxLifeExpectancy: json['max_life_expectancy'],
@@ -47,7 +50,7 @@ class MaterialModel {
     usage: json['usage'],
     purchaseDetails: PurchaseDetails.fromJson(json['purchase_details']),
     properties: List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
-    equipmentTypes: List<EquipmentType>.from(json['equipment_types'].map((x) => EquipmentType.fromJson(x))),
+    equipmentType: EquipmentType.fromJson(json['equipment_type']),
   );
 }
 

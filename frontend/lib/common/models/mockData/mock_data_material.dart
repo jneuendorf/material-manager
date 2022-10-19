@@ -62,6 +62,7 @@ final SerialNumber mockSerialNumber = SerialNumber(
 final List<MaterialModel> mockMaterial = [
   MaterialModel(
     id: 1,
+    imagePath: 'https://picsum.photos/250?image=1',
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -75,9 +76,7 @@ final List<MaterialModel> mockMaterial = [
     condition: Condition.good,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
-    equipmentTypes: [
-      mockRopeEquipmentType,
-    ],
+    equipmentType: mockRopeEquipmentType,
     properties: [
       mockLengthProperty, 
       mockThicknessProperty,
@@ -85,6 +84,7 @@ final List<MaterialModel> mockMaterial = [
   ),
   MaterialModel(
     id: 2,
+    imagePath: 'https://picsum.photos/250?image=9',
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -98,15 +98,14 @@ final List<MaterialModel> mockMaterial = [
     condition: Condition.good,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
-    equipmentTypes: [
-      mockHelmetEquipmentType,
-    ],
+    equipmentType: mockHelmetEquipmentType,
     properties: [
       mockSizeProperty,
     ],
   ),
   MaterialModel(
     id: 3,
+    imagePath: 'https://picsum.photos/250?image=9',
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -120,15 +119,14 @@ final List<MaterialModel> mockMaterial = [
     condition: Condition.good,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
-    equipmentTypes: [
-      mockCarbineEquipmentType,
-    ],
+    equipmentType: mockCarbineEquipmentType,
     properties: [
       mockThicknessProperty,
     ],
   ),
   MaterialModel(
     id: 4,
+    imagePath: 'https://picsum.photos/250?image=1',
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -142,9 +140,7 @@ final List<MaterialModel> mockMaterial = [
     condition: Condition.broken,
     usage: 8,
     purchaseDetails: mockPurchaseDetails,
-    equipmentTypes: [
-      mockRopeEquipmentType,
-    ],
+    equipmentType: mockRopeEquipmentType,
     properties: [
       mockLengthProperty, 
       mockThicknessProperty,
