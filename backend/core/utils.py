@@ -1,48 +1,32 @@
 import re
-from collections.abc import Iterable
-from typing import Collection, Type, cast
+from typing import TYPE_CHECKING
 
 from flask import Flask
 from flask_apispec import FlaskApiSpec, MethodResource
-from flask_marshmallow import Marshmallow
 from flask_restful import Api
-from flask_sqlalchemy import SQLAlchemy
 
-from core.helpers import Extension, ModelResource
+if TYPE_CHECKING:
+    from core.helpers.extension import Extension
 
 
-def install_extensions(
-    extensions: Collection[Type[Extension]],
+def install_extension(
+    extension: "Extension",
     app: Flask,
-    db: SQLAlchemy,
     api: Api,
-    ma: Marshmallow,
     api_docs: FlaskApiSpec,
     base_url: str = "/",
 ) -> None:
-    try:
-        for extension_cls in extensions:
-            extension = extension_cls(app, db)
-            resources = cast(
-                Iterable[Type[ModelResource]],
-                extension.resources,
-            )
-            for resource in resources:
-                urls = [
-                    url_join(
-                        base_url,
-                        url.format(ext_name=extension.name),
-                    )
-                    for url in resource.urls
-                ]
-                api.add_resource(resource, *urls)
-                print(f"URLs for {resource.__name__}: {str(urls)}")
-                if issubclass(resource, MethodResource):
-                    api_docs.register(resource)
-    except Exception as e:
-        print(str(e))
-        print("Maybe you extensions have cyclic dependencies")
-        raise e
+    print("Loading installed extension", extension.name)
+    app.register_blueprint(extension)
+    for resource in extension.resources:
+        urls = [
+            url_join(base_url, url.format(ext_name=extension.name))
+            for url in ([resource.url] if resource.url else resource.urls)
+        ]
+        api.add_resource(resource, *urls)
+        print(f"URLs for {resource.__name__}: {str(urls)}")
+        if issubclass(resource, MethodResource):
+            api_docs.register(resource)
 
 
 def url_join(*parts: str) -> str:

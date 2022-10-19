@@ -1,7 +1,19 @@
-from blinker import Namespace
+from typing import Type, TypedDict
 
-model = Namespace()
+from core.helpers.orm import CrudModel
+from core.signals.signal import Signal
 
-model_created = model.signal("model-created")
-model_updated = model.signal("model-updated")
-model_deleted = model.signal("model-deleted")
+Sender = Type[CrudModel]
+
+
+class Kwargs(TypedDict):
+    instance: CrudModel
+
+
+class ModelSignal(Signal[Sender, Kwargs]):
+    ...
+
+
+model_created = ModelSignal("model-created")
+model_updated = ModelSignal("model-updated")
+model_deleted = ModelSignal("model-deleted")
