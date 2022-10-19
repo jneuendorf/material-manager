@@ -73,7 +73,7 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   double get totalPrice => shoppingCart.fold(0.0, 
     (double previousValue, MaterialModel item) => previousValue + item.rentalFee);
 
-  /// Filters the [availibleMaterial] by the [searchTerm] and the [selectedFilter].
+  /// Filters the [availableMaterial] by the [searchTerm] and the [selectedFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
     filteredMaterial.value = availibleMaterial.where((MaterialModel item) {
