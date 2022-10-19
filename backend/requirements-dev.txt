@@ -1,6 +1,5 @@
 -r requirements.txt
 
 pre-commit~=2.20
-sqlalchemy-stubs~=0.4
 # provides a faster, more efficient reloader for the development server
 watchdog~=2.1

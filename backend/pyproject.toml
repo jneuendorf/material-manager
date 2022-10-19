@@ -28,7 +28,6 @@ exclude = '''
 
 [tool.mypy]
 python_version = "3.9"
-plugins = ["sqlmypy"]
 
 [[tool.mypy.overrides]]
 module = [

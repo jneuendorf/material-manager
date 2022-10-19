@@ -16,6 +16,9 @@ install_prod: venv
 db:
 	. venv/bin/activate && flask --app core.app create-db
 
+test_data:
+	. venv/bin/activate && flask --app core.app create-test-data user
+
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
 
@@ -26,7 +29,7 @@ test: venv
 	. venv/bin/activate && python -m unittest
 
 run: venv
-	. venv/bin/activate && flask --app core.app run
+	. venv/bin/activate && flask --app core.app --debug run
 
 clean:
 	rm -rf venv
