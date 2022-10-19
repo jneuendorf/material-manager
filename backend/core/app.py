@@ -4,6 +4,7 @@ from typing import cast
 
 from flask import Flask
 from flask_apispec import FlaskApiSpec
+from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
 
@@ -11,13 +12,13 @@ from core.commands import Commands
 from core.config import flask_config
 from core.db import db
 from core.helpers.extension import Extension
-from core.utils import install_extension
 
 app: Flask = Flask(__name__)
 app.config.update(flask_config)
 
 # Flask Extensions
 db.init_app(app)
+jwt = JWTManager(app)
 api: Api = Api(app)
 ma = Marshmallow(app)
 api_docs = FlaskApiSpec(app)
@@ -33,7 +34,7 @@ for extension_name in installed_extensions:
         Extension,
         getattr(extension_module, extension_name),
     )
-    install_extension(extension, app, api, api_docs)
+    extension.install(app, jwt, api, api_docs)
 
 
 @app.route("/")

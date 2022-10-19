@@ -2,6 +2,7 @@ from flask import request
 
 from core.helpers.resource import ModelListResource, ModelResource
 
+from .decorators import rights_required
 from .models import User as UserModel
 
 
@@ -24,10 +25,15 @@ class Users(ModelListResource):
         model = UserModel
         fields = ("id", "last_name")
 
+    @rights_required("user:read")
     def get(self):
+        """
+        curl -X GET 'http://localhost:5000/users' -H 'Authorization: Bearer <JWT>'
+        """
         users = UserModel.all()
         return self.serialize(users)
 
+    @rights_required("user:write")
     def put(self) -> dict:
         """Test with
         curl -X PUT 'http://localhost:5000/users' -H 'Content-Type: application/json' -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
