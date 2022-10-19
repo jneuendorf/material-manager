@@ -4,10 +4,21 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:frontend/api.dart';
-import 'package:frontend/home/controller.dart';
-import 'package:frontend/home/page.dart';
 import 'package:frontend/login/controller.dart';
 import 'package:frontend/login/page.dart';
+import 'package:frontend/signup/controller.dart';
+import 'package:frontend/signup/page.dart';
+import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/pages/administration/page.dart';
+import 'package:frontend/pages/inspection/controller.dart';
+import 'package:frontend/pages/inspection/page.dart';
+import 'package:frontend/pages/inventory/controller.dart';
+import 'package:frontend/pages/inventory/page.dart';
+import 'package:frontend/pages/lender/controller.dart';
+import 'package:frontend/pages/lender/page.dart';
+import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/pages/rental/page.dart';
+import 'package:frontend/pages/rental/subpages/shopping_cart_page.dart';
 import 'package:frontend/internationalization/locale_string.dart';
 
 
@@ -32,12 +43,12 @@ class DavApp extends StatelessWidget {
       colorScheme: const ColorScheme(
         primary:  Color.fromARGB(255, 97, 183, 50),
         secondary: Color.fromARGB(255, 138, 201, 101),
-        surface: Color.fromARGB(188, 63, 63, 63),
+        surface: Color.fromRGBO(216, 216, 216, 1),
         background: Color.fromARGB(192, 216, 216, 216),
         error: Color.fromARGB(255, 227, 67, 72),
         onPrimary: Color.fromARGB(128, 97, 183, 50),
         onSecondary: Color.fromARGB(128, 97, 183, 50),
-        onSurface: Color.fromARGB(128, 63, 63, 63),
+        onSurface: Color.fromRGBO(176, 219, 153, 1),
         onBackground: Color.fromARGB(153, 216, 216, 216),
         onError: Color.fromARGB(153, 227, 67, 72),
         brightness: Brightness.light,
@@ -45,11 +56,29 @@ class DavApp extends StatelessWidget {
     ),
     initialRoute: loginRoute,
     getPages: [
-      GetPage(name: homeRoute, page: () => const HomePage(),
-        binding: HomeBinding(),
-      ),
       GetPage(name: loginRoute, page: () => const LoginPage(),
         binding: LoginBinding(),
+      ),
+      GetPage(name: signupRoute, page: () => const SignupPage(),
+        binding: SignupBinding(),
+      ),
+      GetPage(name: rentalRoute, page: () => const RentalPage(),
+        binding: RentalBinding(),
+      ),
+      GetPage(name: rentalShoppingCartRoute, page: () => const ShoppingCartPage(),
+        binding: RentalBinding(),
+      ),
+      GetPage(name: inventoryRoute, page: () => const InventoryPage(),
+        binding: InventoryBinding(),
+      ),
+      GetPage(name: lenderRoute, page: () => const LenderPage(),
+        binding: LenderBinding(),
+      ),
+      GetPage(name: inspectionRoute, page: () => const InspectionPage(),
+        binding: InspectionBinding(),
+      ),
+      GetPage(name: administrationRoute, page: () => const AdministrationPage(),
+        binding: AdministrationBinding(),
       ),
     ],
     locale: const Locale('en', 'US'),

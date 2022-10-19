@@ -63,8 +63,8 @@ final Role mockAdministratiorRole = Role(
 );
 
 
-final List<User> mockUsers = [
-  User(
+final List<UserModel> mockUsers = [
+  UserModel(
     id: 1,
     firstName: 'John',
     lastName: 'Doe',
@@ -81,7 +81,7 @@ final List<User> mockUsers = [
       mockBasicRole,
     ],
   ),
-  User(
+  UserModel(
     id: 2,
     firstName: 'Tim',
     lastName: 'Doe',
@@ -98,7 +98,7 @@ final List<User> mockUsers = [
       mockInstructorRole,
     ],
   ),
-  User(
+  UserModel(
     id: 3,
     firstName: 'Sarah',
     lastName: 'Koe',
@@ -116,7 +116,7 @@ final List<User> mockUsers = [
       mockAdministratiorRole,
     ],
   ),
-  User(
+  UserModel(
     id: 4,
     firstName: 'Klara',
     lastName: 'Koe',

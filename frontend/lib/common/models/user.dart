@@ -1,5 +1,5 @@
 
-class User {
+class UserModel {
   final int id;
   String firstName;
   String lastName;
@@ -10,7 +10,7 @@ class User {
   List<Role> roles;
   String? category;
 
-  User({
+  UserModel({
     required this.id,
     required this.firstName,
     required this.lastName,
@@ -22,13 +22,13 @@ class User {
     this.category,
   });
 
-  factory User.fromJson(Map<String, dynamic> json) => User(
+  factory UserModel.fromJson(Map<String, dynamic> json) => UserModel(
     id: json['id'],
-    firstName: json['firstName'],
-    lastName: json['lastName'],
+    firstName: json['first_name'],
+    lastName: json['last_name'],
     email: json['email'],
     phone: json['phone'],
-    membershipNumber: json['membershipNumber'],
+    membershipNumber: json['membership_number'],
     address: Address.fromJson(json['address']),
     roles: List<Role>.from(json['roles'].map((x) => Role.fromJson(x))),
     category: json['category'],
