@@ -17,9 +17,10 @@ class Rental(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.ForeignKey("user.id"))
     lender_id = db.Column(db.ForeignKey("user.id"))
-    cost = db.Column(db.Float)
-    deposit = db.Column(db.Float)  # Kaution
     rental_status_id = db.Column(db.ForeignKey(RentalStatus.id))
+    cost = db.Column(db.Float)
+    discount = db.Column(db.Float)
+    deposit = db.Column(db.Float)  # Kaution
     created_at = db.Column(db.DateTime)
     start_date = db.Column(db.Date)
     end_date = db.Column(db.Date)
