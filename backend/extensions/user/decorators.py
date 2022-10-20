@@ -1,25 +1,34 @@
 from functools import wraps
-from typing import TYPE_CHECKING
 
-from flask import abort
+from flask import abort, current_app
 from flask_jwt_extended import current_user, jwt_required
 
-if TYPE_CHECKING:
-    from .models import User
+from .models import User
+from .permissions import superuser
+
+session_required = jwt_required()
+"""This decorator should be used for checking if a user is currently logged in
+because it's agnostic of the auth implementation.
+"""
 
 
-def rights_required(*required_rights: str):
+def permissions_required(*required_permissions: str):
     def decorator(fn):
         @wraps(fn)
         @jwt_required()
         def wrapper(*args, **kwargs):
-            print("CHECKING PERMISSIONS")
             user: "User" = current_user
-            user_rights = set(right.name for right in user.rights)
-            print("required:", required_rights)
-            print("given:", user_rights)
-            if set(required_rights) - user_rights:
-                abort(401, "Permission denied")
+            user_permissions = set(permission.name for permission in user.permissions)
+            if current_app.debug:
+                # TODO: use logging
+                print("Checking permissions...")
+                print("> required:", required_permissions)
+                print("> given:", user_permissions)
+            if (
+                superuser["name"] in user_permissions
+                or set(required_permissions) - user_permissions
+            ):
+                return abort(403, "Permission denied")
             return fn(*args, **kwargs)
 
         return wrapper

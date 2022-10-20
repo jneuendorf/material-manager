@@ -12,6 +12,8 @@ class Commands:
             with app.app_context():
                 db.create_all()
 
+        self.create_db = create_db
+
         @app.cli.command("create-test-data")
         @click.argument("extension")
         def create_test_data(extension: str):

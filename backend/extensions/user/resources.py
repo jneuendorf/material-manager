@@ -1,8 +1,10 @@
-from flask import request
+from flask import abort, request
+from flask_jwt_extended import create_access_token, current_user
+from sqlalchemy.exc import IntegrityError
 
-from core.helpers.resource import ModelListResource, ModelResource
+from core.helpers.resource import BaseResource, ModelListResource, ModelResource
 
-from .decorators import rights_required
+from .decorators import permissions_required, session_required
 from .models import User as UserModel
 
 
@@ -18,6 +20,60 @@ class User(ModelResource):
         return self.schema.dump(user)
 
 
+class Signup(BaseResource):
+    url = "/signup"
+
+    def post(self):
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
+        first_name = request.json.get("first_name", None)
+        last_name = request.json.get("last_name", None)
+        if not email or not password:
+            return abort(400, "Missing some signup data")
+
+        try:
+            # TODO: default role(s)
+            user = UserModel.from_password(
+                email,
+                password,
+                first_name,
+                last_name,
+                membership_number=request.json.get("membership_number", ""),
+            )
+            return dict(access_token=create_access_token(identity=user))
+        except (ValueError, IntegrityError):
+            return abort(403, "E-mail address already taken")
+
+
+class Login(BaseResource):
+    url = "/login"
+
+    def post(self):
+        """
+        curl -X POST 'http://localhost:5000/login' -H 'Content-Type: application/json' -d '{"email":"root@localhost.com","password":"asdf"}'
+        """  # noqa
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
+        user = UserModel.get_or_none(email=email)
+        if not user or not user.verify_password(password):
+            return abort(401, "Wrong email or password")
+            # return jsonify("Wrong email or password"), 401
+
+        return dict(access_token=create_access_token(identity=user))
+
+
+class Profile(ModelResource):
+    url = "/user/profile"
+
+    class Meta:
+        model = UserModel
+        fields = ("id", "first_name", "last_name", "email", "membership_number")
+
+    @session_required
+    def get(self) -> dict:
+        return self.schema.dump(current_user)
+
+
 class Users(ModelListResource):
     url = "/users"
 
@@ -25,7 +81,7 @@ class Users(ModelListResource):
         model = UserModel
         fields = ("id", "last_name")
 
-    @rights_required("user:read")
+    @permissions_required("user:read")
     def get(self):
         """
         curl -X GET 'http://localhost:5000/users' -H 'Authorization: Bearer <JWT>'
@@ -33,7 +89,7 @@ class Users(ModelListResource):
         users = UserModel.all()
         return self.serialize(users)
 
-    @rights_required("user:write")
+    @permissions_required("user:write")
     def put(self) -> dict:
         """Test with
         curl -X PUT 'http://localhost:5000/users' -H 'Content-Type: application/json' -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'

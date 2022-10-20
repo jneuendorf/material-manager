@@ -10,10 +10,10 @@ from flask_restful import Api
 from sqlalchemy import Table
 
 from .orm import CrudModel
-from .resource import ModelResource
+from .resource import BaseResource
 
 M = TypeVar("M", bound=Iterable[Union[Type[CrudModel], Table]])
-R = TypeVar("R", bound=Iterable[Type[ModelResource]])
+R = TypeVar("R", bound=Iterable[Type[BaseResource]])
 
 
 def url_join(*parts: str) -> str:
@@ -62,14 +62,14 @@ class Extension(Blueprint, ABC, Generic[M, R]):
     ) -> None:
         self.before_install(app, jwt, api, api_docs)
 
-        print("Installing extension", self.name)
+        print("INSTALLING EXTENSIONS", self.name)
         app.register_blueprint(self, **blueprint_options)
-        for resource in self.resources:
-            urls = [
-                url_join(base_url, url.format(ext_name=self.name))
-                for url in ([resource.url] if resource.url else resource.urls)
-            ]
-            api.add_resource(resource, *urls)
-            print(f"URLs for {resource.__name__}: {str(urls)}")
-            if issubclass(resource, MethodResource):
-                api_docs.register(resource)
+        resource_cls: Type[BaseResource]
+        for resource_cls in self.resources:
+            resource_url = url_join(
+                base_url, resource_cls.url.format(ext_name=self.name)
+            )
+            api.add_resource(resource_cls, resource_url)
+            print("> Resource:", resource_cls.__name__, "=>", resource_url)
+            if issubclass(resource_cls, MethodResource):
+                api_docs.register(resource_cls)

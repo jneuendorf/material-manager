@@ -11,50 +11,56 @@ Model: Type[CrudModel] = db.Model
 
 class User(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(length=128), unique=True)
-    password_hash = db.Column(db.String(length=512))
-    first_name = db.Column(db.String(length=64))
-    last_name = db.Column(db.String(length=64))
+    email = db.Column(db.String(length=128), nullable=False, unique=True)
+    password_hash = db.Column(db.String(length=512), nullable=False)
+    first_name = db.Column(db.String(length=64), nullable=False)
+    last_name = db.Column(db.String(length=64), nullable=False)
     membership_number = db.Column(db.String(length=16))
     roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
 
     @classmethod
-    def register(
+    def from_password(
         cls,
         email: str,
         password: str,
         first_name: str,
         last_name: str,
-        membership_number: str,
+        membership_number: str = "",
+        *,
+        roles: "list[Role]" = None,
     ):
         password_hash: str = argon2.hash(password)
+        related = dict(roles=roles) if roles else None
         return cls.create(
             email=email,
             password_hash=password_hash,
             first_name=first_name,
             last_name=last_name,
             membership_number=membership_number,
+            _related=related,
         )
 
     def verify_password(self, password: str) -> bool:
         return argon2.verify(password, self.password_hash)
 
     @property
-    def rights(self) -> "list[Right]":
+    def permissions(self) -> "list[Permission]":
         # TODO: use joins
         #  https://docs.sqlalchemy.org/en/14/tutorial/orm_related_objects.html#using-relationships-in-queries
         print(self.roles)
-        return [right for role in self.roles for right in role.rights]
+        return [right for role in self.roles for right in role.permissions]
 
 
 class Role(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     description = db.Column(db.String)
-    rights = db.relationship("Right", secondary="role_right_mapping", backref="roles")
+    permissions = db.relationship(
+        "Permission", secondary="role_permission_mapping", backref="roles"
+    )
 
 
-class Right(Model):  # type: ignore
+class Permission(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String)
     description = db.Column(db.String)
@@ -66,8 +72,8 @@ UserRoleMapping: Table = db.Table(
     db.Column("role_id", db.ForeignKey(Role.id), primary_key=True),
 )
 
-RoleRightMapping: Table = db.Table(
-    "role_right_mapping",
+RolePermissionMapping: Table = db.Table(
+    "role_permission_mapping",
     db.Column("role_id", db.ForeignKey(Role.id), primary_key=True),
-    db.Column("right_id", db.ForeignKey(Right.id), primary_key=True),
+    db.Column("permission_id", db.ForeignKey(Permission.id), primary_key=True),
 )

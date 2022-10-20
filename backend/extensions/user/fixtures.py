@@ -1,28 +1,32 @@
-from .models import Right, Role, User
+from .models import Permission, Role, User
+from .permissions import superuser, user_read, user_write
 
-user_read_right = Right.get_or_create(
-    name="user:read",
-    description="Allows reading any users data",
-)
-user_write_right = Right.get_or_create(
-    name="user:write",
-    description="Allows writing any users data",
-)
+user_read_permission = Permission.create(**user_read)
+user_write_permission = Permission.create(**user_write)
 
-superuser_role = Role.get_or_create(
-    name="superuser",
-    description="May do anything",
+superuser_role = Role.create(
     _related=dict(
-        rights=[user_read_right, user_write_right],
+        permissions=[user_read_permission, user_write_permission],
     ),
+    **superuser,
+)
+noop_role = Role.create(
+    name="noop",
+    description="May not do anything",
 )
 
-user = User.get_or_create(
+superuser = User.from_password(
     email="root@localhost.com",
-    first_name="super",
-    last_name="user",
+    password="root",
+    first_name="root",
+    last_name="root",
     membership_number="1337",
-    _related=dict(
-        roles=[superuser_role],
-    ),
+    roles=[superuser_role],
+)
+noop_user = User.from_password(
+    email="noop@localhost.com",
+    password="noop",
+    first_name="noop",
+    last_name="noop",
+    membership_number="0",
 )

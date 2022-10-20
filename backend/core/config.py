@@ -5,7 +5,7 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 
 flask_config = {
     # configure the SQLite database, relative to the app instance folder
-    "SQLALCHEMY_DATABASE_URI": "sqlite:///test.db",
+    "SQLALCHEMY_DATABASE_URI": "sqlite:///material_manager.db",
     # TODO: change when in running in production mode
     "JWT_SECRET_KEY": "eyJmcmVzaCI6ZmFs",
     "JWT_ACCESS_TOKEN_EXPIRES": timedelta(days=5),

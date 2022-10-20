@@ -1,5 +1,6 @@
 -r requirements.txt
 
 pre-commit~=2.20
+pytest~=7.1
 # provides a faster, more efficient reloader for the development server
 watchdog~=2.1

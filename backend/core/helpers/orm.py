@@ -4,7 +4,7 @@ from typing import Generic, Optional, Type, TypeVar
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
 from sqlalchemy.engine import Result
-from sqlalchemy.exc import MultipleResultsFound, NoResultFound
+from sqlalchemy.exc import IntegrityError, MultipleResultsFound, NoResultFound
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql import Select
 
@@ -40,12 +40,12 @@ class CrudModel(Model):
             already_exists = True
         except NoResultFound:
             pass
+        # This could be left out but makes it clear what errors can occur.
+        except IntegrityError:
+            raise
 
         if already_exists:
-            raise ValueError(
-                f"Cannot create {cls.__name__} instance. "
-                f"One already exists with {str(kwargs)}"
-            )
+            raise ValueError(f"Cannot create a {cls.__name__} instance.")
 
         # Avoid cyclic imports
         from core.signals import model_created
