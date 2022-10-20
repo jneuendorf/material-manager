@@ -29,8 +29,8 @@ def test_signup(client, app) -> None:
         json={
             "email": "signup@localhost.com",
             "password": "test",
-            "first_name": "",
-            "last_name": "",
+            "first_name": "Max",
+            "last_name": "Mustermann",
         },
     )
     assert success_response.status_code == 200
@@ -49,8 +49,8 @@ def test_signup(client, app) -> None:
         json={
             "email": "signup@localhost.com",
             "password": "test",
-            "first_name": "",
-            "last_name": "",
+            "first_name": "Max",
+            "last_name": "Musterfrau?",
         },
     )
     assert failure_response.status_code == 403
