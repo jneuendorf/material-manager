@@ -1,4 +1,4 @@
-import 'package:frontend/extensions/material/material.dart';
+import 'package:frontend/extensions/material/model.dart';
 
 
 final EquipmentType mockRopeEquipmentType = EquipmentType(

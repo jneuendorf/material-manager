@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/extensions/material/material.dart';
-import 'package:frontend/extensions/material/mock_data.dart';
+import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/extensions/material/controller.dart';
 
 
 const rentalRoute = '/rental';
@@ -17,6 +17,8 @@ class RentalPageBinding implements Bindings {
 }
 
 class RentalPageController extends GetxController with GetSingleTickerProviderStateMixin {
+  final materialController = Get.find<MaterialController>();
+
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
 
@@ -41,10 +43,10 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
-    availibleMaterial = await getAllMaterial();
+    availibleMaterial = await materialController.getAllMaterial();
     filteredMaterial.value = availibleMaterial;
 
-    availibleEquipmentTypes = await getAllEquipmentTypes();
+    availibleEquipmentTypes = await materialController.getAllEquipmentTypes();
 
     for (EquipmentType item in availibleEquipmentTypes) {
       filterOptions[item] = item.description;
@@ -56,28 +58,6 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     tabController.dispose();
 
     super.onClose();
-  }
-
-  /// Fetches all material from backend.
-  /// Currently only mock data is used.
-  /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<MaterialModel>> getAllMaterial() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    return mockMaterial + mockMaterial;
-  }
-
-  /// Fetches all equipment types from backend.
-  /// /// Currently only mock data is used.
-  /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<EquipmentType>> getAllEquipmentTypes() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    return [
-      mockCarbineEquipmentType,
-      mockHelmetEquipmentType,
-      mockRopeEquipmentType,
-    ];
   }
 
   /// Calculates the total price of all material in the [shoppingCart].

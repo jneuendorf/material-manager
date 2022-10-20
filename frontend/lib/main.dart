@@ -4,6 +4,10 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:frontend/api.dart';
+import 'package:frontend/extensions/rental/controller.dart';
+import 'package:frontend/extensions/inspection/controller.dart';
+import 'package:frontend/extensions/material/controller.dart';
+import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/pages/login/page.dart';
 import 'package:frontend/pages/signup/controller.dart';
@@ -22,13 +26,22 @@ import 'package:frontend/pages/rental/subpages/shopping_cart_page.dart';
 import 'package:frontend/locale_string.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initialConfig();
+
   runApp(const DavApp());
 }
 
 Future<void> initialConfig() async {
   await GetStorage.init();
   await Get.putAsync(() => ApiService().init());
+
+  Get.lazyPut<RentalController>(() => RentalController());
+  Get.lazyPut<MaterialController>(() => MaterialController());
+  Get.lazyPut<UserController>(() => UserController());
+  Get.lazyPut<InspectionController>(() => InspectionController());
+
 }
 
 class DavApp extends StatelessWidget {

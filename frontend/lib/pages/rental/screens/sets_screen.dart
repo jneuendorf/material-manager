@@ -4,7 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/pages/rental/components/template_widget.dart';
-import 'package:frontend/extensions/material/material.dart';
+import 'package:frontend/extensions/material/model.dart';
 
 
 class SetsScreen extends StatelessWidget {
