@@ -1,5 +1,7 @@
-from flask import abort, request
+from flask import abort
+from flask_apispec import use_kwargs
 from flask_jwt_extended import create_access_token, current_user
+from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
 from core.helpers.resource import BaseResource, ModelListResource, ModelResource
@@ -23,12 +25,24 @@ class User(ModelResource):
 class Signup(BaseResource):
     url = "/signup"
 
-    def post(self):
-        email = request.json.get("email", None)
-        password = request.json.get("password", None)
-        first_name = request.json.get("first_name", None)
-        last_name = request.json.get("last_name", None)
-        if not email or not password:
+    @use_kwargs(
+        {
+            "email": fields.Str(),
+            "password": fields.Str(),
+            "first_name": fields.Str(),
+            "last_name": fields.Str(),
+            "membership_number": fields.Str(),
+        }
+    )
+    def post(
+        self,
+        email: str = None,
+        password: str = None,
+        first_name: str = None,
+        last_name: str = None,
+        membership_number: str = "",
+    ):
+        if not (email and password and first_name and last_name):
             return abort(400, "Missing some signup data")
 
         try:
@@ -38,7 +52,7 @@ class Signup(BaseResource):
                 password,
                 first_name,
                 last_name,
-                membership_number=request.json.get("membership_number", ""),
+                membership_number,
             )
             return dict(access_token=create_access_token(identity=user))
         except (ValueError, IntegrityError):
@@ -48,12 +62,11 @@ class Signup(BaseResource):
 class Login(BaseResource):
     url = "/login"
 
-    def post(self):
+    @use_kwargs({"email": fields.Str(), "password": fields.Str()})
+    def post(self, email: str = None, password: str = None):
         """
         curl -X POST 'http://localhost:5000/login' -H 'Content-Type: application/json' -d '{"email":"root@localhost.com","password":"asdf"}'
         """  # noqa
-        email = request.json.get("email", None)
-        password = request.json.get("password", None)
         user = UserModel.get_or_none(email=email)
         if not user or not user.verify_password(password):
             return abort(401, "Wrong email or password")
@@ -89,13 +102,19 @@ class Users(ModelListResource):
         users = UserModel.all()
         return self.serialize(users)
 
+    @use_kwargs(
+        {
+            "email": fields.Str(),
+            "first_name": fields.Str(),
+            "last_name": fields.Str(),
+            "membership_number": fields.Str(),
+        }
+    )
     @permissions_required("user:write")
-    def put(self) -> dict:
+    def put(self, **kwargs) -> dict:
         """Test with
         curl -X PUT 'http://localhost:5000/users' -H 'Content-Type: application/json' -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
         curl -X PUT 'http://localhost:5000/users' -F 'first_name=max' -F 'last_name=mustermann' -F 'membership_number=123'
         """  # noqa
-        # TODO: decide on one convention
-        data = request.json or request.form
-        user = UserModel.create(**data)
+        user = UserModel.create(**kwargs)
         return self.schema.dump(user, many=False)
