@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'package:frontend/signup/controller.dart';
+import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 
 

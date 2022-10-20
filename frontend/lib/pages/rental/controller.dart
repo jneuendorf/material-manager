@@ -2,21 +2,23 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/common/models/material.dart';
-import 'package:frontend/common/models/mockData/mock_data_material.dart';
+import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/extensions/material/controller.dart';
 
 
 const rentalRoute = '/rental';
 const rentalShoppingCartRoute = '/rental/shoppingCart';
 
-class RentalBinding implements Bindings {
+class RentalPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<RentalController>(() => RentalController());
+    Get.lazyPut<RentalPageController>(() => RentalPageController());
   }
 }
 
-class RentalController extends GetxController with GetSingleTickerProviderStateMixin {
+class RentalPageController extends GetxController with GetSingleTickerProviderStateMixin {
+  final materialController = Get.find<MaterialController>();
+
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
 
@@ -30,6 +32,7 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
 
   List<MaterialModel> availibleMaterial = [];
   List<MaterialModel> availibleSets = [];
+  List<EquipmentType> availibleEquipmentTypes = [];
 
   @override
   Future<void> onInit() async {
@@ -40,16 +43,13 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
       tabIndex.value = tabController.index;
     });
 
-    availibleMaterial = await getAllMaterial();
+    availibleMaterial = await materialController.getAllMaterial();
     filteredMaterial.value = availibleMaterial;
 
-    // get all types of material
-    for (MaterialModel item in availibleMaterial) {
-      for (EquipmentType type in item.equipmentTypes) {
-        if (!filterOptions.keys.contains(type)) {
-          filterOptions[type] = type.description;
-        }
-      }
+    availibleEquipmentTypes = await materialController.getAllEquipmentTypes();
+
+    for (EquipmentType item in availibleEquipmentTypes) {
+      filterOptions[item] = item.description;
     }
   }
 
@@ -60,15 +60,6 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
     super.onClose();
   }
 
-  /// Fetches all material from backend.
-  /// Currently only mock data is used.
-  /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<MaterialModel>> getAllMaterial() async {
-    await Future.delayed(const Duration(milliseconds: 500));
-
-    return mockMaterial + mockMaterial;
-  }
-
   /// Calculates the total price of all material in the [shoppingCart].
   double get totalPrice => shoppingCart.fold(0.0, 
     (double previousValue, MaterialModel item) => previousValue + item.rentalFee);
@@ -77,25 +68,16 @@ class RentalController extends GetxController with GetSingleTickerProviderStateM
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
     filteredMaterial.value = availibleMaterial.where((MaterialModel item) {
-      /// Checks if the [selectedFilter] is contained in [equipmentTypes] of the [item].
+      /// Checks if the [selectedFilter] equals [equipmentType] of the [item].
       bool equipmentTypeFilterCondition() {
-        if (selectedFilter.value == null) {
-          return true;
-        } else {
-          return item.equipmentTypes.contains(selectedFilter.value);
-        }
+          return item.equipmentType == selectedFilter.value;
       }
 
-      /// Checks if the [term] is contained in [equipmentTypes] of the [item].
+      /// Checks if the [term] is contained in [equipmentType] of the [item].
       bool equipmentTypeNameCondition() {
         if (term.isEmpty) return true;
 
-        for (EquipmentType type in item.equipmentTypes) {
-          if (type.description.toLowerCase().contains(term)) {
-            return true; 
-          }
-        }
-        return false;
+        return item.equipmentType.description.toLowerCase().contains(term);
       }
 
       /// Checks if the [term] is contained in [properties] of the [item].

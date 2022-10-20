@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 
 const inspectionRoute = '/inspection';
 
-class InspectionBinding implements Bindings {
+class InspectionPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<InspectionController>(() => InspectionController());
+    Get.lazyPut<InspectionPageController>(() => InspectionPageController());
   }
 }
 
-class InspectionController extends GetxController {}
+class InspectionPageController extends GetxController {}

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend/common/models/material.dart';
+import 'package:frontend/extensions/material/model.dart';
 
 
 class MaterialPreview extends StatelessWidget {
@@ -24,7 +24,7 @@ class MaterialPreview extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: Image.network('https://picsum.photos/250?image=9'),
+                  child: Image.network(item.imagePath),
                 ),
                 const Divider(),
                 Padding(
@@ -32,7 +32,7 @@ class MaterialPreview extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text('${item.equipmentTypes.first.description}, ${item.properties.first.value} ${item.properties.first.unit}'),
+                      Text('${item.equipmentType.description}, ${item.properties.first.value} ${item.properties.first.unit}'),
                       Text('${item.rentalFee} €'),
                     ],
                   ),
