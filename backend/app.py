@@ -8,7 +8,7 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_restful import Api
 
-# from core.commands import Commands
+from core.commands import init_cli_commands
 from core.helpers.extension import Extension
 
 
@@ -24,8 +24,7 @@ def create_app(config, db):
     Marshmallow(app)
     api_docs = FlaskApiSpec(app)
 
-    # # Convenience wrapper for running commands from Makefile.
-    # commands = Commands(app, db)
+    init_cli_commands(app, db)
 
     installed_extensions: Iterable[str] = config.get("INSTALLED_EXTENSIONS", [])
     for extension_name in installed_extensions:

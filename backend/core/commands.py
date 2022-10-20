@@ -5,17 +5,14 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 
 
-class Commands:
-    def __init__(self, app: Flask, db: SQLAlchemy):
-        @app.cli.command("create-db")
-        def create_db():
-            with app.app_context():
-                db.create_all()
+def init_cli_commands(app: Flask, db: SQLAlchemy):
+    @app.cli.command("create-db")
+    def create_db():
+        with app.app_context():
+            db.create_all()
 
-        self.create_db = create_db
-
-        @app.cli.command("create-test-data")
-        @click.argument("extension")
-        def create_test_data(extension: str):
-            with app.app_context():
-                import_module(f"extensions.{extension}.fixtures")
+    @app.cli.command("create-test-data")
+    @click.argument("extension")
+    def create_test_data(extension: str):
+        with app.app_context():
+            import_module(f"extensions.{extension}.fixtures")
