@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/extensions/material/material.dart';
+import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/rental/components/material_preview.dart';
 
 
