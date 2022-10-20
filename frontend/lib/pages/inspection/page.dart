@@ -6,7 +6,7 @@ import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 
 
-class InspectionPage extends GetView<InspectionController> {
+class InspectionPage extends GetView<InspectionPageController> {
   const InspectionPage({Key? key}) : super(key: key);
 
   @override

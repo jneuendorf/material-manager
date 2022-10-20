@@ -1,4 +1,4 @@
-import 'package:frontend/common/models/rental.dart';
+import 'package:frontend/extensions/rental/rental.dart';
 
 
 final RentalStatus mockRentedRentalStatus = RentalStatus(

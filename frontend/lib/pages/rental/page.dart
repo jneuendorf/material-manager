@@ -8,7 +8,7 @@ import 'package:frontend/pages/rental/screens/single_material_screen.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 
 
-class RentalPage extends GetView<RentalController> {
+class RentalPage extends GetView<RentalPageController> {
   const RentalPage({Key? key}) : super(key: key);
 
   @override

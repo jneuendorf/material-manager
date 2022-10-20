@@ -1,4 +1,4 @@
-import 'package:frontend/common/models/user.dart';
+import 'package:frontend/extensions/user/model.dart';
 
 
 final Right mockAdministrationRight = Right(

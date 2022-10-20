@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/common/models/material.dart';
-import 'package:frontend/common/models/mockData/mock_data_material.dart';
+import 'package:frontend/extensions/material/material.dart';
+import 'package:frontend/extensions/material/mock_data.dart';
 
 
 const rentalRoute = '/rental';
 const rentalShoppingCartRoute = '/rental/shoppingCart';
 
-class RentalBinding implements Bindings {
+class RentalPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<RentalController>(() => RentalController());
+    Get.lazyPut<RentalPageController>(() => RentalPageController());
   }
 }
 
-class RentalController extends GetxController with GetSingleTickerProviderStateMixin {
+class RentalPageController extends GetxController with GetSingleTickerProviderStateMixin {
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
 
