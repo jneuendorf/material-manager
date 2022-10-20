@@ -19,7 +19,7 @@ class User(Model):  # type: ignore
     roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
 
     @classmethod
-    def from_password(
+    def create_from_password(
         cls,
         email: str,
         password: str,

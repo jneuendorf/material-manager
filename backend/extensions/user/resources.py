@@ -33,7 +33,7 @@ class Signup(BaseResource):
 
         try:
             # TODO: default role(s)
-            user = UserModel.from_password(
+            user = UserModel.create_from_password(
                 email,
                 password,
                 first_name,

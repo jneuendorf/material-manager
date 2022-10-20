@@ -15,7 +15,7 @@ noop_role = Role.create(
     description="May not do anything",
 )
 
-superuser = User.from_password(
+superuser = User.create_from_password(
     email="root@localhost.com",
     password="root",
     first_name="root",
@@ -23,7 +23,7 @@ superuser = User.from_password(
     membership_number="1337",
     roles=[superuser_role],
 )
-noop_user = User.from_password(
+noop_user = User.create_from_password(
     email="noop@localhost.com",
     password="noop",
     first_name="noop",

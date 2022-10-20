@@ -1,65 +1,45 @@
-import pytest
-
-from app import create_app
-from core.config import flask_config
-from core.db import db
 from extensions.user.models import User
 
+from . import conftest  # noqa
 
-@pytest.fixture()
-def app():
-    app = create_app(
-        {
-            **flask_config,
-            **{
-                "TESTING": True,
-                "SQLALCHEMY_DATABASE_URI": "sqlite:///test.db",
-            },
-        },
-        db,
-    )
 
-    # other setup can go here
+def test_password_hashing(app):
+    password = "test"
     with app.app_context():
-        db.drop_all()
-        db.create_all()
-
-    yield app
-
-    # clean up / reset resources here
-    with app.app_context():
-        db.drop_all()
-
-
-@pytest.fixture()
-def client(app):
-    return app.test_client()
-
-
-@pytest.fixture()
-def runner(app):
-    return app.test_cli_runner()
+        user1 = User.create_from_password(
+            email="one@localhost.com",
+            password=password,
+            first_name="",
+            last_name="",
+        )
+        user2 = User.create_from_password(
+            email="two@localhost.com",
+            password=password,
+            first_name="",
+            last_name="",
+        )
+        assert user1.password_hash != user2.password_hash
+        assert user1.verify_password(password)
+        assert user2.verify_password(password)
 
 
 def test_signup(client, app) -> None:
     success_response = client.post(
         "/signup",
         json={
-            "email": "test@localhost.com",
+            "email": "signup@localhost.com",
             "password": "test",
-            "first_name": "Max",
-            "last_name": "Mustermann",
+            "first_name": "",
+            "last_name": "",
         },
     )
     assert success_response.status_code == 200
+    # Check token
     token = success_response.json["access_token"]
     assert isinstance(token, str) and len(token) > 0
+    # Check user was created
     with app.app_context():
-        user = User.get_or_none(
-            email="test@localhost.com",
-            first_name="Max",
-            last_name="Mustermann",
-        )
+        user = User.get_or_none(email="signup@localhost.com")
     assert user is not None
 
     # Signing up with the same data again should not be possible,
@@ -67,10 +47,42 @@ def test_signup(client, app) -> None:
     failure_response = client.post(
         "/signup",
         json={
-            "email": "test@localhost.com",
+            "email": "signup@localhost.com",
             "password": "test",
-            "first_name": "Max",
-            "last_name": "Mustermann",
+            "first_name": "",
+            "last_name": "",
         },
     )
     assert failure_response.status_code == 403
+
+
+def test_login(client, app):
+    with app.app_context():
+        User.create_from_password(
+            email="login@localhost.com",
+            password="test",
+            first_name="",
+            last_name="",
+        )
+    success_response = client.post(
+        "/login",
+        json={
+            "email": "login@localhost.com",
+            "password": "test",
+        },
+    )
+    assert success_response.status_code == 200
+    token = success_response.json["access_token"]
+    assert isinstance(token, str) and len(token) > 0
+
+    # Check login with valid session
+    success_response2 = client.post(
+        "/login",
+        json={
+            "email": "login@localhost.com",
+            "password": "test",
+        },
+    )
+    assert success_response2.status_code == 200
+    token2 = success_response2.json["access_token"]
+    assert token2 != token
