@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 
 const inventoryRoute = '/inventory';
 
-class InventoryBinding implements Bindings {
+class InventoryPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<InventoryController>(() => InventoryController());
+    Get.lazyPut<InventoryPageController>(() => InventoryPageController());
   }
 }
 
-class InventoryController extends GetxController {}
+class InventoryPageController extends GetxController {}

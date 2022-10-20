@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:frontend/common/models/material.dart';
+import 'package:frontend/extensions/material/material.dart';
 
 
 class MaterialPreview extends StatelessWidget {

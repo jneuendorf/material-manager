@@ -10,7 +10,7 @@ import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 class SingleMaterialScreen extends StatelessWidget {
   const SingleMaterialScreen({super.key});
 
-  static final rentalController = Get.find<RentalController>();
+  static final rentalController = Get.find<RentalPageController>();
 
   @override
   Widget build(BuildContext context) => TemplateWidget(

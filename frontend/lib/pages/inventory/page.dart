@@ -6,7 +6,7 @@ import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 
 
-class InventoryPage extends GetView<InventoryController> {
+class InventoryPage extends GetView<InventoryPageController> {
   const InventoryPage({Key? key}) : super(key: key);
 
   @override

@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 
 const lenderRoute = '/lender';
 
-class LenderBinding implements Bindings {
+class LenderPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<LenderController>(() => LenderController());
+    Get.lazyPut<LenderPageController>(() => LenderPageController());
   }
 }
 
-class LenderController extends GetxController {}
+class LenderPageController extends GetxController {}

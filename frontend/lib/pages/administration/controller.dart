@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 
 const administrationRoute = '/administration';
 
-class AdministrationBinding implements Bindings {
+class AdministrationPageBinding implements Bindings {
   @override
   void dependencies() {
-    Get.lazyPut<AdministrationController>(() => AdministrationController());
+    Get.lazyPut<AdministrationPageController>(() => AdministrationPageController());
   }
 }
 
-class AdministrationController extends GetxController {}
+class AdministrationPageController extends GetxController {}

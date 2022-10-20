@@ -1,4 +1,4 @@
-import 'package:frontend/common/models/inspection.dart';
+import 'package:frontend/extensions/inspection/inspection.dart';
 
 
 final Comment mockComment1 = Comment(

@@ -6,7 +6,7 @@ import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 
 
-class LenderPage extends GetView<LenderController> {
+class LenderPage extends GetView<LenderPageController> {
   const LenderPage({Key? key}) : super(key: key);
 
   @override
