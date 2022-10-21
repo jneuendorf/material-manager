@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
+import 'package:intl/intl.dart';
 
 
 const rentalRoute = '/rental';
@@ -34,6 +35,11 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   List<MaterialModel> availibleSets = [];
   List<EquipmentType> availibleEquipmentTypes = [];
 
+  final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
+
+  final TextEditingController startDateController = TextEditingController();
+  final TextEditingController endDateController = TextEditingController();
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -51,6 +57,11 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     for (EquipmentType item in availibleEquipmentTypes) {
       filterOptions[item] = item.description;
     }
+
+    // add some Mock items to  shopping cart
+    shoppingCart.add(availibleMaterial[0]);
+    shoppingCart.add(availibleMaterial[1]);
+    shoppingCart.add(availibleMaterial[2]);
   }
 
   @override
@@ -110,6 +121,26 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     }
 
     runFilter();
+  }
+
+  /// Calls the DatePicker and returns the formated date.
+  Future<String?> pickDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: Get.context!,
+      initialDate: DateTime.now().add(const Duration(days: 1)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (pickedDate == null) return null;
+
+    return DateFormat('dd.MM.yyyy').format(pickedDate);
+  }
+
+  String? validateDateTime(String? value) {
+    if(value!.isEmpty) {
+      return 'date_is_mandatory'.tr;
+    }
+    return null;
   }
 
 }

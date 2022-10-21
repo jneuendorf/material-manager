@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
+import 'package:frontend/common/buttons/dav_button.dart';
 
 
 class LoginPage extends GetView<LoginController> {
@@ -79,20 +80,9 @@ class LoginPage extends GetView<LoginController> {
                 ),
               ],
             ),
-            SizedBox(
-              width: double.infinity,
-              height: 60,
-              child: ElevatedButton(
-                onPressed: controller.login,
-                child: Text(
-                  'login'.tr,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+            DavButton(
+              text: 'login'.tr,
+              onPressed: controller.login,
             ),
             ],
           ),
@@ -103,20 +93,9 @@ class LoginPage extends GetView<LoginController> {
         ),
         ConstrainedBox(
           constraints: controller.constraints,
-          child: SizedBox(
-            width: double.infinity,
-            height: 60,
-            child: ElevatedButton(
-              onPressed: () => Get.toNamed(signupRoute),
-              child: Text(
-                'signup'.tr,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+          child: DavButton(
+            onPressed: () => Get.toNamed(signupRoute),
+            text: 'signup'.tr,
           ),
         ),
       ],

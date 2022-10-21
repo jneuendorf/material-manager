@@ -53,6 +53,14 @@ class LocaleString extends Translations {
       'phone_not_valid': 'Phone number not valid',
       'password_is_mandatory':'Password is mandatory',
       'passwords_not_equal': 'Passwords do not match',
+      'summary': 'Summary',
+      'shopping_cart': 'Shopping Cart',
+      'checkout': 'Checkout',
+      'total_price': 'Total Price',
+      'retal_period': 'Rental Period',
+      'enter_start_date': 'Enter Start Date',
+      'enter_end_date': 'Enter End Date',
+      'date_is_mandatory': 'Date is mandatory',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -100,6 +108,14 @@ class LocaleString extends Translations {
       'phone_not_valid': 'Telefonnummer ist nicht Gültig',
       'password_is_mandatory':'Passwort ist verplichtend',
       'passwords_not_equal': 'Passwörter stimmen nicht überein',
+      'summary': 'Überblick',
+      'shopping_cart': 'Warenkorb',
+      'checkout': 'Zur Kasse',
+      'total_price': 'Gesamtpreis',
+      'retal_period': 'Leihdauer',
+      'enter_start_date': 'Startdatum eingeben',
+      'enter_end_date': 'Enddatum eingeben',
+      'date_is_mandatory': 'Datum ist verplichtend',
     }
   };
 }
