@@ -1,6 +1,6 @@
 import re
 from abc import ABC
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from typing import Any, Generic, Type, TypeVar, Union
 
 from flask import Blueprint, Flask
@@ -25,8 +25,9 @@ def url_join(*parts: str) -> str:
 
 
 class Extension(Blueprint, ABC, Generic[M, R]):
-    models: M
-    resources: R
+    models: M = ()  # type: ignore
+    resources: R = ()  # type: ignore
+    permissions: Iterable[Mapping[str, str]] = ()
 
     def __init__(
         self,
@@ -34,22 +35,18 @@ class Extension(Blueprint, ABC, Generic[M, R]):
         import_name: str,
         models: M = None,
         resources: R = None,
+        permissions: Iterable[Mapping[str, str]] = None,
         **kwargs,
     ):
         super().__init__(name, import_name, **kwargs)
+        # Allow setting the attributes on the class when both subclassing
+        # and instantiating Extension directly.
         if models is not None:
             self.models = models
         if resources is not None:
             self.resources = resources
-
-    def before_install(
-        self,
-        app: Flask,
-        jwt: JWTManager,
-        api: Api,
-        api_docs: FlaskApiSpec,
-    ) -> None:
-        ...
+        if permissions is not None:
+            self.permissions = permissions
 
     def install(
         self,
@@ -60,12 +57,10 @@ class Extension(Blueprint, ABC, Generic[M, R]):
         base_url: str = "/",
         **blueprint_options: Any,
     ) -> None:
-        self.before_install(app, jwt, api, api_docs)
-
-        print("INSTALLING EXTENSIONS", self.name)
         app.register_blueprint(self, **blueprint_options)
-        resource_cls: Type[BaseResource]
-        for resource_cls in self.resources:
+
+        resources: Iterable[Type[BaseResource]] = self.resources
+        for resource_cls in resources:
             resource_url = url_join(
                 base_url, resource_cls.url.format(ext_name=self.name)
             )
@@ -73,3 +68,10 @@ class Extension(Blueprint, ABC, Generic[M, R]):
             print("> Resource:", resource_cls.__name__, "=>", resource_url)
             if issubclass(resource_cls, MethodResource):
                 api_docs.register(resource_cls)
+
+    def after_installed_all(
+        self,
+        app: Flask,
+        installed_extensions: "Iterable[Extension]",
+    ) -> None:
+        ...

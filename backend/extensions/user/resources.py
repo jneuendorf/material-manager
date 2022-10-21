@@ -36,10 +36,10 @@ class Signup(BaseResource):
     )
     def post(
         self,
-        email: str = None,
-        password: str = None,
-        first_name: str = None,
-        last_name: str = None,
+        email: str = "",
+        password: str = "",
+        first_name: str = "",
+        last_name: str = "",
         membership_number: str = "",
     ):
         if not (email and password and first_name and last_name):
