@@ -8,8 +8,14 @@ import 'package:frontend/common/components/dav_footer.dart';
 class PageWrapper extends StatelessWidget {
   final Widget child;
   final bool loggedIn;
+  final bool showFooter;
 
-  const PageWrapper({super.key, required this.child, this.loggedIn = true});
+  const PageWrapper({
+    super.key, 
+    required this.child, 
+    this.loggedIn = true,
+    this.showFooter = true,
+  });
 
   @override
   Widget build(BuildContext context) => Scaffold(
@@ -21,7 +27,7 @@ class PageWrapper extends StatelessWidget {
           Expanded(
             child: child,
           ),
-          if (kIsWeb) const DavFooter(),
+          if (kIsWeb && showFooter) const DavFooter(),
         ],
       ),
     ),
