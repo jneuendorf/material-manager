@@ -12,6 +12,76 @@ This will start the flask app at http://localhost:5000.
 
 
 
+## Development helpers in `core.helpers`
+
+### Extension
+
+### CrudModel
+
+### Resource
+
+### Decorators
+
+
+#### @raises
+
+Attaches a tuple of possible errors to a function/method.
+
+By decorating methods that raise errors with `core.helpers.decorators.raises`,
+we can achieve 2 things:
+- explicitly state the types of raised errors which is helpful for understanding 
+  the behavior of the method
+- reuse the exception/error types via the `__errors__` attribute when we want to 
+  catch them. This way, we don't have to import all the different exceptions.
+
+An example:
+
+```python
+from core.helpers.decorators import raises
+
+class Math:
+    @classmethod
+    @raises(TypeError, ValueError)
+    def sqrt(cls, x):
+        if not isinstance(x, int):
+            raise TypeError("x must be an int")
+        if x < 0:
+            raise ValueError("x must be positive")
+        return x ** 1/2
+
+try:
+    Math.sqrt(-1)
+except Math.sqrt.__errors__:
+    print("This is an expected error. Output it to the user")
+except:
+    print(
+        "This is weird...might be a syntax error. "
+        "Or maybe x implements __pow__ and accidentally reveals a password"
+    )
+```
+
+When we assume that a lot of different errors from different libraries would be raised,
+we'd have to know all the imports (think about name clashes).
+
+Furthermore, this approach is dynamic, so whenever the set of potentially raised errors
+changes, we only have to adjust 1 place. Thus, refactoring becomes easier.
+
+
+##### Downside
+
+Unfortunately, when there are transitive dependencies, we have to explicitly state 
+them. So if some function calls `Math.sqrt` and could raise different errors, 
+the raised errors of `Math.sqrt` cannot be inferred.
+
+```python
+@raises(RuntimeError, *Math.sqrt.__errors__)
+def formula(x, y, z):
+    if z > 100:
+        return Math.sqrt(x) + y
+    else:
+        raise RuntimeError("This should be a ValueError but who cares...")
+```
+
 ## Extension development - an example
 
 ### Create a new extension
