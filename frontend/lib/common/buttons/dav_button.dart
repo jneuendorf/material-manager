@@ -18,7 +18,7 @@ class DavButton extends StatelessWidget {
     width: double.infinity,
     height: 60.0,
     child: ElevatedButton(
-      style: ElevatedButton.styleFrom(primary: color),
+      style: ElevatedButton.styleFrom(backgroundColor: color),
       onPressed: onPressed,
       child: Text(
         text,
