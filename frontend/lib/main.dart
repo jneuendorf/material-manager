@@ -37,11 +37,10 @@ Future<void> initialConfig() async {
   await GetStorage.init();
   await Get.putAsync(() => ApiService().init());
 
-  Get.lazyPut<RentalController>(() => RentalController());
-  Get.lazyPut<MaterialController>(() => MaterialController());
-  Get.lazyPut<UserController>(() => UserController());
-  Get.lazyPut<InspectionController>(() => InspectionController());
-
+  Get.put(RentalController(), permanent: true);
+  Get.put(MaterialController(), permanent: true);
+  Get.put(UserController(), permanent: true);
+  Get.put(InspectionController(), permanent: true);
 }
 
 class DavApp extends StatelessWidget {

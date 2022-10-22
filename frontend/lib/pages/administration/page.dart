@@ -11,6 +11,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
+    pageTitle: 'administration'.tr,
     child: Center(
       child: Text('administration'.tr),
     ),

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
@@ -33,6 +34,14 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   List<MaterialModel> availibleMaterial = [];
   List<MaterialModel> availibleSets = [];
   List<EquipmentType> availibleEquipmentTypes = [];
+
+  // following variables are used by the shopping cart page
+  final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
+
+  final TextEditingController rentalStartController = TextEditingController();
+  final TextEditingController rentalEndController = TextEditingController();
+  final TextEditingController usageStartController = TextEditingController();
+  final TextEditingController usageEndController = TextEditingController();
 
   @override
   Future<void> onInit() async {
@@ -70,6 +79,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     filteredMaterial.value = availibleMaterial.where((MaterialModel item) {
       /// Checks if the [selectedFilter] equals [equipmentType] of the [item].
       bool equipmentTypeFilterCondition() {
+        if (selectedFilter.value == null) return true;
           return item.equipmentType == selectedFilter.value;
       }
 
@@ -110,6 +120,26 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     }
 
     runFilter();
+  }
+
+  /// Calls the DatePicker and returns the formated date.
+  Future<String?> pickDate() async {
+    DateTime? pickedDate = await showDatePicker(
+      context: Get.context!,
+      initialDate: DateTime.now().add(const Duration(days: 1)),
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(const Duration(days: 365)),
+    );
+    if (pickedDate == null) return null;
+
+    return DateFormat('dd.MM.yyyy').format(pickedDate);
+  }
+
+  String? validateDateTime(String? value) {
+    if(value!.isEmpty) {
+      return 'date_is_mandatory'.tr;
+    }
+    return null;
   }
 
 }

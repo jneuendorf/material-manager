@@ -11,11 +11,17 @@ import 'package:frontend/pages/administration/controller.dart';
 
 
 class DavAppBar extends StatelessWidget with PreferredSizeWidget {
+  final String? title;
   final bool loggedIn;
+  final GlobalKey<ScaffoldState>? scaffoldKey;
+  final bool showBackButton;
 
   const DavAppBar({
     Key? key, 
+    this.title,
     this.loggedIn = true,
+    this.scaffoldKey,
+    this.showBackButton = false,
   }) : super(key: key);
 
   @override
@@ -24,11 +30,10 @@ class DavAppBar extends StatelessWidget with PreferredSizeWidget {
   @override
   Widget build(BuildContext context) => AppBar(
     backgroundColor: Get.theme.primaryColor,
-    leading: Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: Image.asset('assets/images/dav_logo_small.png'),
+    leading: buildLeading(),
+    title: Text(title ?? 'Material Verleih', 
+      style: const TextStyle(color: Colors.white),
     ),
-    title: const Text('Material Verleih'),
     actions: kIsWeb && loggedIn ? [
       TextButton(
         onPressed: () {
@@ -66,5 +71,22 @@ class DavAppBar extends StatelessWidget with PreferredSizeWidget {
       ),
     ] : null,
   );
+
+  Widget buildLeading() => Padding(
+    padding: const EdgeInsets.only(left: 8.0),
+    child: kIsWeb 
+      ? Image.asset('assets/images/dav_logo_small.png') 
+      : loggedIn 
+        ? showBackButton 
+          ? IconButton(
+            icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
+            onPressed: () => Get.back(),
+          )
+          : IconButton(
+            icon: const Icon(Icons.menu, color: Colors.white),
+            onPressed: () => scaffoldKey?.currentState?.openDrawer(),
+          ) 
+        : null,
+    );
 
 }
