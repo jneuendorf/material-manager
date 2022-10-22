@@ -11,6 +11,7 @@ class InventoryPage extends GetView<InventoryPageController> {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
+    pageTitle: 'inventory'.tr,
     child: Center(
       child: Text('inventory'.tr),
     ),

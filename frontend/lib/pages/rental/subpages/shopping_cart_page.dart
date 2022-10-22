@@ -17,6 +17,8 @@ class ShoppingCartPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) => PageWrapper(
     showPadding: false,
+    showBackButton: !kIsWeb,
+    pageTitle: !kIsWeb ? 'shopping_cart'.tr : null,
     child: kIsWeb ? Row(
       children: [
         Expanded(
@@ -30,42 +32,7 @@ class ShoppingCartPage extends StatelessWidget {
                   style: Get.textTheme.headline6!.copyWith(fontSize: 30),
                 ),
                 const Divider(),
-                Expanded(
-                  child: Obx(() => ListView.separated(
-                    itemCount: rentalPageController.shoppingCart.length,
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemBuilder: (context, index) => ListTile(
-                      tileColor: Colors.transparent,
-                      style: ListTileStyle.list,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
-                      onTap: () {},
-                      leading: Image.network(rentalPageController.shoppingCart[index].imagePath),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(rentalPageController.shoppingCart[index].equipmentType.description, 
-                                style: Get.textTheme.subtitle2,
-                              ),
-                              Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.unit}'),
-                            ],
-                          ),
-                          Text('€${rentalPageController.shoppingCart[index].rentalFee}'),
-                        ],
-                      ),
-                      trailing: IconButton(
-                        padding: EdgeInsets.zero,
-                        tooltip: 'remove'.tr,
-                        onPressed: () => rentalPageController.shoppingCart.removeAt(index),
-                        iconSize: 15.0,
-                        splashRadius: 18.0,
-                        icon: const Icon(CupertinoIcons.xmark),
-                      ),
-                    ),
-                  )),
-                ),
+                buildShoppingCartList(),
                 TextButton(
                   onPressed: Get.back,
                   child: Row(
@@ -89,113 +56,203 @@ class ShoppingCartPage extends StatelessWidget {
             color: Get.theme.colorScheme.surface,
             child: Padding(
               padding: const EdgeInsets.all(16.0),
-              child: Form(
-                key: rentalPageController.shoppingCartFormKey,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 12.0),
-                    Text('summary'.tr, style: Get.textTheme.headline6),
-                    const Divider(),
-                    const Spacer(),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text('retal_period'.tr.toUpperCase(), 
-                        style: Get.textTheme.subtitle2,
-                      ),
-                    ),
-                    TextFormField(
-                      controller: rentalPageController.rentalStartController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        focusColor: Colors.white,
-                        prefixIcon: const Icon(Icons.calendar_today),
-                        labelText: 'enter_start_date'.tr,
-                        enabledBorder: const OutlineInputBorder(),
-                        focusedBorder: const OutlineInputBorder(),
-                      ),
-                      onTap: () async => rentalPageController.rentalStartController.text = 
-                        (await rentalPageController.pickDate()) ?? '',
-                      validator: rentalPageController.validateDateTime,
-                    ),
-                    const SizedBox(height: 12.0),
-                    TextFormField(
-                      controller: rentalPageController.rentalEndController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        focusColor: Colors.white,
-                        prefixIcon: const Icon(Icons.calendar_today),
-                        labelText: 'enter_end_date'.tr,
-                        enabledBorder: const OutlineInputBorder(),
-                        focusedBorder: const OutlineInputBorder(),
-                      ),
-                      onTap: () async => rentalPageController.rentalEndController.text = 
-                        (await rentalPageController.pickDate()) ?? '',
-                      validator: rentalPageController.validateDateTime,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
-                      child: Text('usage_period'.tr.toUpperCase(), 
-                        style: Get.textTheme.subtitle2,
-                      ),
-                    ),
-                    TextFormField(
-                      controller: rentalPageController.usageStartController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        focusColor: Colors.white,
-                        prefixIcon: const Icon(Icons.calendar_today),
-                        labelText: 'enter_start_date'.tr,
-                        enabledBorder: const OutlineInputBorder(),
-                        focusedBorder: const OutlineInputBorder(),
-                      ),
-                      onTap: () async => rentalPageController.rentalStartController.text = 
-                        (await rentalPageController.pickDate()) ?? '',
-                      validator: rentalPageController.validateDateTime,
-                    ),
-                    const SizedBox(height: 12.0),
-                    TextFormField(
-                      controller: rentalPageController.usageEndController,
-                      readOnly: true,
-                      decoration: InputDecoration(
-                        focusColor: Colors.white,
-                        prefixIcon: const Icon(Icons.calendar_today),
-                        labelText: 'enter_end_date'.tr,
-                        enabledBorder: const OutlineInputBorder(),
-                        focusedBorder: const OutlineInputBorder(),
-                      ),
-                      onTap: () async => rentalPageController.rentalEndController.text = 
-                        (await rentalPageController.pickDate()) ?? '',
-                      validator: rentalPageController.validateDateTime,
-                    ),
-                    const Spacer(),
-                    const Divider(),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text('total_price'.tr.toUpperCase(),
-                          style: Get.textTheme.subtitle2,
-                        ),
-                        Obx(() => Text('€ ${rentalPageController.totalPrice}',
-                          style: Get.textTheme.subtitle2,
-                        )),
-                      ],
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(top: 32.0),
-                      child: DavButton(
-                        onPressed: () => rentalPageController.shoppingCartFormKey.currentState!.validate(),
-                        text: 'checkout'.tr,
-                        color: Colors.black,
-                      ),
-                    ),
-                  ],
-                ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 12.0),
+                  Text('summary'.tr, style: Get.textTheme.headline6),
+                  const Divider(),
+                  const Spacer(),
+                  buildPeriodDetails(),
+                  const Spacer(),
+                  buildTotal(),
+                ],
               ),
             ),
           ),
         ),
       ],
-    ) : const Center(child: Text('App View not implemented')),
+    ) : Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          buildShoppingCartList(),
+          buildPeriodDetails(),
+          buildTotal(),
+        ],
+      ),
+    ),
+  );
+
+  Widget buildPeriodDetails() => Form(
+    key: rentalPageController.shoppingCartFormKey,
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(vertical: 8.0),
+          child: Text('retal_period'.tr.toUpperCase(), 
+            style: Get.textTheme.subtitle2,
+          ),
+        ),
+        !kIsWeb ? Row (
+          children: [
+            Expanded(
+              child: buildCustomTextField(
+                controller: rentalPageController.rentalStartController, 
+                labelText: 'enter_start_date'.tr, 
+                validator: rentalPageController.validateDateTime,
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: buildCustomTextField(
+                controller: rentalPageController.rentalEndController,
+                labelText: 'enter_end_date'.tr,
+                validator: rentalPageController.validateDateTime,
+              ),
+            ),
+          ],
+        ) : Column(
+          children: [
+            buildCustomTextField(
+              controller: rentalPageController.rentalStartController, 
+              labelText: 'enter_start_date'.tr, 
+              validator: rentalPageController.validateDateTime,
+            ),
+            const SizedBox(height: 12.0),
+            buildCustomTextField(
+              controller: rentalPageController.rentalEndController,
+              labelText: 'enter_end_date'.tr,
+              validator: rentalPageController.validateDateTime,
+            ),
+          ],
+        ), 
+        Padding(
+          padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
+          child: Text('usage_period'.tr.toUpperCase(), 
+            style: Get.textTheme.subtitle2,
+          ),
+        ),
+        !kIsWeb ? Row(
+          children: [
+            Expanded(
+              child: buildCustomTextField(
+                controller: rentalPageController.usageStartController,
+                labelText: 'enter_start_date'.tr,
+                validator: rentalPageController.validateDateTime,
+              ),
+            ),
+            const SizedBox(width: 8.0),
+            Expanded(
+              child: buildCustomTextField(
+                controller: rentalPageController.usageEndController,
+                labelText: 'enter_end_date'.tr,
+                validator: rentalPageController.validateDateTime,
+              ),
+            ),
+          ],
+        ) : Column(
+          children: [
+            buildCustomTextField(
+              controller: rentalPageController.usageStartController,
+              labelText: 'enter_start_date'.tr,
+              validator: rentalPageController.validateDateTime,
+            ),
+            const SizedBox(height: 12.0),
+            buildCustomTextField(
+              controller: rentalPageController.usageEndController,
+              labelText: 'enter_end_date'.tr,
+              validator: rentalPageController.validateDateTime,
+            ),
+          ],
+        ),
+      ],
+    ),
+  );
+
+  Widget buildTotal() => Column(
+    children: [
+      const Divider(),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text('total_price'.tr.toUpperCase(),
+            style: Get.textTheme.subtitle2,
+          ),
+          Obx(() => Text('€ ${rentalPageController.totalPrice}',
+            style: Get.textTheme.subtitle2,
+          )),
+        ],
+      ),
+      Padding(
+        padding: const EdgeInsets.only(top: 32.0),
+        child: DavButton(
+          onPressed: () => rentalPageController.shoppingCartFormKey.currentState!.validate(),
+          text: 'checkout'.tr,
+          color: Colors.black,
+        ),
+      ),
+    ],
+  );
+
+  Widget buildShoppingCartList() => Expanded(
+    child: Obx(() => rentalPageController.shoppingCart.isNotEmpty ? ListView.separated(
+      itemCount: rentalPageController.shoppingCart.length,
+      separatorBuilder: (context, index) => const Divider(),
+      itemBuilder: (context, index) => ListTile(
+        tileColor: Colors.transparent,
+        style: ListTileStyle.list,
+        contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
+        onTap: () {},
+        leading: Image.network(rentalPageController.shoppingCart[index].imagePath),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(rentalPageController.shoppingCart[index].equipmentType.description, 
+                  style: Get.textTheme.subtitle2,
+                ),
+                Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.unit}'),
+              ],
+            ),
+            Text('€${rentalPageController.shoppingCart[index].rentalFee}'),
+          ],
+        ),
+        trailing: IconButton(
+          padding: EdgeInsets.zero,
+          tooltip: 'remove'.tr,
+          onPressed: () => rentalPageController.shoppingCart.removeAt(index),
+          iconSize: 15.0,
+          splashRadius: 18.0,
+          icon: const Icon(CupertinoIcons.xmark),
+        ),
+      ),
+    ) : Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const Icon(Icons.warning_amber),
+        const SizedBox(width: 8.0),
+        Text('shopping_cart_is_empty'.tr),
+      ],
+    )),
+  );
+
+  TextFormField buildCustomTextField({required TextEditingController controller, 
+  required String labelText, required String? Function(String?)? validator}) => TextFormField(
+    controller: controller,
+    readOnly: true,
+    decoration: InputDecoration(
+      focusColor: Colors.white,
+      prefixIcon: const Icon(Icons.calendar_today),
+      labelText: labelText,
+      enabledBorder: const OutlineInputBorder(),
+      focusedBorder: const OutlineInputBorder(),
+    ),
+    onTap: () async => controller.text = 
+      (await rentalPageController.pickDate()) ?? '',
+    validator: validator,
   );
 }

@@ -64,6 +64,7 @@ class LocaleString extends Translations {
       'date_is_mandatory': 'Date is mandatory',
       'back_to_selection': 'Back to Selection',
       'remove': 'Remove',
+      'shopping_cart_is_empty': 'Shopping Cart is empty!',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -122,6 +123,7 @@ class LocaleString extends Translations {
       'date_is_mandatory': 'Datum ist verplichtend',
       'back_to_selection': 'Zurück zur Auswahl',
       'remove': 'Entfernen',
+      'shopping_cart_is_empty': 'Warenkorb ist leer!',
     }
   };
 }

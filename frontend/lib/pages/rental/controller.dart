@@ -79,6 +79,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     filteredMaterial.value = availibleMaterial.where((MaterialModel item) {
       /// Checks if the [selectedFilter] equals [equipmentType] of the [item].
       bool equipmentTypeFilterCondition() {
+        if (selectedFilter.value == null) return true;
           return item.equipmentType == selectedFilter.value;
       }
 

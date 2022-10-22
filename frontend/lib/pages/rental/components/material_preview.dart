@@ -1,9 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/rental/controller.dart';
 
 import 'package:get/get.dart';
 
 import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/pages/rental/controller.dart';
 
 
 class MaterialPreview extends StatelessWidget {
@@ -51,14 +52,14 @@ class MaterialPreview extends StatelessWidget {
                 ),
               ),
             ),
-            if (hover.value) Positioned(
+            if (hover.value || !kIsWeb) Positioned(
               top: 0.0,
               right: 0.0,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: const Color.fromRGBO(0, 131, 199, 1),
-                  padding: const EdgeInsets.symmetric(vertical: 10.0),
+                  padding: const EdgeInsets.symmetric(vertical: kIsWeb ? 10.0 : 6.0),
                 ),
                 onPressed: () => rentalPageController.shoppingCart.add(item),
                 child: const Icon(Icons.add_shopping_cart,

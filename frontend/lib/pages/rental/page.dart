@@ -13,6 +13,7 @@ class RentalPage extends GetView<RentalPageController> {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
+    pageTitle: 'rental'.tr,
     showFooter: false,
     child: Column(
       children: [
