@@ -10,22 +10,22 @@ import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 class SingleMaterialScreen extends StatelessWidget {
   const SingleMaterialScreen({super.key});
 
-  static final rentalController = Get.find<RentalPageController>();
+  static final rentalPageController = Get.find<RentalPageController>();
 
   @override
   Widget build(BuildContext context) => TemplateWidget(
-    materialList: rentalController.filteredMaterial,
+    materialList: rentalPageController.filteredMaterial,
     headerWidget: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Obx(() => DropDownFilterButton(
-          title: 'type'.tr, 
+          title: 'type'.tr,
           options: [
-            'all'.tr, 
-            ...rentalController.filterOptions.values,
+            'all'.tr,
+            ...rentalPageController.filterOptions.values,
           ],
-          selected: rentalController.selectedFilter.value?.description ?? 'all'.tr, 
-          onSelected: rentalController.onFilterSelected,
+          selected: rentalPageController.selectedFilter.value?.description ?? 'all'.tr,
+          onSelected: rentalPageController.onFilterSelected,
         )),
         const SizedBox(width: 16.0),
         Flexible(
@@ -37,8 +37,8 @@ class SingleMaterialScreen extends StatelessWidget {
             child: CupertinoSearchTextField(
               placeholder: 'search'.tr,
               onChanged: (String text) {
-                rentalController.searchTerm.value = text;
-                rentalController.runFilter();
+                rentalPageController.searchTerm.value = text;
+                rentalPageController.runFilter();
               },
             ),
           ),

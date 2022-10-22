@@ -53,6 +53,12 @@ class LocaleString extends Translations {
       'phone_not_valid': 'Phone number not valid',
       'password_is_mandatory':'Password is mandatory',
       'passwords_not_equal': 'Passwords do not match',
+      'accounts': 'Accounts',
+      'roles': 'Roles',
+      'name': 'Name',
+      'role': 'Role',
+      'description': 'Description',
+      'rights': 'Rights',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -100,6 +106,12 @@ class LocaleString extends Translations {
       'phone_not_valid': 'Telefonnummer ist nicht Gültig',
       'password_is_mandatory':'Passwort ist verplichtend',
       'passwords_not_equal': 'Passwörter stimmen nicht überein',
+      'accounts': 'Accounts',
+      'roles': 'Rollen',
+      'name': 'Name',
+      'role': 'Rolle',
+      'description': 'Beschreibung',
+      'rights': 'Berechtigungen',
     }
   };
 }
