@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
-import 'package:intl/intl.dart';
 
 
 const rentalRoute = '/rental';
@@ -35,10 +35,13 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   List<MaterialModel> availibleSets = [];
   List<EquipmentType> availibleEquipmentTypes = [];
 
+  // following variables are used by the shopping cart page
   final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
 
-  final TextEditingController startDateController = TextEditingController();
-  final TextEditingController endDateController = TextEditingController();
+  final TextEditingController rentalStartController = TextEditingController();
+  final TextEditingController rentalEndController = TextEditingController();
+  final TextEditingController usageStartController = TextEditingController();
+  final TextEditingController usageEndController = TextEditingController();
 
   @override
   Future<void> onInit() async {
@@ -57,11 +60,6 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     for (EquipmentType item in availibleEquipmentTypes) {
       filterOptions[item] = item.description;
     }
-
-    // add some Mock items to  shopping cart
-    shoppingCart.add(availibleMaterial[0]);
-    shoppingCart.add(availibleMaterial[1]);
-    shoppingCart.add(availibleMaterial[2]);
   }
 
   @override

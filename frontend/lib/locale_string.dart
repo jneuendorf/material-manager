@@ -58,9 +58,12 @@ class LocaleString extends Translations {
       'checkout': 'Checkout',
       'total_price': 'Total Price',
       'retal_period': 'Rental Period',
+      'usage_period': 'Usage Period',
       'enter_start_date': 'Enter Start Date',
       'enter_end_date': 'Enter End Date',
       'date_is_mandatory': 'Date is mandatory',
+      'back_to_selection': 'Back to Selection',
+      'remove': 'Remove',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -113,9 +116,12 @@ class LocaleString extends Translations {
       'checkout': 'Zur Kasse',
       'total_price': 'Gesamtpreis',
       'retal_period': 'Leihdauer',
+      'usage_period': 'Nutzungsdauer',
       'enter_start_date': 'Startdatum eingeben',
       'enter_end_date': 'Enddatum eingeben',
       'date_is_mandatory': 'Datum ist verplichtend',
+      'back_to_selection': 'Zurück zur Auswahl',
+      'remove': 'Entfernen',
     }
   };
 }
