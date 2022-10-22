@@ -11,6 +11,7 @@ class InspectionPage extends GetView<InspectionPageController> {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
+    pageTitle: 'inspection'.tr,
     child: Center(
       child: Text('inspection'.tr),
     ),
