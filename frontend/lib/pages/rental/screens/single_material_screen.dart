@@ -19,12 +19,12 @@ class SingleMaterialScreen extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Obx(() => DropDownFilterButton(
-          title: 'type'.tr, 
+          title: 'type'.tr,
           options: [
-            'all'.tr, 
+            'all'.tr,
             ...rentalPageController.filterOptions.values,
           ],
-          selected: rentalPageController.selectedFilter.value?.description ?? 'all'.tr, 
+          selected: rentalPageController.selectedFilter.value?.description ?? 'all'.tr,
           onSelected: rentalPageController.onFilterSelected,
         )),
         const SizedBox(width: 16.0),
