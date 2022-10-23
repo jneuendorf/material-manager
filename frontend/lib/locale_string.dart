@@ -71,6 +71,12 @@ class LocaleString extends Translations {
       'back_to_selection': 'Back to Selection',
       'remove': 'Remove',
       'shopping_cart_is_empty': 'Shopping Cart is empty!',
+      'active_orders': 'Active Orders',
+      'completed_orders': 'Completed Orders',
+      'order_number': 'Order number',
+      'price': 'Price',
+      'order_date': 'Order date',
+      'status': 'Status',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -136,6 +142,13 @@ class LocaleString extends Translations {
       'back_to_selection': 'Zurück zur Auswahl',
       'remove': 'Entfernen',
       'shopping_cart_is_empty': 'Warenkorb ist leer!',
+      'active_orders': 'Active Bestellungen',
+      'completed_orders': 'Abgeschlossene Bestellungen',
+      'order_number': 'Order number',
+      'price': 'Preis',
+      'order_date': 'Bestell Datum',
+      'status': 'Status',
+
     }
   };
 }
