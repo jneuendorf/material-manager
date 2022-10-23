@@ -2,8 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 
-const baseUrl = 'http://';
-const authUrl = '';
+const baseUrl = 'http://localhost:5000';
+const authUrl = 'http://localhost:5000/auth';
 
 class ApiService extends GetxService {
   final Dio mainClient = Dio(BaseOptions(

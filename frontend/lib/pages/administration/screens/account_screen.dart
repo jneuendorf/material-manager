@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/buttons/text_icon_button.dart';
+import 'package:frontend/pages/administration/dialogs/add_user_dialog.dart';
 
 import 'package:get/get.dart';
 import 'package:data_table_2/data_table_2.dart';
@@ -46,12 +48,20 @@ class AccountScreen extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 16.0),
+          TextIconButton(
+            onTap: () => Get.dialog(AddUserDialog()), 
+            iconData: Icons.add, 
+            text: 'add_user'.tr,
+            color: Get.theme.colorScheme.onSecondary,
+          ),
         ],
       ),
       const SizedBox(height: 16.0),
       Expanded(
         child: Obx(() => DataTable2(
           headingRowHeight: 30.0,
+          showCheckboxColumn: false,
+          dataRowColor: MaterialStateProperty.resolveWith(getDataRowColor),
           columns: <DataColumn>[
             DataColumn(
               label: Text(
@@ -78,10 +88,29 @@ class AccountScreen extends StatelessWidget {
                   (Role r) => r.name).toList().join(', '),
                 )),
               ],
+              onSelectChanged: (_) {
+                administrationPageController.selectedUser.value = user;
+                Get.toNamed(administrationAccountDetailRoute);
+              },
             ),
           ).toList(),
         )),
       ),
     ],
   );
+
+  Color getDataRowColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+
+    if (states.any(interactiveStates.contains)) {
+      return Get.theme.colorScheme.primary.withOpacity(0.12);
+    }
+    
+    return Colors.transparent;
+  }
+
 }

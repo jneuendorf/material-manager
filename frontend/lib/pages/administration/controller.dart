@@ -6,6 +6,7 @@ import 'package:frontend/extensions/user/model.dart';
 
 
 const administrationRoute = '/administration';
+const administrationAccountDetailRoute = '/administration/accountDetail';
 
 class AdministrationPageBinding implements Bindings {
   @override
@@ -26,8 +27,11 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
   final Rxn<Role> selectedFilter = Rxn<Role>();
   final RxString searchTerm = ''.obs;
 
+  final Rxn<UserModel> selectedUser = Rxn<UserModel>();
+
   List<UserModel> availableUsers = [];
   List<Role> availableRoles = [];
+  List<Right> availableRights = [];
 
   @override
   Future<void> onInit() async {
@@ -46,6 +50,8 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
     for (Role role in availableRoles) {
       filterOptions[role] = role.name;
     }
+
+    availableRights = await userController.getAllRights();
   }
 
   @override

@@ -28,7 +28,7 @@ class LocaleString extends Translations {
       'search': 'Search',
       'type': 'Type',
       'all': 'All',
-      'membership_number': 'Membership Number',
+      'membership_number': 'Membership No.',
       'first_name': 'First Name',
       'last_name': 'Last Name',
       'street_name': 'Street name',
@@ -71,6 +71,12 @@ class LocaleString extends Translations {
       'back_to_selection': 'Back to Selection',
       'remove': 'Remove',
       'shopping_cart_is_empty': 'Shopping Cart is empty!',
+      'add_role': 'Add Role',
+      'add_user': 'Add User',
+      'account_details': 'Account Details',
+      'edit_profile': 'Edit Profile',
+      'add': 'Add',
+      'description_is_mandatory': 'Description is mandatory',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -95,7 +101,7 @@ class LocaleString extends Translations {
       'search': 'Suchen',
       'type': 'Art',
       'all': 'Alle',
-      'membership_number': 'Mitgliedsnummer',
+      'membership_number': 'Mitgliedsnr.',
       'first_name': 'Vorname',
       'last_name': 'Nachname',
       'street_name': 'Straßenname',
@@ -136,6 +142,13 @@ class LocaleString extends Translations {
       'back_to_selection': 'Zurück zur Auswahl',
       'remove': 'Entfernen',
       'shopping_cart_is_empty': 'Warenkorb ist leer!',
+      'add_role': 'Rolle hinzufügen',
+      'add_user': 'Benutzer hinzufügen',
+      'account_details': 'Account Details',
+      'edit_profile': 'Profil bearbeiten',
+      'add': 'Hinzufügen',
+      'description_is_mandatory': 'Beschreibung ist verplichtend',
+      
     }
   };
 }

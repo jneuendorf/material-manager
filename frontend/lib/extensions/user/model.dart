@@ -57,7 +57,7 @@ class Address {
 }
 
 class Role {
-  final int id;
+  final int? id;
   String name;
   String description;
   List<Right> rights;
