@@ -33,7 +33,7 @@ final Role mockBasicRole = Role(
   rights: [],
 );
 
-final Role mockIncpectorRole = Role(
+final Role mockInspectorRole = Role(
   id: 2,
   name: 'Inspector',
   description: 'Can do inspections',
@@ -112,7 +112,7 @@ final List<UserModel> mockUsers = [
       zip: '54321',
     ),
     roles: [
-      mockIncpectorRole,
+      mockInspectorRole,
       mockAdministratiorRole,
     ],
   ),

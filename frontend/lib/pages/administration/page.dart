@@ -21,14 +21,14 @@ class AdministrationPage extends GetView<AdministrationPageController> {
               children: [
                 Expanded(
                   child: TabBar(
-                    controller: controller.tabbBarController,
+                    controller: controller.tabController,
                     indicatorColor: Get.theme.primaryColor,
                     tabs: [
                       Obx(() => Tab(
                         child: Text(
                           'accounts'.tr,
                           style: TextStyle(
-                            color: controller.tabBarIndex.value == 0
+                            color: controller.tabIndex.value == 0
                                 ? Get.theme.primaryColor
                                 : null,
                           ),
@@ -38,7 +38,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
                         child: Text(
                           'roles'.tr,
                           style: TextStyle(
-                            color: controller.tabBarIndex.value == 1
+                            color: controller.tabIndex.value == 1
                                 ? Get.theme.primaryColor
                                 : null,
                           ),
@@ -52,7 +52,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
           ),
           Expanded(
             child: TabBarView(
-              controller: controller.tabbBarController,
+              controller: controller.tabController,
               physics: const NeverScrollableScrollPhysics(),
               children: const [
                 AccountScreen(),

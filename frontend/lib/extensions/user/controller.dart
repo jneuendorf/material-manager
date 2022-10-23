@@ -19,8 +19,8 @@ class UserController extends GetxController {
 
     return [
       mockAdministratiorRole,
-      mockIncpectorRole,
-      mockIncpectorRole,
+      mockInspectorRole,
+      mockInstructorRole,
       mockBasicRole,
     ];
   }

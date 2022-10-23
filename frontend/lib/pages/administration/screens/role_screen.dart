@@ -23,7 +23,7 @@ class RoleScreen extends StatelessWidget {
             title: 'roles'.tr,
             options: [
               'all'.tr,
-              ...administrationPageController.roles.map((e) => e.name)
+              ...administrationPageController.availableRoles.map((e) => e.name)
             ],
             selected: administrationPageController.selectedFilter.value?.description ?? 'all'.tr,
             onSelected: administrationPageController.onFilterSelected,
@@ -71,7 +71,7 @@ class RoleScreen extends StatelessWidget {
               label: Text(''),
             ),*/
           ],
-          rows: administrationPageController.roles.map(
+          rows: administrationPageController.availableRoles.map(
                 (Role role) => DataRow(
               cells: [
                 DataCell(Text(role.name)),

@@ -11,6 +11,7 @@ import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 
 class AccountScreen extends StatelessWidget {
   const AccountScreen({Key? key}) : super(key: key);
+
   static final administrationPageController = Get.find<AdministrationPageController>();
 
   @override
@@ -23,9 +24,9 @@ class AccountScreen extends StatelessWidget {
               title: 'roles'.tr,
               options: [
                 'all'.tr,
-                ...administrationPageController.roles.map((e) => e.name)
+                ...administrationPageController.availableRoles.map((e) => e.name)
               ],
-              selected: administrationPageController.selectedFilter.value?.description ?? 'all'.tr,
+              selected: administrationPageController.selectedFilter.value?.name ?? 'all'.tr,
               onSelected: administrationPageController.onFilterSelected,
           )),
           const SizedBox(width: 16.0),
@@ -38,7 +39,8 @@ class AccountScreen extends StatelessWidget {
               child: CupertinoSearchTextField(
                 placeholder: 'search'.tr,
                 onChanged: (String text) {
-
+                  administrationPageController.searchTerm.value = text;
+                  administrationPageController.runFilter();
                 },
               ),
             ),
@@ -48,7 +50,7 @@ class AccountScreen extends StatelessWidget {
       ),
       const SizedBox(height: 16.0),
       Expanded(
-        child: DataTable2(
+        child: Obx(() => DataTable2(
           headingRowHeight: 30.0,
           columns: <DataColumn>[
             DataColumn(
@@ -67,16 +69,18 @@ class AccountScreen extends StatelessWidget {
               ),
             ),
           ],
-          rows: administrationPageController.availableUsers.map(
+          rows: administrationPageController.filteredUsers.map(
                 (UserModel user) => DataRow(
               cells: [
                 DataCell(Text('${user.firstName} ${user.lastName}')),
                 DataCell(Text(user.membershipNumber.toString())),
-                DataCell(Text(user.roles.map((e) => e.name).toList().join(', '))),
+                DataCell(Text(user.roles.map(
+                  (Role r) => r.name).toList().join(', '),
+                )),
               ],
             ),
           ).toList(),
-        ),
+        )),
       ),
     ],
   );
