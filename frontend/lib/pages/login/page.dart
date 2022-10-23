@@ -21,79 +21,79 @@ class LoginPage extends GetView<LoginController> {
           constraints: controller.constraints,
           child: Column(
             children: [
-              TextFormField(
-              controller: controller.emailController,
-              cursorColor: Colors.black,
-              keyboardType: TextInputType.number,
-              decoration: InputDecoration(
-                labelText: 'email'.tr,
-                labelStyle: const TextStyle(color: Colors.black54),
-                prefixIcon: const Icon(Icons.numbers, color: Colors.black45),
-                border: const OutlineInputBorder(),
-                focusedBorder: const OutlineInputBorder(),
-              ),
-            ),
-            const SizedBox(height: 18),
-            Obx(() => TextFormField(
-              controller: controller.passwordController,
-              cursorColor: Colors.black,
-              decoration: InputDecoration(
-                focusColor: Colors.white,
-                labelText: 'password'.tr,
-                labelStyle: const TextStyle(color: Colors.black54),
-                prefixIcon: const Icon(
-                  Icons.password_outlined,
-                  color: Colors.black45,
+              Obx(() => TextFormField(
+                controller: controller.emailController,
+                cursorColor: controller.error.value == '' ? Colors.black : Colors.red,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'email'.tr,
+                  labelStyle: TextStyle(color: controller.error.value == '' ? Colors.black54 : Colors.red),
+                  prefixIcon: Icon(Icons.numbers, color: controller.error.value == '' ? Colors.black45 : Colors.red),
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(),
                 ),
-                border: const OutlineInputBorder(),
-                focusedBorder: const OutlineInputBorder(),
-                suffixIcon: IconButton(
-                  tooltip: 'show_password'.tr,
-                  icon: Icon(
-                    controller.hideChars.value
-                        ? CupertinoIcons.eye_fill
-                        : CupertinoIcons.eye_slash_fill,
-                    color: Colors.black,
+              )),
+              const SizedBox(height: 18),
+              Obx(() => TextFormField(
+                controller: controller.passwordController,
+                cursorColor: Colors.black,
+                decoration: InputDecoration(
+                  focusColor: Colors.white,
+                  labelText: 'password'.tr,
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  prefixIcon: const Icon(
+                    Icons.password_outlined,
+                    color: Colors.black45,
                   ),
-                  onPressed: controller.toggleHideChars,
-                ),
-              ),
-              obscureText: controller.hideChars.value,
-            )),
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 18.0),
-                  child: Obx(() => Checkbox(
-                    activeColor: Get.theme.primaryColor,
-                    shape: const CircleBorder(),
-                    value: controller.rememberMe.value,
-                    onChanged: controller.rememberMe,
-                  )),
-                ),
-                Text('remember_me'.tr,
-                style: TextStyle(
-                  fontSize: 22,
-                  color: Colors.grey.shade700,
-                ),
-                ),
-              ],
-            ),
-            SizedBox(
-              width: double.infinity,
-              height: 60,
-              child: ElevatedButton(
-                onPressed: controller.login,
-                child: Text(
-                  'login'.tr,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w900,
-                    fontSize: 20,
-                    color: Colors.white,
+                  border: const OutlineInputBorder(),
+                  focusedBorder: const OutlineInputBorder(),
+                  suffixIcon: IconButton(
+                    tooltip: (controller.hideChars.value ? 'show_password': 'hide_password').tr,
+                    icon: Icon(
+                      controller.hideChars.value
+                          ? CupertinoIcons.eye_fill
+                          : CupertinoIcons.eye_slash_fill,
+                      color: Colors.black,
+                    ),
+                    onPressed: controller.toggleHideChars,
                   ),
                 ),
+                obscureText: controller.hideChars.value,
+              )),
+              Row(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 18.0),
+                    child: Obx(() => Checkbox(
+                      activeColor: Get.theme.primaryColor,
+                      shape: const CircleBorder(),
+                      value: controller.rememberMe.value,
+                      onChanged: controller.rememberMe,
+                    )),
+                  ),
+                  Text('remember_me'.tr,
+                  style: TextStyle(
+                    fontSize: 22,
+                    color: Colors.grey.shade700,
+                  ),
+                  ),
+                ],
               ),
-            ),
+              SizedBox(
+                width: double.infinity,
+                height: 60,
+                child: ElevatedButton(
+                  onPressed: controller.login,
+                  child: Text(
+                    'login'.tr,
+                    style: const TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
