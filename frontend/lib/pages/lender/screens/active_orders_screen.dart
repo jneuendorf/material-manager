@@ -17,10 +17,18 @@ class ActiveOrderScreen extends StatelessWidget {
     children: [
       Row(
         children: [
-          Expanded(child: Text('order_number'.tr)),
-          Expanded(child: Text('price'.tr)),
-          Expanded(child: Text('order_date'.tr)),
-          Expanded(child: Text('status'.tr)),
+          Expanded(child: Text('order_number'.tr, 
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )),
+          Expanded(child: Text('price'.tr,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )),
+          Expanded(child: Text('order_date'.tr,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )),
+          Expanded(child: Text('status'.tr,
+            style: const TextStyle(fontWeight: FontWeight.bold),
+          )),
         ],
       ),
       const Divider(),
@@ -65,10 +73,17 @@ class ActiveOrderScreen extends StatelessWidget {
                   ),
                 ],
               ),
-              children: [Container(
-                height: 200,
-                color: Colors.red,
-              )],
+              children: [
+                Card(
+                  elevation: 5.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  child: Container(
+                    height: 200,
+                  ),
+                ),
+              ],
             ), 
             separatorBuilder: (BuildContext context, int index) => const Divider()
         )),
