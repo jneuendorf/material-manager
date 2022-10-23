@@ -31,9 +31,9 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final Rxn<EquipmentType> selectedFilter = Rxn<EquipmentType>();
   final RxString searchTerm = ''.obs;
 
-  List<MaterialModel> availibleMaterial = [];
-  List<MaterialModel> availibleSets = [];
-  List<EquipmentType> availibleEquipmentTypes = [];
+  List<MaterialModel> availableMaterial = [];
+  List<MaterialModel> availableSets = [];
+  List<EquipmentType> availableEquipmentTypes = [];
 
   // following variables are used by the shopping cart page
   final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
@@ -52,12 +52,12 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
-    availibleMaterial = await materialController.getAllMaterial();
-    filteredMaterial.value = availibleMaterial;
+    availableMaterial = await materialController.getAllMaterial();
+    filteredMaterial.value = availableMaterial;
 
-    availibleEquipmentTypes = await materialController.getAllEquipmentTypes();
+    availableEquipmentTypes = await materialController.getAllEquipmentTypes();
 
-    for (EquipmentType item in availibleEquipmentTypes) {
+    for (EquipmentType item in availableEquipmentTypes) {
       filterOptions[item] = item.description;
     }
   }
@@ -76,11 +76,12 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   /// Filters the [availableMaterial] by the [searchTerm] and the [selectedFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
-    filteredMaterial.value = availibleMaterial.where((MaterialModel item) {
+    filteredMaterial.value = availableMaterial.where((MaterialModel item) {
       /// Checks if the [selectedFilter] equals [equipmentType] of the [item].
       bool equipmentTypeFilterCondition() {
         if (selectedFilter.value == null) return true;
-          return item.equipmentType == selectedFilter.value;
+        
+        return item.equipmentType == selectedFilter.value;
       }
 
       /// Checks if the [term] is contained in [equipmentType] of the [item].

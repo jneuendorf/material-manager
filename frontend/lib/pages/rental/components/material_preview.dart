@@ -22,7 +22,6 @@ class MaterialPreview extends StatelessWidget {
     child: AspectRatio(
       aspectRatio: 1.0,
       child: InkWell(
-        onTap: () {},
         onHover: (bool value) => hover.value = value,
         hoverColor: Colors.black,
         child: Obx(() => Stack(
