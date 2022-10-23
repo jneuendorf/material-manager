@@ -101,4 +101,18 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
 
     runFilter();
   }
+
+  Color getDataRowColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+
+    if (states.any(interactiveStates.contains)) {
+      return Get.theme.colorScheme.primary.withOpacity(0.12);
+    }
+    
+    return Colors.transparent;
+  }
 }

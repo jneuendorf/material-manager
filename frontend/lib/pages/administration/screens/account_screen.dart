@@ -61,7 +61,8 @@ class AccountScreen extends StatelessWidget {
         child: Obx(() => DataTable2(
           headingRowHeight: 30.0,
           showCheckboxColumn: false,
-          dataRowColor: MaterialStateProperty.resolveWith(getDataRowColor),
+          dataRowColor: MaterialStateProperty.resolveWith(
+            administrationPageController.getDataRowColor),
           columns: <DataColumn>[
             DataColumn(
               label: Text(
@@ -80,7 +81,7 @@ class AccountScreen extends StatelessWidget {
             ),
           ],
           rows: administrationPageController.filteredUsers.map(
-                (UserModel user) => DataRow(
+            (UserModel user) => DataRow(
               cells: [
                 DataCell(Text('${user.firstName} ${user.lastName}')),
                 DataCell(Text(user.membershipNumber.toString())),
@@ -98,19 +99,4 @@ class AccountScreen extends StatelessWidget {
       ),
     ],
   );
-
-  Color getDataRowColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-
-    if (states.any(interactiveStates.contains)) {
-      return Get.theme.colorScheme.primary.withOpacity(0.12);
-    }
-    
-    return Colors.transparent;
-  }
-
 }

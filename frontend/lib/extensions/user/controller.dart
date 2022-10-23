@@ -46,8 +46,7 @@ class UserController extends GetxController {
   }
 
   /// Adds a new user to the backend.
-  /// Currently only a mock request is used.
-  /// A delay of 500 milliseconds is used to simulate a network request.
+  /// Returns the id of the newly created role.
   Future<int?> addRole(Role role) async {
     try {
       final response = await apiService.mainClient.post(

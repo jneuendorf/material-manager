@@ -81,6 +81,7 @@ class LocaleString extends Translations {
       'unknown_error_occured': 'An Unknown Error occured',
       'network_error': 'Network Error',
       'network_error_occured': 'A Network Error occured',
+      'edit_user': 'Edit User',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -156,6 +157,7 @@ class LocaleString extends Translations {
       'unknown_error_occured': 'Ein unbekannter Fehler ist aufgetreten',
       'network_error': 'Netzwerkfehler',
       'network_error_occured': 'Ein Netzwerkfehler ist aufgetreten',
+      'edit_user': 'Benutzer bearbeiten',
     }
   };
 }

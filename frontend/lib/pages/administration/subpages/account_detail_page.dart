@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
+import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/pages/administration/dialogs/edit_user_dialog.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
 
@@ -21,10 +22,10 @@ class AccountDetailPage extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('account_details'.tr, 
+        if (kIsWeb) Text('account_details'.tr, 
           style: Get.textTheme.headline6!.copyWith(fontSize: 30),
         ),
-        Divider(endIndent: MediaQuery.of(context).size.width-250),
+        if (kIsWeb) Divider(endIndent: MediaQuery.of(context).size.width-250),
         const SizedBox(height: 16.0),
         Row(
           children: [
@@ -40,12 +41,21 @@ class AccountDetailPage extends StatelessWidget {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                kIsWeb ? Row(
                   children: [
                     Text('${administrationPageController.selectedUser.value!.firstName} ${administrationPageController.selectedUser.value!.lastName}',
                       style: Get.textTheme.headline6,
                     ),
                     const SizedBox(width: 16.0),
+                    Text(administrationPageController.selectedUser.value!.roles.map(
+                      (Role r) => r.name).toList().join(', ')),
+                  ],
+                ) : Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('${administrationPageController.selectedUser.value!.firstName} ${administrationPageController.selectedUser.value!.lastName}',
+                      style: Get.textTheme.headline6,
+                    ),
                     Text(administrationPageController.selectedUser.value!.roles.map(
                       (Role r) => r.name).toList().join(', ')),
                   ],
@@ -55,7 +65,9 @@ class AccountDetailPage extends StatelessWidget {
             ),
             const Spacer(),
             TextIconButton(
-              onTap: () {}, 
+              onTap: () => Get.dialog(EditUserDialog(
+                user: administrationPageController.selectedUser.value!,
+                )), 
               iconData: Icons.edit,
               text: 'edit_profile'.tr,
               color: Get.theme.colorScheme.onSecondary,
@@ -67,5 +79,5 @@ class AccountDetailPage extends StatelessWidget {
     ),
   );
 
-  Widget buildOrderList() => Container();
+  Widget buildOrderList() => Container(); // TODO implement
 }

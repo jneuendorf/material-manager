@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -32,8 +33,10 @@ class RoleScreen extends StatelessWidget {
       const SizedBox(height: 16.0),
       Expanded(
         child: DataTable2(
-
           headingRowHeight: 30.0,
+          showCheckboxColumn: false,
+          dataRowColor: MaterialStateProperty.resolveWith(
+            administrationPageController.getDataRowColor),
           columns: <DataColumn>[
             DataColumn(
               label: Text(
@@ -52,22 +55,24 @@ class RoleScreen extends StatelessWidget {
             ),
           ],
           rows: administrationPageController.availableRoles.map(
-                (Role role) => DataRow(
+            (Role role) => DataRow(
               cells: [
                 DataCell(Text(role.name)),
                 DataCell(Text(role.description)),
                 DataCell(Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(role.rights.map((e) => e.name).toList().join(', ')),
-                    const Spacer(),
-                    IconButton(
-                      icon: const Icon(Icons.edit),
-                      splashRadius: 16.0,
+                    Flexible(child: Text(role.rights.map((e) => e.name).toList().join(', '))),
+                    CupertinoButton(
                       onPressed: () {},
+                      color: Get.theme.colorScheme.onSecondary,
+                      padding: EdgeInsets.zero,
+                      child: const Icon(Icons.edit, color: Colors.white,)
                     ),
                   ],
                 )),
               ],
+              onSelectChanged: (_) {}, // needed for hover effect
             ),
           ).toList(),
         ),
