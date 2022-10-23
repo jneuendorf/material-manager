@@ -13,6 +13,7 @@ class LenderPage extends GetView<LenderPageController> {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
+    pageTitle: 'lender'.tr,
     child: Column(
       children: [
         Padding(

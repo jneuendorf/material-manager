@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/rental/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
+import 'package:frontend/common/components/collapsable_expansion_tile.dart';
 
 
 const lenderRoute = '/lender';
@@ -19,8 +22,12 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   final RxInt tabBarIndex = 0.obs;
   late TabController tabbBarController;
+
+  final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
+  final RxList<GlobalKey<CollapsableExpansionTileState>> keys = <GlobalKey<CollapsableExpansionTileState>>[].obs;
+
   List<RentalModel> availableRentals = [];
-  final Rxn<RentalStatus> rentalStatus = Rxn<RentalStatus>();
+  List<RentalStatus> availableStatuses = [];
 
   @override
   Future<void> onInit() async {
@@ -32,9 +39,26 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     });
 
     availableRentals = await rentalController.getAllRentals();
+    filteredRentals.value = availableRentals;
+
+    keys.value = List.generate(
+      filteredRentals.length, (index) => GlobalKey<CollapsableExpansionTileState>(),
+    );
+
+    availableStatuses = await rentalController.getAllStatuses();
+  }
+
+  @override
+  void onClose() {
+    tabbBarController.dispose();
+    super.onClose();
   }
 
   void onFilterSelected(String value) {
 
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('dd.MM.yyyy').format(date);
   }
 }
