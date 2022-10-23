@@ -14,6 +14,7 @@ import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/pages/signup/page.dart';
 import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/pages/administration/page.dart';
+import 'package:frontend/pages/administration/subpages/account_detail_page.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/pages/inspection/page.dart';
 import 'package:frontend/pages/inventory/controller.dart';
@@ -37,6 +38,7 @@ Future<void> initialConfig() async {
   await GetStorage.init();
   await Get.putAsync(() => ApiService().init());
 
+  // init extension controllers
   Get.put(RentalController(), permanent: true);
   Get.put(MaterialController(), permanent: true);
   Get.put(UserController(), permanent: true);
@@ -59,7 +61,7 @@ class DavApp extends StatelessWidget {
         background: Color.fromARGB(192, 216, 216, 216),
         error: Color.fromARGB(255, 227, 67, 72),
         onPrimary: Color.fromARGB(128, 97, 183, 50),
-        onSecondary: Color.fromARGB(128, 97, 183, 50),
+        onSecondary: Color.fromRGBO(0, 131, 199, 1),
         onSurface: Color.fromRGBO(176, 219, 153, 1),
         onBackground: Color.fromARGB(153, 216, 216, 216),
         onError: Color.fromARGB(153, 227, 67, 72),
@@ -90,6 +92,9 @@ class DavApp extends StatelessWidget {
         binding: InspectionPageBinding(),
       ),
       GetPage(name: administrationRoute, page: () => const AdministrationPage(),
+        binding: AdministrationPageBinding(),
+      ),
+      GetPage(name: administrationAccountDetailRoute, page: () => const AccountDetailPage(),
         binding: AdministrationPageBinding(),
       ),
     ],
