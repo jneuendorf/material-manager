@@ -77,6 +77,10 @@ class LocaleString extends Translations {
       'edit_profile': 'Edit Profile',
       'add': 'Add',
       'description_is_mandatory': 'Description is mandatory',
+      'error': 'Error',
+      'unknown_error_occured': 'An Unknown Error occured',
+      'network_error': 'Network Error',
+      'network_error_occured': 'A Network Error occured',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -148,7 +152,10 @@ class LocaleString extends Translations {
       'edit_profile': 'Profil bearbeiten',
       'add': 'Hinzufügen',
       'description_is_mandatory': 'Beschreibung ist verplichtend',
-      
+      'error': 'Fehler',
+      'unknown_error_occured': 'Ein unbekannter Fehler ist aufgetreten',
+      'network_error': 'Netzwerkfehler',
+      'network_error_occured': 'Ein Netzwerkfehler ist aufgetreten',
     }
   };
 }

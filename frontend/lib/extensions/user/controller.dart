@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
@@ -61,11 +63,11 @@ class UserController extends GetxController {
         },
       );
 
-      if (response.statusCode != 201) print('Error adding role');
+      if (response.statusCode != 201) debugPrint('Error adding role');
 
       return response.data['id'];
     } on DioError catch(e) {
-      print('DioError: ${e.message}');
+      apiService.defaultCatch(e);
     }
     return null;
   }

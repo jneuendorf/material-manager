@@ -100,11 +100,6 @@ class AddRoleDialog extends StatelessWidget {
   Future<void> onAddTap() async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
-      
-      // If no rights are selected, the user will only have the basic right.
-      if (selectedRights.isEmpty) {
-        selectedRights.value = ['Basic'];
-      }
 
       List<Right> rights = selectedRights.map(
         (String element) => administrationPageController.availableRights.firstWhere(
@@ -124,5 +119,5 @@ class AddRoleDialog extends StatelessWidget {
       loading.value = false;
     }
   }
-  
+
 }

@@ -1,3 +1,5 @@
+import 'package:flutter/foundation.dart';
+
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
@@ -32,5 +34,24 @@ class ApiService extends GetxService {
     return this;
   }
 
+  void defaultCatch(DioError e) {
+    debugPrint('defaultCatch error: $e');
+    if (e.response != null) {
+      debugPrint(e.response!.data);
+      switch (e.response!.data['error']) {
+        case 'unauthorized':
+          debugPrint('unauthorized');
+          //Get.offNamed(loginRoute);
+          break;
+        default:
+          Get.snackbar('error'.tr, 'unknown_error_occured'.tr);
+          break;
+      }
+    } else {
+      debugPrint('no response error: $e');
+      Get.snackbar('network_error'.tr, 'network_error_occured'.tr, 
+        duration: const Duration(seconds: 2));
+    }
+  }
 
 }
