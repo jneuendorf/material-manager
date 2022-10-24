@@ -46,6 +46,30 @@ class InventoryPageController extends GetxController {
    /// the [selectedTypeFilter] and the [selectedConditonFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
+    filteredMaterial.value = availableMaterial.where((MaterialModel item) {
+      /// Checks if the [selectedTypeFilter] equals [equipmentType] of the [item].
+      bool equipmentTypeFilterCondition() {
+        if (selectedTypeFilter.value == null) return true;
+        
+        return item.equipmentType == selectedTypeFilter.value;
+      }
+
+      /// Checks if the [term] is contained in [equipmentType] of the [item].
+      bool equipmentTypeNameCondition() {
+        if (term.isEmpty) return true;
+
+        return item.equipmentType.description.toLowerCase().contains(term);
+      }
+
+      bool conditionFilterCondition() {
+        if (selectedConditionFilter.value == null) return true;
+
+        return item.condition == selectedConditionFilter.value;
+      }
+
+      return equipmentTypeFilterCondition() && 
+        equipmentTypeNameCondition() && conditionFilterCondition();
+    }).toList();
   }
 
   /// Handles the selection of a [value] out of [typeFilterOption].
