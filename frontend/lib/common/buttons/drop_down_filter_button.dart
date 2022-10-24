@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 
 class DropDownFilterButton extends StatelessWidget {
-  final String title;
+  final String? title;
   final List<String> options;
   final String selected;
   final void Function(String) onSelected;
@@ -10,10 +10,10 @@ class DropDownFilterButton extends StatelessWidget {
 
   const DropDownFilterButton({
     Key? key,
-    required this.title,
     required this.options,
     required this.selected,
     required this.onSelected,
+    this.title,
     this.hasError = false,
   }) : super(key: key);
 
@@ -59,7 +59,9 @@ class DropDownFilterButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(width: 8.0),
-          Text('$title: ', style: const TextStyle(color: Colors.black54)),
+          if (title != null) Text('$title: ', 
+            style: const TextStyle(color: Colors.black54),
+          ),
           Text(selected),
           const Icon(Icons.arrow_drop_down, color: Colors.black54),
         ],

@@ -1,14 +1,13 @@
-
 class UserModel {
   final int id;
   String firstName;
   String lastName;
   String email;
   String phone;
-  int membershipNumber;
+  String membershipNumber;
   Address address;
-  List<Role> roles;
   String? category;
+  List<Role> roles;
 
   UserModel({
     required this.id,
@@ -29,15 +28,21 @@ class UserModel {
     email: json['email'],
     phone: json['phone'],
     membershipNumber: json['membership_number'],
-    address: Address.fromJson(json['address']),
-    roles: List<Role>.from(json['roles'].map((x) => Role.fromJson(x))),
+    address: Address(
+      street: json['street'],
+      houseNumber: json['house_number'],
+      city: json['city'],
+      zip: json['zip'],
+    ),
     category: json['category'],
+    roles: List<Role>.from(json['roles'].map((x) => Role.fromJson(x))),
   );
 }
 
+
 class Address {
   String street;
-  int houseNumber;
+  String houseNumber;
   String city;
   String zip;
 
@@ -56,39 +61,42 @@ class Address {
   );
 }
 
+
+
 class Role {
-  final int id;
+  final int? id;
   String name;
   String description;
-  List<Right> rights;
+  List<Permission> permissions;
 
   Role({
     required this.id,
     required this.name,
     required this.description,
-    required this.rights,
+    required this.permissions,
   });
 
   factory Role.fromJson(Map<String, dynamic> json) => Role(
     id: json['id'],
     name: json['name'],
     description: json['description'],
-    rights: List<Right>.from(json['rights'].map((x) => Right.fromJson(x))),
+    permissions: List<Permission>.from(json['permissions'].map((x) => Permission.fromJson(x))),
   );
 }
 
-class Right {
+
+class Permission {
   final int id;
   String name;
   String description;
 
-  Right({
+  Permission({
     required this.id,
     required this.name,
     required this.description,
   });
 
-  factory Right.fromJson(Map<String, dynamic> json) => Right(
+  factory Permission.fromJson(Map<String, dynamic> json) => Permission(
     id: json['id'],
     name: json['name'],
     description: json['description'],

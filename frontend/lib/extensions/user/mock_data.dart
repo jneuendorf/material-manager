@@ -1,25 +1,25 @@
 import 'package:frontend/extensions/user/model.dart';
 
 
-final Right mockAdministrationRight = Right(
+final Permission mockAdministrationPermission = Permission(
   id: 1,
   name: 'Administration',
   description: 'Can access and edit the administration page',
 );
 
-final Right mockLenderRight = Right(
+final Permission mockLenderPermission = Permission(
   id: 2,
   name: 'Lender',
   description: 'Can access the lender page adn lend material',
 );
 
-final Right mockInspectionRight = Right(
+final Permission mockInspectionPermission = Permission(
   id: 3,
   name: 'Inspection',
   description: 'Can do inspections',
 );
 
-final Right mockInventoryRight = Right(
+final Permission mockInventoryPermission = Permission(
   id: 4,
   name: 'Inventory',
   description: 'Can access and edit the inventory page',
@@ -30,16 +30,16 @@ final Role mockBasicRole = Role(
   id: 1,
   name: 'Basic',
   description: 'Basic user without any right',
-  rights: [],
+  permissions: [],
 );
 
-final Role mockIncpectorRole = Role(
+final Role mockInspectorRole = Role(
   id: 2,
   name: 'Inspector',
   description: 'Can do inspections',
-  rights: [
-    mockInspectionRight,
-    mockInventoryRight,
+  permissions: [
+    mockInspectionPermission,
+    mockInventoryPermission,
   ],
 );
 
@@ -47,9 +47,9 @@ final Role mockInstructorRole = Role(
   id: 3,
   name: 'Instructor',
   description: 'Can access everything besides inspections and administration',
-  rights: [
-    mockLenderRight,
-    mockInventoryRight,
+  permissions: [
+    mockLenderPermission,
+    mockInventoryPermission,
   ],
 );
 
@@ -57,8 +57,8 @@ final Role mockAdministratiorRole = Role(
   id: 4,
   name: 'Administrator',
   description: 'Can manage User and Role administration',
-  rights: [
-    mockAdministrationRight,
+  permissions: [
+    mockAdministrationPermission,
   ],
 );
 
@@ -70,10 +70,10 @@ final List<UserModel> mockUsers = [
     lastName: 'Doe',
     email: 'john.doe@gmail.com',
     phone: '+49123456789',
-    membershipNumber: 123456,
+    membershipNumber: '123456',
     address: Address(
       street: 'Musterstraße',
-      houseNumber: 1,
+      houseNumber: '1',
       city: 'Musterstadt',
       zip: '12345',
     ),
@@ -87,10 +87,10 @@ final List<UserModel> mockUsers = [
     lastName: 'Doe',
     email: 'tim.doe@gmail.com',
     phone: '+4914345569',
-    membershipNumber: 1235432,
+    membershipNumber: '1235432',
     address: Address(
       street: 'Musterweg',
-      houseNumber: 12,
+      houseNumber: '12',
       city: 'Musterhausen',
       zip: '54321',
     ),
@@ -104,15 +104,15 @@ final List<UserModel> mockUsers = [
     lastName: 'Koe',
     email: 'sarah.koe@gmail.com',
     phone: '+4914341234229',
-    membershipNumber: 998432,
+    membershipNumber: '998432',
     address: Address(
       street: 'Musterweg',
-      houseNumber: 2,
+      houseNumber: '2',
       city: 'Musterhausen',
       zip: '54321',
     ),
     roles: [
-      mockIncpectorRole,
+      mockInspectorRole,
       mockAdministratiorRole,
     ],
   ),
@@ -122,10 +122,10 @@ final List<UserModel> mockUsers = [
     lastName: 'Koe',
     email: 'klara.koe@gmail.com',
     phone: '+4914333332129',
-    membershipNumber: 091234,
+    membershipNumber: '091234',
     address: Address(
       street: 'Klosterstraße',
-      houseNumber: 26,
+      houseNumber: '26',
       city: 'Musterhausen',
       zip: '54321',
     ),
