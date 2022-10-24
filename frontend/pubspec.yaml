@@ -43,6 +43,7 @@ dependencies:
   data_table_2: ^2.3.7
   intl: ^0.17.0
   lottie: ^1.4.3
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:

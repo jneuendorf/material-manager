@@ -64,7 +64,7 @@ class ActiveOrderScreen extends StatelessWidget {
                               'all'.tr,
                               ...lenderPageController.availableStatuses.map((e) => e.name)
                             ],
-                            selected: lenderPageController.filteredRentals[index].status.name,
+                            selected: lenderPageController.filteredRentals[index].status!.name,
                             onSelected: lenderPageController.onFilterSelected,
                           )),
                         ],

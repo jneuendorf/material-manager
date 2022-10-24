@@ -21,9 +21,9 @@ class MaterialPreview extends StatelessWidget {
     padding: const EdgeInsets.all(4.0),
     child: AspectRatio(
       aspectRatio: 1.0,
-      child: InkWell(
-        onHover: (bool value) => hover.value = value,
-        hoverColor: Colors.black,
+      child: MouseRegion(
+        onEnter: (_) => hover.value = true,
+        onExit: (_) => hover.value = false,
         child: Obx(() => Stack(
           children: [
             Card(

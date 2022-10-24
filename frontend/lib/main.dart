@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
+import 'package:frontend/locale_string.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/controller.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
@@ -24,7 +25,7 @@ import 'package:frontend/pages/lender/page.dart';
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/pages/rental/page.dart';
 import 'package:frontend/pages/rental/subpages/shopping_cart_page.dart';
-import 'package:frontend/locale_string.dart';
+import 'package:frontend/pages/rental/subpages/rental_completed_page.dart';
 
 
 void main() async {
@@ -80,6 +81,9 @@ class DavApp extends StatelessWidget {
         binding: RentalPageBinding(),
       ),
       GetPage(name: rentalShoppingCartRoute, page: () => const ShoppingCartPage(),
+        binding: RentalPageBinding(),
+      ),
+      GetPage(name: rentalCompletedRoute, page: () => const RentalCompletedPage(),
         binding: RentalPageBinding(),
       ),
       GetPage(name: inventoryRoute, page: () => const InventoryPage(),
