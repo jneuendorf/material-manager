@@ -1,10 +1,13 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
-import 'package:frontend/pages/rental/controller.dart';
+
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
+import 'package:frontend/pages/rental/controller.dart';
+
 const loginRoute = '/login';
+const loginApiRoute = '/login';
 
 
 class LoginBinding implements Bindings {
@@ -35,7 +38,7 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     try {
-      var response = await apiService.mainClient.post('/login', data: {
+      var response = await apiService.mainClient.post(loginApiRoute, data: {
           'email': emailController.text,
           'password': passwordController.text,
       });

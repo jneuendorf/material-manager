@@ -21,7 +21,7 @@ class SignupPage extends GetView<SignupController> {
           child: PageView(
             controller: controller.pageController,
             physics: const NeverScrollableScrollPhysics(),
-            children:  <Widget>[
+            children: <Widget>[
               buildMembershipInfoPage(),
               buildAddressInfoPage(),
               buildContactInfoPage(),
@@ -30,15 +30,17 @@ class SignupPage extends GetView<SignupController> {
           ),
         ),
         SmoothPageIndicator(
-            controller: controller.pageController,
-            count:  4,
-            effect:  WormEffect(
-              dotColor: Get.theme.colorScheme.onSurface,
-              activeDotColor: Get.theme.primaryColor,
-            ),
-            onDotClicked: (int index) => controller.pageController.animateToPage(index,
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut)
+          controller: controller.pageController,
+          count: 4,
+          effect: WormEffect(
+            dotColor: Get.theme.colorScheme.onSurface,
+            activeDotColor: Get.theme.primaryColor,
+          ),
+          onDotClicked: (int index) => controller.pageController.animateToPage(
+            index,
+            duration: const Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          )
         ),
       ],
     ),
@@ -66,7 +68,7 @@ class SignupPage extends GetView<SignupController> {
               color: Colors.white,
             ),
             child: Form(
-              key: formKey, 
+              key: formKey,
               child: child,
             )
           ),
@@ -78,21 +80,7 @@ class SignupPage extends GetView<SignupController> {
   Widget buildMembershipInfoPage() => buildBaseContainer(
     formKey: controller.membershipKey,
     child: Column(
-      children:  [
-        TextFormField(
-          controller: controller.membershipNumberController,
-          decoration: InputDecoration(
-            fillColor: Colors.red,
-            focusColor: Colors.white,
-            labelText: 'membership_number'.tr,
-            labelStyle: const TextStyle(color: Colors.black54),
-            border: const OutlineInputBorder(),
-            focusedBorder: const OutlineInputBorder(),
-          ),
-            autovalidateMode: AutovalidateMode.onUserInteraction,
-            validator: controller.validateMembershipNumber,
-        ),
-        const SizedBox(height: 16.0),
+      children: [
         TextFormField(
           controller: controller.firstNameController,
           decoration: InputDecoration(
@@ -117,6 +105,20 @@ class SignupPage extends GetView<SignupController> {
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: controller.validateName,
+        ),
+        const SizedBox(height: 16.0),
+        TextFormField(
+          controller: controller.membershipNumberController,
+          decoration: InputDecoration(
+            fillColor: Colors.red,
+            focusColor: Colors.white,
+            labelText: 'membership_number'.tr,
+            labelStyle: const TextStyle(color: Colors.black54),
+            border: const OutlineInputBorder(),
+            focusedBorder: const OutlineInputBorder(),
+          ),
+            autovalidateMode: AutovalidateMode.onUserInteraction,
+            validator: controller.validateMembershipNumber,
         ),
         buildButton(0, controller.membershipKey),
       ],
@@ -253,6 +255,7 @@ class SignupPage extends GetView<SignupController> {
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: controller.validatePassword,
+          obscureText: true,
         ),
         const SizedBox(height: 16.0),
         TextFormField(
@@ -266,6 +269,7 @@ class SignupPage extends GetView<SignupController> {
           ),
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: controller.validateConfirmPassword,
+          obscureText: true,
         ),
         buildButton(3, controller.passwordKey),
       ],
@@ -278,7 +282,7 @@ class SignupPage extends GetView<SignupController> {
     padding: const EdgeInsets.only(top: 16.0),
     onPressed: () {
       if (key.currentState!.validate()) {
-        currentIndex != 3 
+        currentIndex != 3
           ? controller.pageController.animateToPage(currentIndex + 1,
             duration: const Duration(milliseconds: 300),
             curve: Curves.easeInOut)
