@@ -19,7 +19,7 @@ class User(Model):  # type: ignore
     phone = db.Column(db.String(length=32))
     street = db.Column(db.String(length=100))
     house_number = db.Column(db.String(length=8))  # allow 11A
-    city = db.Column(db.String(length=80))  # allow '11A'
+    city = db.Column(db.String(length=80))
     zip = db.Column(db.String(length=8))  # allow leading zeros
     roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
 

@@ -5,10 +5,7 @@ class UserModel {
   String email;
   String phone;
   String membershipNumber;
-  String street;
-  String houseNumber;
-  String city;
-  String zip;
+  Address address;
   String? category;
   List<Role> roles;
 
@@ -19,10 +16,7 @@ class UserModel {
     required this.email,
     required this.phone,
     required this.membershipNumber,
-    required this.street,
-    required this.houseNumber,
-    required this.city,
-    required this.zip,
+    required this.address,
     required this.roles,
     this.category,
   });
@@ -34,14 +28,39 @@ class UserModel {
     email: json['email'],
     phone: json['phone'],
     membershipNumber: json['membership_number'],
-    street: json['street'],
-    houseNumber: json['house_number'],
-    city: json['city'],
-    zip: json['zip'],
+    address: Address(
+      street: json['street'],
+      houseNumber: json['house_number'],
+      city: json['city'],
+      zip: json['zip'],
+    ),
     category: json['category'],
     roles: List<Role>.from(json['roles'].map((x) => Role.fromJson(x))),
   );
 }
+
+
+class Address {
+  String street;
+  String houseNumber;
+  String city;
+  String zip;
+
+  Address({
+    required this.street,
+    required this.houseNumber,
+    required this.city,
+    required this.zip,
+  });
+
+  factory Address.fromJson(Map<String, dynamic> json) => Address(
+    street: json['street'],
+    houseNumber: json['houseNumber'],
+    city: json['city'],
+    zip: json['zip'],
+  );
+}
+
 
 
 class Role {
