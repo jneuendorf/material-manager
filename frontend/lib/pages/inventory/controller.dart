@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
+import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/extensions/material/controller.dart';
 
 
 const inventoryRoute = '/inventory';
@@ -10,4 +14,69 @@ class InventoryPageBinding implements Bindings {
   }
 }
 
-class InventoryPageController extends GetxController {}
+class InventoryPageController extends GetxController {
+    final materialController = Get.find<MaterialController>();
+
+    final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
+    final RxMap<EquipmentType, String> typeFilterOptions = <EquipmentType, String>{}.obs;
+    final RxBool selectAll = false.obs;
+
+    final Rxn<EquipmentType> selectedTypeFilter = Rxn<EquipmentType>();
+    final Rxn<ConditionModel> selectedConditionFilter = Rxn<ConditionModel>();
+    final RxString searchTerm = ''.obs;
+
+    List<EquipmentType> availableEquipmentTypes = [];
+    List<MaterialModel> availableMaterial = [];
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+
+    availableMaterial = await materialController.getAllMaterial();
+    filteredMaterial.value = availableMaterial;
+
+    availableEquipmentTypes = await materialController.getAllEquipmentTypes();
+
+    for (EquipmentType item in availableEquipmentTypes) {
+      typeFilterOptions[item] = item.description;
+    }
+  }
+
+   /// Filters the [availableMaterial] by the [searchTerm], 
+   /// the [selectedTypeFilter] and the [selectedConditonFilter].
+  void runFilter() {
+    final String term = searchTerm.value.toLowerCase();
+  }
+
+  /// Handles the selection of a [value] out of [typeFilterOption].
+  void onTypeFilterSelected(String value) {
+    // set selected filter
+    if (value != 'all'.tr) {
+      selectedTypeFilter.value = typeFilterOptions.entries.firstWhere(
+        (MapEntry<EquipmentType, String> entry) => entry.value == value
+      ).key;
+    } else {
+      selectedTypeFilter.value = null;
+    }
+
+    runFilter();
+  }
+
+  /// Handles the selection of a [value] out of all conditons.
+  void onConditionFilterSelected(String value) {
+    // set selected filter
+    if (value != 'all'.tr) {
+      selectedConditionFilter.value = ConditionModel.values.firstWhere(
+        (ConditionModel condition) => condition.toString().split('.').last.tr == value
+      );
+    } else {
+      selectedConditionFilter.value = null;
+    }
+
+    runFilter();
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('dd.MM.yyyy').format(date);
+  }
+}

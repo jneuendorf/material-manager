@@ -91,6 +91,15 @@ class LocaleString extends Translations {
       'usage_start_must_be_after_rental_start': 'Usage start must be after rental start',
       'usage_end_must_be_before_rental_end': 'Usage end must be before rental end',
       'reservation_completed': 'Reservation completed',
+      'condition': 'Condition',
+      'good': 'Good',
+      'broken': 'Broken',
+      'add_item': 'Add Item',
+      'next_inspection': 'Next Inspection',
+      'product_details': 'Product Details',
+      'insatallation': 'Installation',
+      'usage_in_days': 'Usage in Days',
+      'rental_fee': 'Rental Fee',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -176,6 +185,15 @@ class LocaleString extends Translations {
       'usage_start_must_be_after_rental_start': 'Nutzungsbeginn muss nach Leihbeginn liegen',
       'usage_end_must_be_before_rental_end': 'Nutzungsende muss vor Leihende liegen',
       'reservation_completed': 'Reservierung abgeschlossen',
+      'condition': 'Zustand',
+      'good': 'Gut',
+      'broken': 'Defekt',
+      'add_item': 'Gegenstand hinzufügen',
+      'next_inspection': 'Nächste Prüfung',
+      'product_details': 'Produktdetails',
+      'installation': 'Inbetriebnahme',
+      'usage_in_days': 'Nutzungsdauer in Tagen',
+      'rental_fee': 'Verleihgebühr',
     }
   };
 }

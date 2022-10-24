@@ -10,7 +10,7 @@ class MaterialModel {
   String instructions;
   DateTime nextInspectionDate;
   double rentalFee;
-  Condition condition;
+  ConditionModel condition;
   int usage;
   PurchaseDetails purchaseDetails;
   List<Property> properties;
@@ -46,7 +46,7 @@ class MaterialModel {
     instructions: json['instructions'],
     nextInspectionDate: DateTime.parse(json['next_inspection_date']),
     rentalFee: json['rental_fee'],
-    condition: Condition.values.byName(json['condition']),
+    condition: ConditionModel.values.byName(json['condition']),
     usage: json['usage'],
     purchaseDetails: PurchaseDetails.fromJson(json['purchase_details']),
     properties: List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
@@ -69,7 +69,7 @@ class SerialNumber {
   );
 }
 
-enum Condition {
+enum ConditionModel {
   good,
   broken,
 }
