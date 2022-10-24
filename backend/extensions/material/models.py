@@ -10,7 +10,6 @@ Model: Type[CrudModel] = db.Model
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    serial_number = db.Column(db.String)
     inventory_number = db.Column(db.String)
     max_life_expectancy = db.Column(db.String)
     max_service_duration = db.Column(db.String)
@@ -25,6 +24,8 @@ class Material(Model):  # type: ignore
 class SerialNumber(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     material_id = db.Column(db.ForeignKey(Material.id))
+    serial_number = db.Column(db.String)
+    production_date = db.Column(db.Date)
     manufacturer = db.Column(db.String)
 
 
@@ -34,7 +35,6 @@ class PurchaseDetails(Model):  # type: ignore
     purchase_date = db.Column(db.Date)
     invoice_number = db.Column(db.String)
     merchant = db.Column(db.String)
-    production_date = db.Column(db.Date)
     purchase_price = db.Column(db.Float)
     suggested_retail_price = db.Column(db.Float)
 
@@ -42,6 +42,7 @@ class PurchaseDetails(Model):  # type: ignore
 class EquipmentType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     material_id = db.Column(db.ForeignKey(Material.id))
+    name = db.Column(db.String)
     description = db.Column(db.String)
 
 

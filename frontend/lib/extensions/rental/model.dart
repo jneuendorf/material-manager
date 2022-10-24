@@ -1,13 +1,13 @@
 
 class RentalModel {
-  final int id;
+  final int? id;
   final int customerId;  // references User.id
-  final int lenderId;   // references User.id
-  final int returnToId; // references User.id
+  final int? lenderId;   // references User.id
+  final int? returnToId; // references User.id
   final List<int> materialIds; // references Material.id
   double cost;
-  double deposit;
-  RentalStatus status;
+  double? deposit;
+  RentalStatus? status;
   DateTime createdAt;
   DateTime startDate;
   DateTime endDate;
@@ -15,14 +15,14 @@ class RentalModel {
   DateTime usageEndDate;
 
   RentalModel({
-    required this.id,
+    this.id,
     required this.customerId,
-    required this.lenderId,
-    required this.returnToId,
+    this.lenderId,
+    this.returnToId,
     required this.materialIds,
     required this.cost,
-    required this.deposit,
-    required this.status,
+    this.deposit,
+    this.status,
     required this.createdAt,
     required this.startDate,
     required this.endDate,

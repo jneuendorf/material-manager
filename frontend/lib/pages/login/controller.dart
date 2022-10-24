@@ -24,7 +24,6 @@ class LoginController extends GetxController {
 
   final RxBool hideChars = true.obs;
   final RxBool rememberMe = false.obs;
-  final RxString error = ''.obs;
 
   void toggleHideChars() {
     hideChars.value = !hideChars.value;
@@ -47,22 +46,7 @@ class LoginController extends GetxController {
       }
       Get.toNamed(rentalRoute);
     } on DioError catch (e) {
-      var response = e.response;
-      if (response != null) {
-        var statusCode = response.statusCode;
-        if (statusCode != null && 400 <= statusCode && statusCode < 500) {
-          error.value = (response.data['message'] as String).tr;
-        } else {
-          // TODO: Display unknown error
-          error.value = 'An unknown error has occurred'.tr;
-        }
-      }
-      else {
-        debugPrint(e.message);
-        error.value = 'An unknown error has occurred'.tr;
-      }
-      // TODO: uncomment after merge? What is it for?
-      // apiService.defaultCatch(e);
+      apiService.defaultCatch(e);
     }
   }
 }

@@ -38,9 +38,12 @@ dependencies:
   cupertino_icons: ^1.0.5
   dio: ^4.0.6
   get: ^4.6.5
-  get_storage: ^2.0.3
   smooth_page_indicator: ^1.0.0+2
   flutter_secure_storage: ^6.0.0
+  data_table_2: ^2.3.7
+  intl: ^0.17.0
+  lottie: ^1.4.3
+  jwt_decoder: ^2.0.1
 
 dev_dependencies:
   flutter_test:
@@ -66,6 +69,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/lotties/
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

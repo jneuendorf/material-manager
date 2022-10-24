@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
+import 'package:frontend/common/buttons/dav_button.dart';
 
 
 class LoginPage extends GetView<LoginController> {
@@ -22,21 +23,21 @@ class LoginPage extends GetView<LoginController> {
           child: Column(
             children: [
               // EMAIL
-              Obx(() => TextFormField(
+              TextFormField(
                 controller: controller.emailController,
-                cursorColor: controller.error.value == '' ? Colors.black : Colors.red,
+                cursorColor: Colors.black,
                 keyboardType: TextInputType.number,
                 decoration: InputDecoration(
                   labelText: 'email'.tr,
-                  labelStyle: TextStyle(color: controller.error.value == '' ? Colors.black54 : Colors.red),
-                  prefixIcon: Icon(Icons.numbers, color: controller.error.value == '' ? Colors.black45 : Colors.red),
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  prefixIcon: const Icon(Icons.numbers, color: Colors.black45),
                   border: const OutlineInputBorder(),
                   focusedBorder: const OutlineInputBorder(),
                 ),
                 onFieldSubmitted: (value) {
                   controller.login();
                 },
-              )),
+              ),
               const SizedBox(height: 18),
 
               // PASSWORD
@@ -46,10 +47,10 @@ class LoginPage extends GetView<LoginController> {
                 decoration: InputDecoration(
                   focusColor: Colors.white,
                   labelText: 'password'.tr,
-                  labelStyle: TextStyle(color: controller.error.value == '' ? Colors.black54 : Colors.red),
-                  prefixIcon: Icon(
+                  labelStyle: const TextStyle(color: Colors.black54),
+                  prefixIcon: const Icon(
                     Icons.password_outlined,
-                    color: controller.error.value == '' ? Colors.black45 : Colors.red
+                    color: Colors.black45,
                   ),
                   border: const OutlineInputBorder(),
                   focusedBorder: const OutlineInputBorder(),
@@ -69,18 +70,6 @@ class LoginPage extends GetView<LoginController> {
                 },
                 obscureText: controller.hideChars.value,
               )),
-
-              // ERROR MESSAGE
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18.0),
-                child: Obx(() => Text(
-                  controller.error.value,
-                  style: const TextStyle(
-                    fontSize: 16,
-                    color: Colors.red,
-                  ),
-                )),
-              ),
 
               // REMEMBER ME
               Row(
@@ -104,21 +93,9 @@ class LoginPage extends GetView<LoginController> {
                 ],
               ),
 
-              // LOGIN BUTTON
-              SizedBox(
-                width: double.infinity,
-                height: 60,
-                child: ElevatedButton(
-                  onPressed: controller.login,
-                  child: Text(
-                    'login'.tr,
-                    style: const TextStyle(
-                      fontWeight: FontWeight.w900,
-                      fontSize: 20,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+              DavButton(
+                text: 'login'.tr,
+                onPressed: controller.login,
               ),
             ],
           ),
@@ -131,20 +108,9 @@ class LoginPage extends GetView<LoginController> {
         // SIGNUP BUTTON
         ConstrainedBox(
           constraints: controller.constraints,
-          child: SizedBox(
-            width: double.infinity,
-            height: 60,
-            child: ElevatedButton(
-              onPressed: () => Get.toNamed(signupRoute),
-              child: Text(
-                'signup'.tr,
-                style: const TextStyle(
-                  fontWeight: FontWeight.w900,
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              ),
-            ),
+          child: DavButton(
+            onPressed: () => Get.toNamed(signupRoute),
+            text: 'signup'.tr,
           ),
         ),
       ],

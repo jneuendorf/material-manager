@@ -1,29 +1,97 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:get/get.dart';
+
 import 'package:frontend/common/components/dav_app_bar.dart';
 import 'package:frontend/common/components/dav_footer.dart';
+import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/pages/inspection/controller.dart';
+import 'package:frontend/pages/inventory/controller.dart';
+import 'package:frontend/pages/lender/controller.dart';
 
 
 class PageWrapper extends StatelessWidget {
   final Widget child;
+  final String? pageTitle;
   final bool loggedIn;
+  final bool showBackButton;
+  final bool showFooter;
+  final bool showPadding;
 
-  const PageWrapper({super.key, required this.child, this.loggedIn = true});
+  PageWrapper({
+    super.key, 
+    required this.child, 
+    this.pageTitle,
+    this.loggedIn = true,
+    this.showBackButton = false,
+    this.showFooter = true,
+    this.showPadding = true,
+  });
+
+  final  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
 
   @override
   Widget build(BuildContext context) => Scaffold(
-    appBar: kIsWeb ? DavAppBar(loggedIn: loggedIn) : null,
-    body: Padding(
-      padding: const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0),
-      child: Column(
-        children: [
-          Expanded(
-            child: child,
-          ),
-          if (kIsWeb) const DavFooter(),
-        ],
+    key: scaffoldKey,
+    appBar: DavAppBar(
+      title: pageTitle,
+      loggedIn: loggedIn, 
+      scaffoldKey: scaffoldKey, 
+      showBackButton: showBackButton,
+    ),
+    drawer: !kIsWeb ? buildDrawer() : null,
+    body: SafeArea(
+      child: Padding(
+        padding: showPadding 
+          ? const EdgeInsets.only(top: 16.0, right: 16.0, left: 16.0) 
+          : EdgeInsets.zero,
+        child: Column(
+          children: [
+            Expanded(
+              child: child,
+            ),
+            if (kIsWeb && showFooter) showPadding 
+              ? const DavFooter() 
+              : const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 16.0),
+                child: DavFooter(),
+              ),
+          ],
+        ),
       ),
+    ),
+  );
+
+  Drawer buildDrawer() => Drawer(
+    child: ListView(
+      padding: EdgeInsets.zero,
+      children: [
+        DrawerHeader(
+          child: Image.asset('assets/images/dav_logo_small.png'),
+        ),
+        ListTile(
+          title: Text('rental'.tr),
+          onTap: () => Get.offNamed(rentalRoute),
+        ),
+        ListTile(
+          title: Text('inventory'.tr),
+          onTap: () => Get.offNamed(inventoryRoute),
+        ),
+        ListTile(
+          title: Text('inspection'.tr),
+          onTap: () => Get.offNamed(inspectionRoute),
+        ),
+        ListTile(
+          title: Text('lender'.tr),
+          onTap: () => Get.offNamed(lenderRoute),
+        ),
+        ListTile(
+          title: Text('administration'.tr),
+          onTap: () => Get.offNamed(administrationRoute),
+        ),
+      ]
     ),
   );
 }

@@ -36,11 +36,9 @@ class SignupPage extends GetView<SignupController> {
               dotColor: Get.theme.colorScheme.onSurface,
               activeDotColor: Get.theme.primaryColor,
             ),
-            onDotClicked: (index){
-              controller.pageController.animateToPage(index,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeInOut);
-            }
+            onDotClicked: (int index) => controller.pageController.animateToPage(index,
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut)
         ),
       ],
     ),
