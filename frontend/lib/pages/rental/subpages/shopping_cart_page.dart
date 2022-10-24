@@ -35,7 +35,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('shopping_cart'.tr, 
+                Text('shopping_cart'.tr,
                   style: Get.textTheme.headline6!.copyWith(fontSize: 30),
                 ),
                 const Divider(),
@@ -98,7 +98,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text('retal_period'.tr.toUpperCase(), 
+          child: Text('rental_period'.tr.toUpperCase(),
             style: Get.textTheme.subtitle2,
           ),
         ),
@@ -106,8 +106,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           children: [
             Expanded(
               child: buildCustomTextField(
-                controller: rentalPageController.rentalStartController, 
-                labelText: 'enter_start_date'.tr, 
+                controller: rentalPageController.rentalStartController,
+                labelText: 'enter_start_date'.tr,
                 validator: rentalPageController.validateDateTime,
               ),
             ),
@@ -123,8 +123,8 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         ) : Column(
           children: [
             buildCustomTextField(
-              controller: rentalPageController.rentalStartController, 
-              labelText: 'enter_start_date'.tr, 
+              controller: rentalPageController.rentalStartController,
+              labelText: 'enter_start_date'.tr,
               validator: rentalPageController.validateDateTime,
             ),
             const SizedBox(height: 12.0),
@@ -134,10 +134,10 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               validator: rentalPageController.validateDateTime,
             ),
           ],
-        ), 
+        ),
         Padding(
           padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
-          child: Text('usage_period'.tr.toUpperCase(), 
+          child: Text('usage_period'.tr.toUpperCase(),
             style: Get.textTheme.subtitle2,
           ),
         ),
@@ -219,7 +219,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(rentalPageController.shoppingCart[index].equipmentType.description, 
+                Text(rentalPageController.shoppingCart[index].equipmentType.description,
                   style: Get.textTheme.subtitle2,
                 ),
                 Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.unit}'),
@@ -247,9 +247,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     )),
   );
 
-  Widget buildCustomTextField({required TextEditingController controller, 
+  Widget buildCustomTextField({required TextEditingController controller,
   required String labelText, required String? Function(String?)? validator}) {
-    controller.addListener(() { 
+    controller.addListener(() {
       if (hadError.value) rentalPageController.shoppingCartFormKey.currentState!.validate();
     });
     return TextFormField(

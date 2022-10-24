@@ -34,14 +34,14 @@ class UserController extends GetxController {
     ];
   }
 
-  Future<List<Right>> getAllRights() async {
+  Future<List<Permission>> getAllRights() async {
     await Future.delayed(const Duration(milliseconds: 500));
 
     return [
-      mockAdministrationRight,
-      mockLenderRight,
-      mockInventoryRight,
-      mockInspectionRight,
+      mockAdministrationPermission,
+      mockLenderPermission,
+      mockInventoryPermission,
+      mockInspectionPermission,
     ];
   }
 
@@ -54,10 +54,10 @@ class UserController extends GetxController {
         data: {
           'name': role.name,
           'description': role.description,
-          'rights': role.rights.map((Right r) => {
-            'id': r.id,
-            'name': r.name,
-            'description': r.description,
+          'permissions': role.permissions.map((Permission p) => {
+            'id': p.id,
+            'name': p.name,
+            'description': p.description,
           }).toList(),
         },
       );

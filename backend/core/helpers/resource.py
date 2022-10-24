@@ -11,6 +11,10 @@ from core.helpers.orm import CrudModel
 M = TypeVar("M", bound=CrudModel)
 
 
+class BaseResource(MethodResource, Resource):
+    url: str
+
+
 class ModelMeta(SQLAlchemySchema.Meta, Generic[M]):
     fields: Collection[str]
     model: Type[M]
@@ -20,7 +24,7 @@ class ModelMetaSchema(SQLAlchemySchema, Generic[M]):
     Meta: Type[ModelMeta[M]]
 
 
-class ModelResource(MethodResource, Resource, Generic[M]):
+class ModelResource(BaseResource, Generic[M]):
     """Specifies how to serialize a model instance for each request type."""
 
     url: str
