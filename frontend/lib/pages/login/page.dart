@@ -21,6 +21,7 @@ class LoginPage extends GetView<LoginController> {
           constraints: controller.constraints,
           child: Column(
             children: [
+              // EMAIL
               Obx(() => TextFormField(
                 controller: controller.emailController,
                 cursorColor: controller.error.value == '' ? Colors.black : Colors.red,
@@ -32,18 +33,23 @@ class LoginPage extends GetView<LoginController> {
                   border: const OutlineInputBorder(),
                   focusedBorder: const OutlineInputBorder(),
                 ),
+                onFieldSubmitted: (value) {
+                  controller.login();
+                },
               )),
               const SizedBox(height: 18),
+
+              // PASSWORD
               Obx(() => TextFormField(
                 controller: controller.passwordController,
                 cursorColor: Colors.black,
                 decoration: InputDecoration(
                   focusColor: Colors.white,
                   labelText: 'password'.tr,
-                  labelStyle: const TextStyle(color: Colors.black54),
-                  prefixIcon: const Icon(
+                  labelStyle: TextStyle(color: controller.error.value == '' ? Colors.black54 : Colors.red),
+                  prefixIcon: Icon(
                     Icons.password_outlined,
-                    color: Colors.black45,
+                    color: controller.error.value == '' ? Colors.black45 : Colors.red
                   ),
                   border: const OutlineInputBorder(),
                   focusedBorder: const OutlineInputBorder(),
@@ -58,8 +64,25 @@ class LoginPage extends GetView<LoginController> {
                     onPressed: controller.toggleHideChars,
                   ),
                 ),
+                onFieldSubmitted: (value) {
+                  controller.login();
+                },
                 obscureText: controller.hideChars.value,
               )),
+
+              // ERROR MESSAGE
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: 18.0),
+                child: Obx(() => Text(
+                  controller.error.value,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    color: Colors.red,
+                  ),
+                )),
+              ),
+
+              // REMEMBER ME
               Row(
                 children: [
                   Padding(
@@ -71,14 +94,17 @@ class LoginPage extends GetView<LoginController> {
                       onChanged: controller.rememberMe,
                     )),
                   ),
-                  Text('remember_me'.tr,
-                  style: TextStyle(
-                    fontSize: 22,
-                    color: Colors.grey.shade700,
-                  ),
+                  Text(
+                    'remember_me'.tr,
+                    style: TextStyle(
+                      fontSize: 22,
+                      color: Colors.grey.shade700,
+                    ),
                   ),
                 ],
               ),
+
+              // LOGIN BUTTON
               SizedBox(
                 width: double.infinity,
                 height: 60,
@@ -101,6 +127,8 @@ class LoginPage extends GetView<LoginController> {
           padding: EdgeInsets.symmetric(vertical: 18.0),
           child: Divider(),
         ),
+
+        // SIGNUP BUTTON
         ConstrainedBox(
           constraints: controller.constraints,
           child: SizedBox(

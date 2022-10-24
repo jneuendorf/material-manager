@@ -35,33 +35,30 @@ class LoginController extends GetxController {
 
   Future<void> login() async {
     try {
-      var response = await apiService.mainClient.post(
-        '/login',
-        data: {
+      var response = await apiService.mainClient.post('/login', data: {
           'email': emailController.text,
           'password': passwordController.text,
-        },
-      );
-      var statusCode = response.statusCode;
-      var responseData = response.data;
-      // TODO: What do we do if the status code is null?
-      if (statusCode != null) {
-        if (statusCode == 200) {
-          var accessToken = responseData['access_token'] as String;
-          if (kDebugMode) {
-            print(accessToken);
-            // TODO: Store token
-          }
-          Get.toNamed(rentalRoute);
-        } else if (400 <= statusCode && statusCode < 500) {
-          error.value = (responseData['message'] as String).tr;
+      });
+      var accessToken = response.data['access_token'] as String;
+      debugPrint(accessToken);
+      // TODO: Store token
+      Get.toNamed(rentalRoute);
+    } on DioError catch (e) {
+      var response = e.response;
+      if (response != null) {
+        var statusCode = response.statusCode;
+        if (statusCode != null && 400 <= statusCode && statusCode < 500) {
+          error.value = (response.data['message'] as String).tr;
         } else {
           // TODO: Display unknown error
           error.value = 'An unknown error has occurred'.tr;
         }
       }
-    } on DioError catch (e) {
-      // TODO: uncomment after merge
+      else {
+        debugPrint(e.message);
+        error.value = 'An unknown error has occurred'.tr;
+      }
+      // TODO: uncomment after merge? What is it for?
       // apiService.defaultCatch(e);
     }
   }
