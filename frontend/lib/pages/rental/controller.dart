@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/api.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
+import 'package:frontend/extensions/rental/model.dart';
+import 'package:frontend/extensions/rental/controller.dart';
 
 
 const rentalRoute = '/rental';
 const rentalShoppingCartRoute = '/rental/shoppingCart';
+const rentalCompletedRoute = '/rental/completed';
 
 class RentalPageBinding implements Bindings {
   @override
@@ -19,6 +23,7 @@ class RentalPageBinding implements Bindings {
 
 class RentalPageController extends GetxController with GetSingleTickerProviderStateMixin {
   final materialController = Get.find<MaterialController>();
+  final rentalController = Get.find<RentalController>();
 
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
@@ -141,6 +146,58 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       return 'date_is_mandatory'.tr;
     }
     return null;
+  }
+
+  String? validateUsageStartDate(String? value) {
+    if(value!.isEmpty) {
+      return 'date_is_mandatory'.tr;
+    }
+
+    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+    DateTime usageStart = dateFormat.parse(usageStartController.text);
+    DateTime rentalStart = dateFormat.parse(rentalStartController.text);
+
+    if (usageStart.isBefore(rentalStart)) {
+      return 'usage_start_must_be_after_rental_start'.tr;
+    }
+    return null;
+  }
+
+  String? validateUsageEndDate(String? value) {
+    if(value!.isEmpty) {
+      return 'date_is_mandatory'.tr;
+    }
+
+    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+    DateTime usageEnd = dateFormat.parse(usageStartController.text);
+    DateTime rentalEnd = dateFormat.parse(rentalStartController.text);
+
+    if (usageEnd.isBefore(rentalEnd)) {
+      return 'usage_end_must_be_before_rental_end'.tr;
+    }
+    return null;
+  }
+
+  /// Handle ckeckout button press.
+  Future<void> onCheckoutTap() async {
+    if (shoppingCartFormKey.currentState!.validate()) {
+      DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+      RentalModel rental = RentalModel(
+        customerId: ApiService().tokenInfo!['id'],  // will throw error if tokenInfo is null
+        materialIds: shoppingCart.map((MaterialModel item) => item.id).toList(),
+        cost: totalPrice,
+        createdAt: DateTime.now(),
+        startDate: dateFormat.parse(rentalStartController.text),
+        endDate: dateFormat.parse(rentalEndController.text),
+        usageStartDate: dateFormat.parse(usageStartController.text),
+        usageEndDate: dateFormat.parse(usageEndController.text),
+      );
+      
+      final int? id = await rentalController.addRental(rental);
+      if (id != null) {
+        Get.toNamed(rentalCompletedRoute);
+      }
+    }
   }
 
 }

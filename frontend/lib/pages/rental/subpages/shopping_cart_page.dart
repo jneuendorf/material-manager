@@ -9,10 +9,17 @@ import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/dav_button.dart';
 
 
-class ShoppingCartPage extends StatelessWidget {
+class ShoppingCartPage extends StatefulWidget {
   const ShoppingCartPage({super.key});
 
+  @override
+  State<ShoppingCartPage> createState() => _ShoppingCartPageState();
+}
+
+class _ShoppingCartPageState extends State<ShoppingCartPage> {
   static final rentalPageController = Get.find<RentalPageController>();
+
+  final RxBool hadError = false.obs;
 
   @override
   Widget build(BuildContext context) => PageWrapper(
@@ -140,7 +147,7 @@ class ShoppingCartPage extends StatelessWidget {
               child: buildCustomTextField(
                 controller: rentalPageController.usageStartController,
                 labelText: 'enter_start_date'.tr,
-                validator: rentalPageController.validateDateTime,
+                validator: rentalPageController.validateUsageStartDate,
               ),
             ),
             const SizedBox(width: 8.0),
@@ -148,7 +155,7 @@ class ShoppingCartPage extends StatelessWidget {
               child: buildCustomTextField(
                 controller: rentalPageController.usageEndController,
                 labelText: 'enter_end_date'.tr,
-                validator: rentalPageController.validateDateTime,
+                validator: rentalPageController.validateUsageEndDate,
               ),
             ),
           ],
@@ -157,13 +164,13 @@ class ShoppingCartPage extends StatelessWidget {
             buildCustomTextField(
               controller: rentalPageController.usageStartController,
               labelText: 'enter_start_date'.tr,
-              validator: rentalPageController.validateDateTime,
+              validator: rentalPageController.validateUsageStartDate,
             ),
             const SizedBox(height: 12.0),
             buildCustomTextField(
               controller: rentalPageController.usageEndController,
               labelText: 'enter_end_date'.tr,
-              validator: rentalPageController.validateDateTime,
+              validator: rentalPageController.validateUsageEndDate,
             ),
           ],
         ),
@@ -188,7 +195,7 @@ class ShoppingCartPage extends StatelessWidget {
       Padding(
         padding: const EdgeInsets.only(top: 32.0),
         child: DavButton(
-          onPressed: () => rentalPageController.shoppingCartFormKey.currentState!.validate(),
+          onPressed: rentalPageController.onCheckoutTap,
           text: 'checkout'.tr,
           color: Colors.black,
         ),
@@ -240,19 +247,30 @@ class ShoppingCartPage extends StatelessWidget {
     )),
   );
 
-  TextFormField buildCustomTextField({required TextEditingController controller, 
-  required String labelText, required String? Function(String?)? validator}) => TextFormField(
-    controller: controller,
-    readOnly: true,
-    decoration: InputDecoration(
-      focusColor: Colors.white,
-      prefixIcon: const Icon(Icons.calendar_today),
-      labelText: labelText,
-      enabledBorder: const OutlineInputBorder(),
-      focusedBorder: const OutlineInputBorder(),
-    ),
-    onTap: () async => controller.text = 
-      (await rentalPageController.pickDate()) ?? '',
-    validator: validator,
-  );
+  Widget buildCustomTextField({required TextEditingController controller, 
+  required String labelText, required String? Function(String?)? validator}) {
+    controller.addListener(() { 
+      if (hadError.value) rentalPageController.shoppingCartFormKey.currentState!.validate();
+    });
+    return TextFormField(
+      controller: controller,
+      readOnly: true,
+      decoration: InputDecoration(
+        focusColor: Colors.white,
+        prefixIcon: const Icon(Icons.calendar_today),
+        labelText: labelText,
+        enabledBorder: const OutlineInputBorder(),
+        focusedBorder: const OutlineInputBorder(),
+        errorBorder: const OutlineInputBorder(),
+      ),
+      onTap: () async => controller.text = (await rentalPageController.pickDate()) ?? '',
+      validator: (String? s) {
+        String? errorMsg =  validator!(s);
+        if (errorMsg != null) {
+          hadError.value = true;
+        }
+        return errorMsg;
+      },
+    );
+  }
 }

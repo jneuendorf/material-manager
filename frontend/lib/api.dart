@@ -2,6 +2,8 @@ import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 
 const baseUrl = 'http://localhost:5000';
@@ -16,7 +18,17 @@ class ApiService extends GetxService {
     baseUrl: authUrl,
   ));
 
+  /// Needed so the token can be accessed from everywhere in the app.
+  /// tokenInfo should countain userId, email, and roles/permissions.
+  late final Map<String,dynamic>? tokenInfo;
+
   Future<ApiService> init() async {
+    final String? aT = GetStorage().read('aT');
+
+    if (aT != null) {
+      tokenInfo = JwtDecoder.decode(aT);
+    }
+
     Interceptor interceptor = InterceptorsWrapper(
       onRequest: (options, handler) async {
         // vlaidate token

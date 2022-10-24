@@ -88,6 +88,9 @@ class LocaleString extends Translations {
       'network_error': 'Network Error',
       'network_error_occured': 'A Network Error occured',
       'edit_user': 'Edit User',
+      'usage_start_must_be_after_rental_start': 'Usage start must be after rental start',
+      'usage_end_must_be_before_rental_end': 'Usage end must be before rental end',
+      'reservation_completed': 'Reservation completed',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -170,6 +173,9 @@ class LocaleString extends Translations {
       'network_error': 'Netzwerkfehler',
       'network_error_occured': 'Ein Netzwerkfehler ist aufgetreten',
       'edit_user': 'Benutzer bearbeiten',
+      'usage_start_must_be_after_rental_start': 'Nutzungsbeginn muss nach Leihbeginn liegen',
+      'usage_end_must_be_before_rental_end': 'Nutzungsende muss vor Leihende liegen',
+      'reservation_completed': 'Reservierung abgeschlossen',
     }
   };
 }
