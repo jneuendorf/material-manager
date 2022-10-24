@@ -33,7 +33,7 @@ final Role mockBasicRole = Role(
   permissions: [],
 );
 
-final Role mockIncpectorRole = Role(
+final Role mockInspectorRole = Role(
   id: 2,
   name: 'Inspector',
   description: 'Can do inspections',
@@ -71,10 +71,12 @@ final List<UserModel> mockUsers = [
     email: 'john.doe@gmail.com',
     phone: '+49123456789',
     membershipNumber: '123456',
-    street: 'Musterstraße',
-    houseNumber: '1',
-    city: 'Musterstadt',
-    zip: '12345',
+    address: Address(
+      street: 'Musterstraße',
+      houseNumber: '1',
+      city: 'Musterstadt',
+      zip: '12345',
+    ),
     roles: [
       mockBasicRole,
     ],
@@ -86,10 +88,12 @@ final List<UserModel> mockUsers = [
     email: 'tim.doe@gmail.com',
     phone: '+4914345569',
     membershipNumber: '1235432',
-    street: 'Musterweg',
-    houseNumber: '12',
-    city: 'Musterhausen',
-    zip: '54321',
+    address: Address(
+      street: 'Musterweg',
+      houseNumber: '12',
+      city: 'Musterhausen',
+      zip: '54321',
+    ),
     roles: [
       mockInstructorRole,
     ],
@@ -101,12 +105,14 @@ final List<UserModel> mockUsers = [
     email: 'sarah.koe@gmail.com',
     phone: '+4914341234229',
     membershipNumber: '998432',
-    street: 'Musterweg',
-    houseNumber: '2',
-    city: 'Musterhausen',
-    zip: '54321',
+    address: Address(
+      street: 'Musterweg',
+      houseNumber: '2',
+      city: 'Musterhausen',
+      zip: '54321',
+    ),
     roles: [
-      mockIncpectorRole,
+      mockInspectorRole,
       mockAdministratiorRole,
     ],
   ),
@@ -117,10 +123,12 @@ final List<UserModel> mockUsers = [
     email: 'klara.koe@gmail.com',
     phone: '+4914333332129',
     membershipNumber: '091234',
-    street: 'Klosterstraße',
-    houseNumber: '26',
-    city: 'Musterhausen',
-    zip: '54321',
+    address: Address(
+      street: 'Klosterstraße',
+      houseNumber: '26',
+      city: 'Musterhausen',
+      zip: '54321',
+    ),
     roles: [
       mockAdministratiorRole,
     ],

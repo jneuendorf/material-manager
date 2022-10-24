@@ -1,5 +1,4 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
@@ -7,12 +6,14 @@ import 'package:get/get.dart';
 
 const loginRoute = '/login';
 
+
 class LoginBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<LoginController>(() => LoginController());
   }
 }
+
 
 class LoginController extends GetxController {
   final ApiService apiService = Get.find<ApiService>();
@@ -40,8 +41,10 @@ class LoginController extends GetxController {
           'password': passwordController.text,
       });
       var accessToken = response.data['access_token'] as String;
-      debugPrint(accessToken);
-      // TODO: Store token
+      apiService.storeAccessToken(accessToken);
+      if (rememberMe.isTrue) {
+        // TODO: delete token on tear down
+      }
       Get.toNamed(rentalRoute);
     } on DioError catch (e) {
       var response = e.response;
