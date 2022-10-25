@@ -7,7 +7,8 @@ import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
 
 const loginRoute = '/login';
-const loginApiRoute = '/login';
+const loginApiRoute = '/login';  // relative to the clients baseUrl
+const afterLoginRoute = rentalRoute;
 
 
 class LoginBinding implements Bindings {
@@ -47,7 +48,7 @@ class LoginController extends GetxController {
       if (rememberMe.isTrue) {
         // TODO: delete token on tear down
       }
-      Get.toNamed(rentalRoute);
+      Get.toNamed(afterLoginRoute);
     } on DioError catch (e) {
       apiService.defaultCatch(e);
     }
