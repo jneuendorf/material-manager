@@ -4,6 +4,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
+import 'package:frontend/pages/login/controller.dart';
 
 const signupRoute = '/signup';
 const signupApiRoute = '/signup';
@@ -42,19 +43,23 @@ class SignupController extends GetxController {
 
   Future<void> signup() async {
     try {
-      var response = await apiService.mainClient.post(signupApiRoute, data: {
+      await apiService.mainClient.post(signupApiRoute, data: {
+          'email': signupEmailController.text,
+          'password': signupPasswordController.text,
           'first_name': firstNameController.text,
           'last_name': lastNameController.text,
-          'membership_number': lastNameController.text,
+          'phone': phoneController.text,
+          'membership_number': membershipNumberController.text,
           'street': streetNameController.text,
           'house_number': houseNumberController.text,
           'city': cityController.text,
-          'zip': zipController.text,
-          'password': signupPasswordController.text,
+          'zip_code': zipController.text,
       });
-      var accessToken = response.data['access_token'] as String;
-      apiService.storeAccessToken(accessToken);
-      // Get.toNamed(rentalRoute);
+      Get.snackbar(
+          'success'.tr,
+          'signup_successful'.tr,
+          duration: const Duration(seconds: 4),
+        );
     } on DioError catch (e) {
       apiService.defaultCatch(e);
     }

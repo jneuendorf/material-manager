@@ -10,6 +10,11 @@ const storage = FlutterSecureStorage();
 //  See https://stackoverflow.com/questions/49707028/
 const baseUrl = kDebugMode ? 'http://localhost:5000' : '';
 // const authUrl = 'http://localhost:5000/auth';
+Map<int, String> defaultErrors = {
+  400: 'bad_request'.tr,
+  401: 'unauthorized'.tr,
+  403: 'forbidden'.tr,
+};
 
 class ApiService extends GetxService {
   final Dio mainClient = Dio(BaseOptions(
@@ -58,19 +63,30 @@ class ApiService extends GetxService {
     debugPrint('defaultCatch error: $e');
     var response = e.response;
     if (response != null) {
-      switch (response.statusCode) {
-        case 401:
-          Get.snackbar('error'.tr, 'unauthorized'.tr, duration: const Duration(seconds: 2));
-          debugPrint(response.data);
-          // Get.offNamed(loginRoute);
-          break;
-        default:
-          Get.snackbar('error'.tr, 'unknown_error_occurred'.tr);
-          break;
+      var statusCode = response.statusCode;
+      if (statusCode != null && 400 <= statusCode && statusCode < 500) {
+        String message;
+        try {
+          message = response.data['message'];
+        } catch(e) {
+          message = defaultErrors[statusCode]!;
+        }
+        Get.snackbar(
+          'error'.tr,
+          message.tr,
+          duration: const Duration(seconds: 4),
+        );
+      }
+      else {
+        Get.snackbar('error'.tr, 'unknown_error_occurred'.tr);
       }
     } else {
       debugPrint('no response error: $e');
-      Get.snackbar('network_error'.tr, 'network_error_occurred'.tr, duration: const Duration(seconds: 2));
+      Get.snackbar(
+        'network_error'.tr,
+        'network_error_occurred'.tr,
+        duration: const Duration(seconds: 4),
+      );
     }
   }
 }

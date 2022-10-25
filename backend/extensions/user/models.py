@@ -1,3 +1,4 @@
+import secrets
 from typing import Type
 
 from passlib.hash import argon2
@@ -20,7 +21,9 @@ class User(Model):  # type: ignore
     street = db.Column(db.String(length=100))
     house_number = db.Column(db.String(length=8))  # allow 11A
     city = db.Column(db.String(length=80))
-    zip = db.Column(db.String(length=8))  # allow leading zeros
+    zip_code = db.Column(db.String(length=8))  # allow leading zeros
+    is_active = db.Column(db.Boolean())
+    token = db.Column(db.String(length=44), nullable=True)  # for 32 bytes as base64
     roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
 
     @classmethod
@@ -30,11 +33,17 @@ class User(Model):  # type: ignore
         password: str,
         first_name: str,
         last_name: str,
-        membership_number: str = "",
+        membership_number: str,
+        phone: str,
+        street: str,
+        house_number: str,
+        city: str,
+        zip_code: str,
         *,
         roles: "list[Role]" = None,
     ):
         password_hash: str = argon2.hash(password)
+        token = secrets.token_urlsafe(nbytes=32)
         related = dict(roles=roles) if roles else None
         return cls.create(
             email=email,
@@ -42,6 +51,13 @@ class User(Model):  # type: ignore
             first_name=first_name,
             last_name=last_name,
             membership_number=membership_number,
+            phone=phone,
+            street=street,
+            house_number=house_number,
+            city=city,
+            zip_code=zip_code,
+            is_active=False,
+            token=token,
             _related=related,
         )
 
