@@ -16,14 +16,26 @@ class User(Model):  # type: ignore
     password_hash = db.Column(db.String(length=512), nullable=False)
     first_name = db.Column(db.String(length=64), nullable=False)
     last_name = db.Column(db.String(length=64), nullable=False)
-    membership_number = db.Column(db.String(length=16))
-    phone = db.Column(db.String(length=32))
-    street = db.Column(db.String(length=100))
-    house_number = db.Column(db.String(length=8))  # allow 11A
-    city = db.Column(db.String(length=80))
-    zip_code = db.Column(db.String(length=8))  # allow leading zeros
-    is_active = db.Column(db.Boolean())
-    token = db.Column(db.String(length=44), nullable=True)  # for 32 bytes as base64
+    membership_number = db.Column(db.String(length=16), nullable=False, default="")
+    phone = db.Column(db.String(length=32), nullable=False, default="")
+    street = db.Column(db.String(length=100), nullable=False, default="")
+    house_number = db.Column(
+        db.String(length=8),
+        nullable=False,
+        default="",
+    )  # allow 11A
+    city = db.Column(db.String(length=80), nullable=False, default="")
+    zip_code = db.Column(
+        db.String(length=8),
+        nullable=False,
+        default="",
+    )  # allow leading zeros
+    is_active = db.Column(db.Boolean(), default=False)
+    token = db.Column(
+        db.String(length=44),
+        nullable=False,
+        default="",
+    )  # for 32 bytes as base64
     roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
 
     @classmethod
@@ -33,12 +45,12 @@ class User(Model):  # type: ignore
         password: str,
         first_name: str,
         last_name: str,
-        membership_number: str,
-        phone: str,
-        street: str,
-        house_number: str,
-        city: str,
-        zip_code: str,
+        membership_number: str = "",
+        phone: str = "",
+        street: str = "",
+        house_number: str = "",
+        city: str = "",
+        zip_code: str = "",
         *,
         roles: "list[Role]" = None,
     ):

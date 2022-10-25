@@ -1,10 +1,7 @@
-import 'package:flutter/material.dart';
-
 import 'package:dio/dio.dart';
-import 'package:get/get.dart';
-
+import 'package:flutter/material.dart';
 import 'package:frontend/api.dart';
-import 'package:frontend/pages/login/controller.dart';
+import 'package:get/get.dart';
 
 const signupRoute = '/signup';
 const signupApiRoute = '/signup';

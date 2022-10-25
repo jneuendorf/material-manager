@@ -35,23 +35,15 @@ class Signup(BaseResource):
                 required=True,
                 validate=validate.Email(),  # type: ignore
             ),
-            "password": fields.Str(
-                required=True,
-            ),
-            "first_name": fields.Str(
-                required=True,
-            ),
-            "last_name": fields.Str(
-                required=True,
-            ),
-            "membership_number": fields.Str(
-                load_default=None,
-            ),
-            "phone": fields.Str(),
-            "street": fields.Str(),
-            "house_number": fields.Str(),
-            "city": fields.Str(),
-            "zip_code": fields.Str(),
+            "password": fields.Str(required=True),
+            "first_name": fields.Str(required=True),
+            "last_name": fields.Str(required=True),
+            "membership_number": fields.Str(load_default=""),
+            "phone": fields.Str(load_default=""),
+            "street": fields.Str(load_default=""),
+            "house_number": fields.Str(load_default=""),
+            "city": fields.Str(load_default=""),
+            "zip_code": fields.Str(load_default=""),
         }
     )
     def post(
@@ -123,7 +115,7 @@ class SignupVerification(BaseResource):
         user = UserModel.get_or_none(id=user_id, token=token)
         if user:
             user.update(
-                token=None,  # invalidate token
+                token="",  # invalidate token
                 is_active=True,
             )
             # TODO: How to not hard-code the login URL?
