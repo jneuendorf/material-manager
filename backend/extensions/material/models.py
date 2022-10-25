@@ -8,8 +8,15 @@ from core.helpers.orm import CrudModel
 Model: Type[CrudModel] = db.Model
 
 
+class EquipmentType(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    description = db.Column(db.String)
+
+
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
+    equipment_type_id = db.Column(db.ForeignKey(EquipmentType.id))
     inventory_number = db.Column(db.String)
     max_life_expectancy = db.Column(db.String)
     max_service_duration = db.Column(db.String)
@@ -39,11 +46,16 @@ class PurchaseDetails(Model):  # type: ignore
     suggested_retail_price = db.Column(db.Float)
 
 
-class EquipmentType(Model):  # type: ignore
+class MaterialSet(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    material_id = db.Column(db.ForeignKey(Material.id))
-    name = db.Column(db.String)
-    description = db.Column(db.String)
+    set_name = db.Column(db.String)
+
+
+MaterialTypeSetMapping: Table = db.Table(
+    "material_type_set_mapping",
+    db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
+    db.Column("material_type_id", db.ForeignKey(EquipmentType.id), primary_key=True),
+)
 
 
 class Property(Model):  # type: ignore
