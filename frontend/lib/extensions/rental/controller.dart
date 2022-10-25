@@ -17,7 +17,7 @@ class RentalController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<RentalModel>> getAllRentals()  async {
-    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
@@ -29,7 +29,7 @@ class RentalController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<RentalStatus>> getAllStatuses()  async {
-    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 

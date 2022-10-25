@@ -27,7 +27,7 @@ class ApiService extends GetxService {
   Future<String?> getAccessToken() async {
     // checks if running a test and return null since 
     //[FlutterSecureStorage] cant be accessed in tests.
-    if (Platform.environment.containsKey('FLUTTER_TEST')) return null;
+    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) return null;
     return await storage.read(key: jwtStorageKey);
   }
 
