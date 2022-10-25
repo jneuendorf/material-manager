@@ -5,25 +5,50 @@
 // gestures. You can also use WidgetTester to find child widgets in the widget
 // tree, read text, and verify that the values of widget properties are correct.
 
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:frontend/main.dart';
+import 'package:frontend/pages/login/controller.dart';
+import 'package:frontend/pages/login/page.dart';
+import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/pages/rental/page.dart';
+import 'package:frontend/pages/signup/controller.dart';
+import 'package:frontend/pages/signup/page.dart';
+
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const DavApp());
+  
+  testWidgets('LoginPage Widget Test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await initialConfig();
+    LoginBinding().dependencies();
 
-    //  // Verify that our counter starts at 0.
-    // expect(find.text('0'), findsOneWidget);
-    // expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(const MediaQuery(
+      data: MediaQueryData(),
+      child: MaterialApp(home: LoginPage()),
+    ));
+  });
 
-    // // Tap the '+' icon and trigger a frame.
-    // await tester.tap(find.byIcon(Icons.add));
-    // await tester.pump();
+  testWidgets('SignupPage Widget Test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await initialConfig();
+    SignupBinding().dependencies();
 
-    // // Verify that our counter has incremented.
-    // expect(find.text('0'), findsNothing);
-    // expect(find.text('1'), findsOneWidget);
+    await tester.pumpWidget(const MediaQuery(
+      data: MediaQueryData(),
+      child: MaterialApp(home: SignupPage()),
+    ));
+  });
+
+  testWidgets('RentalPage Widget Test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await initialConfig();
+    RentalPageBinding().dependencies();
+
+    await tester.pumpWidget(const MediaQuery(
+      data: MediaQueryData(),
+      child: MaterialApp(home: RentalPage()),
+    ));
   });
 }

@@ -78,7 +78,7 @@ class RentalPage extends GetView<RentalPageController> {
         children: [
           const Icon(Icons.shopping_cart),
           const SizedBox(width: 4.0),
-          Text('${controller.shoppingCart.length} ${'items'.tr}'),
+          Flexible(child: Text('${controller.shoppingCart.length} ${'items'.tr}')),
           const Spacer(),
           Text('${controller.totalPrice} €'),
         ],
