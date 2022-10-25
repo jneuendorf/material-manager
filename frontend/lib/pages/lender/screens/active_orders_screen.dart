@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/extensions/material/model.dart';
-import 'package:frontend/extensions/rental/model.dart';
-import 'package:frontend/extensions/user/model.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
@@ -38,56 +36,61 @@ class ActiveOrderScreen extends StatelessWidget {
       const Divider(),
       Expanded(
         child: Obx(() {
-          final List<GlobalKey<CollapsableExpansionTileState>> keys = List.generate(
-            lenderPageController.filteredRentals.length, (index) => GlobalKey<CollapsableExpansionTileState>(),
-          );
-          return ListView.separated(
-            itemCount: lenderPageController.filteredRentals.length,
-            separatorBuilder: (BuildContext context, int index) => const Divider(),
-            itemBuilder: (context, index) => CollapsableExpansionTile(
-              key: keys[index],
-              onExpansionChanged: (bool expanded) {
-                if (expanded) {
-                  List<GlobalKey<CollapsableExpansionTileState>> otherKeys = keys.where(
-                    (key) => key != keys[index]
-                  ).toList();
+            final List<GlobalKey<CollapsableExpansionTileState>> keys = List.generate(
+              lenderPageController.filteredRentals.length, 
+              (index) => GlobalKey<CollapsableExpansionTileState>(),
+            );
+            return ListView.separated(
+              itemCount: lenderPageController.filteredRentals.length,
+              separatorBuilder: (BuildContext context, int index) => const Divider(),
+              itemBuilder: (context, index) => CollapsableExpansionTile(
+                key: keys[index],
+                onExpansionChanged: (bool expanded) {
+                  if (expanded) {
+                    List<GlobalKey<CollapsableExpansionTileState>> otherKeys = keys.where(
+                      (key) => key != keys[index]
+                    ).toList();
 
-                  for (var key in otherKeys) {
-                    if (key.currentState!.tileIsExpanded.value) {
-                      key.currentState!.collapse();
+                    for (var key in otherKeys) {
+                      if (key.currentState!.tileIsExpanded.value) {
+                        key.currentState!.collapse();
+                      }
                     }
                   }
-                }
-              },
-              title: Row(
+                },
+                title: buildTileTitle(lenderPageController.filteredRentals[index].obs),
                 children: [
-                  Expanded(child: Text(lenderPageController.filteredRentals[index].id.toString())),
-                  Expanded(child: Text('€ ${lenderPageController.filteredRentals[index].cost.toString()}')),
-                  Expanded(child: Text(lenderPageController.formatDate(lenderPageController.filteredRentals[index].createdAt))),
-                  Expanded(
-                    child: Center(
-                      child: Row(
-                        children: [
-                          Obx(() => DropDownFilterButton(
-                            options: [
-                              'all'.tr,
-                              ...lenderPageController.availableStatuses.map((e) => e.name)
-                            ],
-                            selected: lenderPageController.filteredRentals[index].status!.name,
-                            onSelected: lenderPageController.onFilterSelected,
-                          )),
-                        ],
-                      ),
-                    ),
-                  ),
+                  buildExpansionCard(lenderPageController.filteredRentals[index]),
                 ],
               ),
-              children: [
-                buildExpansionCard(lenderPageController.filteredRentals[index]),
-              ],
-            ),
-        );
+          );
         }),
+      ),
+    ],
+  );
+
+  Widget buildTileTitle(Rx<RentalModel> item) => Row(
+    children: [
+      Expanded(child: Text(item.value.id.toString())),
+      Expanded(child: Text('€ ${item.value.cost.toString()}')),
+      Expanded(child: Text(lenderPageController.formatDate(item.value.createdAt))),
+      Expanded(
+        child: Center(
+          child: Row(
+            children: [
+              Obx(() => DropDownFilterButton(
+                options: [
+                  'all'.tr,
+                  ...lenderPageController.statusOptions.values
+                ],
+                selected: item.value.status!.name,
+                onSelected: (String value) {
+                  // TODO: update rentalStatus
+                },
+              )),
+            ],
+          ),
+        ),
       ),
     ],
   );
@@ -108,7 +111,7 @@ class ActiveOrderScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(6.0),
-            child: SelectableText(getUserName(item)),
+            child: SelectableText(lenderPageController.getUserName(item)),
           ),
           Padding(
             padding: const EdgeInsets.all(6.0),
@@ -117,14 +120,18 @@ class ActiveOrderScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'membership_number'.tr} : ',style:  const TextStyle(color: Colors.black45)),
-                    SelectableText(getMembershipNum(item)),
+                    Text('${'membership_number'.tr} : ',
+                      style:  const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(lenderPageController.getMembershipNum(item)),
                   ],
                 ),
                 Row(
                   children: [
-                    Text('${'order_date'.tr} : ',style:  const TextStyle(color: Colors.black45)),
-                    SelectableText( lenderPageController.formatDate(item.createdAt)),
+                    Text('${'order_date'.tr} : ',
+                      style:  const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(lenderPageController.formatDate(item.createdAt)),
                   ],
                 ),
               ],
@@ -137,14 +144,18 @@ class ActiveOrderScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'order_number'.tr} : ', style: const TextStyle(color: Colors.black45)),
+                    Text('${'order_number'.tr} : ', 
+                      style: const TextStyle(color: Colors.black45),
+                    ),
                     SelectableText(item.id.toString())
                   ],
                 ),
                 Row(
                   children: [
-                    Text('${'rental_period'.tr} : ', style: const TextStyle(color: Colors.black45)),
-                    SelectableText(getRentalPeriod(item)),
+                    Text('${'rental_period'.tr} : ', 
+                      style: const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(lenderPageController.getRentalPeriod(item)),
                   ],
                 )
               ],
@@ -153,17 +164,11 @@ class ActiveOrderScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(6.0),
             child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text('${'usage_period'.tr} : ', style: const TextStyle(color: Colors.black45),),
-                    SelectableText(getUsagePeriod(item)),
-                  ],
+                Text('${'usage_period'.tr} : ', 
+                  style: const TextStyle(color: Colors.black45),
                 ),
-                const SizedBox(width: 500.0),
-
-                const SizedBox(width: 50.0),
+                SelectableText(lenderPageController.getUsagePeriod(item)),
               ],
             ),
           ),
@@ -177,29 +182,34 @@ class ActiveOrderScreen extends StatelessWidget {
                     separatorBuilder: (context, index) => const Divider(),
                     itemCount: item.materialIds.length,
                     itemBuilder: (context, localIndex) => ListTile(
-                      leading: Image.network(getMaterialPicture(item,localIndex)),
+                      leading: Image.network(
+                        lenderPageController.getMaterialPicture(item,localIndex),
+                        ),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text(getItemName(item,localIndex))),
+                          Expanded(
+                            child: Text(lenderPageController.getItemName(item,localIndex)),
+                          ),
                           Expanded(
                             child: Center(
                               child: SizedBox(
                                 width: 100,
-                                child: DropDownFilterButton(
-                                  options: [
-                                    'all'.tr,
-                                    ...lenderPageController.availableStatuses.map((e) => e.name)
-                                  ],
+                                child: Obx(() => DropDownFilterButton(
+                                  options: lenderPageController.statusOptions.values.toList(),
                                   selected: item.status!.name,
-                                  onSelected: lenderPageController.onFilterSelected,
-                                ),
+                                  onSelected: (String value) {
+                                    // TODO: update rentalStatus of item
+                                  },
+                                )),
                               ),
                             ),
                           ),
                           Expanded(
                             child: CupertinoButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                // TODO: go to inspection page for the selected item
+                              },
                               child: Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
@@ -210,17 +220,22 @@ class ActiveOrderScreen extends StatelessWidget {
                                 ),
                                 child: Padding(
                                   padding: const EdgeInsets.all(6.5),
-                                  child: Text('inspect'.tr, style: const TextStyle(color: Colors.black),
+                                  child: Text('inspect'.tr, 
+                                    style: const TextStyle(color: Colors.black),
                                   ),
                                 ),
                               ),
                             ),
                           ),
-                          Expanded(child: Text('${getItemPrice(item,localIndex)} €'))
+                          Expanded(
+                            child: Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
+                          ),
                         ],
                       ),
                     ),
-                  ): Container(),
+                  ): Center(
+                    child: Text('no_items_assigned_to_this_rental_entry'.tr),
+                  ),
                 ),
                 Expanded(
                   flex: 1,
@@ -232,9 +247,9 @@ class ActiveOrderScreen extends StatelessWidget {
                           Expanded(
                             child: TextFormField(
                               enabled: false,
-                              initialValue: '${item.cost.toString()} €',
+                              initialValue: '€ ${item.cost.toString()}',
                               decoration: InputDecoration(
-                                labelText: 'sum'.tr,
+                                labelText: 'total'.tr,
                               ),
                             ),
                           ),
@@ -242,7 +257,7 @@ class ActiveOrderScreen extends StatelessWidget {
                         ],
                       ),
                       CupertinoButton(
-                        onPressed: () {  },
+                        onPressed: () {},
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -253,7 +268,9 @@ class ActiveOrderScreen extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(6.5),
-                            child: Text('confirm'.tr, style: const TextStyle(color: Colors.black)),
+                            child: Text('confirm'.tr, 
+                              style: const TextStyle(color: Colors.black),
+                            ),
                           ),
                         )
                       ),
@@ -267,47 +284,4 @@ class ActiveOrderScreen extends StatelessWidget {
       ),
     ),
   );
-
-  String getUserName(RentalModel item) {
-    String userName = '${lenderPageController.availableUsers.firstWhere(
-            (UserModel user) => user.id == item.id).firstName} '
-        '${lenderPageController.availableUsers.firstWhere(
-            (UserModel user) => user.id == item.id).lastName}';
-    return userName;
-  }
-
-  String getMembershipNum(RentalModel item) {
-    String membershipNum = lenderPageController.availableUsers.firstWhere((UserModel user) =>
-      user.id == item.id).membershipNumber.toString();
-    return membershipNum;
-  }
-
-  String getRentalPeriod(RentalModel item) {
-    String rentalPeriod = '${lenderPageController.formatDate(item.startDate)} ${' - '} ${lenderPageController.formatDate(item.endDate)}';
-    return rentalPeriod;
-  }
-
-  String getUsagePeriod(RentalModel item) {
-    String rentalPeriod = '${lenderPageController.formatDate(item.usageStartDate)} ${' - '} ${lenderPageController.formatDate(item.usageEndDate)}';
-    return rentalPeriod;
-  }
-
-  String getMaterialPicture(RentalModel item, int localIndex) {
-    String path = lenderPageController.availableMaterial.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).imagePath;
-    return path;
-  }
-
-  String getItemName(RentalModel item, int localIndex) {
-    String itemName = lenderPageController.availableMaterial.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).equipmentType.description;
-    return itemName;
-  }
-
-  String getItemPrice(RentalModel item, int localIndex) {
-    String itemPrice = lenderPageController.availableMaterial.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).rentalFee.toString();
-    return itemPrice;
-  }
-
 }

@@ -93,9 +93,9 @@ class LocaleString extends Translations {
       'reservation_completed': 'Reservation completed',
       'inspect': 'Inspect',
       'confirm': 'Confirm',
-      'sum': 'Sum',
+      'total': 'Total',
       'completed': 'Completed',
-
+      'no_items_assigned_to_this_rental_entry': 'No items assigned to this rental entry',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -183,10 +183,9 @@ class LocaleString extends Translations {
       'reservation_completed': 'Reservierung abgeschlossen',
       'inspect': 'Prüfen',
       'confirm': 'Bestätigen',
-      'sum': 'Summe',
+      'total': 'Gesamt',
       'completed': 'Abgeschlossen',
-
-
+      'no_items_assigned_to_this_rental_entry': 'Keine Artikel zu dieser Leihbuchung zugeordnet',
     }
   };
 }
