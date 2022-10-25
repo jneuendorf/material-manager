@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
@@ -15,7 +17,9 @@ class UserController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<UserModel>> getAllUsers()  async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
 
     return mockUsers+ mockUsers;
   }
@@ -24,7 +28,9 @@ class UserController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<Role>> getAllRoles() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
 
     return [
       mockAdministratiorRole,
@@ -34,8 +40,10 @@ class UserController extends GetxController {
     ];
   }
 
-  Future<List<Permission>> getAllRights() async {
-    await Future.delayed(const Duration(milliseconds: 500));
+  Future<List<Permission>> getAllPermissions() async {
+    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
 
     return [
       mockAdministrationPermission,

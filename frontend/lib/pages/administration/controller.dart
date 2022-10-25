@@ -51,7 +51,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
       filterOptions[role] = role.name;
     }
 
-    availableRights = await userController.getAllRights();
+    availableRights = await userController.getAllPermissions();
   }
 
   @override

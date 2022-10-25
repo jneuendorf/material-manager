@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
@@ -15,7 +17,9 @@ class RentalController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<RentalModel>> getAllRentals()  async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
 
     return mockRentals + mockRentals;
   }
@@ -24,7 +28,9 @@ class RentalController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<RentalStatus>> getAllStatuses()  async {
-    await Future.delayed(const Duration(milliseconds: 500));
+    if (!Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
 
     return [
       mockAvailibleRentalStatus,
