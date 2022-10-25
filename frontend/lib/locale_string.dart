@@ -63,7 +63,7 @@ class LocaleString extends Translations {
       'shopping_cart': 'Shopping Cart',
       'checkout': 'Checkout',
       'total_price': 'Total Price',
-      'retal_period': 'Rental Period',
+      'rental_period': 'Rental Period',
       'usage_period': 'Usage Period',
       'enter_start_date': 'Enter Start Date',
       'enter_end_date': 'Enter End Date',
@@ -91,6 +91,11 @@ class LocaleString extends Translations {
       'usage_start_must_be_after_rental_start': 'Usage start must be after rental start',
       'usage_end_must_be_before_rental_end': 'Usage end must be before rental end',
       'reservation_completed': 'Reservation completed',
+      'inspect': 'Inspect',
+      'confirm': 'Confirm',
+      'sum': 'Sum',
+      'completed': 'Completed',
+
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -148,7 +153,7 @@ class LocaleString extends Translations {
       'shopping_cart': 'Warenkorb',
       'checkout': 'Zur Kasse',
       'total_price': 'Gesamtpreis',
-      'retal_period': 'Leihdauer',
+      'rental_period': 'Leihdauer',
       'usage_period': 'Nutzungsdauer',
       'enter_start_date': 'Startdatum eingeben',
       'enter_end_date': 'Enddatum eingeben',
@@ -176,6 +181,12 @@ class LocaleString extends Translations {
       'usage_start_must_be_after_rental_start': 'Nutzungsbeginn muss nach Leihbeginn liegen',
       'usage_end_must_be_before_rental_end': 'Nutzungsende muss vor Leihende liegen',
       'reservation_completed': 'Reservierung abgeschlossen',
+      'inspect': 'Prüfen',
+      'confirm': 'Bestätigen',
+      'sum': 'Summe',
+      'completed': 'Abgeschlossen',
+
+
     }
   };
 }

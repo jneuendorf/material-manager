@@ -5,7 +5,10 @@ import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/rental/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
-import 'package:frontend/common/components/collapsable_expansion_tile.dart';
+import 'package:frontend/extensions/user/controller.dart';
+import 'package:frontend/extensions/user/model.dart';
+import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/extensions/material/controller.dart';
 
 
 const lenderRoute = '/lender';
@@ -19,15 +22,17 @@ class LenderPageBinding implements Bindings {
 
 class LenderPageController extends GetxController with GetSingleTickerProviderStateMixin {
   final rentalController = Get.find<RentalController>();
-
+  final userController =  Get.find<UserController>();
+  final materialController =  Get.find<MaterialController>();
   final RxInt tabBarIndex = 0.obs;
   late TabController tabbBarController;
 
   final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
-  final RxList<GlobalKey<CollapsableExpansionTileState>> keys = <GlobalKey<CollapsableExpansionTileState>>[].obs;
 
   List<RentalModel> availableRentals = [];
   List<RentalStatus> availableStatuses = [];
+  List<UserModel> availableUsers = [];
+  List<MaterialModel> availableMaterial = [];
 
   @override
   Future<void> onInit() async {
@@ -38,12 +43,10 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
       tabBarIndex.value = tabbBarController.index;
     });
 
+    availableUsers = await userController.getAllUsers();
     availableRentals = await rentalController.getAllRentals();
     filteredRentals.value = availableRentals;
-
-    keys.value = List.generate(
-      filteredRentals.length, (index) => GlobalKey<CollapsableExpansionTileState>(),
-    );
+    availableMaterial = await materialController.getAllMaterial();
 
     availableStatuses = await rentalController.getAllStatuses();
   }

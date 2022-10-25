@@ -17,6 +17,7 @@ class RentalController extends GetxController {
   Future<List<RentalModel>> getAllRentals()  async {
     await Future.delayed(const Duration(milliseconds: 500));
 
+
     return mockRentals + mockRentals;
   }
 
