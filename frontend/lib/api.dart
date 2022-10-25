@@ -1,8 +1,12 @@
-import 'package:dio/dio.dart';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
+
+import 'package:dio/dio.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+
 
 const jwtStorageKey = 'jwt';
 const storage = FlutterSecureStorage();
@@ -21,6 +25,9 @@ class ApiService extends GetxService {
   // ));
 
   Future<String?> getAccessToken() async {
+    // checks if running a test and return null since 
+    //[FlutterSecureStorage] cant be accessed in tests.
+    if (Platform.environment.containsKey('FLUTTER_TEST')) return null;
     return await storage.read(key: jwtStorageKey);
   }
 
@@ -34,7 +41,6 @@ class ApiService extends GetxService {
 
   Future<ApiService> init() async {
     final String? accessToken = await getAccessToken();
-
     if (accessToken != null) {
       tokenInfo = JwtDecoder.decode(accessToken);
     }
