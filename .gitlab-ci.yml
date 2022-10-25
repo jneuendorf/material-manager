@@ -25,16 +25,16 @@ frontend-test:
     stage: test
     script:
         - cd frontend
-        - flutter pub get
-        - flutter test --coverage
+        - make install
+        - make test
 
 frontend-analyze:
     image: cirrusci/flutter:stable
     stage: test
     script:
         - cd frontend
-        - flutter pub get
-        - flutter analyze
+        - make install
+        - make lint
 
 backend-test:
     image: python:3.9

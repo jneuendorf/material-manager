@@ -31,7 +31,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
 
   List<UserModel> availableUsers = [];
   List<Role> availableRoles = [];
-  List<Right> availableRights = [];
+  List<Permission> availableRights = [];
 
   @override
   Future<void> onInit() async {
@@ -51,7 +51,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
       filterOptions[role] = role.name;
     }
 
-    availableRights = await userController.getAllRights();
+    availableRights = await userController.getAllPermissions();
   }
 
   @override
@@ -66,7 +66,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
     final String term = searchTerm.value.toLowerCase();
     filteredUsers.value = availableUsers.where((UserModel user) {
       bool roleFilterCondition() {
-        if (selectedFilter.value == null) return true;          
+        if (selectedFilter.value == null) return true;
 
         return user.roles.contains(selectedFilter.value);
       }
@@ -79,11 +79,11 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
       }
 
       bool userNameCondition() {
-        return user.firstName.toLowerCase().contains(term) || 
+        return user.firstName.toLowerCase().contains(term) ||
           user.lastName.toLowerCase().contains(term);
       }
 
-      return roleFilterCondition() && 
+      return roleFilterCondition() &&
         (roleNameCondition() || userNameCondition());
     }).toList();
   }
@@ -112,7 +112,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
     if (states.any(interactiveStates.contains)) {
       return Get.theme.colorScheme.primary.withOpacity(0.12);
     }
-    
+
     return Colors.transparent;
   }
 }

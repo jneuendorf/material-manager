@@ -16,6 +16,13 @@ install_prod: venv
 db:
 	. venv/bin/activate && flask --app core.app create-db
 
+# NOE: sqlite only
+clear_db:
+	rm -rf instance/*.db
+
+test_data: clear_db db
+	. venv/bin/activate && flask --app core.app create-test-data user
+
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
 
@@ -23,11 +30,13 @@ shell: venv
 	. venv/bin/activate && python -i -c 'from core import signals'
 
 test: venv
-	. venv/bin/activate && python -m unittest
+	. venv/bin/activate && pytest -W ignore::DeprecationWarning && python -m unittest
 
 run: venv
-	. venv/bin/activate && flask --app core.app run
+	. venv/bin/activate && flask --app core.app --debug run
 
 clean:
 	rm -rf venv
-	find -iname "*.pyc" -delete
+	find . -type d -name '.mypy_cache' -delete -exec rm -r {} +
+	find . -type d -name '.pytest_cache' -delete -exec rm -r {} +
+	find . -type d -name '__pycache__' -delete -exec rm -r {} +

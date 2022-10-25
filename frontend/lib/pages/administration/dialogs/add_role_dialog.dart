@@ -25,7 +25,7 @@ class AddRoleDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
-    size: const Size(500.0, 340.0), 
+    size: const Size(500.0, 340.0),
     loading: loading,
     child: Form(
       key: formKey,
@@ -85,14 +85,14 @@ class AddRoleDialog extends StatelessWidget {
             child: CupertinoButton(
               onPressed: onAddTap,
               color: Get.theme.primaryColor,
-              child: Text('add'.tr, 
+              child: Text('add'.tr,
                 style: const TextStyle(color: Colors.white),
               ),
             ),
           ),
         ],
       ),
-    ), 
+    ),
   );
 
   /// Handles a tap on the add button.
@@ -101,16 +101,16 @@ class AddRoleDialog extends StatelessWidget {
     if (formKey.currentState!.validate()) {
       loading.value = true;
 
-      List<Right> rights = selectedRights.map(
+      List<Permission> permissions = selectedRights.map(
         (String element) => administrationPageController.availableRights.firstWhere(
-          (Right right) => right.name == element)
+          (Permission right) => right.name == element)
       ).toList();
 
       await administrationPageController.userController.addRole(Role(
         id : null,
         name: nameController.text,
         description: descriptionController.text,
-        rights: rights,
+        permissions: permissions,
       ));
 
       // simulate network request

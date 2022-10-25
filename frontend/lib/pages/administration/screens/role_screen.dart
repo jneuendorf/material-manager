@@ -23,8 +23,8 @@ class RoleScreen extends StatelessWidget {
         children: [
           const Spacer(),
           TextIconButton(
-            onTap: () => Get.dialog(AddRoleDialog()), 
-            iconData: Icons.add, 
+            onTap: () => Get.dialog(AddRoleDialog()),
+            iconData: Icons.add,
             text: 'add_role'.tr,
             color: Get.theme.colorScheme.onSecondary,
           ),
@@ -50,7 +50,7 @@ class RoleScreen extends StatelessWidget {
             ),
             DataColumn(
               label: Text(
-                'rights'.tr,
+                'permissions'.tr,
               ),
             ),
           ],
@@ -62,7 +62,7 @@ class RoleScreen extends StatelessWidget {
                 DataCell(Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(child: Text(role.rights.map((e) => e.name).toList().join(', '))),
+                    Flexible(child: Text(role.permissions.map((p) => p.name).toList().join(', '))),
                     CupertinoButton(
                       onPressed: () {},
                       color: Get.theme.colorScheme.onSecondary,
