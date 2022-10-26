@@ -5,7 +5,7 @@ from passlib.hash import argon2
 from sqlalchemy import Table
 
 from core.extensions import db
-from core.helpers.decorators import raises
+from core.helpers.decorators import raised_from, raises
 from core.helpers.orm import CrudModel
 
 Model: Type[CrudModel] = db.Model
@@ -40,7 +40,7 @@ class User(Model):  # type: ignore
     roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
 
     @classmethod
-    @raises(*CrudModel.create.__errors__)
+    @raises(*raised_from(CrudModel.create))
     def create_from_password(
         cls,
         email: str,

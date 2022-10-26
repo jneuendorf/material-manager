@@ -1,3 +1,5 @@
+from core.helpers.decorators import raised_from
+
 from .models import Permission, Role, User
 from .permissions import superuser, user_read, user_write
 
@@ -24,7 +26,7 @@ try:
         membership_number="1337",
         roles=[superuser_role],
     )
-except User.create_from_password.__errors__:
+except raised_from(User.create_from_password):
     pass
 try:
     noop_user = User.create_from_password(
@@ -34,5 +36,5 @@ try:
         last_name="noop",
         membership_number="0",
     )
-except User.create_from_password.__errors__:
+except raised_from(User.create_from_password):
     pass

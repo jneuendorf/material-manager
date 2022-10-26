@@ -1,6 +1,6 @@
 from collections.abc import Callable, Collection
 from functools import wraps
-from typing import Any, Protocol, Type, cast
+from typing import Any, Protocol, Tuple, Type, cast
 
 
 class ThrowingCallable(Protocol):
@@ -28,6 +28,6 @@ def raises(*errors: Type[Exception]):
     return decorator
 
 
-def raised_from(func: Callable) -> Collection[Type[Exception]]:
+def raised_from(func: Callable) -> Tuple[Type[Exception], ...]:
     """Returns the error types annotated with the `@raises` decorator."""
     return getattr(func, "__errors__", ())
