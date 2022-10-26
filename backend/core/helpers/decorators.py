@@ -1,5 +1,6 @@
+from collections.abc import Callable, Collection
 from functools import wraps
-from typing import Any, Collection, Protocol, Type, cast
+from typing import Any, Protocol, Type, cast
 
 
 class ThrowingCallable(Protocol):
@@ -10,6 +11,11 @@ class ThrowingCallable(Protocol):
 
 
 def raises(*errors: Type[Exception]):
+    """Annotates the wrapped function with error types that can be raised by that
+    function. To use these error types for catching use the `raised_from` function
+    below.
+    """
+
     def decorator(fn) -> ThrowingCallable:
         @wraps(fn)
         def wrapper(*args, **kwargs):
@@ -20,3 +26,8 @@ def raises(*errors: Type[Exception]):
         return wrapper
 
     return decorator
+
+
+def raised_from(func: Callable) -> Collection[Type[Exception]]:
+    """Returns the error types annotated with the `@raises` decorator."""
+    return getattr(func, "__errors__", ())

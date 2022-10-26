@@ -57,6 +57,8 @@ class Extension(Blueprint, ABC, Generic[M, R]):
         base_url: str = "/",
         **blueprint_options: Any,
     ) -> None:
+        self.before_install(app=app, jwt=jwt, api=api, api_docs=api_docs)
+
         app.register_blueprint(self, **blueprint_options)
 
         resources: Iterable[Type[BaseResource]] = self.resources
@@ -68,6 +70,30 @@ class Extension(Blueprint, ABC, Generic[M, R]):
             print("> Resource:", resource_cls.__name__, "=>", resource_url)
             if issubclass(resource_cls, MethodResource):
                 api_docs.register(resource_cls)
+
+        self.after_install(app=app, jwt=jwt, api=api, api_docs=api_docs)
+
+    def before_install(
+        self,
+        *,
+        app: Flask,
+        jwt: JWTManager,
+        api: Api,
+        api_docs: FlaskApiSpec,
+        **kwargs,
+    ) -> None:
+        ...
+
+    def after_install(
+        self,
+        *,
+        app: Flask,
+        jwt: JWTManager,
+        api: Api,
+        api_docs: FlaskApiSpec,
+        **kwargs,
+    ) -> None:
+        ...
 
     def after_installed_all(
         self,

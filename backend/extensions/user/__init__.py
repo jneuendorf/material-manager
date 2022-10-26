@@ -33,17 +33,16 @@ class UserExtension(Extension):
         permissions.user_write,
     )
 
-    def install(
+    def before_install(
         self,
+        *,
         app: Flask,
         jwt: JWTManager,
         api: Api,
         api_docs: FlaskApiSpec,
-        base_url: str = "/",
-        **blueprint_options: Any,
+        **kwargs,
     ):
         init_auth(jwt)
-        super().install(app, jwt, api, api_docs)
 
     def after_installed_all(
         self,
