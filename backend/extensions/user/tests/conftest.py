@@ -2,7 +2,7 @@ import pytest
 
 from app import create_app
 from core.config import flask_config
-from core.db import db
+from core.extensions import db, mail
 
 
 @pytest.fixture()
@@ -16,6 +16,7 @@ def app():
             },
         },
         db,
+        mail,
     )
 
     # other setup can go here
