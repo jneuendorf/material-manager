@@ -1,9 +1,10 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-
+import 'package:frontend/api.dart';
 import 'package:get/get.dart';
 
-
 const signupRoute = '/signup';
+const signupApiRoute = '/signup';
 
 class SignupBinding implements Bindings {
   @override
@@ -13,20 +14,23 @@ class SignupBinding implements Bindings {
 }
 
 class SignupController extends GetxController {
+  final ApiService apiService = Get.find<ApiService>();
   final PageController pageController = PageController();
 
-  final TextEditingController membershipNumberController = TextEditingController();
   final TextEditingController firstNameController = TextEditingController();
   final TextEditingController lastNameController = TextEditingController();
+  final TextEditingController membershipNumberController = TextEditingController();
+
   final TextEditingController streetNameController = TextEditingController();
   final TextEditingController houseNumberController = TextEditingController();
   final TextEditingController cityController = TextEditingController();
   final TextEditingController zipController = TextEditingController();
-  final TextEditingController phoneController = TextEditingController();
+
   final TextEditingController signupEmailController = TextEditingController();
+  final TextEditingController phoneController = TextEditingController();
+
   final TextEditingController signupPasswordController = TextEditingController();
   final TextEditingController signupPasswordConfirmController = TextEditingController();
-
 
   final GlobalKey<FormState> membershipKey = GlobalKey<FormState>();
   final GlobalKey<FormState> addressKey = GlobalKey<FormState>();
@@ -34,11 +38,32 @@ class SignupController extends GetxController {
   final GlobalKey<FormState> passwordKey = GlobalKey<FormState>();
 
 
-  void signup() {
-    // TODO implement signup
+  Future<void> signup() async {
+    try {
+      await apiService.mainClient.post(signupApiRoute, data: {
+          'email': signupEmailController.text,
+          'password': signupPasswordController.text,
+          'first_name': firstNameController.text,
+          'last_name': lastNameController.text,
+          'phone': phoneController.text,
+          'membership_number': membershipNumberController.text,
+          'street': streetNameController.text,
+          'house_number': houseNumberController.text,
+          'city': cityController.text,
+          'zip_code': zipController.text,
+      });
+      Get.snackbar(
+          'success'.tr,
+          'signup_successful'.tr,
+          duration: const Duration(seconds: 4),
+        );
+    } on DioError catch (e) {
+      apiService.defaultCatch(e);
+    }
   }
 
-  //set membership number on valid if lenght is 5
+  // TODO: Where does this constraint come from?
+  // set membership number on valid if length is 5
   String? validateMembershipNumber(String? value) {
     if(value!.isEmpty) {
       return 'membership_num_is_mandatory'.tr;
@@ -65,15 +90,12 @@ class SignupController extends GetxController {
     return null;
   }
 
-
-
   String? validateCity(String? value) {
     if(value!.isEmpty) {
       return 'city_is_mandatory'.tr;
     }
     return null;
   }
-
 
   String? validateHouseNumber(String? value) {
     if(value!.isEmpty) {
@@ -99,4 +121,5 @@ class SignupController extends GetxController {
     }
     return null;
   }
+
 }

@@ -1,6 +1,6 @@
 from typing import Type
 
-from core.db import db
+from core.extensions import db
 from core.helpers.orm import CrudModel
 
 Model: Type[CrudModel] = db.Model

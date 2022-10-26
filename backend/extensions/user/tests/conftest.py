@@ -2,6 +2,7 @@ import pytest
 
 from app import create_app
 from core.config import flask_config
+from core.extensions import db, mail
 
 
 @pytest.fixture()
@@ -14,6 +15,8 @@ def app():
                 "SQLALCHEMY_DATABASE_URI": "sqlite:///test.db",
             },
         },
+        db,
+        mail,
         drop_db=True,
     )
 

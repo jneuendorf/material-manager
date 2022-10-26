@@ -16,13 +16,18 @@ flask_config = {
         plugins=[MarshmallowPlugin()],
         openapi_version="2.0.0",
     ),
-    "APISPEC_SWAGGER_URL": "/swagger/",  # URI to access API Doc JSON
-    "APISPEC_SWAGGER_UI_URL": "/swagger-ui/",  # URI to access UI of API Doc
+    # "APISPEC_SWAGGER_URL": "/swagger/",  # URI to access API Doc JSON
+    "APISPEC_SWAGGER_UI_URL": "/",  # URI to access UI of API Doc
+    "MAIL_SERVER": "smtp.freesmtpservers.com",
+    "MAIL_PORT": 25,
+    "MAIL_DEFAULT_SENDER": ("Material Manager", "noreply@material-manager.org"),
     # List of module paths to installed extensions.
-    "INSTALLED_EXTENSIONS": [
+    "CORE_INSTALLED_EXTENSIONS": [
         "material",
         "user",
         "inspection",
         "rental",
     ],
+    "CORE_PUBLIC_API_URL": "http://localhost:5000",  # port backend/Makefile
+    "CORE_PUBLIC_FRONTEND_URL": "http://localhost:55542",  # port frontend/Makefile
 }

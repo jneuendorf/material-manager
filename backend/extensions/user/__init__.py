@@ -23,6 +23,7 @@ class UserExtension(Extension):
         resources.User,
         resources.Users,
         resources.Signup,
+        resources.SignupVerification,
         resources.Login,
         resources.Profile,
     )
