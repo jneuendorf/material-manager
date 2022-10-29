@@ -243,7 +243,7 @@ class CompletedOrdersScreen extends StatelessWidget {
 
   String getMaterialPicture(RentalModel item, int localIndex) {
     String path = lenderPageController.availableMaterial.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).imagePath;
+    material.id == item.materialIds[localIndex]).imagePath!;
     return path;
   }
 

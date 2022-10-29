@@ -73,7 +73,8 @@ class RentalController extends GetxController {
   }
 
   /// Adds a new rental to the backend.
-  /// Returns the id of the newly created rental.
+  /// Returns the id of the newly created rental
+  /// or null if an error occured.
   Future<int?> addRental(RentalModel rental) async {
     try {
       final response = await apiService.mainClient.post('/rental',
@@ -100,18 +101,18 @@ class RentalController extends GetxController {
 
   /// Updates a rental in the backend.
   /// Returns true if the rental was updated successfully.
-  Future<bool> updateRental(RentalModel renal) async {
+  Future<bool> updateRental(RentalModel rental) async {
     try {
-      final response = await apiService.mainClient.put('/rental/${renal.id}',
+      final response = await apiService.mainClient.put('/rental/${rental.id}',
         data: {
-          'customer_id': renal.customerId,
-          'material_ids': renal.materialIds,
-          'cost': renal.cost,
-          'created_at': renal.createdAt,
-          'start_date': renal.startDate,
-          'end_date': renal.endDate,
-          'usage_start_date': renal.usageStartDate,
-          'usage_end_date': renal.usageEndDate,
+          'customer_id': rental.customerId,
+          'material_ids': rental.materialIds,
+          'cost': rental.cost,
+          'created_at': rental.createdAt,
+          'start_date': rental.startDate,
+          'end_date': rental.endDate,
+          'usage_start_date': rental.usageStartDate,
+          'usage_end_date': rental.usageEndDate,
         },
       );
 

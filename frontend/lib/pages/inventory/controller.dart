@@ -32,10 +32,10 @@ class InventoryPageController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
 
-    availableMaterial = await materialController.getAllMaterial();
+    availableMaterial = await materialController.getAllMaterialMocks();
     filteredMaterial.value = availableMaterial;
 
-    availableEquipmentTypes = await materialController.getAllEquipmentTypes();
+    availableEquipmentTypes = await materialController.getAllEquipmentTypeMocks();
 
     for (EquipmentType item in availableEquipmentTypes) {
       typeFilterOptions[item] = item.description;

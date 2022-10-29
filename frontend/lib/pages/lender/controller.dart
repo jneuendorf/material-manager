@@ -49,7 +49,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     availableRentals = await rentalController.getAllRentalMocks();
     filteredRentals.value = availableRentals;
 
-    availableMaterial = await materialController.getAllMaterial();
+    availableMaterial = await materialController.getAllMaterialMocks();
 
     availableStatuses = await rentalController.getAllStatusMocks();
 
@@ -90,7 +90,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   String getMaterialPicture(RentalModel item, int materialIndex) {
     String path = availableMaterial.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).imagePath;
+    material.id == item.materialIds[materialIndex]).imagePath!;
     return path;
   }
 
