@@ -16,7 +16,7 @@ class EquipmentType(Model):  # type: ignore
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    inventory_number = db.Column(db.Integer)
+    inventory_number = db.Column(db.String(20))
     max_life_expectancy = db.Column(db.String)
     max_service_duration = db.Column(db.String)
     installation_date = db.Column(db.Date)
