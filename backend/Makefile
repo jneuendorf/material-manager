@@ -8,10 +8,10 @@ venv:
 	test -d venv || python3.9 -m venv venv
 
 install: venv
-	. venv/bin/activate && pip install -r requirements-dev.txt && pre-commit install
+	. venv/bin/activate && pip install -Ur requirements-dev.txt && pre-commit install
 
 install_prod: venv
-	. venv/bin/activate && pip install -r requirements.txt
+	. venv/bin/activate && pip install -Ur requirements.txt
 
 # NOTE: sqlite only
 clear_db:
