@@ -16,8 +16,7 @@ class EquipmentType(Model):  # type: ignore
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    equipment_type_id = db.Column(db.ForeignKey(EquipmentType.id))
-    inventory_number = db.Column(db.String)
+    inventory_number = db.Column(db.Integer)
     max_life_expectancy = db.Column(db.String)
     max_service_duration = db.Column(db.String)
     installation_date = db.Column(db.Date)
@@ -26,24 +25,33 @@ class Material(Model):  # type: ignore
     rental_fee = db.Column(db.Float)
     condition = db.Column(db.String)
     days_used = db.Column(db.Integer)
+    equipment_type_id = db.Column(db.ForeignKey(EquipmentType.id))
+    equipment_type = db.relationship(
+        "EquipmentType", backref="materials"
+    )  # many-to-one
+    purchase_details = db.relationship(
+        "PurchaseDetails", backref="materials", uselist=False
+    )  # one-to-one
+    serialnumber = db.relationship("SerialNumber")  # one-to-many
 
 
 class SerialNumber(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    material_id = db.Column(db.ForeignKey(Material.id))
     serial_number = db.Column(db.String)
     production_date = db.Column(db.Date)
     manufacturer = db.Column(db.String)
+    material_id = db.Column(db.ForeignKey(Material.id))
 
 
 class PurchaseDetails(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    material_id = db.Column(db.ForeignKey(Material.id))
     purchase_date = db.Column(db.Date)
     invoice_number = db.Column(db.String)
     merchant = db.Column(db.String)
     purchase_price = db.Column(db.Float)
     suggested_retail_price = db.Column(db.Float)
+    material_id = db.Column(db.ForeignKey(Material.id))
+    # material = db.relationship("Material", back_populates="purchase_details")
 
 
 class MaterialSet(Model):  # type: ignore
