@@ -212,7 +212,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         style: ListTileStyle.list,
         contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
         onTap: () {},
-        leading: Image.network(rentalPageController.shoppingCart[index].imagePath),
+        leading: Image.network(rentalPageController.shoppingCart[index].imagePath!),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [

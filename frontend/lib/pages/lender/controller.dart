@@ -44,14 +44,14 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
       tabBarIndex.value = tabbBarController.index;
     });
 
-    availableUsers = await userController.getAllUsers();
+    availableUsers = await userController.getAllUserMocks();
 
-    availableRentals = await rentalController.getAllRentals();
+    availableRentals = await rentalController.getAllRentalMocks();
     filteredRentals.value = availableRentals;
 
-    availableMaterial = await materialController.getAllMaterial();
+    availableMaterial = await materialController.getAllMaterialMocks();
 
-    availableStatuses = await rentalController.getAllStatuses();
+    availableStatuses = await rentalController.getAllStatusMocks();
 
     for (RentalStatus item in availableStatuses) {
       statusOptions[item] = item.name;
@@ -90,7 +90,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   String getMaterialPicture(RentalModel item, int materialIndex) {
     String path = availableMaterial.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).imagePath;
+    material.id == item.materialIds[materialIndex]).imagePath!;
     return path;
   }
 

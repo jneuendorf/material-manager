@@ -57,10 +57,10 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
-    availableMaterial = await materialController.getAllMaterial();
+    availableMaterial = await materialController.getAllMaterialMocks();
     filteredMaterial.value = availableMaterial;
 
-    availableEquipmentTypes = await materialController.getAllEquipmentTypes();
+    availableEquipmentTypes = await materialController.getAllEquipmentTypeMocks();
 
     for (EquipmentType item in availableEquipmentTypes) {
       filterOptions[item] = item.description;
@@ -184,7 +184,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       DateFormat dateFormat = DateFormat('dd.MM.yyyy');
       RentalModel rental = RentalModel(
         customerId: ApiService().tokenInfo!['id'],  // will throw error if tokenInfo is null
-        materialIds: shoppingCart.map((MaterialModel item) => item.id).toList(),
+        materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
         cost: totalPrice,
         createdAt: DateTime.now(),
         startDate: dateFormat.parse(rentalStartController.text),

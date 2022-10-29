@@ -42,16 +42,16 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
       tabIndex.value = tabController.index;
     });
 
-    availableUsers = await userController.getAllUsers();
+    availableUsers = await userController.getAllUserMocks();
     filteredUsers.value = availableUsers;
 
-    availableRoles = await userController.getAllRoles();
+    availableRoles = await userController.getAllRoleMocks();
 
     for (Role role in availableRoles) {
       filterOptions[role] = role.name;
     }
 
-    availableRights = await userController.getAllPermissions();
+    availableRights = await userController.getAllPermissionMocks();
   }
 
   @override

@@ -1,13 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/inventory/dialogs/product_details_dialog.dart';
 
 import 'package:get/get.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inventory/dialogs/add_item_dialog.dart';
+import 'package:frontend/pages/inventory/dialogs/product_details_dialog.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/components/dav_footer.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
@@ -135,7 +135,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 50,
-                        child: Image.network(controller.filteredMaterial[index].imagePath),
+                        child: Image.network(controller.filteredMaterial[index].imagePath!),
                       ),
                     ),
                     Expanded(child: Text(controller.filteredMaterial[index].equipmentType.description)),
@@ -179,7 +179,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
                       image: DecorationImage(
-                        image: NetworkImage(item.imagePath),
+                        image: NetworkImage(item.imagePath!),
                       ),
                     ),
                   ),
