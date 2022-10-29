@@ -16,7 +16,7 @@ class RentalController extends GetxController {
   /// Fetches all rentals from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<RentalModel>> getAllRentals()  async {
+  Future<List<RentalModel>> getAllRentalMocks()  async {
     if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
@@ -28,7 +28,7 @@ class RentalController extends GetxController {
   /// Fetches all rental statuses from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<RentalStatus>> getAllStatuses()  async {
+  Future<List<RentalStatus>> getAllStatusMocks()  async {
     if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
@@ -38,6 +38,38 @@ class RentalController extends GetxController {
       mockRentedRentalStatus,
       mockReturnedRentalStatus,
     ];
+  }
+
+  /// Fetches all rentals from backend.
+  Future<List<RentalModel>?> getAllRentals() async {
+    try {
+      final response = await apiService.mainClient.get('/rental');
+
+      if (response.statusCode != 200) debugPrint('Error getting rentals');
+
+      return response.data['rentals'].map(
+        (dynamic item) => RentalModel.fromJson(item)
+      ).toList();
+    } on DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
+  /// Fetches all rental statuses from backend.
+  Future<List<RentalStatus>?> getAllStatuses() async {
+    try {
+      final response = await apiService.mainClient.get('/rental/status');
+
+      if (response.statusCode != 200) debugPrint('Error getting rental statuses');
+
+      return response.data['rentalStatuses'].map(
+        (dynamic item) => RentalStatus.fromJson(item)
+      ).toList();
+    } on DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
   }
 
   /// Adds a new rental to the backend.
@@ -64,5 +96,31 @@ class RentalController extends GetxController {
       apiService.defaultCatch(e);
     }
     return null;
+  }
+
+  /// Updates a rental in the backend.
+  /// Returns true if the rental was updated successfully.
+  Future<bool> updateRental(RentalModel renal) async {
+    try {
+      final response = await apiService.mainClient.put('/rental/${renal.id}',
+        data: {
+          'customer_id': renal.customerId,
+          'material_ids': renal.materialIds,
+          'cost': renal.cost,
+          'created_at': renal.createdAt,
+          'start_date': renal.startDate,
+          'end_date': renal.endDate,
+          'usage_start_date': renal.usageStartDate,
+          'usage_end_date': renal.usageEndDate,
+        },
+      );
+
+      if (response.statusCode != 200) debugPrint('Error updating rental');
+
+      return true;
+    } on DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return false;
   }
 }

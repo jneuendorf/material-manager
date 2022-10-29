@@ -46,12 +46,12 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
     availableUsers = await userController.getAllUsers();
 
-    availableRentals = await rentalController.getAllRentals();
+    availableRentals = await rentalController.getAllRentalMocks();
     filteredRentals.value = availableRentals;
 
     availableMaterial = await materialController.getAllMaterial();
 
-    availableStatuses = await rentalController.getAllStatuses();
+    availableStatuses = await rentalController.getAllStatusMocks();
 
     for (RentalStatus item in availableStatuses) {
       statusOptions[item] = item.name;
