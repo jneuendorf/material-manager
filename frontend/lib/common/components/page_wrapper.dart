@@ -64,34 +64,53 @@ class PageWrapper extends StatelessWidget {
     ),
   );
 
-  Drawer buildDrawer() => Drawer(
-    child: ListView(
-      padding: EdgeInsets.zero,
-      children: [
-        DrawerHeader(
-          child: Image.asset('assets/images/dav_logo_small.png'),
-        ),
-        ListTile(
-          title: Text('rental'.tr),
-          onTap: () => Get.offNamed(rentalRoute),
-        ),
-        ListTile(
-          title: Text('inventory'.tr),
-          onTap: () => Get.offNamed(inventoryRoute),
-        ),
-        ListTile(
-          title: Text('inspection'.tr),
-          onTap: () => Get.offNamed(inspectionRoute),
-        ),
-        ListTile(
-          title: Text('lender'.tr),
-          onTap: () => Get.offNamed(lenderRoute),
-        ),
-        ListTile(
-          title: Text('administration'.tr),
-          onTap: () => Get.offNamed(administrationRoute),
-        ),
-      ]
-    ),
-  );
+  Drawer buildDrawer() {
+    final RxString currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            child: Image.asset('assets/images/dav_logo_small.png'),
+          ),
+          Obx(() => ListTile(
+            title: Text('rental'.tr),
+            textColor: currentRoute.value == rentalRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(rentalRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('inventory'.tr),
+            textColor: currentRoute.value == inventoryRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(inventoryRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('inspection'.tr),
+            textColor: currentRoute.value == inspectionRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(inspectionRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('lender'.tr),
+            textColor: currentRoute.value == lenderRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(lenderRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('administration'.tr),
+            textColor: currentRoute.value == administrationRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(administrationRoute),
+          )),
+        ],
+      ),
+    );
+  }
 }
