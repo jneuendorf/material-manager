@@ -1,7 +1,5 @@
 from extensions.user.models import User
 
-from . import conftest  # noqa
-
 
 def test_password_hashing(app):
     password = "test"

@@ -44,11 +44,11 @@ class EquipmentTypes(ModelListResource):
         curl -X PUT "http://localhost:5000/equipment_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
         """  # noqa
         equipment_type = EquipmentTypeModel.create(**kwargs)
-        return self.schema.dump(equipment_type, many=False)
+        return self.serialize_single(equipment_type)
 
 
 class Material(ModelResource):
-    url = "/{ext_name}/<int:material_id>"
+    url = "/material/<int:material_id>"
 
     class Meta:
         model = MaterialModel
@@ -83,7 +83,7 @@ class Material(ModelResource):
 
 
 class Materials(ModelListResource):
-    url = "/{ext_name}s"
+    url = "/materials"
 
     class Meta:
         model = MaterialModel

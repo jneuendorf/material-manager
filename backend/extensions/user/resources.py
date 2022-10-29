@@ -184,4 +184,4 @@ class Users(ModelListResource):
         curl -X PUT 'http://localhost:5000/users' -F 'first_name=max' -F 'last_name=mustermann' -F 'membership_number=123'
         """  # noqa
         user = UserModel.create(**kwargs)
-        return self.schema.dump(user, many=False)
+        return self.serialize_single(user)

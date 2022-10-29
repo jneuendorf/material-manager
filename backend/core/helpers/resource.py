@@ -54,6 +54,10 @@ class ModelListResource(ModelResource, Generic[M]):
         serialized: List[dict] = self.schema.dump(instance)
         return serialized
 
+    def serialize_single(self, instance: M):
+        serialized: dict = self.schema.dump(instance, many=False)
+        return serialized
+
 
 # R = TypeVar("R", bound=Type[ModelResource])
 
