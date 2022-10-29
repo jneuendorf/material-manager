@@ -11,7 +11,7 @@ const loginApiRoute = '/login';  // relative to the clients baseUrl
 const afterLoginRoute = rentalRoute;
 
 
-class LoginBinding implements Bindings {
+class LoginPageBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<LoginController>(() => LoginController());

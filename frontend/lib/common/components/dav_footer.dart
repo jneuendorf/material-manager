@@ -22,14 +22,20 @@ class DavFooter extends StatelessWidget {
             children: [
               HoverTextButton(
                 text: 'Deutscher Alpenverein', 
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'imprint'.tr, 
+                text: 'imprint'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'privacy_policy'.tr, 
+                text: 'privacy_policy'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
             ],
@@ -47,15 +53,21 @@ class DavFooter extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               HoverTextButton(
-                text: 'links'.tr, 
+                text: 'links'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'other'.tr, 
+                text: 'other'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'privacy_policy'.tr, 
+                text: 'privacy_policy'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor, 
                 onTap: () {},
               ),
             ],

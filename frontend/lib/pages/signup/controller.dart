@@ -1,12 +1,15 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
+
+import 'package:dio/dio.dart';
 import 'package:get/get.dart';
+
+import 'package:frontend/api.dart';
+
 
 const signupRoute = '/signup';
 const signupApiRoute = '/signup';
 
-class SignupBinding implements Bindings {
+class SignupPageBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<SignupController>(() => SignupController());
@@ -15,6 +18,7 @@ class SignupBinding implements Bindings {
 
 class SignupController extends GetxController {
   final ApiService apiService = Get.find<ApiService>();
+  
   final PageController pageController = PageController();
 
   final TextEditingController firstNameController = TextEditingController();

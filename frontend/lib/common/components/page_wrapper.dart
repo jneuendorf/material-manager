@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -10,6 +12,7 @@ import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/lender/controller.dart';
+import 'package:frontend/pages/profile/controller.dart';
 
 
 class PageWrapper extends StatelessWidget {
@@ -64,34 +67,66 @@ class PageWrapper extends StatelessWidget {
     ),
   );
 
-  Drawer buildDrawer() => Drawer(
-    child: ListView(
-      padding: EdgeInsets.zero,
-      children: [
-        DrawerHeader(
-          child: Image.asset('assets/images/dav_logo_small.png'),
-        ),
-        ListTile(
-          title: Text('rental'.tr),
-          onTap: () => Get.offNamed(rentalRoute),
-        ),
-        ListTile(
-          title: Text('inventory'.tr),
-          onTap: () => Get.offNamed(inventoryRoute),
-        ),
-        ListTile(
-          title: Text('inspection'.tr),
-          onTap: () => Get.offNamed(inspectionRoute),
-        ),
-        ListTile(
-          title: Text('lender'.tr),
-          onTap: () => Get.offNamed(lenderRoute),
-        ),
-        ListTile(
-          title: Text('administration'.tr),
-          onTap: () => Get.offNamed(administrationRoute),
-        ),
-      ]
-    ),
-  );
+  Drawer buildDrawer() {
+    RxString currentRoute = '/'.obs;
+
+    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+      currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
+    }
+
+    return Drawer(
+      child: ListView(
+        padding: EdgeInsets.zero,
+        children: [
+          DrawerHeader(
+            child: InkWell(
+              onTap: () => Get.toNamed(profileRoute),
+              borderRadius: BorderRadius.circular(25.0),
+              child: Image.asset('assets/images/dav_logo_small.png'),
+              ),
+          ),
+          Obx(() => ListTile(
+            title: Text('rental'.tr),
+            leading: const Icon(Icons.shopping_cart),
+            textColor: currentRoute.value == rentalRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(rentalRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('inventory'.tr),
+            leading: const Icon(Icons.inventory),
+            textColor: currentRoute.value == inventoryRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(inventoryRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('inspection'.tr),
+            leading: const Icon(Icons.search_off),
+            textColor: currentRoute.value == inspectionRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(inspectionRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('lender'.tr),
+            leading: const Icon(Icons.calendar_month),
+            textColor: currentRoute.value == lenderRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(lenderRoute),
+          )),
+          Obx(() => ListTile(
+            title: Text('administration'.tr),
+            leading: const Icon(Icons.manage_accounts),
+            textColor: currentRoute.value == administrationRoute 
+              ? Get.theme.colorScheme.onSecondary 
+              : null,
+            onTap: () => Get.offNamed(administrationRoute),
+          )),
+        ],
+      ),
+    );
+  }
 }
