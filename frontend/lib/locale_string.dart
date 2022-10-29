@@ -108,6 +108,7 @@ class LocaleString extends Translations {
       'installation': 'Installation',
       'usage_in_days': 'Usage in Days',
       'rental_fee': 'Rental Fee',
+      'profile': 'Profile',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -210,6 +211,7 @@ class LocaleString extends Translations {
       'installation': 'Inbetriebnahme',
       'usage_in_days': 'Nutzungsdauer in Tagen',
       'rental_fee': 'Verleihgebühr',
+      'profile': 'Profil',
     }
   };
 }

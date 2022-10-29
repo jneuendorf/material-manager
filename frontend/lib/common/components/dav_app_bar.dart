@@ -10,6 +10,7 @@ import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/pages/profile/controller.dart';
 import 'package:frontend/common/buttons/hover_text_button.dart';
 
 
@@ -116,6 +117,15 @@ class _DavAppBarState extends State<DavAppBar> {
           fontWeight: FontWeight.w600,
         ),
       )),
+      Obx(() => IconButton(
+        onPressed: () => Get.toNamed(profileRoute), 
+        icon: Icon(Icons.person, 
+          color: currentRoute.value == profileRoute 
+            ? Get.theme.colorScheme.onSecondary 
+            : Colors.white,
+        ),
+        splashRadius: 20.0,
+      )),
     ] : null,
   );
 
@@ -123,7 +133,11 @@ class _DavAppBarState extends State<DavAppBar> {
     padding: const EdgeInsets.only(left: 8.0),
     child: kIsWeb 
       ? InkWell(
-        onTap: () => Get.toNamed(rentalRoute),
+        onTap: () {
+          if (widget.loggedIn) {
+            Get.toNamed(rentalRoute);
+          }
+        },
         borderRadius: BorderRadius.circular(25.0),
         child: Image.asset('assets/images/dav_logo_small.png'),
       ) 

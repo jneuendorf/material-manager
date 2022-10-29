@@ -29,6 +29,8 @@ import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inventory/page.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/pages/lender/page.dart';
+import 'package:frontend/pages/profile/controller.dart';
+import 'package:frontend/pages/profile/page.dart';
 
 
 void main() {
@@ -36,7 +38,7 @@ void main() {
   testWidgets('LoginPage Widget Test', (WidgetTester tester) async {
     WidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
-    LoginBinding().dependencies();
+    LoginPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
@@ -47,7 +49,7 @@ void main() {
   testWidgets('SignupPage Widget Test', (WidgetTester tester) async {
     WidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
-    SignupBinding().dependencies();
+    SignupPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
@@ -141,6 +143,17 @@ void main() {
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
       child: MaterialApp(home: AccountDetailPage()),
+    ));
+  });
+
+  testWidgets('ProfilePage Widget Test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await initialConfig();
+    ProfilePageBinding().dependencies();
+
+    await tester.pumpWidget(const MediaQuery(
+      data: MediaQueryData(),
+      child: MaterialApp(home: ProfilePage()),
     ));
   });
 }

@@ -17,12 +17,14 @@ import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inventory/page.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/pages/lender/page.dart';
-import 'package:frontend/pages/login/controller.dart';
-import 'package:frontend/pages/login/page.dart';
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/pages/rental/page.dart';
 import 'package:frontend/pages/rental/subpages/rental_completed_page.dart';
 import 'package:frontend/pages/rental/subpages/shopping_cart_page.dart';
+import 'package:frontend/pages/profile/controller.dart';
+import 'package:frontend/pages/profile/page.dart';
+import 'package:frontend/pages/login/controller.dart';
+import 'package:frontend/pages/login/page.dart';
 import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/pages/signup/page.dart';
 
@@ -70,10 +72,10 @@ class DavApp extends StatelessWidget {
     initialRoute: loginRoute,
     getPages: [
       GetPage(name: loginRoute, page: () => const LoginPage(),
-        binding: LoginBinding(),
+        binding: LoginPageBinding(),
       ),
       GetPage(name: signupRoute, page: () => const SignupPage(),
-        binding: SignupBinding(),
+        binding: SignupPageBinding(),
       ),
       GetPage(name: rentalRoute, page: () => const RentalPage(),
         binding: RentalPageBinding(),
@@ -98,6 +100,9 @@ class DavApp extends StatelessWidget {
       ),
       GetPage(name: administrationAccountDetailRoute, page: () => const AccountDetailPage(),
         binding: AdministrationPageBinding(),
+      ),
+      GetPage(name: profileRoute, page: () => const ProfilePage(),
+        binding: ProfilePageBinding(),
       ),
     ],
     locale: const Locale('en', 'US'),

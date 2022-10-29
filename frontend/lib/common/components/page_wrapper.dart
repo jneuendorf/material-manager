@@ -12,6 +12,7 @@ import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/lender/controller.dart';
+import 'package:frontend/pages/profile/controller.dart';
 
 
 class PageWrapper extends StatelessWidget {
@@ -78,7 +79,11 @@ class PageWrapper extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: [
           DrawerHeader(
-            child: Image.asset('assets/images/dav_logo_small.png'),
+            child: InkWell(
+              onTap: () => Get.toNamed(profileRoute),
+              borderRadius: BorderRadius.circular(25.0),
+              child: Image.asset('assets/images/dav_logo_small.png'),
+              ),
           ),
           Obx(() => ListTile(
             title: Text('rental'.tr),
