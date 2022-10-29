@@ -6,7 +6,7 @@ material = Extension(
     "material",
     __name__,
     models=(
-        models.EquipmentType,
+        models.MaterialType,
         models.Material,
         models.SerialNumber,
         models.PurchaseDetails,
@@ -18,7 +18,7 @@ material = Extension(
     resources=(
         resources.Material,
         resources.Materials,
-        resources.EquipmentType,
+        resources.MaterialType,
         resources.EquipmentTypes,
     ),
 )

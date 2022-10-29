@@ -3,34 +3,34 @@ from marshmallow import fields
 
 from core.helpers.resource import ModelListResource, ModelResource
 
-from .models import EquipmentType as EquipmentTypeModel
 from .models import Material as MaterialModel
+from .models import MaterialType as MaterialTypeModel
 
 
-class EquipmentType(ModelResource):
-    url = "/equipment_type/<int:type_id>"
+class MaterialType(ModelResource):
+    url = "/material_type/<int:type_id>"
 
     class Meta:
-        model = EquipmentTypeModel
+        model = MaterialTypeModel
         fields = ("id", "name", "description")
 
     def get(self, type_id: int):
         """Test with
-        curl -X GET "http://localhost:5000/equipment_type/1"
+        curl -X GET "http://localhost:5000/material_type/1"
         """
-        equipment_type = EquipmentTypeModel.get(id=type_id)
-        return self.serialize(equipment_type)
+        material_type = MaterialTypeModel.get(id=type_id)
+        return self.serialize(material_type)
 
 
 class EquipmentTypes(ModelListResource):
     url = "/equipment_types"
 
     class Meta:
-        model = EquipmentTypeModel
+        model = MaterialTypeModel
         fields = ("id", "name", "description")
 
     def get(self):
-        equipment_types = EquipmentTypeModel.all()
+        equipment_types = MaterialTypeModel.all()
         return self.serialize(equipment_types)
 
     @use_kwargs(
@@ -43,8 +43,8 @@ class EquipmentTypes(ModelListResource):
         """Test with
         curl -X PUT "http://localhost:5000/equipment_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
         """  # noqa
-        equipment_type = EquipmentTypeModel.create(**kwargs)
-        return self.serialize_single(equipment_type)
+        material_type = MaterialTypeModel.create(**kwargs)
+        return self.serialize_single(material_type)
 
 
 class Material(ModelResource):
@@ -54,7 +54,7 @@ class Material(ModelResource):
         model = MaterialModel
         fields = (
             "id",
-            "equipment_type_id",
+            "material_type_id",
             "inventory_number",
             "max_life_expectancy",
             "max_service_duration",
@@ -89,7 +89,7 @@ class Materials(ModelListResource):
         model = MaterialModel
         fields = (
             "id",
-            "equipment_type_id",
+            "material_type_id",
             "inventory_number",
             "max_life_expectancy",
             "max_service_duration",
@@ -107,7 +107,7 @@ class Materials(ModelListResource):
 
     @use_kwargs(
         {
-            "equipment_type_id": fields.Integer(),
+            "material_type_id": fields.Integer(),
             "inventory_number": fields.Integer(),
             "max_life_expectancy": fields.Str(),
             "max_service_duration": fields.Str(),
@@ -124,18 +124,18 @@ class Materials(ModelListResource):
     def put(self, **kwargs) -> dict:
         """Test with
         curl -X PUT 'http://localhost:5000/materials' -H 'Content-Type: application/json' -d '{
-            "equipment_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
+            "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
             "max_service_duration":"20", "installation_date":"2014-12-22T03:12:58.019077+00:00",
             "instructions":"use it like this and that", "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",
-            "rental_fee":"20", "condition":"very good","days_used":"5"}'
+            "rental_fee":"20", "condition":"OK", "days_used":"5"}'
         """  # noqa
         material = MaterialModel.create(**kwargs)
-        return self.schema.dump(material, many=False)
+        return self.serialize_single(material)
 
     # curl -X PUT 'http://localhost:5000/equipment_types' -H 'Content-Type: application/json' -d '{
-    # "equipment_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
+    # "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
     # "max_service_duration":"20", "installation_date":"2014-12-22T03:12:58.019077+00:00",
     # "instructions":"use it like this and that", "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",
-    # "rental_fee":"20", "condition":"very good","days_used":"5", "purchase_details":
+    # "rental_fee":"20", "condition":"OK", "days_used":"5", "purchase_details":
     # {"purchase_date":"2014-12-22T03:12:58.019077+00:00", "invoice_number":"31", "merchant":"Merchentt bla",
     # "purchase_price":"55", "suggested_retail_price":"130" }}'
