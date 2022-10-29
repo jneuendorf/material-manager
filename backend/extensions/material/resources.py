@@ -18,8 +18,8 @@ class EquipmentType(ModelResource):
         """Test with
         curl -X GET "http://localhost:5000/equipment_type/1"
         """
-        Equipment_type = EquipmentTypeModel.get(id=type_id)
-        return self.serialize(Equipment_type)
+        equipment_type = EquipmentTypeModel.get(id=type_id)
+        return self.serialize(equipment_type)
 
 
 class EquipmentTypes(ModelListResource):
