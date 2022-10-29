@@ -44,7 +44,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
       tabBarIndex.value = tabbBarController.index;
     });
 
-    availableUsers = await userController.getAllUsers();
+    availableUsers = await userController.getAllUserMocks();
 
     availableRentals = await rentalController.getAllRentalMocks();
     filteredRentals.value = availableRentals;

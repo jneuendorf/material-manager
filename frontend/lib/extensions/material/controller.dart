@@ -78,11 +78,10 @@ class MaterialController extends GetxController {
     try {
       final response = await apiService.mainClient.post('/material', 
         data: {
-          'serial_numbers': material.serialNumbers.map(
-            (SerialNumber s) => {
-              'id': s.id,
-              'manufacturer': s.manufacturer,
-            }).toList(),
+          'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
+            'id': s.id,
+            'manufacturer': s.manufacturer,
+          }).toList(),
           'inventory_number': material.inventoryNumber,
           'max_life_expectancy': material.maxLifeExpectancy,
           'max_service_duration': material.maxServiceDuration,
@@ -101,14 +100,13 @@ class MaterialController extends GetxController {
             'purchanse_price': material.purchaseDetails.purchasePrice,
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
-          'properties': material.properties.map(
-            (Property p) => {
-              'id': p.id,
-              'name': p.name,
-              'description': p.description,
-              'value': p.value,
-              'unit': p.unit,
-            }).toList(),
+          'properties': material.properties.map((Property p) => {
+            'id': p.id,
+            'name': p.name,
+            'description': p.description,
+            'value': p.value,
+            'unit': p.unit,
+          }).toList(),
           'equipment_type': {
             'id': material.equipmentType.id,
             'description': material.equipmentType.description,
@@ -173,11 +171,10 @@ class MaterialController extends GetxController {
       final response = await apiService.mainClient.put('/material/${material.id}', 
         data: {
           'image_path': material.imagePath,
-          'serial_numbers': material.serialNumbers.map(
-            (SerialNumber s) => {
-              'id': s.id,
-              'manufacturer': s.manufacturer,
-            }).toList(),
+          'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
+            'id': s.id,
+            'manufacturer': s.manufacturer,
+          }).toList(),
           'inventory_number': material.inventoryNumber,
           'max_life_expectancy': material.maxLifeExpectancy,
           'max_service_duration': material.maxServiceDuration,
@@ -196,14 +193,13 @@ class MaterialController extends GetxController {
             'purchanse_price': material.purchaseDetails.purchasePrice,
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
-          'properties': material.properties.map(
-            (Property p) => {
-              'id': p.id,
-              'name': p.name,
-              'description': p.description,
-              'value': p.value,
-              'unit': p.unit,
-            }).toList(),
+          'properties': material.properties.map((Property p) => {
+            'id': p.id,
+            'name': p.name,
+            'description': p.description,
+            'value': p.value,
+            'unit': p.unit,
+          }).toList(),
           'equipment_type': {
             'id': material.equipmentType.id,
             'description': material.equipmentType.description,
@@ -211,9 +207,9 @@ class MaterialController extends GetxController {
         },
       );
 
-      if (response.statusCode != 201) debugPrint('Error updating material');
+      if (response.statusCode != 200) debugPrint('Error updating material');
 
-      return true;
+      return response.statusCode == 200;
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }
@@ -232,7 +228,7 @@ class MaterialController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error updating equipment type');
 
-      return true;
+      return response.statusCode == 200;
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }
@@ -254,7 +250,7 @@ class MaterialController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error updating property');
 
-      return true;
+      return response.statusCode == 200;
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }

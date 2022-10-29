@@ -118,7 +118,7 @@ class RentalController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error updating rental');
 
-      return true;
+      return response.statusCode == 200;
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }

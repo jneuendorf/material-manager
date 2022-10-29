@@ -1,5 +1,5 @@
 class UserModel {
-  final int id;
+  final int? id;
   String firstName;
   String lastName;
   String email;
@@ -55,7 +55,7 @@ class Address {
 
   factory Address.fromJson(Map<String, dynamic> json) => Address(
     street: json['street'],
-    houseNumber: json['houseNumber'],
+    houseNumber: json['house_number'],
     city: json['city'],
     zip: json['zip'],
   );
