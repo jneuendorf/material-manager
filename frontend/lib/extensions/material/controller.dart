@@ -222,7 +222,7 @@ class MaterialController extends GetxController {
 
   /// Updates a equipment type in the backend.
   /// Returns true if the equipment type was updated successfully.
-  Future<int?> updateEquipmentType(EquipmentType equipmentType) async {
+  Future<bool> updateEquipmentType(EquipmentType equipmentType) async {
     try {
       final response = await apiService.mainClient.put('/material/equipment_type/${equipmentType.id}', 
         data: {
@@ -232,16 +232,16 @@ class MaterialController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error updating equipment type');
 
-      return response.data['id'];
+      return true;
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }
-    return null;
+    return false;
   }
 
   /// Updates a property in the backend.
   /// Returns true if the property was updated successfully.
-  Future<int?> updateProperty(Property property) async {
+  Future<bool> updateProperty(Property property) async {
     try {
       final response = await apiService.mainClient.put('/material/property/${property.id}', 
         data: {
@@ -254,10 +254,10 @@ class MaterialController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error updating property');
 
-      return response.data['id'];
+      return true;
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }
-    return null;
+    return false;
   }
 }
