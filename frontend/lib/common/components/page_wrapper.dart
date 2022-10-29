@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -65,7 +67,11 @@ class PageWrapper extends StatelessWidget {
   );
 
   Drawer buildDrawer() {
-    final RxString currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
+    RxString currentRoute = '/'.obs;
+
+    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+      currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
+    }
 
     return Drawer(
       child: ListView(

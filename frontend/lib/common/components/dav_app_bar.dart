@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -33,7 +35,18 @@ class DavAppBar extends StatefulWidget with PreferredSizeWidget {
 }
 
 class _DavAppBarState extends State<DavAppBar> {
-  final RxString currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
+  late final RxString currentRoute;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+      currentRoute = '/'.obs;
+    } else {
+      currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
+    }
+  }
 
   @override
   Widget build(BuildContext context) => AppBar(
