@@ -35,8 +35,8 @@ class EquipmentTypes(ModelListResource):
 
     @use_kwargs(
         {
-            "name": fields.Str(),
-            "description": fields.Str(),
+            "name": fields.Str(required=True),
+            "description": fields.Str(required=True),
         }
     )
     def put(self, **kwargs) -> dict:
