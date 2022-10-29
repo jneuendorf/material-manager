@@ -76,6 +76,7 @@ class PageWrapper extends StatelessWidget {
           ),
           Obx(() => ListTile(
             title: Text('rental'.tr),
+            leading: const Icon(Icons.shopping_cart),
             textColor: currentRoute.value == rentalRoute 
               ? Get.theme.colorScheme.onSecondary 
               : null,
@@ -83,6 +84,7 @@ class PageWrapper extends StatelessWidget {
           )),
           Obx(() => ListTile(
             title: Text('inventory'.tr),
+            leading: const Icon(Icons.inventory),
             textColor: currentRoute.value == inventoryRoute 
               ? Get.theme.colorScheme.onSecondary 
               : null,
@@ -90,6 +92,7 @@ class PageWrapper extends StatelessWidget {
           )),
           Obx(() => ListTile(
             title: Text('inspection'.tr),
+            leading: const Icon(Icons.search_off),
             textColor: currentRoute.value == inspectionRoute 
               ? Get.theme.colorScheme.onSecondary 
               : null,
@@ -97,6 +100,7 @@ class PageWrapper extends StatelessWidget {
           )),
           Obx(() => ListTile(
             title: Text('lender'.tr),
+            leading: const Icon(Icons.calendar_month),
             textColor: currentRoute.value == lenderRoute 
               ? Get.theme.colorScheme.onSecondary 
               : null,
@@ -104,6 +108,7 @@ class PageWrapper extends StatelessWidget {
           )),
           Obx(() => ListTile(
             title: Text('administration'.tr),
+            leading: const Icon(Icons.manage_accounts),
             textColor: currentRoute.value == administrationRoute 
               ? Get.theme.colorScheme.onSecondary 
               : null,
