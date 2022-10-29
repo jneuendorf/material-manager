@@ -35,13 +35,14 @@ class EquipmentTypes(ModelListResource):
 
     @use_kwargs(
         {
-            "id": fields.Integer(),
             "name": fields.Str(),
             "description": fields.Str(),
         }
     )
     def put(self, **kwargs) -> dict:
-        """Test with"""  # noqa
+        """Test with
+        curl -X PUT "http://localhost:5000/equipment_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
+        """  # noqa
         equipment_type = EquipmentTypeModel.create(**kwargs)
         return self.schema.dump(equipment_type, many=False)
 
