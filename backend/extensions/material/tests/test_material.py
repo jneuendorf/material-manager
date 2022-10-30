@@ -32,4 +32,5 @@ def test_create_material(client, app) -> None:
         },
     ).json
 
-    assert Material.get(id=material["id"]) is not None
+    with app.app_context():
+        assert Material.get(id=material["id"]) is not None

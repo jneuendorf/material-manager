@@ -8,7 +8,7 @@ from . import models
 SerialNumberSchema = model_schema(
     models.SerialNumber,
     fields=["serial_number", "production_date", "manufacturer"],
-    load_instance=True,
+    load_instance=True,  # Needed for model relationships
 )
 
 
