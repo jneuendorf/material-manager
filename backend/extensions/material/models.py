@@ -28,9 +28,9 @@ class PurchaseDetails(Model):  # type: ignore
 
 
 class Condition(enum.Enum):
-    OK = 1
-    REPAIR = 2
-    BROKEN = 3
+    OK = "OK"
+    REPAIR = "REPAIR"
+    BROKEN = "BROKEN"
 
 
 class Material(Model):  # type: ignore
@@ -59,6 +59,11 @@ class Material(Model):  # type: ignore
         secondary="material_property_mapping",
         backref="materials",
     )
+
+    def save(self) -> None:
+        if not self.serial_numbers:
+            raise ValueError("A material must have at least 1 associated serial number")
+        super().save()
 
 
 class SerialNumber(Model):  # type: ignore

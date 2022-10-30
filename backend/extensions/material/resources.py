@@ -1,24 +1,29 @@
 from flask_apispec import use_kwargs
 from marshmallow import fields
 
-from core.helpers.resource import ModelListResource, ModelResource
+from core.helpers.resource import ModelListResource, ModelResource, model_schema
 
-from .models import Material as MaterialModel
-from .models import MaterialType as MaterialTypeModel
+from . import models
+
+SerialNumberSchema = model_schema(
+    models.SerialNumber,
+    fields=["serial_number", "production_date", "manufacturer"],
+    load_instance=True,
+)
 
 
 class MaterialType(ModelResource):
     url = "/material_type/<int:type_id>"
 
     class Meta:
-        model = MaterialTypeModel
+        model = models.MaterialType
         fields = ("id", "name", "description")
 
     def get(self, type_id: int):
         """Test with
         curl -X GET "http://localhost:5000/material_type/1"
         """
-        material_type = MaterialTypeModel.get(id=type_id)
+        material_type = models.MaterialType.get(id=type_id)
         return self.serialize(material_type)
 
 
@@ -26,7 +31,7 @@ class MaterialTypes(ModelListResource):
     url = "/material_types"
 
     class Meta:
-        model = MaterialTypeModel
+        model = models.MaterialType
         fields = ("id", "name", "description")
 
     def get(self):
@@ -43,7 +48,7 @@ class MaterialTypes(ModelListResource):
         """Test with
         curl -X PUT "http://localhost:5000/material_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
         """  # noqa
-        material_type = MaterialTypeModel.create(**kwargs)
+        material_type = models.MaterialType.create(**kwargs)
         return self.serialize_single(material_type)
 
 
@@ -51,7 +56,7 @@ class Material(ModelResource):
     url = "/material/<int:material_id>"
 
     class Meta:
-        model = MaterialModel
+        model = models.Material
         fields = (
             "id",
             "material_type_id",
@@ -70,7 +75,7 @@ class Material(ModelResource):
         """Test with
         curl -X GET "http://localhost:5000/material/1"
         """
-        material = MaterialModel.get(id=material_id)
+        material = models.Material.get(id=material_id)
         return self.serialize(material)
 
 
@@ -86,7 +91,7 @@ class Materials(ModelListResource):
     url = "/materials"
 
     class Meta:
-        model = MaterialModel
+        model = models.Material
         fields = (
             "id",
             "material_type_id",
@@ -102,26 +107,34 @@ class Materials(ModelListResource):
         )
 
     def get(self):
-        materials = MaterialModel.all()
+        materials = models.Material.all()
         return self.serialize(materials)
 
     @use_kwargs(
         {
             "material_type_id": fields.Integer(),
-            "inventory_number": fields.Integer(),
+            "inventory_number": fields.Str(),
             "max_life_expectancy": fields.Str(),
             "max_service_duration": fields.Str(),
-            "installation_date": fields.DateTime(),
+            "installation_date": fields.Date(),
             "instructions": fields.Str(),
-            "next_inspection_date": fields.DateTime(),
+            "next_inspection_date": fields.Date(),
             "rental_fee": fields.Float(),
-            "condition": fields.Str(),
+            "condition": fields.Enum(models.Condition),
             "days_used": fields.Integer(),
+            "serial_numbers": fields.List(
+                fields.Nested(
+                    SerialNumberSchema(
+                        # only=["serial_number", "production_date", "manufacturer"],
+                    ),
+                ),
+                required=True,
+            ),
             # "purchase_details": fields.Nested(PurchaseDetailsSchema(only=(
             # "purchase_date", "invoice_number", "merchant", "purchase_price", "suggested_retail_price"))),
         }
     )
-    def put(self, **kwargs) -> dict:
+    def put(self, *, serial_numbers: list, **kwargs) -> dict:
         """Test with
         curl -X PUT 'http://localhost:5000/materials' -H 'Content-Type: application/json' -d '{
             "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
@@ -129,7 +142,12 @@ class Materials(ModelListResource):
             "instructions":"use it like this and that", "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",
             "rental_fee":"20", "condition":"OK", "days_used":"5"}'
         """  # noqa
-        material = MaterialModel.create(**kwargs)
+        material = models.Material.create(
+            _related=dict(
+                serial_numbers=serial_numbers,
+            ),
+            **kwargs,
+        )
         return self.serialize_single(material)
 
     # curl -X PUT 'http://localhost:5000/material_types' -H 'Content-Type: application/json' -d '{
