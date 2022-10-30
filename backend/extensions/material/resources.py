@@ -22,16 +22,16 @@ class MaterialType(ModelResource):
         return self.serialize(material_type)
 
 
-class EquipmentTypes(ModelListResource):
-    url = "/equipment_types"
+class MaterialTypes(ModelListResource):
+    url = "/material_types"
 
     class Meta:
         model = MaterialTypeModel
         fields = ("id", "name", "description")
 
     def get(self):
-        equipment_types = MaterialTypeModel.all()
-        return self.serialize(equipment_types)
+        material_types = models.MaterialType.all()
+        return self.serialize(material_types)
 
     @use_kwargs(
         {
@@ -41,7 +41,7 @@ class EquipmentTypes(ModelListResource):
     )
     def put(self, **kwargs) -> dict:
         """Test with
-        curl -X PUT "http://localhost:5000/equipment_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
+        curl -X PUT "http://localhost:5000/material_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
         """  # noqa
         material_type = MaterialTypeModel.create(**kwargs)
         return self.serialize_single(material_type)
@@ -132,7 +132,7 @@ class Materials(ModelListResource):
         material = MaterialModel.create(**kwargs)
         return self.serialize_single(material)
 
-    # curl -X PUT 'http://localhost:5000/equipment_types' -H 'Content-Type: application/json' -d '{
+    # curl -X PUT 'http://localhost:5000/material_types' -H 'Content-Type: application/json' -d '{
     # "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
     # "max_service_duration":"20", "installation_date":"2014-12-22T03:12:58.019077+00:00",
     # "instructions":"use it like this and that", "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",

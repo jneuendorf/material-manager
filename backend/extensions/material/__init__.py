@@ -19,6 +19,6 @@ material = Extension(
         resources.Material,
         resources.Materials,
         resources.MaterialType,
-        resources.EquipmentTypes,
+        resources.MaterialTypes,
     ),
 )

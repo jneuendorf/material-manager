@@ -44,7 +44,7 @@ def test_signup(client, app) -> None:
         },
     )
     assert success_response.status_code == 200
-    # Check user was created
+    # Check if user was created
     with app.app_context():
         user = User.get_or_none(email="signup@localhost.com")
     assert user is not None
