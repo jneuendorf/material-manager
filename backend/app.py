@@ -4,6 +4,7 @@ from typing import cast
 
 from flask import Flask, abort
 from flask_apispec import FlaskApiSpec
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_mail import Mail
 from flask_marshmallow import Marshmallow
@@ -35,6 +36,8 @@ def create_app(config, db: SQLAlchemy, mail: Mail, drop_db=False):
     jwt = JWTManager(app)
     api: Api = Api(app)
     Marshmallow(app)
+    # Allow CORS for all domains on all routes
+    CORS(app)
     api_docs = FlaskApiSpec(app)
     mail.init_app(app)
 
