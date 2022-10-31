@@ -131,7 +131,8 @@ class Materials(ModelListResource):
                 required=True,
             ),
             # "purchase_details": fields.Nested(PurchaseDetailsSchema(only=(
-            # "purchase_date", "invoice_number", "merchant", "purchase_price", "suggested_retail_price"))),
+            # "purchase_date", "invoice_number", "merchant", "purchase_price",
+            # "suggested_retail_price"))),
         }
     )
     def put(self, *, serial_numbers: list, **kwargs) -> dict:
@@ -150,10 +151,14 @@ class Materials(ModelListResource):
         )
         return self.serialize_single(material)
 
-    # curl -X PUT 'http://localhost:5000/material_types' -H 'Content-Type: application/json' -d '{
-    # "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
-    # "max_service_duration":"20", "installation_date":"2014-12-22T03:12:58.019077+00:00",
-    # "instructions":"use it like this and that", "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",
-    # "rental_fee":"20", "condition":"OK", "days_used":"5", "purchase_details":
-    # {"purchase_date":"2014-12-22T03:12:58.019077+00:00", "invoice_number":"31", "merchant":"Merchentt bla",
+    # curl -X PUT 'http://localhost:5000/material_types'
+    # -H 'Content-Type: application/json' -d '{
+    # "material_type_id":"2", "inventory_number":"56565656",
+    # "max_life_expectancy":"50", "max_service_duration":"20",
+    # "installation_date":"2014-12-22T03:12:58.019077+00:00",
+    # "instructions":"use it like this and that",
+    # "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",
+    # "rental_fee":"20", "condition":"OK", "days_used":"5",
+    # "purchase_details": {"purchase_date":"2014-12-22T03:12:58.019077+00:00",
+    # "invoice_number":"31", "merchant":"Merchentt bla",
     # "purchase_price":"55", "suggested_retail_price":"130" }}'
