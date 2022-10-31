@@ -30,7 +30,7 @@ test: venv
 	. venv/bin/activate && pytest -W ignore::DeprecationWarning && python -m unittest
 
 run: venv
-	. venv/bin/activate && flask --app core.app --debug --port 5000 run
+	. venv/bin/activate && flask --app core.app --debug run --port 5000
 
 clean:
 	rm -rf venv
