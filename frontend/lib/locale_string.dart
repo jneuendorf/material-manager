@@ -41,7 +41,7 @@ class LocaleString extends Translations {
       'confirm_password': 'Confirm Password',
       'membership_num_is_mandatory': 'Membership number is mandatory',
       'invalid_membership_num': 'invalid membership number',
-      'Email_not_valid': 'Email is not valid',
+      'email_not_valid': 'Email is not valid',
       'name_is_mandatory': 'Name is mandatory',
       'name_not_valid': 'Name not valid',
       'street_is_mandatory': 'street name is mandatory',
@@ -109,6 +109,7 @@ class LocaleString extends Translations {
       'usage_in_days': 'Usage in Days',
       'rental_fee': 'Rental Fee',
       'profile': 'Profile',
+      'email_is_mandatory': 'Email is mandatory',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -212,6 +213,7 @@ class LocaleString extends Translations {
       'usage_in_days': 'Nutzungsdauer in Tagen',
       'rental_fee': 'Verleihgebühr',
       'profile': 'Profil',
+      'email_is_mandatory': 'Email ist verplichtend',
     }
   };
 }

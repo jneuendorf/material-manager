@@ -1,6 +1,14 @@
 from flask import abort, jsonify, redirect
 from flask_apispec import use_kwargs
-from flask_jwt_extended import create_access_token, current_user
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    current_user,
+    decode_token,
+    get_jwt,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_mail import Message
 from sqlalchemy.exc import IntegrityError
 from webargs import fields, validate
@@ -119,6 +127,7 @@ class SignupVerification(BaseResource):
                 is_active=True,
             )
             # TODO: How to not hard-code the login URL?
+            # TODO: Get FE domain from request header 'Origin'
             return redirect(f'{flask_config["CORE_PUBLIC_FRONTEND_URL"]}/#/login')
         else:
             abort(401, "Verification failed")
@@ -139,7 +148,60 @@ class Login(BaseResource):
                 "Invalid credentials or your account has not been activated yet",
             )
 
-        return dict(access_token=create_access_token(identity=user))
+        token = create_refresh_token(identity=user)
+
+        # save refresh token in db
+        user.update(token=token)
+
+        return dict(
+            access_token=create_access_token(identity=user),
+            refresh_token=token,
+        )
+
+
+class Refresh(BaseResource):
+    url = "/refresh"
+
+    @jwt_required(refresh=True)
+    def post(self):
+        """
+        curl -X POST 'http://localhost:5000/refresh' -H 'Authorization: Bearer <JWT>'
+        """
+        identity = get_jwt_identity()
+        user = UserModel.get_or_none(id=identity)
+
+        if not user or not decode_token(user.token) == get_jwt():
+            return abort(
+                401,
+                "Invalid token or your account has not been found",
+            )
+
+        return dict(
+            access_token=create_access_token(identity=current_user, fresh=False)
+        )
+
+
+class Logout(BaseResource):
+    url = "/logout"
+
+    @jwt_required(refresh=True)
+    def post(self):
+        """
+        curl -X GET 'http://localhost:5000/logout' -H 'Authorization: Bearer <JWT>'
+        """
+        identity = get_jwt_identity()
+        user = UserModel.get_or_none(id=identity)
+
+        if not user or not decode_token(user.token) == get_jwt():
+            return abort(
+                401,
+                "Invalid token or your account has not been found",
+            )
+
+        # clear user´s token in DB
+        user.update(token="")
+
+        return dict(message="Logout successful")
 
 
 class Profile(ModelResource):

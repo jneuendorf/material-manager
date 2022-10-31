@@ -29,6 +29,7 @@ try:
     super_user.update(is_active=True)
 except raised_from(User.create_from_password):
     pass
+
 try:
     noop_user: User = User.create_from_password(
         email="noop@localhost.com",

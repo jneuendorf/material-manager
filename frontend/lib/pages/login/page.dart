@@ -20,84 +20,103 @@ class LoginPage extends GetView<LoginController> {
       children: [
         ConstrainedBox(
           constraints: controller.constraints,
-          child: Column(
-            children: [
-              // EMAIL
-              TextFormField(
-                controller: controller.emailController,
-                cursorColor: Colors.black,
-                keyboardType: TextInputType.number,
-                decoration: InputDecoration(
-                  labelText: 'email'.tr,
-                  labelStyle: const TextStyle(color: Colors.black54),
-                  prefixIcon: const Icon(Icons.numbers, color: Colors.black45),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: const OutlineInputBorder(),
-                ),
-                onFieldSubmitted: (value) {
-                  controller.login();
-                },
-              ),
-              const SizedBox(height: 18),
-
-              // PASSWORD
-              Obx(() => TextFormField(
-                controller: controller.passwordController,
-                cursorColor: Colors.black,
-                decoration: InputDecoration(
-                  focusColor: Colors.white,
-                  labelText: 'password'.tr,
-                  labelStyle: const TextStyle(color: Colors.black54),
-                  prefixIcon: const Icon(
-                    Icons.password_outlined,
-                    color: Colors.black45,
-                  ),
-                  border: const OutlineInputBorder(),
-                  focusedBorder: const OutlineInputBorder(),
-                  suffixIcon: IconButton(
-                    tooltip: (controller.hideChars.value ? 'show_password': 'hide_password').tr,
-                    icon: Icon(
-                      controller.hideChars.value
-                          ? CupertinoIcons.eye_fill
-                          : CupertinoIcons.eye_slash_fill,
-                      color: Colors.black,
+          child: Form(
+            key: controller.formKey,
+            child: Column(
+              children: [
+                // EMAIL
+                TextFormField(
+                  controller: controller.emailController,
+                  cursorColor: Colors.black,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'email'.tr,
+                    labelStyle: const TextStyle(color: Colors.black54),
+                    prefixIcon: const Icon(Icons.numbers, 
+                      color: Colors.black45,
                     ),
-                    onPressed: controller.toggleHideChars,
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(),
                   ),
+                  onFieldSubmitted: (value) {
+                    controller.onLoginTap();
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'email_is_mandatory'.tr;
+                    }
+                    if (!value.isEmail) {
+                      return 'email_not_valid'.tr;
+                    }
+                    return null;
+                  },
                 ),
-                onFieldSubmitted: (value) {
-                  controller.login();
-                },
-                obscureText: controller.hideChars.value,
-              )),
-
-              // REMEMBER ME
-              Row(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 18.0),
-                    child: Obx(() => Checkbox(
-                      activeColor: Get.theme.primaryColor,
-                      shape: const CircleBorder(),
-                      value: controller.rememberMe.value,
-                      onChanged: controller.rememberMe,
-                    )),
-                  ),
-                  Text(
-                    'remember_me'.tr,
-                    style: TextStyle(
-                      fontSize: 22,
-                      color: Colors.grey.shade700,
+                const SizedBox(height: 18),
+          
+                // PASSWORD
+                Obx(() => TextFormField(
+                  controller: controller.passwordController,
+                  cursorColor: Colors.black,
+                  decoration: InputDecoration(
+                    focusColor: Colors.white,
+                    labelText: 'password'.tr,
+                    labelStyle: const TextStyle(color: Colors.black54),
+                    prefixIcon: const Icon(Icons.password_outlined,
+                      color: Colors.black45,
+                    ),
+                    border: const OutlineInputBorder(),
+                    focusedBorder: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      tooltip: (controller.hideChars.value ? 'show_password': 'hide_password').tr,
+                      icon: Icon(
+                        controller.hideChars.value
+                            ? CupertinoIcons.eye_fill
+                            : CupertinoIcons.eye_slash_fill,
+                        color: Colors.black,
+                      ),
+                      onPressed: controller.toggleHideChars,
                     ),
                   ),
-                ],
-              ),
-
-              DavButton(
-                text: 'login'.tr,
-                onPressed: controller.login,
-              ),
-            ],
+                  obscureText: controller.hideChars.value,
+                  onFieldSubmitted: (value) {
+                    controller.onLoginTap();
+                  },
+                  validator: (String? value) {
+                    if (value == null || value.isEmpty) {
+                      return 'password_is_mandatory'.tr;
+                    }
+                    return null;
+                  },
+                )),
+          
+                // REMEMBER ME
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 18.0),
+                      child: Obx(() => Checkbox(
+                        activeColor: Get.theme.primaryColor,
+                        shape: const CircleBorder(),
+                        value: controller.rememberMe.value,
+                        onChanged: controller.rememberMe,
+                      )),
+                    ),
+                    Text(
+                      'remember_me'.tr,
+                      style: TextStyle(
+                        fontSize: 22,
+                        color: Colors.grey.shade700,
+                      ),
+                    ),
+                  ],
+                ),
+          
+                DavButton(
+                  text: 'login'.tr,
+                  onPressed: controller.onLoginTap,
+                ),
+              ],
+            ),
           ),
         ),
         const Padding(
