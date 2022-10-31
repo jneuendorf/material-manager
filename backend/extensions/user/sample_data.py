@@ -26,8 +26,10 @@ try:
         membership_number="1337",
         roles=[superuser_role],
     )
-except raised_from(User.create_from_password):
-    pass
+    # superuser.update(is_active=True)
+except raised_from(User.create_from_password) as e:
+    print("Error creating superuser", e)
+
 try:
     noop_user = User.create_from_password(
         email="noop@localhost.com",
@@ -36,5 +38,5 @@ try:
         last_name="noop",
         membership_number="0",
     )
-except raised_from(User.create_from_password):
-    pass
+except raised_from(User.create_from_password) as e:
+    print("Error creating noop user", e)
