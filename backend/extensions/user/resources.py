@@ -127,6 +127,7 @@ class SignupVerification(BaseResource):
                 is_active=True,
             )
             # TODO: How to not hard-code the login URL?
+            # TODO: Get FE domain from request header 'Origin'
             return redirect(f'{flask_config["CORE_PUBLIC_FRONTEND_URL"]}/#/login')
         else:
             abort(401, "Verification failed")

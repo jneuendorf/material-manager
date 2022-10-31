@@ -18,7 +18,7 @@ noop_role = Role.get_or_create(
 )
 
 try:
-    superuser = User.create_from_password(
+    super_user: User = User.create_from_password(
         email="root@localhost.com",
         password="root",
         first_name="root",
@@ -26,17 +26,18 @@ try:
         membership_number="1337",
         roles=[superuser_role],
     )
-    # superuser.update(is_active=True)
-except raised_from(User.create_from_password) as e:
-    print("Error creating superuser", e)
+    super_user.update(is_active=True)
+except raised_from(User.create_from_password):
+    pass
 
 try:
-    noop_user = User.create_from_password(
+    noop_user: User = User.create_from_password(
         email="noop@localhost.com",
         password="noop",
         first_name="noop",
         last_name="noop",
         membership_number="0",
     )
-except raised_from(User.create_from_password) as e:
-    print("Error creating noop user", e)
+    noop_user.update(is_active=True)
+except raised_from(User.create_from_password):
+    pass
