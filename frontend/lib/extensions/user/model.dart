@@ -25,17 +25,17 @@ class UserModel {
     id: json['id'],
     firstName: json['first_name'],
     lastName: json['last_name'],
-    email: json['email'],
-    phone: json['phone'],
-    membershipNumber: json['membership_number'],
+    email: json['email'] ?? '',
+    phone: json['phone'] ?? '',
+    membershipNumber: json['membership_number'] ?? '',
     address: Address(
-      street: json['street'],
-      houseNumber: json['house_number'],
-      city: json['city'],
-      zip: json['zip'],
+      street: json['street'] ?? '',
+      houseNumber: json['house_number'] ?? '',
+      city: json['city'] ?? '',
+      zip: json['zip'] ?? '',
     ),
     category: json['category'],
-    roles: List<Role>.from(json['roles'].map((x) => Role.fromJson(x))),
+    roles: List<Role>.from(json['roles']?.map((x) => Role.fromJson(x)) ?? []),
   );
 }
 

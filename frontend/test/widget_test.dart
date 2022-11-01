@@ -150,6 +150,7 @@ void main() {
     WidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     ProfilePageBinding().dependencies();
+    Get.find<ProfilePageController>().currentUser.value = mockUsers.first;
 
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),

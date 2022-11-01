@@ -101,6 +101,21 @@ class UserController extends GetxController {
     return null;
   }
 
+  /// Fetches the user with the provided [id] from the backend.
+  Future<UserModel?> getUser(int id) async {
+    try {
+      final response = await apiService.mainClient.get('/user/$id');
+
+      if (response.statusCode != 200) debugPrint('Error getting users');
+
+      return UserModel.fromJson(response.data);
+
+    } on DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
   /// Fetches all roles from backend.
   Future<List<Role>?> getAllRoles() async {
     try {
