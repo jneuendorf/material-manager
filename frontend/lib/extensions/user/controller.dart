@@ -77,28 +77,6 @@ class UserController extends GetxController {
     return false;
   }
 
-  /// Logs out a user.
-  /// Returns true if logout was successful.
-  Future<bool> logout() async {
-    try {
-      String? refreshToken = await apiService.getRefreshToken();
-      final response = await apiService.authClient.post('/logout', options: Options(
-        headers: {
-          'Authorization': 'Bearer $refreshToken',
-        },
-      ));
-
-      if (response.statusCode == 200) {
-        await storage.delete(key: atStorageKey);
-        await storage.delete(key: rtStorageKey);
-        return true;
-      }
-    } on DioError catch (e) {
-      apiService.defaultCatch(e);
-    }
-    return false;
-  }
-
   /// Fetches all users from backend.
   Future<List<UserModel>?> getAllUsers() async {
     try {
