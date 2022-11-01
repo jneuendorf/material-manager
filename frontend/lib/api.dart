@@ -40,6 +40,8 @@ class ApiService extends GetxService {
     final String? accessToken = await getAccessToken();
     if (accessToken != null) {
       tokenInfo = JwtDecoder.decode(accessToken);
+    } else {
+      tokenInfo = {};
     }
 
     Interceptor interceptor = InterceptorsWrapper(
