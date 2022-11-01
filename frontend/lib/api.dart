@@ -99,10 +99,10 @@ class ApiService extends GetxService {
     if (accessToken != null && refreshToken != null &&
     JwtDecoder.getRemainingTime(accessToken) < const Duration(minutes: 1) &&
     !JwtDecoder.isExpired(refreshToken)) {
-      // refresh access token
       debugPrint('refreshing access token');
+      // refresh access token
       try {
-        final response = await authClient.post('/refresh',
+        final response = await authClient.get('/refresh',
           options: Options(
             headers: {
               'Authorization': 'Bearer $refreshToken',
