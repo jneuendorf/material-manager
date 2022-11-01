@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
+import 'package:frontend/pages/login/controller.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
@@ -75,6 +76,13 @@ class UserController extends GetxController {
       apiService.defaultCatch(e);
     }
     return false;
+  }
+
+  /// Logs out a user.
+  Future<void> logout() async {
+    await storage.delete(key: atStorageKey);
+    await storage.delete(key: rtStorageKey);
+    Get.offNamed(loginRoute);
   }
 
   /// Fetches all users from backend.
