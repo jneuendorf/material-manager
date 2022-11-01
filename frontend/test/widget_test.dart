@@ -7,6 +7,7 @@
 
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:frontend/api.dart';
 
 import 'package:get/get.dart';
 
@@ -149,7 +150,11 @@ void main() {
   testWidgets('ProfilePage Widget Test', (WidgetTester tester) async {
     WidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
+    Get.find<ApiService>().tokenInfo = {
+      'sub': 1,
+    };
     ProfilePageBinding().dependencies();
+    Get.find<ProfilePageController>().currentUser.value = mockUsers.first;
 
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
