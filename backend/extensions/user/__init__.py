@@ -26,7 +26,6 @@ class UserExtension(Extension):
         resources.SignupVerification,
         resources.Login,
         resources.Refresh,
-        resources.Logout,
         resources.Profile,
     )
     permissions = (

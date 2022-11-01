@@ -8,8 +8,8 @@ flask_config = {
     "SQLALCHEMY_DATABASE_URI": "sqlite:///material_manager.db",
     # TODO: change when in running in production mode
     "JWT_SECRET_KEY": "eyJmcmVzaCI6ZmFs",
-    "JWT_ACCESS_TOKEN_EXPIRES": timedelta(hours=5),
-    "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=5),
+    "JWT_ACCESS_TOKEN_EXPIRES": timedelta(hours=1),
+    "JWT_REFRESH_TOKEN_EXPIRES": timedelta(days=3),
     "JWT_TOKEN_LOCATION": "headers",
     "APISPEC_SPEC": APISpec(
         title="Material Manager",
