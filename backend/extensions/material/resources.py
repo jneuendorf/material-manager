@@ -63,6 +63,44 @@ class MaterialTypes(ModelListResource):
         return self.serialize_single(material_type)
 
 
+class PurchaseDetails(ModelResource):
+    url = "/purchase_details"
+
+    class Schema:
+        class Meta:
+            model = models.PurchaseDetails
+            fields = (
+                "id",
+                "purchase_date",
+                "invoice_number",
+                "merchant",
+                "purchase_price",
+                "suggested_retail_price",
+            )
+
+    @use_kwargs(
+        {
+            "purchase_date": fields.Date(required=True),
+            "invoice_number": fields.Str(required=True),
+            "merchant": fields.Str(),
+            "purchase_price": fields.Float(),
+            "suggested_retail_price": fields.Float(),
+        }
+    )
+    def put(self, **kwargs) -> dict:
+        """Test with
+        curl -X PUT "http://localhost:5000/purchase_details" -H 'Content-Type: application/json' -d '{
+            "invoice_number": "2154325gu2345",
+            "merchant": "Händler",
+            "purchase_date": "2022-11-02",
+            "purchase_price": 50,
+            "suggested_retail_price": 1000
+            }'
+        """  # noqa
+        purchase_detail = models.PurchaseDetails.create(**kwargs)
+        return self.serialize(purchase_detail)
+
+
 class Material(ModelResource):
     url = "/material/<int:material_id>"
 
