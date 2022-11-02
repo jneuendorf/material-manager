@@ -68,8 +68,8 @@ class UserController extends GetxController {
       var accessToken = response.data['access_token'] as String;
       var refreshToken = response.data['refresh_token'] as String;
 
-      apiService.storeAccessToken(accessToken);
-      apiService.storeRefreshToken(refreshToken);
+      await apiService.storeAccessToken(accessToken);
+      await apiService.storeRefreshToken(refreshToken);
 
       return true;
     } on DioError catch (e) {
@@ -152,7 +152,7 @@ class UserController extends GetxController {
   /// Returns the id of the newly created user.
   Future<int?> addUser(UserModel user) async {
     try {
-      final response = await apiService.mainClient.post('/user', 
+      final response = await apiService.mainClient.post('/user',
         data: {
           'first_name': user.firstName,
           'last_name': user.lastName,
