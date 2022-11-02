@@ -1,3 +1,5 @@
+import 'dart:html';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
@@ -5,6 +7,8 @@ import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/model.dart';
+
+import 'mock_data.dart';
 
 
 class InspectionController extends GetxController {
@@ -31,7 +35,7 @@ class InspectionController extends GetxController {
   /// or null if an error occured.
   Future<int?> addInspection(InspectionModel inspection) async {
     try {
-      final response = await apiService.mainClient.post('/inspection', 
+      final response = await apiService.mainClient.post('/inspection',
         data: {
           'inspector_id': inspection.inspectorId,
           'material_id': inspection.materialId,
@@ -60,7 +64,7 @@ class InspectionController extends GetxController {
   /// or null if an error occured.
   Future<int?> addComment(Comment comment) async {
     try {
-      final response = await apiService.mainClient.post('/inspection/comment', 
+      final response = await apiService.mainClient.post('/inspection/comment',
         data: {
           'date': comment.date,
           'text': comment.text,
@@ -81,7 +85,7 @@ class InspectionController extends GetxController {
   /// Returns true if the rental was updated successfully.
   Future<bool> updateInspection(InspectionModel inspection) async {
     try {
-      final response = await apiService.mainClient.put('/inspection/${inspection.id}', 
+      final response = await apiService.mainClient.put('/inspection/${inspection.id}',
         data: {
           'inspector_id': inspection.inspectorId,
           'material_id': inspection.materialId,
@@ -109,7 +113,7 @@ class InspectionController extends GetxController {
   /// Returns true if the rental was updated successfully.
   Future<bool> updateComment(Comment comment) async {
     try {
-      final response = await apiService.mainClient.put('/inspection/comment/${comment.id}', 
+      final response = await apiService.mainClient.put('/inspection/comment/${comment.id}',
         data: {
           'date': comment.date,
           'text': comment.text,
@@ -126,4 +130,7 @@ class InspectionController extends GetxController {
     return false;
   }
 
+  Future<List<InspectionModel>> getAllMockInspections() async {
+    return mockInspections;
+  }
 }

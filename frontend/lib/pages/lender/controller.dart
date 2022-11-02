@@ -28,8 +28,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   late TabController tabbBarController;
 
   final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
-  final RxMap<RentalStatus, String> statusOptions = <RentalStatus, String>{}.obs; 
-
+  final RxMap<RentalStatus, String> statusOptions = <RentalStatus, String>{}.obs;
   List<RentalModel> availableRentals = [];
   List<RentalStatus> availableStatuses = <RentalStatus>[].obs;
   List<UserModel> availableUsers = [];
@@ -109,5 +108,5 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   String formatDate(DateTime date) {
     return DateFormat('dd.MM.yyyy').format(date);
   }
-  
+
 }
