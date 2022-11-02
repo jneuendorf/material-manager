@@ -23,6 +23,9 @@ clear_db:
 test_data: clear_db db
 	. venv/bin/activate && flask --app core.app create-test-data user
 
+test_db: 
+	. venv/bin/activate && flask --app core.app create-test-db
+
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
 
