@@ -1,15 +1,12 @@
-import 'dart:html';
 
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
+import 'package:frontend/extensions/inspection/mock_data.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/model.dart';
-
-import 'mock_data.dart';
-
 
 class InspectionController extends GetxController {
   static final apiService = Get.find<ApiService>();
