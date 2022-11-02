@@ -150,7 +150,9 @@ class Login(BaseResource):
         for permission in user.permissions:
             permissions[permission.id] = permission.name
 
-        additional_claims = {"permissions": permissions}
+        additional_claims = {
+            "permissions": {permission.id: permission.name for permission in user.permissions},
+        }
 
         return dict(
             access_token=create_access_token(
