@@ -146,10 +146,6 @@ class Login(BaseResource):
                 "Invalid credentials or your account has not been activated yet",
             )
 
-        permissions = {}
-        for permission in user.permissions:
-            permissions[permission.id] = permission.name
-
         additional_claims = {
             "permissions": {
                 permission.id: permission.name for permission in user.permissions
@@ -181,9 +177,6 @@ class Refresh(BaseResource):
                 "Account has not been found",
             )
 
-        permissions = {}
-        for permission in user.permissions:
-            permissions[permission.id] = permission.name
 
         additional_claims = {
             "permissions": {
