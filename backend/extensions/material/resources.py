@@ -1,23 +1,33 @@
+from typing import List
+
 from flask_apispec import use_kwargs
 from marshmallow import fields
+from marshmallow_sqlalchemy.fields import Nested
 
-from core.helpers.resource import ModelListResource, ModelResource, model_schema
+from core.helpers.resource import (
+    BaseSchema,
+    ModelConverter,
+    ModelListResource,
+    ModelResource,
+)
 
 from . import models
 
-SerialNumberSchema = model_schema(
-    models.SerialNumber,
-    fields=["serial_number", "production_date", "manufacturer"],
-    load_instance=True,  # Needed for model relationships
-)
+
+class SerialNumberSchema(BaseSchema):
+    class Meta:
+        model = models.SerialNumber
+        fields = ("serial_number", "production_date", "manufacturer")
+        load_instance = True
 
 
 class MaterialType(ModelResource):
     url = "/material_type/<int:type_id>"
 
-    class Meta:
-        model = models.MaterialType
-        fields = ("id", "name", "description")
+    class Schema:
+        class Meta:
+            model = models.MaterialType
+            fields = ("id", "name", "description")
 
     def get(self, type_id: int):
         """Test with
@@ -30,9 +40,10 @@ class MaterialType(ModelResource):
 class MaterialTypes(ModelListResource):
     url = "/material_types"
 
-    class Meta:
-        model = models.MaterialType
-        fields = ("id", "name", "description")
+    class Schema:
+        class Meta:
+            model = models.MaterialType
+            fields = ("id", "name", "description")
 
     def get(self):
         material_types = models.MaterialType.all()
@@ -55,21 +66,30 @@ class MaterialTypes(ModelListResource):
 class Material(ModelResource):
     url = "/material/<int:material_id>"
 
-    class Meta:
-        model = models.Material
-        fields = (
-            "id",
-            "material_type_id",
-            "inventory_number",
-            "max_life_expectancy",
-            "max_service_duration",
-            "installation_date",
-            "instructions",
-            "next_inspection_date",
-            "rental_fee",
-            "condition",
-            "days_used",
+    class Schema:
+        material_type = Nested(MaterialType.completed_schema())
+        serial_numbers = Nested(
+            SerialNumberSchema(),
+            many=True,
         )
+
+        class Meta:
+            model = models.Material
+            model_converter = ModelConverter
+            fields = (
+                "id",
+                "inventory_number",
+                "max_life_expectancy",
+                "max_service_duration",
+                "installation_date",
+                "instructions",
+                "next_inspection_date",
+                "rental_fee",
+                "condition",
+                "days_used",
+                "material_type",
+                "serial_numbers",
+            )
 
     def get(self, material_id: int):
         """Test with
@@ -90,21 +110,23 @@ class Material(ModelResource):
 class Materials(ModelListResource):
     url = "/materials"
 
-    class Meta:
-        model = models.Material
-        fields = (
-            "id",
-            "material_type_id",
-            "inventory_number",
-            "max_life_expectancy",
-            "max_service_duration",
-            "installation_date",
-            "instructions",
-            "next_inspection_date",
-            "rental_fee",
-            "condition",
-            "days_used",
-        )
+    class Schema:
+        class Meta:
+            model = models.Material
+            fields = (
+                "id",
+                "inventory_number",
+                "max_life_expectancy",
+                "max_service_duration",
+                "installation_date",
+                "instructions",
+                "next_inspection_date",
+                "rental_fee",
+                "condition",
+                "days_used",
+                # "material_type",
+                # "serial_numbers",
+            )
 
     def get(self):
         materials = models.Material.all()
@@ -135,7 +157,7 @@ class Materials(ModelListResource):
             # "suggested_retail_price"))),
         }
     )
-    def put(self, *, serial_numbers: list, **kwargs) -> dict:
+    def put(self, *, serial_numbers: List[models.SerialNumber], **kwargs) -> dict:
         """Test with
         curl -X PUT 'http://localhost:5000/materials' -H 'Content-Type: application/json' -d '{
             "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",

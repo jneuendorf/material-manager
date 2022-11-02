@@ -25,9 +25,10 @@ from .models import User as UserModel
 class User(ModelResource):
     url = "/user/<int:user_id>"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "first_name", "last_name")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "first_name", "last_name")
 
     def get(self, user_id: int) -> dict:
         user = UserModel.get(id=user_id)
@@ -207,9 +208,10 @@ class Logout(BaseResource):
 class Profile(ModelResource):
     url = "/user/profile"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "first_name", "last_name", "email", "membership_number")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "first_name", "last_name", "email", "membership_number")
 
     @session_required
     def get(self) -> dict:
@@ -219,9 +221,10 @@ class Profile(ModelResource):
 class Users(ModelListResource):
     url = "/users"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "last_name")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "last_name")
 
     @permissions_required("user:read")
     def get(self):

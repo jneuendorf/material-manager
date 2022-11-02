@@ -1,11 +1,11 @@
-from collections.abc import Collection
+from collections.abc import Collection, Mapping
 from functools import cached_property
-from typing import Any, Generic, List, Optional, Type, TypeVar
+from typing import Any, Generic, List, Type, TypeVar
 
 from flask_apispec import MethodResource
 from flask_marshmallow.sqla import SQLAlchemyAutoSchema
 from flask_restful import Resource
-from marshmallow import Schema, fields
+from marshmallow import fields
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 from sqlalchemy.sql import sqltypes
 
@@ -42,43 +42,39 @@ class ModelConverter(BaseModelConverter):
 
 
 class BaseResource(MethodResource, Resource):
-    """Resources without a URL are not"""
+    url: str
 
-    url: Optional[str] = None
+
+# STUB TYPES FOR EASIER USAGE
+class MetaStub(Generic[M]):
+    """Contains model-related attrs and some types of SQLAlchemyAutoSchema.Meta"""
+
+    model: Type[M]
+    model_converter: Type[ModelConverter]
+    fields: Collection[str]
+    additional: Collection[str]
+    include: Mapping[str, Any]
+    exclude: Collection[str]
+    dateformat: str
+    datetimeformat: str
+    timeformat: str
+    ordered: bool
+    load_only: Collection[str]
+    dump_only: Collection[str]
+
+
+class SchemaStub(Generic[M]):
+    Meta: Type[MetaStub[M]]
 
 
 class ModelMeta(SQLAlchemyAutoSchema.Meta, Generic[M]):
-    model_converter = Type[BaseModelConverter]
+    model_converter: Type[ModelConverter]
     fields: Collection[str]
     model: Type[M]
 
 
-class ModelMetaSchema(SQLAlchemyAutoSchema, Schema, Generic[M]):
+class BaseSchema(SQLAlchemyAutoSchema, Generic[M]):
     Meta: Type[ModelMeta[M]]
-
-
-def model_schema(
-    model: Type[M],
-    fields: Collection[str],
-    **kwargs,
-) -> Type[ModelMetaSchema[M]]:
-    """
-    For details about options see
-    https://marshmallow-sqlalchemy.readthedocs.io/en/latest/api_reference.html#marshmallow_sqlalchemy.SQLAlchemySchema.OPTIONS_CLASS
-    """  # noqa
-
-    class Schema(ModelMetaSchema):
-        Meta = type(
-            "Meta",
-            (),
-            dict(
-                model=model,
-                fields=fields,
-                **kwargs,
-            ),
-        )
-
-    return Schema
 
 
 class ModelResource(BaseResource, Generic[M]):
@@ -88,33 +84,30 @@ class ModelResource(BaseResource, Generic[M]):
 
     >>> class MyResource(ModelResource):
     >>>     url = "/my_resource"
-    >>>     class Meta:
-    >>>         model = MyModel
-    >>>         fields = ("id", "name")
+    >>>     class Schema:
+    >>>         class Meta:
+    >>>             model = MyModel
+    >>>             fields = ("id", "name")
     """
 
     url: str
-    Meta: Type[ModelMeta[M]]
-    _schema_cls: Optional[Type[ModelMetaSchema]] = None
+    Schema: Type[SchemaStub[M]]
 
     @classmethod
-    def get_schema(cls, **kwargs) -> ModelMetaSchema:
-        """Wraps this resource's Meta class with a marshmallow schema
-        and enables support for enums.
+    def completed_schema(cls, **kwargs) -> BaseSchema:
+        """Extends Meta by:
+        - model converter => enable enum support
         """
 
-        if not cls._schema_cls:
+        class Schema(cls.Schema, BaseSchema):  # type: ignore
+            class Meta(cls.Schema.Meta):  # type: ignore
+                model_converter = ModelConverter
 
-            class Schema(ModelMetaSchema):
-                class Meta(cls.Meta):  # type: ignore
-                    model_converter = ModelConverter
-
-            cls._schema_cls = Schema
-        return cls._schema_cls(**kwargs)
+        return Schema(**kwargs)
 
     @cached_property
-    def schema(self) -> ModelMetaSchema:
-        return self.get_schema(many=False)
+    def schema(self) -> BaseSchema:
+        return self.completed_schema(many=False)
 
     def serialize(self, instance: M):
         serialized: dict = self.schema.dump(instance)
@@ -123,8 +116,8 @@ class ModelResource(BaseResource, Generic[M]):
 
 class ModelListResource(ModelResource, Generic[M]):
     @cached_property
-    def schema(self) -> ModelMetaSchema:
-        return self.get_schema(many=True)
+    def schema(self) -> BaseSchema:
+        return self.completed_schema(many=True)
 
     def serialize(self, instance: M):
         serialized: List[dict] = self.schema.dump(instance)
