@@ -151,7 +151,9 @@ class Login(BaseResource):
             permissions[permission.id] = permission.name
 
         additional_claims = {
-            "permissions": {permission.id: permission.name for permission in user.permissions},
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
         }
 
         return dict(
@@ -184,7 +186,9 @@ class Refresh(BaseResource):
             permissions[permission.id] = permission.name
 
         additional_claims = {
-            "permissions": {permission.id: permission.name for permission in user.permissions},
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
         }
 
         return dict(
