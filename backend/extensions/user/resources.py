@@ -177,7 +177,6 @@ class Refresh(BaseResource):
                 "Account has not been found",
             )
 
-
         additional_claims = {
             "permissions": {
                 permission.id: permission.name for permission in user.permissions
