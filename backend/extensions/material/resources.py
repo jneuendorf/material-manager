@@ -1,8 +1,9 @@
 from typing import List
 
+from flask import abort
 from flask_apispec import use_kwargs
 from marshmallow import fields
-from marshmallow_sqlalchemy.fields import Nested
+from sqlalchemy.exc import IntegrityError
 
 from core.helpers.resource import (
     BaseSchema,
@@ -101,33 +102,43 @@ class PurchaseDetails(ModelResource):
         return self.serialize(purchase_detail)
 
 
+class MaterialSchema(BaseSchema):
+    material_type_id = fields.Integer()
+    material_type = fields.Nested(MaterialType.completed_schema())
+    serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
+    purchase_details_id = fields.Integer()
+    purchase_details = fields.Nested(PurchaseDetails.completed_schema())
+
+    class Meta:
+        model_converter = ModelConverter
+        model = models.Material
+        load_instance = True
+        # fields = (
+        #     "id",
+        #     "inventory_number",
+        #     "max_life_expectancy",
+        #     "max_service_duration",
+        #     "installation_date",
+        #     "instructions",
+        #     "next_inspection_date",
+        #     "rental_fee",
+        #     "condition",
+        #     "days_used",
+        #     "material_type_id",
+        #     "material_type",
+        #     "purchase_details",
+        #     "serial_numbers",
+        # )
+        load_only = ("material_type_id",)
+        dump_only = ("id",)
+
+
 class Material(ModelResource):
-    url = "/material/<int:material_id>"
-
-    class Schema:
-        material_type = Nested(MaterialType.completed_schema())
-        serial_numbers = Nested(
-            SerialNumberSchema(),
-            many=True,
-        )
-
-        class Meta:
-            model = models.Material
-            model_converter = ModelConverter
-            fields = (
-                "id",
-                "inventory_number",
-                "max_life_expectancy",
-                "max_service_duration",
-                "installation_date",
-                "instructions",
-                "next_inspection_date",
-                "rental_fee",
-                "condition",
-                "days_used",
-                "material_type",
-                "serial_numbers",
-            )
+    url = [
+        "/material",
+        "/material/<int:material_id>",
+    ]
+    Schema = MaterialSchema
 
     def get(self, material_id: int):
         """Test with
@@ -136,89 +147,33 @@ class Material(ModelResource):
         material = models.Material.get(id=material_id)
         return self.serialize(material)
 
+    @use_kwargs(MaterialSchema.to_dict())
+    def post(
+        self,
+        *,
+        serial_numbers: List[models.SerialNumber],
+        purchase_details: models.PurchaseDetails = None,
+        **kwargs,
+    ) -> dict:
+        related = {"serial_numbers": serial_numbers}
+        if purchase_details:
+            related["purchase_details"] = purchase_details
+        try:
+            material = models.Material.create(
+                _related=related,
+                **kwargs,
+            )
+        except IntegrityError as e:
+            print(e)
+            abort(403, "Duplicate serial number for the same manufacturer")
 
-# class PurchaseDetailsSchema(Schema):
-#     purchase_date = fields.DateTime()
-#     invoice_number = fields.Str()
-#     merchant = fields.Str()
-#     purchase_price = fields.Float()
-#     suggested_retail_price = fields.Float()
+        return self.serialize(material)
 
 
 class Materials(ModelListResource):
     url = "/materials"
-
-    class Schema:
-        class Meta:
-            model = models.Material
-            fields = (
-                "id",
-                "inventory_number",
-                "max_life_expectancy",
-                "max_service_duration",
-                "installation_date",
-                "instructions",
-                "next_inspection_date",
-                "rental_fee",
-                "condition",
-                "days_used",
-                # "material_type",
-                # "serial_numbers",
-            )
+    Schema = MaterialSchema
 
     def get(self):
         materials = models.Material.all()
         return self.serialize(materials)
-
-    @use_kwargs(
-        {
-            "material_type_id": fields.Integer(),
-            "inventory_number": fields.Str(),
-            "max_life_expectancy": fields.Str(),
-            "max_service_duration": fields.Str(),
-            "installation_date": fields.Date(),
-            "instructions": fields.Str(),
-            "next_inspection_date": fields.Date(),
-            "rental_fee": fields.Float(),
-            "condition": fields.Enum(models.Condition),
-            "days_used": fields.Integer(),
-            "serial_numbers": fields.List(
-                fields.Nested(
-                    SerialNumberSchema(
-                        # only=["serial_number", "production_date", "manufacturer"],
-                    ),
-                ),
-                required=True,
-            ),
-            # "purchase_details": fields.Nested(PurchaseDetailsSchema(only=(
-            # "purchase_date", "invoice_number", "merchant", "purchase_price",
-            # "suggested_retail_price"))),
-        }
-    )
-    def post(self, *, serial_numbers: List[models.SerialNumber], **kwargs) -> dict:
-        """Test with
-        curl -X POST 'http://localhost:5000/materials' -H 'Content-Type: application/json' -d '{
-            "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
-            "max_service_duration":"20", "installation_date":"2014-12-22T03:12:58.019077+00:00",
-            "instructions":"use it like this and that", "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",
-            "rental_fee":"20", "condition":"OK", "days_used":"5"}'
-        """  # noqa
-        material = models.Material.create(
-            _related=dict(
-                serial_numbers=serial_numbers,
-            ),
-            **kwargs,
-        )
-        return self.serialize_single(material)
-
-    # curl -X PUT 'http://localhost:5000/material_types'
-    # -H 'Content-Type: application/json' -d '{
-    # "material_type_id":"2", "inventory_number":"56565656",
-    # "max_life_expectancy":"50", "max_service_duration":"20",
-    # "installation_date":"2014-12-22T03:12:58.019077+00:00",
-    # "instructions":"use it like this and that",
-    # "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",
-    # "rental_fee":"20", "condition":"OK", "days_used":"5",
-    # "purchase_details": {"purchase_date":"2014-12-22T03:12:58.019077+00:00",
-    # "invoice_number":"31", "merchant":"Merchentt bla",
-    # "purchase_price":"55", "suggested_retail_price":"130" }}'

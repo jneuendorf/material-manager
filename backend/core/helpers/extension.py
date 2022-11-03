@@ -64,11 +64,16 @@ class Extension(Blueprint, ABC, Generic[M, R]):
         resources: Iterable[Type[BaseResource]] = self.resources
         for resource_cls in resources:
             if resource_cls.url:
-                resource_url = url_join(
-                    base_url, resource_cls.url.format(ext_name=self.name)
+                urls = (
+                    [resource_cls.url]
+                    if isinstance(resource_cls.url, str)
+                    else resource_cls.url
                 )
-                api.add_resource(resource_cls, resource_url)
-                print("> Resource:", resource_cls.__name__, "=>", resource_url)
+                resource_urls = [
+                    url_join(base_url, url.format(ext_name=self.name)) for url in urls
+                ]
+                api.add_resource(resource_cls, *resource_urls)
+                print("> Resource:", resource_cls.__name__, "=>", resource_urls)
                 if issubclass(resource_cls, MethodResource):
                     api_docs.register(resource_cls)
 

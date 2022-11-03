@@ -1,6 +1,6 @@
 from collections.abc import Collection, Mapping
 from functools import cached_property
-from typing import Any, Generic, List, Type, TypeVar
+from typing import Any, Dict, Generic, List, Type, TypeVar, Union
 
 from flask_apispec import MethodResource
 from flask_marshmallow.sqla import SQLAlchemyAutoSchema
@@ -42,7 +42,7 @@ class ModelConverter(BaseModelConverter):
 
 
 class BaseResource(MethodResource, Resource):
-    url: str
+    url: Union[str, Collection[str]]
 
 
 # STUB TYPES FOR EASIER USAGE
@@ -76,6 +76,10 @@ class ModelMeta(SQLAlchemyAutoSchema.Meta, Generic[M]):
 class BaseSchema(SQLAlchemyAutoSchema, Generic[M]):
     Meta: Type[ModelMeta[M]]
 
+    @classmethod
+    def to_dict(cls) -> Dict[str, fields.Field]:
+        return cls._declared_fields
+
 
 class ModelResource(BaseResource, Generic[M]):
     """Specifies how to serialize a model instance for each request type.
@@ -90,7 +94,6 @@ class ModelResource(BaseResource, Generic[M]):
     >>>             fields = ("id", "name")
     """
 
-    url: str
     Schema: Type[SchemaStub[M]]
 
     @classmethod

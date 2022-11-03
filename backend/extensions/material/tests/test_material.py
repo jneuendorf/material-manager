@@ -3,8 +3,8 @@ from datetime import date
 from extensions.material.models import Condition, Material, PurchaseDetails
 
 
-def test_create_material(client, app) -> None:
-    material_type = client.put(
+def test_create_and_fetch_material(client, app) -> None:
+    material_type = client.post(
         "/material_types",
         json={
             "name": "helmet",
@@ -16,8 +16,8 @@ def test_create_material(client, app) -> None:
         "production_date": "2020-01-01",
         "manufacturer": "Amazon",
     }
-    material = client.put(
-        "/materials",
+    material = client.post(
+        "/material",
         json={
             "inventory_number": "12345",
             "max_life_expectancy": "2 years",
@@ -49,8 +49,8 @@ def test_create_material(client, app) -> None:
     assert material["serial_numbers"] == [serial_number9876]
 
 
-def test_create_purchase_details(client, app) -> None:
-    purchase_detail = client.put(
+def test_create_and_fetch_purchase_details(client, app) -> None:
+    purchase_detail = client.post(
         "/purchase_details",
         json={
             "purchase_date": "2022-11-02",
