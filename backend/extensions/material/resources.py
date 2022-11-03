@@ -55,9 +55,9 @@ class MaterialTypes(ModelListResource):
             "description": fields.Str(required=True),
         }
     )
-    def put(self, **kwargs) -> dict:
+    def post(self, **kwargs) -> dict:
         """Test with
-        curl -X PUT "http://localhost:5000/material_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
+        curl -X POST "http://localhost:5000/material_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
         """  # noqa
         material_type = models.MaterialType.create(**kwargs)
         return self.serialize_single(material_type)
@@ -87,9 +87,9 @@ class PurchaseDetails(ModelResource):
             "suggested_retail_price": fields.Float(),
         }
     )
-    def put(self, **kwargs) -> dict:
+    def post(self, **kwargs) -> dict:
         """Test with
-        curl -X PUT "http://localhost:5000/purchase_details" -H 'Content-Type: application/json' -d '{
+        curl -X POST "http://localhost:5000/purchase_details" -H 'Content-Type: application/json' -d '{
             "invoice_number": "2154325gu2345",
             "merchant": "Händler",
             "purchase_date": "2022-11-02",
@@ -195,9 +195,9 @@ class Materials(ModelListResource):
             # "suggested_retail_price"))),
         }
     )
-    def put(self, *, serial_numbers: List[models.SerialNumber], **kwargs) -> dict:
+    def post(self, *, serial_numbers: List[models.SerialNumber], **kwargs) -> dict:
         """Test with
-        curl -X PUT 'http://localhost:5000/materials' -H 'Content-Type: application/json' -d '{
+        curl -X POST 'http://localhost:5000/materials' -H 'Content-Type: application/json' -d '{
             "material_type_id":"2", "inventory_number":"56565656", "max_life_expectancy":"50",
             "max_service_duration":"20", "installation_date":"2014-12-22T03:12:58.019077+00:00",
             "instructions":"use it like this and that", "next_inspection_date":"2014-12-22T03:12:58.019077+00:00",

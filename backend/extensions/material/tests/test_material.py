@@ -2,8 +2,6 @@ from datetime import date
 
 from extensions.material.models import Condition, Material, PurchaseDetails
 
-# from http import client
-
 
 def test_create_material(client, app) -> None:
     material_type = client.put(
