@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
-import 'package:frontend/common/buttons/dav_button.dart';
+import 'package:frontend/common/buttons/base_button.dart';
 
 
 class ShoppingCartPage extends StatefulWidget {
@@ -194,7 +194,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 32.0),
-        child: DavButton(
+        child: BaseButton(
           onPressed: rentalPageController.onCheckoutTap,
           text: 'checkout'.tr,
           color: Colors.black,

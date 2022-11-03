@@ -33,7 +33,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialConfig();
 
-  runApp(const DavApp());
+  runApp(const MaterialManagerApp());
 }
 
 Future<void> initialConfig() async {
@@ -46,8 +46,8 @@ Future<void> initialConfig() async {
   Get.put(InspectionController(), permanent: true);
 }
 
-class DavApp extends StatelessWidget {
-  const DavApp({Key? key}) : super(key: key);
+class MaterialManagerApp extends StatelessWidget {
+  const MaterialManagerApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) => GetMaterialApp(

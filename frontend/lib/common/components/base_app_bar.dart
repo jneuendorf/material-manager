@@ -14,14 +14,14 @@ import 'package:frontend/pages/profile/controller.dart';
 import 'package:frontend/common/buttons/hover_text_button.dart';
 
 
-class DavAppBar extends StatefulWidget with PreferredSizeWidget {
+class BaseAppBar extends StatefulWidget with PreferredSizeWidget {
   final String? title;
   final bool loggedIn;
   final GlobalKey<ScaffoldState>? scaffoldKey;
   final bool showBackButton;
 
-  const DavAppBar({
-    Key? key, 
+  const BaseAppBar({
+    Key? key,
     this.title,
     this.loggedIn = true,
     this.scaffoldKey,
@@ -29,19 +29,19 @@ class DavAppBar extends StatefulWidget with PreferredSizeWidget {
   }) : super(key: key);
 
   @override
-  State<DavAppBar> createState() => _DavAppBarState();
+  State<BaseAppBar> createState() => _BaseAppBarState();
 
   @override
   Size get preferredSize => const Size.fromHeight(kToolbarHeight);
 }
 
-class _DavAppBarState extends State<DavAppBar> {
+class _BaseAppBarState extends State<BaseAppBar> {
   late final RxString currentRoute;
 
   @override
   void initState() {
     super.initState();
-    
+
     if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
       currentRoute = '/'.obs;
     } else {
@@ -53,7 +53,7 @@ class _DavAppBarState extends State<DavAppBar> {
   Widget build(BuildContext context) => AppBar(
     backgroundColor: Get.theme.primaryColor,
     leading: buildLeading(),
-    title: Text(widget.title ?? 'Material Verleih', 
+    title: Text(widget.title ?? 'Material Verleih',
       style: const TextStyle(color: Colors.white),
     ),
     actions: kIsWeb && widget.loggedIn ? [
@@ -62,8 +62,8 @@ class _DavAppBarState extends State<DavAppBar> {
         child: HoverTextButton(
           onTap: () => Get.toNamed(rentalRoute),
           text: 'rental'.tr,
-          color: currentRoute.value == rentalRoute 
-            ? Get.theme.colorScheme.onSecondary 
+          color: currentRoute.value == rentalRoute
+            ? Get.theme.colorScheme.onSecondary
             : Colors.white,
           hoverColor: Get.theme.colorScheme.onSecondary.withOpacity(0.6),
           fontWeight: FontWeight.w600,
@@ -74,8 +74,8 @@ class _DavAppBarState extends State<DavAppBar> {
         child: HoverTextButton(
           onTap: () => Get.toNamed(inventoryRoute),
           text: 'inventory'.tr,
-          color: currentRoute.value == inventoryRoute 
-            ? Get.theme.colorScheme.onSecondary 
+          color: currentRoute.value == inventoryRoute
+            ? Get.theme.colorScheme.onSecondary
             : Colors.white,
           hoverColor: Get.theme.colorScheme.onSecondary.withOpacity(0.6),
           fontWeight: FontWeight.w600,
@@ -86,8 +86,8 @@ class _DavAppBarState extends State<DavAppBar> {
         child: HoverTextButton(
           onTap: () => Get.toNamed(inspectionRoute),
           text: 'inspection'.tr,
-          color: currentRoute.value == inspectionRoute 
-            ? Get.theme.colorScheme.onSecondary 
+          color: currentRoute.value == inspectionRoute
+            ? Get.theme.colorScheme.onSecondary
             : Colors.white,
           hoverColor: Get.theme.colorScheme.onSecondary.withOpacity(0.6),
           fontWeight: FontWeight.w600,
@@ -98,8 +98,8 @@ class _DavAppBarState extends State<DavAppBar> {
         child: HoverTextButton(
           onTap: () => Get.toNamed(lenderRoute),
           text: 'lender'.tr,
-          color: currentRoute.value == lenderRoute 
-            ? Get.theme.colorScheme.onSecondary 
+          color: currentRoute.value == lenderRoute
+            ? Get.theme.colorScheme.onSecondary
             : Colors.white,
           hoverColor: Get.theme.colorScheme.onSecondary.withOpacity(0.6),
           fontWeight: FontWeight.w600,
@@ -110,18 +110,18 @@ class _DavAppBarState extends State<DavAppBar> {
         child: HoverTextButton(
           onTap: () => Get.toNamed(administrationRoute),
           text: 'administration'.tr,
-          color: currentRoute.value == administrationRoute 
-            ? Get.theme.colorScheme.onSecondary 
+          color: currentRoute.value == administrationRoute
+            ? Get.theme.colorScheme.onSecondary
             : Colors.white,
           hoverColor: Get.theme.colorScheme.onSecondary.withOpacity(0.6),
           fontWeight: FontWeight.w600,
         ),
       )),
       Obx(() => IconButton(
-        onPressed: () => Get.toNamed(profileRoute), 
-        icon: Icon(Icons.person, 
-          color: currentRoute.value == profileRoute 
-            ? Get.theme.colorScheme.onSecondary 
+        onPressed: () => Get.toNamed(profileRoute),
+        icon: Icon(Icons.person,
+          color: currentRoute.value == profileRoute
+            ? Get.theme.colorScheme.onSecondary
             : Colors.white,
         ),
         splashRadius: 20.0,
@@ -131,7 +131,7 @@ class _DavAppBarState extends State<DavAppBar> {
 
   Widget buildLeading() => Padding(
     padding: const EdgeInsets.only(left: 8.0),
-    child: kIsWeb 
+    child: kIsWeb
       ? InkWell(
         onTap: () {
           if (widget.loggedIn) {
@@ -140,9 +140,9 @@ class _DavAppBarState extends State<DavAppBar> {
         },
         borderRadius: BorderRadius.circular(25.0),
         child: Image.asset('assets/images/dav_logo_small.png'),
-      ) 
-      : widget.loggedIn 
-        ? widget.showBackButton 
+      )
+      : widget.loggedIn
+        ? widget.showBackButton
           ? IconButton(
             icon: const Icon(Icons.arrow_back_ios, color: Colors.black),
             onPressed: () => Get.back(),
@@ -150,7 +150,7 @@ class _DavAppBarState extends State<DavAppBar> {
           : IconButton(
             icon: const Icon(Icons.menu, color: Colors.white),
             onPressed: () => widget.scaffoldKey?.currentState?.openDrawer(),
-          ) 
+          )
         : null,
     );
 }

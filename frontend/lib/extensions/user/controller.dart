@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
+import 'package:frontend/pages/login/controller.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
@@ -67,8 +68,8 @@ class UserController extends GetxController {
       var accessToken = response.data['access_token'] as String;
       var refreshToken = response.data['refresh_token'] as String;
 
-      apiService.storeAccessToken(accessToken);
-      apiService.storeRefreshToken(refreshToken);
+      await apiService.storeAccessToken(accessToken);
+      await apiService.storeRefreshToken(refreshToken);
 
       return true;
     } on DioError catch (e) {
@@ -78,25 +79,10 @@ class UserController extends GetxController {
   }
 
   /// Logs out a user.
-  /// Returns true if logout was successful.
-  Future<bool> logout() async {
-    try {
-      String? refreshToken = await apiService.getRefreshToken();
-      final response = await apiService.authClient.post('/logout', options: Options(
-        headers: {
-          'Authorization': 'Bearer $refreshToken',
-        },
-      ));
-
-      if (response.statusCode == 200) {
-        await storage.delete(key: atStorageKey);
-        await storage.delete(key: rtStorageKey);
-        return true;
-      }
-    } on DioError catch (e) {
-      apiService.defaultCatch(e);
-    }
-    return false;
+  Future<void> logout() async {
+    await storage.delete(key: atStorageKey);
+    await storage.delete(key: rtStorageKey);
+    Get.offNamed(loginRoute);
   }
 
   /// Fetches all users from backend.
@@ -109,6 +95,21 @@ class UserController extends GetxController {
       return response.data['users'].map(
         (dynamic item) => UserModel.fromJson(item)
       ).toList();
+    } on DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
+  /// Fetches the user with the provided [id] from the backend.
+  Future<UserModel?> getUser(int id) async {
+    try {
+      final response = await apiService.mainClient.get('/user/$id');
+
+      if (response.statusCode != 200) debugPrint('Error getting users');
+
+      return UserModel.fromJson(response.data);
+
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }
@@ -151,7 +152,7 @@ class UserController extends GetxController {
   /// Returns the id of the newly created user.
   Future<int?> addUser(UserModel user) async {
     try {
-      final response = await apiService.mainClient.post('/user', 
+      final response = await apiService.mainClient.post('/user',
         data: {
           'first_name': user.firstName,
           'last_name': user.lastName,
