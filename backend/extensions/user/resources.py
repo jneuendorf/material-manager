@@ -16,7 +16,7 @@ from core.extensions import mail
 from core.helpers.resource import BaseResource, ModelListResource, ModelResource
 
 from .auth import password_policy
-from .decorators import permissions_required, session_required
+from .decorators import login_required, permissions_required
 from .models import User as UserModel
 
 
@@ -183,7 +183,7 @@ class Profile(ModelResource):
             model = UserModel
             fields = ("id", "first_name", "last_name", "email", "membership_number")
 
-    @session_required
+    @login_required
     def get(self) -> dict:
         return self.schema.dump(current_user)
 
