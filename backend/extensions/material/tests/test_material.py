@@ -1,6 +1,8 @@
 from datetime import date
 
-from extensions.material.models import Condition, Material
+from extensions.material.models import Condition, Material, PurchaseDetails
+
+# from http import client
 
 
 def test_create_material(client, app) -> None:
@@ -47,3 +49,26 @@ def test_create_material(client, app) -> None:
     material = client.get(f"/material/{material['id']}").json
     assert material["material_type"] == material_type
     assert material["serial_numbers"] == [serial_number9876]
+
+
+def test_create_purchase_details(client, app) -> None:
+    purchase_detail = client.put(
+        "/purchase_details",
+        json={
+            "purchase_date": "2022-11-02",
+            "invoice_number": "21589u4rhr",
+            "merchant": "Der Händler",
+            "purchase_price": "300.45",
+            "suggested_retail_price": "238.37",
+        },
+    ).json
+
+    # Check DB data
+    with app.app_context():
+        # print("purchase details Id: ", purchase_detail["id"])
+        purchase_detail_instance = PurchaseDetails.get(id=purchase_detail["id"])
+        assert purchase_detail_instance.purchase_date == date(2022, 11, 2)
+        assert purchase_detail_instance.invoice_number == "21589u4rhr"
+        assert purchase_detail_instance.merchant == "Der Händler"
+        assert purchase_detail_instance.purchase_price == 300.45
+        assert purchase_detail_instance.suggested_retail_price == 238.37
