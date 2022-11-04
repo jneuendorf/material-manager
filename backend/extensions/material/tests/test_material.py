@@ -5,7 +5,7 @@ from extensions.material.models import Condition, Material, PurchaseDetails
 
 def test_create_and_fetch_material(client, app) -> None:
     material_type = client.post(
-        "/material_types",
+        "/material_type",
         json={
             "name": "helmet",
             "description": "helmet description",

@@ -5,12 +5,8 @@ from flask_apispec import use_kwargs
 from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
-from core.helpers.resource import (
-    BaseSchema,
-    ModelConverter,
-    ModelListResource,
-    ModelResource,
-)
+from core.helpers.resource import ModelListResource, ModelResource
+from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
 
@@ -22,19 +18,40 @@ class SerialNumberSchema(BaseSchema):
         load_instance = True
 
 
-class MaterialType(ModelResource):
-    url = "/material_type/<int:type_id>"
+class MaterialTypeSchema(BaseSchema):
+    class Meta:
+        model = models.MaterialType
+        fields = ("id", "name", "description")
+        load_instance = True
 
-    class Schema:
-        class Meta:
-            model = models.MaterialType
-            fields = ("id", "name", "description")
+
+class MaterialType(ModelResource):
+    url = [
+        "/material_type",
+        "/material_type/<int:type_id>",
+    ]
+    Schema = MaterialTypeSchema
 
     def get(self, type_id: int):
         """Test with
         curl -X GET "http://localhost:5000/material_type/1"
         """
         material_type = models.MaterialType.get(id=type_id)
+        return self.serialize(material_type)
+
+    @use_kwargs(
+        MaterialTypeSchema.to_dict(
+            name=dict(required=True),
+            description=dict(required=True),
+        )
+    )
+    def post(self, **kwargs) -> dict:
+        """Test with
+        curl -X POST "http://localhost:5000/material_type" \
+        -H 'Content-Type: application/json' \
+        -d '{"name":"Seile", "description":"Seil zum Klettern"}'
+        """
+        material_type = models.MaterialType.create(**kwargs)
         return self.serialize(material_type)
 
 
@@ -50,24 +67,11 @@ class MaterialTypes(ModelListResource):
         material_types = models.MaterialType.all()
         return self.serialize(material_types)
 
-    @use_kwargs(
-        {
-            "name": fields.Str(required=True),
-            "description": fields.Str(required=True),
-        }
-    )
-    def post(self, **kwargs) -> dict:
-        """Test with
-        curl -X POST "http://localhost:5000/material_types" -H 'Content-Type: application/json' -d '{"name":"Seile", "description":"Seil zum Klettern"}'
-        """  # noqa
-        material_type = models.MaterialType.create(**kwargs)
-        return self.serialize_single(material_type)
-
 
 class PurchaseDetails(ModelResource):
     url = "/purchase_details"
 
-    class Schema:
+    class Schema(BaseSchema):
         class Meta:
             model = models.PurchaseDetails
             fields = (
@@ -104,10 +108,10 @@ class PurchaseDetails(ModelResource):
 
 class MaterialSchema(BaseSchema):
     material_type_id = fields.Integer()
-    material_type = fields.Nested(MaterialType.completed_schema())
+    material_type = fields.Nested(MaterialType.Schema())
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
     purchase_details_id = fields.Integer()
-    purchase_details = fields.Nested(PurchaseDetails.completed_schema())
+    purchase_details = fields.Nested(PurchaseDetails.Schema())
 
     class Meta:
         model_converter = ModelConverter

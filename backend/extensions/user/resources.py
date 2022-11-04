@@ -204,19 +204,20 @@ class Users(ModelListResource):
         users = UserModel.all()
         return self.serialize(users)
 
-    @use_kwargs(
-        {
-            "email": fields.Str(),
-            "first_name": fields.Str(),
-            "last_name": fields.Str(),
-            "membership_number": fields.Str(),
-        }
-    )
-    @permissions_required("user:write")
-    def put(self, **kwargs) -> dict:
-        """Test with
-        curl -X PUT 'http://localhost:5000/users' -H 'Content-Type: application/json' -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
-        curl -X PUT 'http://localhost:5000/users' -F 'first_name=max' -F 'last_name=mustermann' -F 'membership_number=123'
-        """  # noqa
-        user = UserModel.create(**kwargs)
-        return self.serialize_single(user)
+    # @use_kwargs(
+    #     {
+    #         "email": fields.Str(),
+    #         "first_name": fields.Str(),
+    #         "last_name": fields.Str(),
+    #         "membership_number": fields.Str(),
+    #     }
+    # )
+    # @permissions_required("user:write")
+    # def put(self, **kwargs) -> dict:
+    #     """Test with
+    #     curl -X PUT 'http://localhost:5000/users' \
+    #     -H 'Content-Type: application/json' \
+    #     -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
+    #     """  # noqa
+    #     user = UserModel.create(**kwargs)
+    #     return self.serialize_single(user)
