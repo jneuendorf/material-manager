@@ -40,10 +40,10 @@ Future<void> initialConfig() async {
   await Get.putAsync(() => ApiService().init());
 
   // init extension controllers
-  Get.put(RentalController(), permanent: true);
-  Get.put(MaterialController(), permanent: true);
-  Get.put(UserController(), permanent: true);
-  Get.put(InspectionController(), permanent: true);
+  Get.lazyPut<RentalController>(() => RentalController());
+  Get.lazyPut<MaterialController>(() => MaterialController());
+  Get.lazyPut<UserController>(() => UserController());
+  Get.lazyPut<InspectionController>(() => InspectionController());
 }
 
 class MaterialManagerApp extends StatelessWidget {

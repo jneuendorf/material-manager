@@ -13,6 +13,19 @@ import 'package:frontend/extensions/rental/mock_data_rental.dart';
 class RentalController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final RxList<RentalModel> rentals = <RentalModel>[].obs;
+  final RxList<RentalStatus> statuses = <RentalStatus>[].obs;
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    
+    debugPrint('RentalController init');
+
+    rentals.value = await getAllRentalMocks();
+    statuses.value = await getAllStatusMocks();
+  }
+
   /// Fetches all rentals from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
@@ -86,6 +99,10 @@ class RentalController extends GetxController {
           'end_date': rental.endDate,
           'usage_start_date': rental.usageStartDate,
           'usage_end_date': rental.usageEndDate,
+          'status': {
+            'id': rental.status!.id,
+            'name': rental.status!.name,
+          },
         },
       );
 

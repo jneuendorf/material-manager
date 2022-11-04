@@ -19,7 +19,7 @@ class AddRoleDialog extends StatelessWidget {
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
-  final RxList<String> selectedRights = <String>[].obs;
+  final RxList<String> selectedPermissions = <String>[].obs;
 
   final RxBool loading = false.obs;
 
@@ -75,9 +75,9 @@ class AddRoleDialog extends StatelessWidget {
           ),
           const SizedBox(height: 8.0),
           MultiSelectChip(
-            options: administrationPageController.availableRights.map(
+            options: administrationPageController.userController.permissions.map(
               (e) => e.name).toList(),
-            selectedOptions: selectedRights,
+            selectedOptions: selectedPermissions,
             ),
           const SizedBox(height: 16.0),
           Align(
@@ -101,8 +101,8 @@ class AddRoleDialog extends StatelessWidget {
     if (formKey.currentState!.validate()) {
       loading.value = true;
 
-      List<Permission> permissions = selectedRights.map(
-        (String element) => administrationPageController.availableRights.firstWhere(
+      List<Permission> permissions = selectedPermissions.map(
+        (String element) => administrationPageController.userController.permissions.firstWhere(
           (Permission right) => right.name == element)
       ).toList();
 

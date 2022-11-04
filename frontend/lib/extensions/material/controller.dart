@@ -13,6 +13,17 @@ import 'package:frontend/extensions/material/mock_data.dart';
 class MaterialController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final RxList<MaterialModel> materials = <MaterialModel>[].obs;
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+
+    debugPrint('MaterialController init');
+
+    materials.value = await getAllMaterialMocks();
+  }
+
   /// Fetches all material from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
@@ -20,6 +31,7 @@ class MaterialController extends GetxController {
     if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
+    debugPrint('Called getAllMaterialMocks');
 
     return mockMaterial + mockMaterial;
   }

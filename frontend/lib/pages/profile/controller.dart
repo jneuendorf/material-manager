@@ -38,7 +38,7 @@ class ProfilePageController extends GetxController {
 
     currentUser.value = await userController.getUser(uid!);
 
-    currentRentals.value = await rentalController.getAllRentalMocks();
+    currentRentals.value = rentalController.rentals; // TODO should be the users rentals only
   }
 
   String formatDate(DateTime date) {
