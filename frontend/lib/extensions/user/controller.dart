@@ -68,8 +68,8 @@ class UserController extends GetxController {
       var accessToken = response.data['access_token'] as String;
       var refreshToken = response.data['refresh_token'] as String;
 
-      apiService.storeAccessToken(accessToken);
-      apiService.storeRefreshToken(refreshToken);
+      await apiService.storeAccessToken(accessToken);
+      await apiService.storeRefreshToken(refreshToken);
 
       return true;
     } on DioError catch (e) {

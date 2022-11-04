@@ -41,6 +41,7 @@ class ApiService extends GetxService {
     if (accessToken != null) {
       tokenInfo = JwtDecoder.decode(accessToken);
     }
+    debugPrint('TokenInfo after init: $tokenInfo');
 
     Interceptor interceptor = InterceptorsWrapper(
       onRequest: (options, handler) async {
@@ -111,7 +112,7 @@ class ApiService extends GetxService {
         );
 
         accessToken = response.data['access_token'];
-        storeAccessToken(accessToken!);
+        await storeAccessToken(accessToken!);
       } on DioError catch(e) {
         debugPrint('error on refresh of accessToken: $e');
         if (e.response != null) {
