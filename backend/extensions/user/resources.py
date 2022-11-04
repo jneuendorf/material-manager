@@ -1,4 +1,4 @@
-from flask import abort, jsonify, redirect
+from flask import abort, redirect
 from flask_apispec import use_kwargs
 from flask_jwt_extended import (
     create_access_token,
@@ -97,13 +97,9 @@ class Signup(BaseResource):
                     recipients=[email],
                 )
             )
-            return jsonify(
-                {
-                    "message": (
-                        "Signup successful. Verify your e-mail address to login."
-                    ),
-                }
-            )
+            return {
+                "message": ("Signup successful. Verify your e-mail address to login."),
+            }
         except (ValueError, IntegrityError):
             return abort(403, "E-mail address already taken")
 

@@ -12,7 +12,7 @@ Model: Type[CrudModel] = db.Model
 
 class MaterialType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
     description = db.Column(db.String)
     sets = db.relationship(
         "MaterialSet", secondary="material_type_set_mapping", backref="material_types"
