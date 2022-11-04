@@ -1,4 +1,4 @@
-from flask import abort, jsonify, redirect
+from flask import abort, redirect
 from flask_apispec import use_kwargs
 from flask_jwt_extended import (
     create_access_token,
@@ -16,16 +16,17 @@ from core.extensions import mail
 from core.helpers.resource import BaseResource, ModelListResource, ModelResource
 
 from .auth import password_policy
-from .decorators import permissions_required, session_required
+from .decorators import login_required, permissions_required
 from .models import User as UserModel
 
 
 class User(ModelResource):
     url = "/user/<int:user_id>"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "first_name", "last_name")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "first_name", "last_name")
 
     def get(self, user_id: int) -> dict:
         user = UserModel.get(id=user_id)
@@ -96,13 +97,9 @@ class Signup(BaseResource):
                     recipients=[email],
                 )
             )
-            return jsonify(
-                {
-                    "message": (
-                        "Signup successful. Verify your e-mail address to login."
-                    ),
-                }
-            )
+            return {
+                "message": ("Signup successful. Verify your e-mail address to login."),
+            }
         except (ValueError, IntegrityError):
             return abort(403, "E-mail address already taken")
 
@@ -195,11 +192,12 @@ class Refresh(BaseResource):
 class Profile(ModelResource):
     url = "/user/profile"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "first_name", "last_name", "email", "membership_number")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "first_name", "last_name", "email", "membership_number")
 
-    @session_required
+    @login_required
     def get(self) -> dict:
         return self.schema.dump(current_user)
 
@@ -207,9 +205,10 @@ class Profile(ModelResource):
 class Users(ModelListResource):
     url = "/users"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "last_name")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "last_name")
 
     @permissions_required("user:read")
     def get(self):
@@ -219,19 +218,20 @@ class Users(ModelListResource):
         users = UserModel.all()
         return self.serialize(users)
 
-    @use_kwargs(
-        {
-            "email": fields.Str(),
-            "first_name": fields.Str(),
-            "last_name": fields.Str(),
-            "membership_number": fields.Str(),
-        }
-    )
-    @permissions_required("user:write")
-    def put(self, **kwargs) -> dict:
-        """Test with
-        curl -X PUT 'http://localhost:5000/users' -H 'Content-Type: application/json' -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
-        curl -X PUT 'http://localhost:5000/users' -F 'first_name=max' -F 'last_name=mustermann' -F 'membership_number=123'
-        """  # noqa
-        user = UserModel.create(**kwargs)
-        return self.schema.dump(user, many=False)
+    # @use_kwargs(
+    #     {
+    #         "email": fields.Str(),
+    #         "first_name": fields.Str(),
+    #         "last_name": fields.Str(),
+    #         "membership_number": fields.Str(),
+    #     }
+    # )
+    # @permissions_required("user:write")
+    # def put(self, **kwargs) -> dict:
+    #     """Test with
+    #     curl -X PUT 'http://localhost:5000/users' \
+    #     -H 'Content-Type: application/json' \
+    #     -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
+    #     """  # noqa
+    #     user = UserModel.create(**kwargs)
+    #     return self.serialize_single(user)

@@ -200,17 +200,37 @@ class UserNotificationInfo(Model):  # type: ignore
 
 For convenience the module `core.helpers` provides a `ModelResource` that
 specifies how a model gets serialized. In order to do so, we must define
-an inner class `Meta` that specifies the serialization.
+an inner class `Schema` with an inner class `Meta` that specifies the serialization.
 Usually, that means specifying the model and some of its fields, for example
 
 ```python
-class Meta:
-    model = UserNotificationInfoModel
-    fields = ("id", "user_id", "notify")
+class Schema:
+    class Meta:
+        model = UserNotificationInfoModel
+        fields = ("id", "user_id", "notify")
 ```
 
+For serializing relationships, you would need to define a schema for the related
+model and add a field to the schema like so:
+
+```python
+from marshmallow_sqlalchemy.fields import Nested
+
+class Schema:
+    user_type = Nested(
+        UserTypeSchema(),
+        # many=True,
+    )
+    
+    class Meta:
+        model = UserNotificationInfoModel
+        fields = ("id", "user_id", "notify")
+```
+
+Note that `many=True` can be used to specify many related models.
+
 See
-[marshmallow_sqlalchemy.SQLAlchemySchema](https://marshmallow-sqlalchemy.readthedocs.io/en/latest/api_reference.html#marshmallow_sqlalchemy.SQLAlchemySchema)
+[marshmallow_sqlalchemy.SQLAlchemyAutoSchema](https://marshmallow-sqlalchemy.readthedocs.io/en/latest/api_reference.html#marshmallow_sqlalchemy.SQLAlchemyAutoSchema)
 for details.
 
 Furthermore, we can specify methods for the HTTP verbs we need.
@@ -239,9 +259,10 @@ from .models import UserNotificationInfo as UserNotificationInfoModel
 class UserNotificationInfo(ModelResource):
     url = "/user/<int:user_id>/notify"
 
-    class Meta:
-        model = UserNotificationInfoModel
-        fields = ("id", "user_id", "notify")
+    class Schema:
+        class Meta:
+            model = UserNotificationInfoModel
+            fields = ("id", "user_id", "notify")
 
     def get(self, user_id: int):
         user_notification_info = UserNotificationInfoModel.get(user_id=user_id)
