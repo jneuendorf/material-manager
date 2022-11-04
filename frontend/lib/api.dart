@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
 import 'package:frontend/pages/login/controller.dart';
+
 
 const atStorageKey = 'access_token';
 const rtStorageKey = 'refresh_token';
@@ -32,16 +33,15 @@ class ApiService extends GetxService {
   ));
 
   /// Needed so the token can be accessed from everywhere in the app.
-  /// tokenInfo should contain userId, email, and roles/permissions.
-  late final Map<String, dynamic>? tokenInfo;
+  /// tokenInfo should permissions.
+  Map<String, dynamic>? tokenInfo;
 
   Future<ApiService> init() async {
     final String? accessToken = await getAccessToken();
     if (accessToken != null) {
       tokenInfo = JwtDecoder.decode(accessToken);
-    } else {
-      tokenInfo = {};
     }
+
     debugPrint('TokenInfo after init: $tokenInfo');
 
     Interceptor interceptor = InterceptorsWrapper(
