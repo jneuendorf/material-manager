@@ -35,9 +35,6 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final Rxn<EquipmentType> selectedFilter = Rxn<EquipmentType>();
   final RxString searchTerm = ''.obs;
 
-  List<MaterialModel> availableSets = [];
-  List<EquipmentType> availableEquipmentTypes = [];
-
   // following variables are used by the shopping cart page
   final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
 
@@ -55,12 +52,9 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
-    //availableMaterial = await materialController.getAllMaterialMocks();
     filteredMaterial.value = materialController.materials;
 
-    availableEquipmentTypes = await materialController.getAllEquipmentTypeMocks();
-
-    for (EquipmentType item in availableEquipmentTypes) {
+    for (EquipmentType item in materialController.types) {
       filterOptions[item] = item.description;
     }
   }
