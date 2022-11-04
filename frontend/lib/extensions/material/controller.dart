@@ -14,6 +14,7 @@ class MaterialController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
   final RxList<MaterialModel> materials = <MaterialModel>[].obs;
+  final RxList<EquipmentType> types = <EquipmentType>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -22,6 +23,7 @@ class MaterialController extends GetxController {
     debugPrint('MaterialController init');
 
     materials.value = await getAllMaterialMocks();
+    types.value = await getAllEquipmentTypeMocks();
   }
 
   /// Fetches all material from backend.

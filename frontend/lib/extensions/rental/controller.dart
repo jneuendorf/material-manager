@@ -87,19 +87,23 @@ class RentalController extends GetxController {
   /// Adds a new rental to the backend.
   /// Returns the id of the newly created rental
   /// or null if an error occured.
+  /// The [customerId] will automaically be added to [rental].
+  /// The [ApiService]´s [tokenInfo] must not be null.
   Future<int?> addRental(RentalModel rental) async {
+    assert(apiService.tokenInfo != null);
+
     try {
       final response = await apiService.mainClient.post('/rental',
         data: {
-          'customer_id': rental.customerId,
+          'customer_id': apiService.tokenInfo!['sub'],
           'material_ids': rental.materialIds,
           'cost': rental.cost,
-          'created_at': rental.createdAt,
-          'start_date': rental.startDate,
-          'end_date': rental.endDate,
-          'usage_start_date': rental.usageStartDate,
-          'usage_end_date': rental.usageEndDate,
-          'status': {
+          'created_at': rental.createdAt.toIso8601String(),
+          'start_date': rental.startDate.toIso8601String(),
+          'end_date': rental.endDate.toIso8601String(),
+          'usage_start_date': rental.usageStartDate.toIso8601String(),
+          'usage_end_date': rental.usageEndDate.toIso8601String(),
+          if (rental.status != null) 'status': {
             'id': rental.status!.id,
             'name': rental.status!.name,
           },
@@ -124,11 +128,11 @@ class RentalController extends GetxController {
           'customer_id': rental.customerId,
           'material_ids': rental.materialIds,
           'cost': rental.cost,
-          'created_at': rental.createdAt,
-          'start_date': rental.startDate,
-          'end_date': rental.endDate,
-          'usage_start_date': rental.usageStartDate,
-          'usage_end_date': rental.usageEndDate,
+          'created_at': rental.createdAt.toIso8601String(),
+          'start_date': rental.startDate.toIso8601String(),
+          'end_date': rental.endDate.toIso8601String(),
+          'usage_start_date': rental.usageStartDate.toIso8601String(),
+          'usage_end_date': rental.usageEndDate.toIso8601String(),
         },
       );
 
