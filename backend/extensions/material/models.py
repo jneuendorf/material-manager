@@ -2,6 +2,7 @@ import enum
 from typing import Type
 
 from sqlalchemy import Table
+from sqlalchemy.schema import UniqueConstraint
 
 from core.extensions import db
 from core.helpers.orm import CrudModel
@@ -24,7 +25,7 @@ class PurchaseDetails(Model):  # type: ignore
     invoice_number = db.Column(db.String(length=32))
     merchant = db.Column(db.String(length=80))
     purchase_price = db.Column(db.Float)
-    suggested_retail_price = db.Column(db.Float)
+    suggested_retail_price = db.Column(db.Float, nullable=True)
 
 
 class Condition(enum.Enum):
@@ -72,6 +73,11 @@ class SerialNumber(Model):  # type: ignore
     production_date = db.Column(db.Date)
     manufacturer = db.Column(db.String(length=80))
     material_id = db.Column(db.ForeignKey(Material.id))
+    __table_args__ = (
+        UniqueConstraint(
+            "manufacturer", "serial_number", name="manufacturer_serial_number_uc"
+        ),
+    )
 
 
 class MaterialSet(Model):  # type: ignore
