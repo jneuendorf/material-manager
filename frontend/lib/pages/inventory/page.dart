@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:frontend/pages/inventory/dialogs/product_details_dialog.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/components/base_footer.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
+import 'package:frontend/common/components/image_builder.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
 
@@ -135,7 +138,9 @@ class InventoryPage extends GetView<InventoryPageController> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 50,
-                        child: Image.network(controller.filteredMaterial[index].imagePath!),
+                        child: !kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST') 
+                          ? Image.network(controller.filteredMaterial[index].imagePath!) 
+                          : null,
                       ),
                     ),
                     Expanded(child: Text(controller.filteredMaterial[index].equipmentType.description)),
@@ -173,16 +178,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: DecorationImage(
-                        image: NetworkImage(item.imagePath!),
-                      ),
-                    ),
-                  ),
+                  ImageBuilder(url: item.imagePath!),
                   Row(
                     children: [
                       const SizedBox(width: 15),
