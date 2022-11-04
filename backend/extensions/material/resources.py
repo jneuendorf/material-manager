@@ -55,11 +55,7 @@ class MaterialType(ModelResource):
 
 class MaterialTypes(ModelListResource):
     url = "/material_types"
-
-    class Schema:
-        class Meta:
-            model = models.MaterialType
-            fields = ("id", "name", "description")
+    Schema = MaterialTypeSchema
 
     def get(self):
         material_types = models.MaterialType.all()
