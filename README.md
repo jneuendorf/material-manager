@@ -3,7 +3,7 @@
 This project contains the backend as well as the frontend part.
 For more details for each part, see the according documentations:
 
-- [backend documentation](./backend/core/README.md)
+- [backend documentation](./backend/README.md)
 - [frontend documentation](./frontend/README.md)
 
 

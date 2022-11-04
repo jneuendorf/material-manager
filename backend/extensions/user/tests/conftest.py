@@ -2,7 +2,7 @@ import pytest
 
 from app import create_app
 from core.config import flask_config
-from core.db import db
+from core.extensions import db, mail
 
 
 @pytest.fixture()
@@ -16,18 +16,15 @@ def app():
             },
         },
         db,
+        mail,
+        drop_db=True,
     )
 
     # other setup can go here
-    with app.app_context():
-        db.drop_all()
-        db.create_all()
 
     yield app
 
     # clean up / reset resources here
-    with app.app_context():
-        db.drop_all()
 
 
 @pytest.fixture()

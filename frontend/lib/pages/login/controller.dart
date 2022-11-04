@@ -1,22 +1,26 @@
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
-import 'package:frontend/pages/rental/controller.dart';
+
 import 'package:get/get.dart';
 
+import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/extensions/user/controller.dart';
+
+
 const loginRoute = '/login';
+const afterLoginRoute = rentalRoute;
 
-
-class LoginBinding implements Bindings {
+class LoginPageBinding implements Bindings {
   @override
   void dependencies() {
     Get.lazyPut<LoginController>(() => LoginController());
   }
 }
 
-
 class LoginController extends GetxController {
-  final ApiService apiService = Get.find<ApiService>();
+  final userController = Get.find<UserController>();
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -33,20 +37,22 @@ class LoginController extends GetxController {
     rememberMe.value = value;
   }
 
-  Future<void> login() async {
-    try {
-      var response = await apiService.mainClient.post('/login', data: {
-          'email': emailController.text,
-          'password': passwordController.text,
-      });
-      var accessToken = response.data['access_token'] as String;
-      apiService.storeAccessToken(accessToken);
-      if (rememberMe.isTrue) {
-        // TODO: delete token on tear down
-      }
-      Get.toNamed(rentalRoute);
-    } on DioError catch (e) {
-      apiService.defaultCatch(e);
+  /// Handles a tap on the login button.
+  Future<void> onLoginTap() async {
+    if (!formKey.currentState!.validate()) return; 
+    
+    final String email = emailController.text;
+    final String password = passwordController.text;
+
+    final bool loginSuccessful = await userController.login(email, password);
+
+    if (rememberMe.isTrue) {
+      // TODO: delete token on tear down
+    }
+
+    if (loginSuccessful) {
+      Get.offAllNamed(afterLoginRoute);
     }
   }
+
 }

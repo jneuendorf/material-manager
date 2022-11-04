@@ -26,16 +26,16 @@ class InventoryPageController extends GetxController {
     final RxString searchTerm = ''.obs;
 
     List<EquipmentType> availableEquipmentTypes = [];
-    List<MaterialModel> availableMaterial = [];
+    // List<MaterialModel> availableMaterial = [];
 
   @override
   Future<void> onInit() async {
     super.onInit();
 
-    availableMaterial = await materialController.getAllMaterial();
-    filteredMaterial.value = availableMaterial;
+    //availableMaterial = await materialController.getAllMaterialMocks();
+    filteredMaterial.value = materialController.materials;
 
-    availableEquipmentTypes = await materialController.getAllEquipmentTypes();
+    availableEquipmentTypes = await materialController.getAllEquipmentTypeMocks();
 
     for (EquipmentType item in availableEquipmentTypes) {
       typeFilterOptions[item] = item.description;
@@ -46,7 +46,7 @@ class InventoryPageController extends GetxController {
    /// the [selectedTypeFilter] and the [selectedConditonFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
-    filteredMaterial.value = availableMaterial.where((MaterialModel item) {
+    filteredMaterial.value = materialController.materials.where((MaterialModel item) {
       /// Checks if the [selectedTypeFilter] equals [equipmentType] of the [item].
       bool equipmentTypeFilterCondition() {
         if (selectedTypeFilter.value == null) return true;

@@ -1,6 +1,15 @@
 from flask_jwt_extended import JWTManager
+from password_strength import PasswordPolicy
 
 from .models import User
+
+# Strong passwords start at 0.66.
+# See https://github.com/kolypto/py-password-strength#complexity
+password_policy = PasswordPolicy.from_names(
+    length=8,  # min length: 8
+    nonletters=2,  # need min. 2 non-letter characters (digits, specials, anything)
+    strength=0.4,
+)
 
 
 def init_auth(jwt: JWTManager):
@@ -12,18 +21,3 @@ def init_auth(jwt: JWTManager):
     def user_lookup_callback(_jwt_header, jwt_data):
         identity = jwt_data["sub"]
         return User.get_or_none(id=identity)
-
-    # @app.route("/login", methods=["POST"])
-    # def login():
-    #     """
-    #     curl -X POST 'http://localhost:5000/login' -H 'Content-Type: application/json'
-    #       -d '{"email":"root@localhost.com","password":"asdf"}'
-    #     """  # noqa
-    #     email = request.json.get("email", None)
-    #     password = request.json.get("password", None)
-    #     user = User.get_or_none(email=email)
-    #     if not user or not user.verify_password(password):
-    #         return jsonify("Wrong email or password"), 401
-    #
-    #     access_token = create_access_token(identity=user)
-    #     return jsonify(access_token=access_token)

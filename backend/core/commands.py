@@ -18,6 +18,6 @@ def init_cli_commands(app: Flask, db: SQLAlchemy):
 
     @app.cli.command("create-test-data")
     @click.argument("extension")
-    def create_test_data(extension: str):
+    def create_sample_data(extension: str):
         with app.app_context():
-            import_module(f"extensions.{extension}.fixtures")
+            import_module(f"extensions.{extension}.sample_data")

@@ -1,7 +1,7 @@
 
 class MaterialModel {
-  final int id;
-  final String imagePath;
+  final int? id;
+  final String? imagePath;
   List<SerialNumber> serialNumbers;
   String inventoryNumber;
   String maxLifeExpectancy;
@@ -105,7 +105,7 @@ class PurchaseDetails {
 }
 
 class Property {
-  final int id;
+  final int? id;
   String name;
   String description;
   String value;
@@ -129,7 +129,7 @@ class Property {
 }
 
 class EquipmentType {
-  final int id;
+  final int? id;
   String description;
 
   EquipmentType({
