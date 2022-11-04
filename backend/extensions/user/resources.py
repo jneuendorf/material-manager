@@ -146,8 +146,16 @@ class Login(BaseResource):
                 "Invalid credentials or your account has not been activated yet",
             )
 
+        additional_claims = {
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
+        }
+
         return dict(
-            access_token=create_access_token(identity=user),
+            access_token=create_access_token(
+                identity=user, additional_claims=additional_claims
+            ),
             refresh_token=create_refresh_token(identity=user),
         )
 
@@ -169,8 +177,18 @@ class Refresh(BaseResource):
                 "Account has not been found",
             )
 
+        additional_claims = {
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
+        }
+
         return dict(
-            access_token=create_access_token(identity=current_user, fresh=False)
+            access_token=create_access_token(
+                identity=current_user,
+                fresh=False,
+                additional_claims=additional_claims,
+            ),
         )
 
 
