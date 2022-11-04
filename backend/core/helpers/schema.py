@@ -1,8 +1,9 @@
 from collections.abc import Callable
-from typing import Any, Collection, Dict, Generic, Mapping, Type, TypeVar
+from typing import Any, Collection, Dict, Generic, Mapping, Type, TypeVar, Union
 
 from flask_marshmallow.sqla import SQLAlchemyAutoSchema
 from marshmallow import fields
+from marshmallow import types as ma_types
 from marshmallow_sqlalchemy.convert import ModelConverter as BaseModelConverter
 from marshmallow_sqlalchemy.schema import (
     SQLAlchemyAutoSchemaMeta,
@@ -41,6 +42,7 @@ class BaseSchemaMeta(SQLAlchemyAutoSchemaMeta):
         klass = super().__new__(mcs, name, bases, attrs)
         opts: SQLAlchemyAutoSchemaOpts = klass.opts
         opts.model_converter = ModelConverter
+        opts.load_instance = True
         return klass
 
     @classmethod
@@ -71,6 +73,34 @@ class BaseSchema(SQLAlchemyAutoSchema, Generic[M], metaclass=BaseSchemaMeta):
     Meta: Type[ModelMeta[M]]
     # Add type for method created by metaclass.
     get_fields: Callable[[], Mapping[str, fields.Field]]
+
+    # For some reason mypy doesn't get the init arguments by itself.
+    # So this is just a type hint.
+    def __init__(
+        self,
+        *args,
+        only: ma_types.StrSequenceOrSet = None,
+        exclude: ma_types.StrSequenceOrSet = (),
+        many: bool = False,
+        context: dict = None,
+        load_only: ma_types.StrSequenceOrSet = (),
+        dump_only: ma_types.StrSequenceOrSet = (),
+        partial: Union[bool, ma_types.StrSequenceOrSet] = False,
+        unknown: str = None,
+        **kwargs,
+    ):
+        super().__init__(
+            *args,
+            only=only,
+            exclude=exclude,
+            many=many,
+            context=context,
+            load_only=load_only,
+            dump_only=dump_only,
+            partial=partial,
+            unknown=unknown,
+            **kwargs,
+        )
 
     @classmethod
     def to_dict(

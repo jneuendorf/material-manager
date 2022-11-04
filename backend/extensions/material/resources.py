@@ -15,14 +15,12 @@ class SerialNumberSchema(BaseSchema):
     class Meta:
         model = models.SerialNumber
         fields = ("serial_number", "production_date", "manufacturer")
-        load_instance = True
 
 
 class MaterialTypeSchema(BaseSchema):
     class Meta:
         model = models.MaterialType
         fields = ("id", "name", "description")
-        load_instance = True
 
 
 class MaterialType(ModelResource):
@@ -68,71 +66,61 @@ class MaterialTypes(ModelListResource):
         return self.serialize(material_types)
 
 
-class PurchaseDetails(ModelResource):
-    url = "/purchase_details"
+class PurchaseDetailsSchema(BaseSchema):
+    class Meta:
+        model = models.PurchaseDetails
+        fields = (
+            "id",
+            "purchase_date",
+            "invoice_number",
+            "merchant",
+            "purchase_price",
+            "suggested_retail_price",
+        )
 
-    class Schema(BaseSchema):
-        class Meta:
-            model = models.PurchaseDetails
-            fields = (
-                "id",
-                "purchase_date",
-                "invoice_number",
-                "merchant",
-                "purchase_price",
-                "suggested_retail_price",
-            )
 
-    @use_kwargs(
-        {
-            "purchase_date": fields.Date(required=True),
-            "invoice_number": fields.Str(required=True),
-            "merchant": fields.Str(),
-            "purchase_price": fields.Float(),
-            "suggested_retail_price": fields.Float(),
-        }
-    )
-    def post(self, **kwargs) -> dict:
-        """Test with
-        curl -X POST "http://localhost:5000/purchase_details" -H 'Content-Type: application/json' -d '{
-            "invoice_number": "2154325gu2345",
-            "merchant": "Händler",
-            "purchase_date": "2022-11-02",
-            "purchase_price": 50,
-            "suggested_retail_price": 1000
-            }'
-        """  # noqa
-        purchase_detail = models.PurchaseDetails.create(**kwargs)
-        return self.serialize(purchase_detail)
+# class PurchaseDetails(ModelResource):
+#     url = "/purchase_details"
+#
+#     Schema = PurchaseDetailsSchema
+#
+#     @use_kwargs(
+#         {
+#             "purchase_date": fields.Date(required=True),
+#             "invoice_number": fields.Str(required=True),
+#             "merchant": fields.Str(),
+#             "purchase_price": fields.Float(),
+#             "suggested_retail_price": fields.Float(),
+#         }
+#     )
+#     def post(self, **kwargs) -> dict:
+#         """Test with
+#         curl -X POST "http://localhost:5000/purchase_details"
+#         -H 'Content-Type: application/json' \
+#         -d '{
+#             "invoice_number": "2154325gu2345",
+#             "merchant": "Händler",
+#             "purchase_date": "2022-11-02",
+#             "purchase_price": 50,
+#             "suggested_retail_price": 1000
+#             }'
+#         """  # noqa
+#         purchase_detail = models.PurchaseDetails.create(**kwargs)
+#         return self.serialize(purchase_detail)
 
 
 class MaterialSchema(BaseSchema):
     material_type_id = fields.Integer()
-    material_type = fields.Nested(MaterialType.Schema())
+    material_type = fields.Nested(MaterialTypeSchema())
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
     purchase_details_id = fields.Integer()
-    purchase_details = fields.Nested(PurchaseDetails.Schema())
+    purchase_details = fields.Nested(PurchaseDetailsSchema())
 
     class Meta:
+        # TODO: specifying model_converter should not be necessary
+        #  Check why the metaclass doesn't work
         model_converter = ModelConverter
         model = models.Material
-        load_instance = True
-        # fields = (
-        #     "id",
-        #     "inventory_number",
-        #     "max_life_expectancy",
-        #     "max_service_duration",
-        #     "installation_date",
-        #     "instructions",
-        #     "next_inspection_date",
-        #     "rental_fee",
-        #     "condition",
-        #     "days_used",
-        #     "material_type_id",
-        #     "material_type",
-        #     "purchase_details",
-        #     "serial_numbers",
-        # )
         load_only = ("material_type_id",)
         dump_only = ("id",)
 
@@ -181,3 +169,22 @@ class Materials(ModelListResource):
     def get(self):
         materials = models.Material.all()
         return self.serialize(materials)
+
+    @use_kwargs(
+        {
+            "materials": fields.List(
+                fields.Nested(MaterialSchema(exclude=["id", "purchase_details"]))
+            ),
+            "purchase_details": fields.Nested(PurchaseDetailsSchema()),
+        }
+    )
+    def post(
+        self, materials: List[models.Material], purchase_details: models.PurchaseDetails
+    ):
+        purchase_details.save()
+        for material in materials:
+            material.purchase_details = purchase_details
+            material.save()
+        return {
+            "materials": [material.id for material in materials],
+        }

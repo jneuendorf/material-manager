@@ -26,6 +26,11 @@ class PurchaseDetails(Model):  # type: ignore
     merchant = db.Column(db.String(length=80))
     purchase_price = db.Column(db.Float)
     suggested_retail_price = db.Column(db.Float, nullable=True)
+    __table_args__ = (
+        UniqueConstraint(
+            "merchant", "invoice_number", name="merchant_invoice_number_uc"
+        ),
+    )
 
 
 class Condition(enum.Enum):

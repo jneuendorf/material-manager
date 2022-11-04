@@ -20,6 +20,5 @@ material = Extension(
         resources.Materials,
         resources.MaterialType,
         resources.MaterialTypes,
-        resources.PurchaseDetails,
     ),
 )
