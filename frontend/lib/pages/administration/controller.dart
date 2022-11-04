@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import 'package:get/get.dart';
 
 import 'package:frontend/extensions/user/controller.dart';
@@ -29,10 +30,6 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
 
   final Rxn<UserModel> selectedUser = Rxn<UserModel>();
 
-  List<UserModel> availableUsers = [];
-  List<Role> availableRoles = [];
-  List<Permission> availableRights = [];
-
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -42,16 +39,11 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
       tabIndex.value = tabController.index;
     });
 
-    availableUsers = await userController.getAllUserMocks();
-    filteredUsers.value = availableUsers;
+    filteredUsers.value = userController.users;
 
-    availableRoles = await userController.getAllRoleMocks();
-
-    for (Role role in availableRoles) {
+    for (Role role in userController.roles) {
       filterOptions[role] = role.name;
     }
-
-    availableRights = await userController.getAllPermissionMocks();
   }
 
   @override
@@ -64,7 +56,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
   /// Filters the [availableUsers] by the [searchTerm] and the [selectedFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
-    filteredUsers.value = availableUsers.where((UserModel user) {
+    filteredUsers.value = userController.users.where((UserModel user) {
       bool roleFilterCondition() {
         if (selectedFilter.value == null) return true;
 

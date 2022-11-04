@@ -36,7 +36,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final Rxn<EquipmentType> selectedFilter = Rxn<EquipmentType>();
   final RxString searchTerm = ''.obs;
 
-  List<MaterialModel> availableMaterial = [];
+  //List<MaterialModel> availableMaterial = [];
   List<MaterialModel> availableSets = [];
   List<EquipmentType> availableEquipmentTypes = [];
 
@@ -57,8 +57,8 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
-    availableMaterial = await materialController.getAllMaterialMocks();
-    filteredMaterial.value = availableMaterial;
+    //availableMaterial = await materialController.getAllMaterialMocks();
+    filteredMaterial.value = materialController.materials;
 
     availableEquipmentTypes = await materialController.getAllEquipmentTypeMocks();
 
@@ -81,7 +81,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   /// Filters the [availableMaterial] by the [searchTerm] and the [selectedFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
-    filteredMaterial.value = availableMaterial.where((MaterialModel item) {
+    filteredMaterial.value = materialController.materials.where((MaterialModel item) {
       /// Checks if the [selectedFilter] equals [equipmentType] of the [item].
       bool equipmentTypeFilterCondition() {
         if (selectedFilter.value == null) return true;
