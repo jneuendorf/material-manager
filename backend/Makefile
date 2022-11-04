@@ -27,10 +27,13 @@ shell: venv
 	. venv/bin/activate && python -i -c 'from core import signals'
 
 test: venv
-	. venv/bin/activate && pytest -W ignore::DeprecationWarning && python -m unittest
+	. venv/bin/activate && pytest -W ignore::DeprecationWarning
 
 run: venv
-	. venv/bin/activate && flask --app core.app --debug run --port 5000
+	. venv/bin/activate && flask --app core.app --debug run
+
+run_prod: venv
+	. venv/bin/activate && flask --app core.app load_dotenv && echo 'TODO'
 
 clean:
 	rm -rf venv
