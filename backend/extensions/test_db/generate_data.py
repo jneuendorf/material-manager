@@ -24,7 +24,14 @@ def test_data(data_sheet):
     inventory_identifier = ["J", "K", "L", "G"]
     conditions = ["ok", "inspection", None]
     merchants = ["InterSport", "Globetrotter", "SecondHand", "Amazon"]
+
     for row in data_sheet:
+
+        # generate random number between
+
+        # give the file the selected Image
+        Materialnum = random.randint(6, 27)
+        Materialimg = "Images/Material" + str(Materialnum) + ".jpg"
 
         rand_price = round(random.uniform(0.01, 99.99), 2)
         rand_price1 = round(random.uniform(0.01, 99.99), 2)
@@ -53,6 +60,7 @@ def test_data(data_sheet):
             rental_fee=rand_price,
             condition=random.choice(conditions),
             days_used=rand_int0,
+            image=Materialimg,
         )
 
         SerialNumber.create(

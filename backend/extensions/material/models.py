@@ -26,6 +26,7 @@ class Material(Model):  # type: ignore
     rental_fee = db.Column(db.Float)
     condition = db.Column(db.String)
     days_used = db.Column(db.Integer)
+    image = db.Column(db.String)
 
 
 class SerialNumber(Model):  # type: ignore
@@ -49,6 +50,7 @@ class PurchaseDetails(Model):  # type: ignore
 class MaterialSet(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     set_name = db.Column(db.String)
+    image = db.Column(db.String)
 
 
 MaterialTypeSetMapping: Table = db.Table(
