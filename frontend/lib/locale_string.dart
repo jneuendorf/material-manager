@@ -110,6 +110,9 @@ class LocaleString extends Translations {
       'rental_fee': 'Rental Fee',
       'profile': 'Profile',
       'email_is_mandatory': 'Email is mandatory',
+      'order_history': 'Order History',
+      'cancel': 'Cancel',
+      'cancel_reservation': 'Cancel Reservation',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -214,6 +217,9 @@ class LocaleString extends Translations {
       'rental_fee': 'Verleihgebühr',
       'profile': 'Profil',
       'email_is_mandatory': 'Email ist verplichtend',
+      'order_history': 'Bestellverlauf',
+      'cancel': 'Stornieren',
+      'cancel_order': 'Bestellung stornieren',
     }
   };
 }

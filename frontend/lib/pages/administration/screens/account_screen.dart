@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/buttons/text_icon_button.dart';
-import 'package:frontend/pages/administration/dialogs/add_user_dialog.dart';
+
 
 import 'package:get/get.dart';
 import 'package:data_table_2/data_table_2.dart';
 
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/pages/administration/dialogs/add_user_dialog.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
+import 'package:frontend/common/buttons/text_icon_button.dart';
 
 
 class AccountScreen extends StatelessWidget {

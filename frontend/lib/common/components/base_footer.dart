@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:frontend/common/buttons/hover_text_button.dart';
 
 
-class DavFooter extends StatelessWidget {
-  const DavFooter({super.key});
+class BaseFooter extends StatelessWidget {
+  const BaseFooter({super.key});
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -21,7 +21,7 @@ class DavFooter extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HoverTextButton(
-                text: 'Deutscher Alpenverein', 
+                text: 'Deutscher Alpenverein',
                 color: Get.theme.colorScheme.secondary,
                 hoverColor: Get.theme.primaryColor,
                 onTap: () {},
@@ -41,12 +41,12 @@ class DavFooter extends StatelessWidget {
             ],
           ),
         ),
-        Text(MediaQuery.of(context).size.width < 450 
+        Text(MediaQuery.of(context).size.width < 450
           ? 'Copyright 2022'
           : 'Copyright 2022 Deutscher Alpenverein',
           style: TextStyle(
             color: Get.theme.colorScheme.secondary,
-          ), 
+          ),
         ),
         Expanded(
           child: Column(
@@ -67,7 +67,7 @@ class DavFooter extends StatelessWidget {
               HoverTextButton(
                 text: 'privacy_policy'.tr,
                 color: Get.theme.colorScheme.secondary,
-                hoverColor: Get.theme.primaryColor, 
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
             ],

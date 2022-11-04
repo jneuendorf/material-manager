@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
-import 'package:frontend/common/buttons/dav_button.dart';
+import 'package:frontend/common/buttons/base_button.dart';
 
 
 class LoginPage extends GetView<LoginController> {
@@ -32,7 +32,7 @@ class LoginPage extends GetView<LoginController> {
                   decoration: InputDecoration(
                     labelText: 'email'.tr,
                     labelStyle: const TextStyle(color: Colors.black54),
-                    prefixIcon: const Icon(Icons.numbers, 
+                    prefixIcon: const Icon(Icons.numbers,
                       color: Colors.black45,
                     ),
                     border: const OutlineInputBorder(),
@@ -52,7 +52,7 @@ class LoginPage extends GetView<LoginController> {
                   },
                 ),
                 const SizedBox(height: 18),
-          
+
                 // PASSWORD
                 Obx(() => TextFormField(
                   controller: controller.passwordController,
@@ -88,7 +88,7 @@ class LoginPage extends GetView<LoginController> {
                     return null;
                   },
                 )),
-          
+
                 // REMEMBER ME
                 Row(
                   children: [
@@ -110,8 +110,8 @@ class LoginPage extends GetView<LoginController> {
                     ),
                   ],
                 ),
-          
-                DavButton(
+
+                BaseButton(
                   text: 'login'.tr,
                   onPressed: controller.onLoginTap,
                 ),
@@ -127,7 +127,7 @@ class LoginPage extends GetView<LoginController> {
         // SIGNUP BUTTON
         ConstrainedBox(
           constraints: controller.constraints,
-          child: DavButton(
+          child: BaseButton(
             onPressed: () => Get.toNamed(signupRoute),
             text: 'signup'.tr,
           ),

@@ -9,7 +9,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:frontend/pages/login/controller.dart';
 
-
 const atStorageKey = 'access_token';
 const rtStorageKey = 'refresh_token';
 const storage = FlutterSecureStorage();
@@ -40,6 +39,8 @@ class ApiService extends GetxService {
     final String? accessToken = await getAccessToken();
     if (accessToken != null) {
       tokenInfo = JwtDecoder.decode(accessToken);
+    } else {
+      tokenInfo = {};
     }
     debugPrint('TokenInfo after init: $tokenInfo');
 
@@ -68,7 +69,7 @@ class ApiService extends GetxService {
         String message;
         try {
           message = response.data['message'];
-        } catch(e) {
+        } catch (e) {
           message = defaultErrors[statusCode]!;
         }
         Get.snackbar(
@@ -76,8 +77,7 @@ class ApiService extends GetxService {
           message.tr,
           duration: const Duration(seconds: 4),
         );
-      }
-      else {
+      } else {
         Get.snackbar('error'.tr, 'unknown_error_occurred'.tr);
       }
     } else {
@@ -97,18 +97,18 @@ class ApiService extends GetxService {
     String? accessToken = await getAccessToken();
     String? refreshToken = await getRefreshToken();
 
-    if (accessToken != null && refreshToken != null &&
-    JwtDecoder.getRemainingTime(accessToken) < const Duration(minutes: 1) &&
-    !JwtDecoder.isExpired(refreshToken)) {
+    if (accessToken != null &&
+        refreshToken != null &&
+        JwtDecoder.getRemainingTime(accessToken) < const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(refreshToken)) {
       debugPrint('refreshing access token');
       // refresh access token
       try {
-        final response = await authClient.get('/refresh',
-          options: Options(
-            headers: {
-              'Authorization': 'Bearer $refreshToken',
-            }
-          ),
+        final response = await authClient.get(
+          '/refresh',
+          options: Options(headers: {
+            'Authorization': 'Bearer $refreshToken',
+          }),
         );
 
         accessToken = response.data['access_token'];
@@ -117,23 +117,25 @@ class ApiService extends GetxService {
         debugPrint('error on refresh of accessToken: $e');
         if (e.response != null) {
           switch (e.response!.data['error']) {
-            case 'unauthorized': {
-              await storage.delete(key: atStorageKey);
-              await storage.delete(key: rtStorageKey);
-              Get.offNamed(loginRoute);
-            }
-            break;
-            default: {
-              Get.snackbar('Fehler', 'Ein unbekannter Fehler ist aufgetreten');
-            }
-            break;
+            case 'unauthorized':
+              {
+                await storage.delete(key: atStorageKey);
+                await storage.delete(key: rtStorageKey);
+                Get.offNamed(loginRoute);
+              }
+              break;
+            default:
+              {
+                Get.snackbar('Fehler', 'Ein unbekannter Fehler ist aufgetreten');
+              }
+              break;
           }
         } else {
           Get.snackbar(
             'network_error'.tr,
             'network_error_occurred'.tr,
             duration: const Duration(seconds: 4),
-          ); 
+          );
         }
         return null;
       }
@@ -143,18 +145,34 @@ class ApiService extends GetxService {
 
   /// Returns the accessToken from the secure storage, if found.
   Future<String?> getAccessToken() async {
-    // checks if running a test and return null since 
-    //[FlutterSecureStorage] cant be accessed in tests.
-    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) return null;
-    return await storage.read(key: atStorageKey);
+    // checks if running a test and return null since
+    // [FlutterSecureStorage] cant be accessed in tests.
+    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+      return null;
+    }
+    try {
+      var token = await storage.read(key: atStorageKey);
+      debugPrint('retrieved access token');
+      return token;
+    } catch (e) {
+      return null;
+    }
   }
 
   /// Returns the refreshToken from the secure storage, if found.
   Future<String?> getRefreshToken() async {
-    // checks if running a test and return null since 
-    //[FlutterSecureStorage] cant be accessed in tests.
-    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) return null;
-    return await storage.read(key: rtStorageKey);
+    // checks if running a test and return null since
+    // [FlutterSecureStorage] cant be accessed in tests.
+    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+      return null;
+    }
+    try {
+      var token = await storage.read(key: rtStorageKey);
+      debugPrint('retrieved refresh token');
+      return token;
+    } catch (e) {
+      return null;
+    }
   }
 
   Future<void> storeAccessToken(String accessToken) async {
@@ -164,5 +182,4 @@ class ApiService extends GetxService {
   Future<void> storeRefreshToken(String refreshToken) async {
     await storage.write(key: rtStorageKey, value: refreshToken);
   }
-
 }

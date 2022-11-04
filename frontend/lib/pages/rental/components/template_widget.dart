@@ -5,7 +5,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/rental/components/material_preview.dart';
-import 'package:frontend/common/components/dav_footer.dart';
+import 'package:frontend/common/components/base_footer.dart';
 
 
 class TemplateWidget extends StatelessWidget {
@@ -13,7 +13,7 @@ class TemplateWidget extends StatelessWidget {
   final RxList<MaterialModel> materialList;
 
   const TemplateWidget({
-    Key? key, 
+    Key? key,
     required this.headerWidget,
     required this.materialList,
   }) : super(key: key);
@@ -31,8 +31,8 @@ class TemplateWidget extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(8.0),
-                margin:  kIsWeb 
-                  ? const EdgeInsets.all(8.0) 
+                margin:  kIsWeb
+                  ? const EdgeInsets.all(8.0)
                   : const EdgeInsets.symmetric(vertical: 8.0),
                 width: double.infinity,
                 decoration: BoxDecoration(
@@ -48,7 +48,7 @@ class TemplateWidget extends StatelessWidget {
                   )).toList(),
                 )),
               ),
-              if (kIsWeb) const DavFooter(),
+              if (kIsWeb) const BaseFooter(),
             ],
           ),
         ),
