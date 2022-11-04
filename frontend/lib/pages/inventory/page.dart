@@ -1,15 +1,17 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/inventory/dialogs/product_details_dialog.dart';
 
 import 'package:get/get.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inventory/dialogs/add_item_dialog.dart';
+import 'package:frontend/pages/inventory/dialogs/product_details_dialog.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
-import 'package:frontend/common/components/dav_footer.dart';
+import 'package:frontend/common/components/base_footer.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
@@ -34,7 +36,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 options: [
                   'all'.tr,
                   ...controller.typeFilterOptions.values,
-                ],  
+                ],
                 selected: controller.selectedTypeFilter.value?.description ?? 'all'.tr,
                 onSelected: controller.onTypeFilterSelected,
               )),
@@ -45,7 +47,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                   'all'.tr,
                   ConditionModel.good.toString().split('.').last.tr,
                   ConditionModel.broken.toString().split('.').last.tr,
-                ],  
+                ],
                 selected: controller.selectedConditionFilter.value?.toString().split('.').last ?? 'all'.tr,
                 onSelected: controller.onConditionFilterSelected,
               )),
@@ -66,8 +68,8 @@ class InventoryPage extends GetView<InventoryPageController> {
                 ),
               ),
               TextIconButton(
-                onTap: () => Get.dialog(AddItemDialog()), 
-                iconData: Icons.add, 
+                onTap: () => Get.dialog(AddItemDialog()),
+                iconData: Icons.add,
                 text: 'add_item'.tr,
                 color: Get.theme.colorScheme.onSecondary,
               ),
@@ -84,7 +86,7 @@ class InventoryPage extends GetView<InventoryPageController> {
               )),
             ),
             const SizedBox(width: 70),
-            Expanded(child: Text('type'.tr, 
+            Expanded(child: Text('type'.tr,
               style: const TextStyle(fontWeight: FontWeight.bold),
             )),
             Expanded(child: Text('condition'.tr,
@@ -117,25 +119,27 @@ class InventoryPage extends GetView<InventoryPageController> {
                     List<GlobalKey<CollapsableExpansionTileState>> otherKeys = keys.where(
                       (key) => key != keys[index]
                     ).toList();
-                        
+
                     for (var key in otherKeys) {
                       if (key.currentState!.tileIsExpanded.value) {
                         key.currentState!.collapse();
                       }
-                    } 
+                    }
                   }
                 },
                 title: Row(
                   children: [
                     Obx(() => Checkbox(
-                      value: selected.value, 
+                      value: selected.value,
                       onChanged: (bool? value) => selected.value = value!,
                     )),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 50,
-                        child: Image.network(controller.filteredMaterial[index].imagePath),
+                        child: !kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST') 
+                          ? Image.network(controller.filteredMaterial[index].imagePath!) 
+                          : null,
                       ),
                     ),
                     Expanded(child: Text(controller.filteredMaterial[index].equipmentType.description)),
@@ -151,7 +155,7 @@ class InventoryPage extends GetView<InventoryPageController> {
           );
           }),
         ),
-        if (kIsWeb)const DavFooter(),
+        if (kIsWeb)const BaseFooter(),
       ],
     ),
   );
@@ -178,9 +182,11 @@ class InventoryPage extends GetView<InventoryPageController> {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      image: DecorationImage(
-                        image: NetworkImage(item.imagePath),
-                      ),
+                      image: !kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST') 
+                        ? DecorationImage(
+                          image: NetworkImage(item.imagePath!),
+                        ) 
+                        : null,
                     ),
                   ),
                   Row(
@@ -191,7 +197,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                         padding: EdgeInsets.zero,
                         splashRadius: 18.0,
                         icon: const Icon(Icons.arrow_right),
-                        onPressed: () {}, 
+                        onPressed: () {},
                       )
                     ],
                   ),
@@ -205,7 +211,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buildCustomTextField(
-                    item.equipmentType.description, 
+                    item.equipmentType.description,
                     'type'.tr,
                   ),
                   buildCustomTextField(
@@ -229,13 +235,13 @@ class InventoryPage extends GetView<InventoryPageController> {
                     'next_inspection'.tr,
                   ),
                   buildCustomTextField(
-                    '€ ${item.rentalFee.toString()}', 
+                    '€ ${item.rentalFee.toString()}',
                     'rental_fee'.tr,
                   ),
                   const SizedBox(height: 12.0),
                   TextIconButton(
                     onTap: () => Get.dialog(ProductDetailsDialog(item: item)),
-                    iconData: Icons.arrow_drop_down, 
+                    iconData: Icons.arrow_drop_down,
                     text: 'product_details'.tr,
                   ),
                 ],

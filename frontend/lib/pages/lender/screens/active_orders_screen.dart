@@ -73,22 +73,23 @@ class ActiveOrderScreen extends StatelessWidget {
     children: [
       Expanded(child: Text(item.value.id.toString())),
       Expanded(child: Text('€ ${item.value.cost.toString()}')),
-      Expanded(child: Text(lenderPageController.formatDate(item.value.createdAt))),
+      Flexible(child: Text(lenderPageController.formatDate(item.value.createdAt), 
+        overflow: TextOverflow.ellipsis),
+      ),
       Expanded(
         child: Center(
-          child: Row(
-            children: [
-              Obx(() => DropDownFilterButton(
-                options: [
-                  'all'.tr,
-                  ...lenderPageController.statusOptions.values
-                ],
-                selected: item.value.status!.name,
-                onSelected: (String value) {
-                  // TODO: update rentalStatus
-                },
-              )),
-            ],
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 100),
+            child: Obx(() => DropDownFilterButton(
+              options: [
+                'all'.tr,
+                ...lenderPageController.statusOptions.values
+              ],
+              selected: item.value.status!.name,
+              onSelected: (String value) {
+                // TODO: update rentalStatus
+              },
+            )),
           ),
         ),
       ),

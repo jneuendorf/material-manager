@@ -1,5 +1,5 @@
 # See https://stackoverflow.com/a/59335943/6928824
-.PHONY: all venv install install_prod db precommit run shell test clean
+.PHONY: all venv install install_prod precommit run shell test clean
 
 all: install run
 
@@ -13,15 +13,12 @@ install: venv
 install_prod: venv
 	. venv/bin/activate && pip install -r requirements.txt
 
-db:
-	. venv/bin/activate && flask --app core.app create-db
-
-# NOE: sqlite only
+# NOTE: sqlite only
 clear_db:
 	rm -rf instance/*.db
 
-test_data: clear_db db
-	. venv/bin/activate && flask --app core.app create-test-data user
+sample_data:
+	. venv/bin/activate && flask --app core.app create-sample-data user
 
 test_db: 
 	. venv/bin/activate && flask --app core.app create-test-db
@@ -36,7 +33,7 @@ test: venv
 	. venv/bin/activate && pytest -W ignore::DeprecationWarning && python -m unittest
 
 run: venv
-	. venv/bin/activate && flask --app core.app --debug run
+	. venv/bin/activate && flask --app core.app --debug run --port 5000
 
 clean:
 	rm -rf venv

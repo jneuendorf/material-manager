@@ -1,6 +1,6 @@
 
 class InspectionModel {
-  final int id;
+  final int? id;
   final int inspectorId; // references User.id
   final int materialId; // references Material.id
   DateTime date;
@@ -32,7 +32,7 @@ enum InspectionType {
 }
 
 class Comment {
-  final int id;
+  final int? id;
   DateTime date;
   String text;
   String? imagePath;

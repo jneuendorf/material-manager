@@ -5,8 +5,8 @@ import 'package:get/get.dart';
 import 'package:frontend/common/buttons/hover_text_button.dart';
 
 
-class DavFooter extends StatelessWidget {
-  const DavFooter({super.key});
+class BaseFooter extends StatelessWidget {
+  const BaseFooter({super.key});
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -21,41 +21,53 @@ class DavFooter extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HoverTextButton(
-                text: 'Deutscher Alpenverein', 
+                text: 'Deutscher Alpenverein',
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'imprint'.tr, 
+                text: 'imprint'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'privacy_policy'.tr, 
+                text: 'privacy_policy'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
             ],
           ),
         ),
-        Text(MediaQuery.of(context).size.width < 450 
+        Text(MediaQuery.of(context).size.width < 450
           ? 'Copyright 2022'
           : 'Copyright 2022 Deutscher Alpenverein',
           style: TextStyle(
             color: Get.theme.colorScheme.secondary,
-          ), 
+          ),
         ),
         Expanded(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               HoverTextButton(
-                text: 'links'.tr, 
+                text: 'links'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'other'.tr, 
+                text: 'other'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
               HoverTextButton(
-                text: 'privacy_policy'.tr, 
+                text: 'privacy_policy'.tr,
+                color: Get.theme.colorScheme.secondary,
+                hoverColor: Get.theme.primaryColor,
                 onTap: () {},
               ),
             ],

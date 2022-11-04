@@ -1,6 +1,6 @@
 from app import create_app
 from core.config import flask_config
-from core.db import db
+from core.extensions import db, mail
 
 from . import csv_import, generate_data
 
@@ -13,6 +13,7 @@ app = create_app(
         },
     },
     db,
+    mail,
 )
 
 with app.app_context():

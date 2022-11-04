@@ -4,9 +4,16 @@ from typing import Generic, Optional, Type, TypeVar
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
 from sqlalchemy.engine import Result
-from sqlalchemy.exc import IntegrityError, MultipleResultsFound, NoResultFound
+from sqlalchemy.exc import (
+    IntegrityError,
+    MultipleResultsFound,
+    NoResultFound,
+    PendingRollbackError,
+)
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql import Select
+
+from .decorators import raises
 
 
 @dataclass
@@ -30,22 +37,18 @@ class CrudModel(Model):
         return cls._query
 
     @classmethod
+    @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
     def create(cls, *, _related=None, **kwargs):
-
-        already_exists = False
         try:
             cls.get(**kwargs)
-            already_exists = True
+            raise ValueError(f"{cls.__name__}(**{kwargs}) already exists")
         except MultipleResultsFound:
-            already_exists = True
+            raise
         except NoResultFound:
             pass
         # This could be left out but makes it clear what errors can occur.
         except IntegrityError:
             raise
-
-        if already_exists:
-            raise ValueError(f"Cannot create a {cls.__name__} instance.")
 
         # Avoid cyclic imports
         from core.signals import model_created
@@ -56,14 +59,17 @@ class CrudModel(Model):
         return instance
 
     @classmethod
+    @raises(PendingRollbackError)
     def get(cls, **kwargs):
         return cls.get_query().get(**kwargs)
 
     @classmethod
+    @raises(PendingRollbackError)
     def get_or_none(cls, **kwargs):
         return cls.get_query().get_or_none(**kwargs)
 
     @classmethod
+    @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
     def get_or_create(cls, *, _related=None, **kwargs):
         try:
             return cls.get(**kwargs)
@@ -71,10 +77,12 @@ class CrudModel(Model):
             return cls.create(_related=_related, **kwargs)
 
     @classmethod
+    @raises(PendingRollbackError)
     def all(cls):
         return cls.filter()
 
     @classmethod
+    @raises(PendingRollbackError)
     def filter(cls, **kwargs):
         return cls.get_query().filter(**kwargs)
 
@@ -129,4 +137,8 @@ class Query(Generic[M]):
 
     def _filter_by(self, **kwargs) -> Result:
         session: scoped_session = self.db.session
-        return session.execute(self.select().filter_by(**kwargs))
+        try:
+            return session.execute(self.select().filter_by(**kwargs))
+        except PendingRollbackError:
+            session.rollback()
+            raise

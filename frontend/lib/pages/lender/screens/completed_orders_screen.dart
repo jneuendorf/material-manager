@@ -218,15 +218,15 @@ class CompletedOrdersScreen extends StatelessWidget {
   );
 
   String getUserName(RentalModel item) {
-    String userName = '${lenderPageController.availableUsers.firstWhere(
+    String userName = '${lenderPageController.userController.users.firstWhere(
             (UserModel user) => user.id == item.id).firstName} '
-        '${lenderPageController.availableUsers.firstWhere(
+        '${lenderPageController.userController.users.firstWhere(
             (UserModel user) => user.id == item.id).lastName}';
     return userName;
   }
 
   String getMembershipNum(RentalModel item) {
-    String membershipNum = lenderPageController.availableUsers.firstWhere((UserModel user) =>
+    String membershipNum = lenderPageController.userController.users.firstWhere((UserModel user) =>
     user.id == item.id).membershipNumber.toString();
     return membershipNum;
   }
@@ -242,19 +242,19 @@ class CompletedOrdersScreen extends StatelessWidget {
   }
 
   String getMaterialPicture(RentalModel item, int localIndex) {
-    String path = lenderPageController.availableMaterial.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).imagePath;
+    String path = lenderPageController.materialController.materials.firstWhere((MaterialModel material) =>
+    material.id == item.materialIds[localIndex]).imagePath!;
     return path;
   }
 
   String getItemName(RentalModel item, int localIndex) {
-    String itemName = lenderPageController.availableMaterial.firstWhere((MaterialModel material) =>
+    String itemName = lenderPageController.materialController.materials.firstWhere((MaterialModel material) =>
     material.id == item.materialIds[localIndex]).equipmentType.description;
     return itemName;
   }
 
   String getItemPrice(RentalModel item, int localIndex) {
-    String itemPrice = lenderPageController.availableMaterial.firstWhere((MaterialModel material) =>
+    String itemPrice = lenderPageController.materialController.materials.firstWhere((MaterialModel material) =>
     material.id == item.materialIds[localIndex]).rentalFee.toString();
     return itemPrice;
   }

@@ -1,7 +1,7 @@
 
 class RentalModel {
   final int? id;
-  final int customerId;  // references User.id
+  final int? customerId;  // references User.id
   final int? lenderId;   // references User.id
   final int? returnToId; // references User.id
   final List<int> materialIds; // references Material.id
@@ -16,7 +16,7 @@ class RentalModel {
 
   RentalModel({
     this.id,
-    required this.customerId,
+    this.customerId,
     this.lenderId,
     this.returnToId,
     required this.materialIds,
