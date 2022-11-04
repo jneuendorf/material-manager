@@ -3,16 +3,31 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
-import 'package:frontend/pages/login/controller.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/mock_data.dart';
 import 'package:frontend/extensions/user/model.dart';
+import 'package:frontend/pages/login/controller.dart';
 
 
 class UserController extends GetxController {
   static final apiService = Get.find<ApiService>();
+
+  final RxList<UserModel> users = <UserModel>[].obs;
+  final RxList<Role> roles = <Role>[].obs;
+  final RxList<Permission> permissions = <Permission>[].obs;
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+
+    debugPrint('UserController init');
+
+    users.value = await getAllUserMocks();
+    roles.value = await getAllRoleMocks();
+    permissions.value = await getAllPermissionMocks();
+  } 
 
   /// Fetches all users from backend.
   /// Currently only mock data is used.

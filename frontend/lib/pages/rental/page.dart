@@ -63,9 +63,8 @@ class RentalPage extends GetView<RentalPageController> {
   );
 
   Widget buildCartButton(context) => InkWell(
-    onTap: () {
-      Get.toNamed(rentalShoppingCartRoute);
-    },
+    onTap: () => Get.toNamed(rentalShoppingCartRoute),
+    borderRadius: BorderRadius.circular(5.0),
     child: Container(
       width: 150,
       height: 50.0,
@@ -78,8 +77,9 @@ class RentalPage extends GetView<RentalPageController> {
         children: [
           const Icon(Icons.shopping_cart),
           const SizedBox(width: 4.0),
-          Flexible(child: Text('${controller.shoppingCart.length} ${'items'.tr}')),
-          const Spacer(),
+          Expanded(child: Text('${controller.shoppingCart.length} ${'items'.tr}', 
+            maxLines: 1,
+          )),
           Text('${controller.totalPrice} €'),
         ],
       )),

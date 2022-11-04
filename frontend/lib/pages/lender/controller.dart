@@ -24,16 +24,12 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   final rentalController = Get.find<RentalController>();
   final userController =  Get.find<UserController>();
   final materialController =  Get.find<MaterialController>();
+
   final RxInt tabBarIndex = 0.obs;
   late TabController tabbBarController;
 
   final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
   final RxMap<RentalStatus, String> statusOptions = <RentalStatus, String>{}.obs; 
-
-  List<RentalModel> availableRentals = [];
-  List<RentalStatus> availableStatuses = <RentalStatus>[].obs;
-  List<UserModel> availableUsers = [];
-  List<MaterialModel> availableMaterial = [];
 
   @override
   Future<void> onInit() async {
@@ -44,16 +40,9 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
       tabBarIndex.value = tabbBarController.index;
     });
 
-    availableUsers = await userController.getAllUserMocks();
+    filteredRentals.value = rentalController.rentals;
 
-    availableRentals = await rentalController.getAllRentalMocks();
-    filteredRentals.value = availableRentals;
-
-    availableMaterial = await materialController.getAllMaterialMocks();
-
-    availableStatuses = await rentalController.getAllStatusMocks();
-
-    for (RentalStatus item in availableStatuses) {
+    for (RentalStatus item in rentalController.statuses) {
       statusOptions[item] = item.name;
     }
   }
@@ -65,15 +54,15 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String getUserName(RentalModel item) {
-    String userName = '${availableUsers.firstWhere(
+    String userName = '${userController.users.firstWhere(
             (UserModel user) => user.id == item.id).firstName} '
-        '${availableUsers.firstWhere(
+        '${userController.users.firstWhere(
             (UserModel user) => user.id == item.id).lastName}';
     return userName;
   }
 
   String getMembershipNum(RentalModel item) {
-    String membershipNum = availableUsers.firstWhere((UserModel user) =>
+    String membershipNum = userController.users.firstWhere((UserModel user) =>
       user.id == item.id).membershipNumber.toString();
     return membershipNum;
   }
@@ -89,19 +78,19 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String getMaterialPicture(RentalModel item, int materialIndex) {
-    String path = availableMaterial.firstWhere((MaterialModel material) =>
+    String path = materialController.materials.firstWhere((MaterialModel material) =>
     material.id == item.materialIds[materialIndex]).imagePath!;
     return path;
   }
 
   String getItemName(RentalModel item, int materialIndex) {
-    String itemName = availableMaterial.firstWhere((MaterialModel material) =>
+    String itemName = materialController.materials.firstWhere((MaterialModel material) =>
     material.id == item.materialIds[materialIndex]).equipmentType.description;
     return itemName;
   }
 
   String getItemPrice(RentalModel item, int materialIndex) {
-    String itemPrice = availableMaterial.firstWhere((MaterialModel material) =>
+    String itemPrice = materialController.materials.firstWhere((MaterialModel material) =>
     material.id == item.materialIds[materialIndex]).rentalFee.toString();
     return itemPrice;
   }

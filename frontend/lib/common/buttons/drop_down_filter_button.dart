@@ -59,10 +59,13 @@ class DropDownFilterButton extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           const SizedBox(width: 8.0),
-          if (title != null) Text('$title: ', 
-            style: const TextStyle(color: Colors.black54),
+          if (title != null) Flexible(
+            child: Text('$title: ', 
+              style: const TextStyle(color: Colors.black54),
+              overflow: TextOverflow.ellipsis,
+            ),
           ),
-          Text(selected),
+          Flexible(child: Text(selected, overflow: TextOverflow.ellipsis)),
           const Icon(Icons.arrow_drop_down, color: Colors.black54),
         ],
       ),

@@ -54,7 +54,7 @@ class RoleScreen extends StatelessWidget {
               ),
             ),
           ],
-          rows: administrationPageController.availableRoles.map(
+          rows: administrationPageController.userController.roles.map(
             (Role role) => DataRow(
               cells: [
                 DataCell(Text(role.name)),
