@@ -166,7 +166,8 @@ class MaterialController extends GetxController {
     try {
       final response = await apiService.mainClient.post('/material_type', 
         data: {
-          'description': materialType.name,
+          'name': materialType.name,
+          'description': materialType.description,
         },
       );
 
