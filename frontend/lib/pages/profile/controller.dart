@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
@@ -22,6 +23,7 @@ class ProfilePageBinding implements Bindings {
 }
 
 class ProfilePageController extends GetxController {
+  final ApiService apiService = Get.find<ApiService>();
   final userController = Get.find<UserController>();
   final rentalController = Get.find<RentalController>();
 
@@ -32,7 +34,7 @@ class ProfilePageController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
 
-    int? uid = UserController.apiService.tokenInfo?['sub'] ?? 1;
+    int? uid = apiService.tokenInfo?['sub'] ?? 1;
 
     if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) return;
 

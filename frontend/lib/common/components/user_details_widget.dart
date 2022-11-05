@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
 import 'package:frontend/pages/administration/dialogs/edit_user_dialog.dart';
@@ -10,8 +11,13 @@ import 'package:frontend/pages/administration/dialogs/edit_user_dialog.dart';
 
 class UserDetailsWidget extends StatelessWidget {
   final UserModel? user;
+  final bool showLogoutButton;
   
-  const UserDetailsWidget({super.key, required this.user});
+  const UserDetailsWidget({
+    super.key, 
+    required this.user, 
+    this.showLogoutButton = false,
+  });
 
   @override
   Widget build(BuildContext context) => Row(
@@ -49,6 +55,11 @@ class UserDetailsWidget extends StatelessWidget {
           ),
           Text(user!.email),
         ],
+      ),
+      if (showLogoutButton) const Spacer(),
+      if (showLogoutButton) TextButton(
+        onPressed: Get.find<UserController>().logout, 
+        child: Text('logout'.tr),
       ),
       const Spacer(),
       TextIconButton(

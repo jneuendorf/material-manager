@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/imprint/page.dart';
-import 'package:frontend/pages/privacy_policy/page.dart';
 
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -30,6 +28,8 @@ import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/pages/login/page.dart';
 import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/pages/signup/page.dart';
+import 'package:frontend/pages/imprint/page.dart';
+import 'package:frontend/pages/privacy_policy/page.dart';
 
 
 void main() async {
@@ -40,13 +40,13 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
-  await Get.putAsync(() => ApiService().init());
+  await Get.putAsync(() async => await ApiService().init());
 
   // init extension controllers
-  Get.lazyPut<RentalController>(() => RentalController());
-  Get.lazyPut<MaterialController>(() => MaterialController());
-  Get.lazyPut<UserController>(() => UserController());
-  Get.lazyPut<InspectionController>(() => InspectionController());
+  Get.lazyPut<RentalController>(() => RentalController(),fenix: true);
+  Get.lazyPut<MaterialController>(() => MaterialController(),fenix: true);
+  Get.lazyPut<UserController>(() => UserController(),fenix: true);
+  Get.lazyPut<InspectionController>(() => InspectionController(),fenix: true);
 }
 
 class MaterialManagerApp extends StatefulWidget {
@@ -65,9 +65,11 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
     
     final ApiService apiService = Get.find<ApiService>();
 
-    if (apiService.accessToken != null && 
-        JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
-        !JwtDecoder.isExpired(apiService.accessToken!)) {
+    if (apiService.accessToken != null && apiService.refreshToken != null &&
+        ((JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(apiService.accessToken!)) || 
+        (JwtDecoder.getRemainingTime(apiService.refreshToken!) >= const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(apiService.refreshToken!)))) {
       goToHome = true;
     } else {
       goToHome = false;
@@ -76,7 +78,7 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
 
   @override
   Widget build(BuildContext context) => GetMaterialApp(
-    title: 'Material Verleih',
+    title: 'Material Manager',
     theme: ThemeData(
       fontFamily: 'FiraSans',
       primaryColor: const Color.fromARGB(255, 97, 183, 50),
