@@ -1,19 +1,22 @@
 import 'package:frontend/extensions/material/model.dart';
 
 
-final EquipmentType mockRopeEquipmentType = EquipmentType(
+final MaterialTypeModel mockRopeMaterialType = MaterialTypeModel(
   id: 1,
-  description: 'Seil',
+  name: 'Seil',
+  description: 'Seil zum Klettern',
 );
 
-final EquipmentType mockHelmetEquipmentType = EquipmentType(
+final MaterialTypeModel mockHelmetMaterialType = MaterialTypeModel(
   id: 2,
-  description: 'Helm',
+  name: 'Helm',
+  description: 'Helm zum Klettern',
 );
 
-final EquipmentType mockCarbineEquipmentType = EquipmentType(
+final MaterialTypeModel mockCarbineMaterialType = MaterialTypeModel(
   id: 3,
-  description: 'Karabiner',
+  name: 'Karabiner',
+  description: 'Karabiner zum Klettern',
 );
 
 
@@ -76,7 +79,7 @@ final List<MaterialModel> mockMaterial = [
     condition: ConditionModel.good,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
-    equipmentType: mockRopeEquipmentType,
+    materialType: mockRopeMaterialType,
     properties: [
       mockLengthProperty, 
       mockThicknessProperty,
@@ -98,7 +101,7 @@ final List<MaterialModel> mockMaterial = [
     condition: ConditionModel.good,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
-    equipmentType: mockHelmetEquipmentType,
+    materialType: mockHelmetMaterialType,
     properties: [
       mockSizeProperty,
     ],
@@ -119,7 +122,7 @@ final List<MaterialModel> mockMaterial = [
     condition: ConditionModel.good,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
-    equipmentType: mockCarbineEquipmentType,
+    materialType: mockCarbineMaterialType,
     properties: [
       mockThicknessProperty,
     ],
@@ -140,7 +143,7 @@ final List<MaterialModel> mockMaterial = [
     condition: ConditionModel.broken,
     usage: 8,
     purchaseDetails: mockPurchaseDetails,
-    equipmentType: mockRopeEquipmentType,
+    materialType: mockRopeMaterialType,
     properties: [
       mockLengthProperty, 
       mockThicknessProperty,

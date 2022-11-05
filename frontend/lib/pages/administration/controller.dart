@@ -39,6 +39,8 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
       tabIndex.value = tabController.index;
     });
 
+    await userController.initCompleter.future;
+
     filteredUsers.value = userController.users;
 
     for (Role role in userController.roles) {

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,8 @@ import 'package:frontend/pages/login/controller.dart';
 class UserController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
   final RxList<UserModel> users = <UserModel>[].obs;
   final RxList<Role> roles = <Role>[].obs;
   final RxList<Permission> permissions = <Permission>[].obs;
@@ -24,10 +27,28 @@ class UserController extends GetxController {
 
     debugPrint('UserController init');
 
-    users.value = await getAllUserMocks();
-    roles.value = await getAllRoleMocks();
-    permissions.value = await getAllPermissionMocks();
+    initCompleter.future;
+
+    await Future.wait([
+      _initUsers(),
+      _initRoles(),
+      _initPermissions(),
+    ]);
+
+    initCompleter.complete();
   } 
+
+  Future<void> _initUsers() async {
+    users.value = await getAllUserMocks();
+  }
+
+  Future<void> _initRoles() async {
+    roles.value = await getAllRoleMocks();
+  }
+
+  Future<void> _initPermissions() async {
+    permissions.value = await getAllPermissionMocks();
+  }
 
   /// Fetches all users from backend.
   /// Currently only mock data is used.
@@ -103,7 +124,7 @@ class UserController extends GetxController {
   Future<void> logout() async {
     await storage.delete(key: atStorageKey);
     await storage.delete(key: rtStorageKey);
-    Get.offNamed(loginRoute);
+    Get.offAllNamed(loginRoute);
   }
 
   /// Fetches all users from backend.

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -13,8 +14,10 @@ import 'package:frontend/extensions/material/mock_data.dart';
 class MaterialController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
   final RxList<MaterialModel> materials = <MaterialModel>[].obs;
-  final RxList<EquipmentType> types = <EquipmentType>[].obs;
+  final RxList<MaterialTypeModel> types = <MaterialTypeModel>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -22,8 +25,27 @@ class MaterialController extends GetxController {
 
     debugPrint('MaterialController init');
 
+    initCompleter.future;
+
+    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) {
+      initCompleter.complete();
+      return;
+    }
+
+    await Future.wait([
+        _initMaterials(),
+        _initTypes(),
+      ]);
+
+    initCompleter.complete();
+  }
+
+  Future<void> _initMaterials() async {
     materials.value = await getAllMaterialMocks();
-    types.value = await getAllEquipmentTypeMocks();
+  }
+
+  Future<void> _initTypes() async {
+    types.value = (await getAllMaterialTypes()) ?? [];
   }
 
   /// Fetches all material from backend.
@@ -38,18 +60,18 @@ class MaterialController extends GetxController {
     return mockMaterial + mockMaterial;
   }
 
-  /// Fetches all equipment types from backend.
+  /// Fetches all material types from backend.
   /// /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<EquipmentType>> getAllEquipmentTypeMocks() async {
+  Future<List<MaterialTypeModel>> getAllMaterialTypeMocks() async {
     if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
     
     return [
-      mockCarbineEquipmentType,
-      mockHelmetEquipmentType,
-      mockRopeEquipmentType,
+      mockCarbineMaterialType,
+      mockHelmetMaterialType,
+      mockRopeMaterialType,
     ];
   }
 
@@ -60,7 +82,7 @@ class MaterialController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error getting material');
 
-      return response.data['material'].map(
+      return response.data.map<MaterialModel>(
         (dynamic item) => MaterialModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
@@ -69,15 +91,15 @@ class MaterialController extends GetxController {
     return null;
   }
 
-  /// Fetches all equipment types from backend.
-  Future<List<EquipmentType>?> getAllEquipmentTypes() async {
+  /// Fetches all material types from backend.
+  Future<List<MaterialTypeModel>?> getAllMaterialTypes() async {
     try {
-      final response = await apiService.mainClient.get('/material/equipment_type');
+      final response = await apiService.mainClient.get('/material_types');
 
-      if (response.statusCode != 200) debugPrint('Error getting equipment types');
+      if (response.statusCode != 200) debugPrint('Error getting material types');
 
-      return response.data['equipmentTypes'].map(
-        (dynamic item) => EquipmentType.fromJson(item)
+      return response.data.map<MaterialTypeModel>(
+        (dynamic item) => MaterialTypeModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
       apiService.defaultCatch(e);
@@ -121,9 +143,10 @@ class MaterialController extends GetxController {
             'value': p.value,
             'unit': p.unit,
           }).toList(),
-          'equipment_type': {
-            'id': material.equipmentType.id,
-            'description': material.equipmentType.description,
+          'material_type': {
+            'id': material.materialType.id,
+            'name': material.materialType.name,
+            'description': material.materialType.description,
           },
         },
       );
@@ -137,17 +160,18 @@ class MaterialController extends GetxController {
     return null;
   }
 
-  /// Adds a new equipment type to the backend.
-  /// Returns the id of the newly created equipment type.
-  Future<int?> addEquipmentType(EquipmentType equipmentType) async {
+  /// Adds a new material type to the backend.
+  /// Returns the id of the newly created material type.
+  Future<int?> addMaterialType(MaterialTypeModel materialType) async {
     try {
-      final response = await apiService.mainClient.post('/material/equipment_type', 
+      final response = await apiService.mainClient.post('/material_type', 
         data: {
-          'description': equipmentType.description,
+          'name': materialType.name,
+          'description': materialType.description,
         },
       );
 
-      if (response.statusCode != 201) debugPrint('Error adding equipment type');
+      if (response.statusCode != 201) debugPrint('Error adding material type');
 
       return response.data['id'];
     } on DioError catch(e) {
@@ -160,7 +184,7 @@ class MaterialController extends GetxController {
   /// Returns the id of the newly created property.
   Future<int?> addProperty(Property property) async {
     try {
-      final response = await apiService.mainClient.post('/material/property', 
+      final response = await apiService.mainClient.post('/material_property', 
         data: {
           'name': property.name,
           'description': property.description,
@@ -214,9 +238,10 @@ class MaterialController extends GetxController {
             'value': p.value,
             'unit': p.unit,
           }).toList(),
-          'equipment_type': {
-            'id': material.equipmentType.id,
-            'description': material.equipmentType.description,
+          'material_type': {
+            'id': material.materialType.id,
+            'name': material.materialType.name,
+            'description': material.materialType.description,
           },
         },
       );
@@ -230,17 +255,18 @@ class MaterialController extends GetxController {
     return false;
   }
 
-  /// Updates a equipment type in the backend.
-  /// Returns true if the equipment type was updated successfully.
-  Future<bool> updateEquipmentType(EquipmentType equipmentType) async {
+  /// Updates a material type in the backend.
+  /// Returns true if the material type was updated successfully.
+  Future<bool> updateMaterialType(MaterialTypeModel materialType) async {
     try {
-      final response = await apiService.mainClient.put('/material/equipment_type/${equipmentType.id}', 
+      final response = await apiService.mainClient.put('/material_type/${materialType.id}', 
         data: {
-          'description': equipmentType.description,
+          'name': materialType.name,
+          'description': materialType.description,
         },
       );
 
-      if (response.statusCode != 200) debugPrint('Error updating equipment type');
+      if (response.statusCode != 200) debugPrint('Error updating material type');
 
       return response.statusCode == 200;
     } on DioError catch(e) {
@@ -253,7 +279,7 @@ class MaterialController extends GetxController {
   /// Returns true if the property was updated successfully.
   Future<bool> updateProperty(Property property) async {
     try {
-      final response = await apiService.mainClient.put('/material/property/${property.id}', 
+      final response = await apiService.mainClient.put('/material_property/${property.id}', 
         data: {
           'name': property.name,
           'description': property.description,

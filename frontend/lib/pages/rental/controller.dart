@@ -30,9 +30,9 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final RxList<MaterialModel> shoppingCart = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredSets = <MaterialModel>[].obs;
-  final RxMap<EquipmentType, String> filterOptions = <EquipmentType, String>{}.obs;
+  final RxMap<MaterialTypeModel, String> filterOptions = <MaterialTypeModel, String>{}.obs;
 
-  final Rxn<EquipmentType> selectedFilter = Rxn<EquipmentType>();
+  final Rxn<MaterialTypeModel> selectedFilter = Rxn<MaterialTypeModel>();
   final RxString searchTerm = ''.obs;
 
   // following variables are used by the shopping cart page
@@ -52,10 +52,12 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
+    await materialController.initCompleter.future;
+
     filteredMaterial.value = materialController.materials;
 
-    for (EquipmentType item in materialController.types) {
-      filterOptions[item] = item.description;
+    for (MaterialTypeModel item in materialController.types) {
+      filterOptions[item] = item.name;
     }
   }
 
@@ -74,18 +76,18 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
     filteredMaterial.value = materialController.materials.where((MaterialModel item) {
-      /// Checks if the [selectedFilter] equals [equipmentType] of the [item].
-      bool equipmentTypeFilterCondition() {
+      /// Checks if the [selectedFilter] equals [materialType] of the [item].
+      bool materialTypeFilterCondition() {
         if (selectedFilter.value == null) return true;
         
-        return item.equipmentType == selectedFilter.value;
+        return item.materialType == selectedFilter.value;
       }
 
-      /// Checks if the [term] is contained in [equipmentType] of the [item].
-      bool equipmentTypeNameCondition() {
+      /// Checks if the [term] is contained in [materialType] of the [item].
+      bool materialTypeNameCondition() {
         if (term.isEmpty) return true;
 
-        return item.equipmentType.description.toLowerCase().contains(term);
+        return item.materialType.name.toLowerCase().contains(term);
       }
 
       /// Checks if the [term] is contained in [properties] of the [item].
@@ -100,8 +102,8 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
         return false;
       }
 
-      return equipmentTypeFilterCondition() && 
-        (propertyNameCondition() || equipmentTypeNameCondition());
+      return materialTypeFilterCondition() && 
+        (propertyNameCondition() || materialTypeNameCondition());
     }).toList();
   }
 
@@ -111,7 +113,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     // set selected filter
     if (value != 'all'.tr) {
       selectedFilter.value = filterOptions.entries.firstWhere(
-        (MapEntry<EquipmentType, String> entry) => entry.value == value
+        (MapEntry<MaterialTypeModel, String> entry) => entry.value == value
       ).key;
     } else {
       selectedFilter.value = null;

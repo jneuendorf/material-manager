@@ -37,7 +37,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                   'all'.tr,
                   ...controller.typeFilterOptions.values,
                 ],
-                selected: controller.selectedTypeFilter.value?.description ?? 'all'.tr,
+                selected: controller.selectedTypeFilter.value?.name ?? 'all'.tr,
                 onSelected: controller.onTypeFilterSelected,
               )),
               const SizedBox(width: 8.0),
@@ -142,7 +142,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                           : null,
                       ),
                     ),
-                    Expanded(child: Text(controller.filteredMaterial[index].equipmentType.description)),
+                    Expanded(child: Text(controller.filteredMaterial[index].materialType.name)),
                     Expanded(child: Text(controller.filteredMaterial[index].condition.toString().split('.').last.tr)),
                     Expanded(child: Text(controller.formatDate(controller.filteredMaterial[index].nextInspectionDate))),
                   ],
@@ -211,7 +211,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buildCustomTextField(
-                    item.equipmentType.description,
+                    item.materialType.name,
                     'type'.tr,
                   ),
                   buildCustomTextField(
