@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
@@ -46,8 +47,30 @@ Future<void> initialConfig() async {
   Get.lazyPut<InspectionController>(() => InspectionController());
 }
 
-class MaterialManagerApp extends StatelessWidget {
+class MaterialManagerApp extends StatefulWidget {
   const MaterialManagerApp({Key? key}) : super(key: key);
+
+  @override
+  State<MaterialManagerApp> createState() => _MaterialManagerAppState();
+}
+
+class _MaterialManagerAppState extends State<MaterialManagerApp> {
+  late final bool goToHome;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    final ApiService apiService = Get.find<ApiService>();
+
+    if (apiService.accessToken != null && 
+        JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(apiService.accessToken!)) {
+      goToHome = true;
+    } else {
+      goToHome = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) => GetMaterialApp(
@@ -69,7 +92,7 @@ class MaterialManagerApp extends StatelessWidget {
         brightness: Brightness.light,
       ),
     ),
-    initialRoute: loginRoute,
+    initialRoute: goToHome ? rentalRoute : loginRoute,
     getPages: [
       GetPage(name: loginRoute, page: () => const LoginPage(),
         binding: LoginPageBinding(),

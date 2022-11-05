@@ -15,7 +15,7 @@ const rtStorageKey = 'refresh_token';
 const storage = FlutterSecureStorage();
 // TODO: Or `const bool prod = const bool.fromEnvironment('dart.vm.product');`?
 //  See https://stackoverflow.com/questions/49707028/
-const baseUrl = kDebugMode ? 'http://localhost:5001' : '';
+const baseUrl = kDebugMode ? 'http://localhost:5000' : '';
 // const authUrl = 'http://localhost:5000/auth';
 Map<int, String> defaultErrors = {
   400: 'bad_request'.tr,
@@ -41,6 +41,8 @@ class ApiService extends GetxService {
   bool saveCredentials = false;
 
   Future<ApiService> init() async {
+    debugPrint('ApiService init');
+
     final String? accessToken = await getAccessToken();
     if (accessToken != null) {
       tokenInfo = JwtDecoder.decode(accessToken);
@@ -104,9 +106,6 @@ class ApiService extends GetxService {
   /// Otherwise it refreshes the accessToken and returns it.
   /// In case of error null is returned,
   Future<String?> checkAndGetRefreshIfExpired() async {
-    //String? accessToken = await getAccessToken();
-    //String? refreshToken = await getRefreshToken();
-
     if (accessToken != null &&
         refreshToken != null &&
         JwtDecoder.getRemainingTime(accessToken!) < const Duration(minutes: 1) &&
@@ -132,6 +131,7 @@ class ApiService extends GetxService {
         }
       } on DioError catch(e) {
         debugPrint('error on refresh of accessToken: $e');
+
         if (e.response != null) {
           switch (e.response!.data['error']) {
             case 'unauthorized':
