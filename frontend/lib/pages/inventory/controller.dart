@@ -38,7 +38,7 @@ class InventoryPageController extends GetxController {
     }
   }
 
-   /// Filters the [availableMaterial] by the [searchTerm], 
+   /// Filters the material by the [searchTerm], 
    /// the [selectedTypeFilter] and the [selectedConditonFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
