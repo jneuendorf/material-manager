@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -30,20 +33,15 @@ class InspectionPage extends GetView<InspectionPageController> {
                   return SizedBox(
                     height: 100.0,
                     width: 100.0,
-                    child: Image.network(controller.currentMaterial.value!.imagePath!),
+                    child: !kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST') 
+                      ? Image.network(controller.currentMaterial.value!.imagePath!)
+                      : null,
                   );
                 } else {
                   return const SizedBox.shrink();
                 }
               }),
             ),
-            /* Obx(() => DropDownFilterButton(
-              options: controller.availableInspectionTypes,
-              selected: controller.availableInspectionTypes,
-              onSelected: (String value ) {
-                // TODO: update InspectionType of InspectionModel.type
-              },
-            )),*/
           ],
         ),
         Expanded(
