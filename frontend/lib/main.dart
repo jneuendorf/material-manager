@@ -40,13 +40,13 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
-  await Get.putAsync(() => ApiService().init());
+  await Get.putAsync(() async => await ApiService().init());
 
   // init extension controllers
-  Get.lazyPut<RentalController>(() => RentalController());
-  Get.lazyPut<MaterialController>(() => MaterialController());
-  Get.lazyPut<UserController>(() => UserController());
-  Get.lazyPut<InspectionController>(() => InspectionController());
+  Get.lazyPut<RentalController>(() => RentalController(),fenix: true);
+  Get.lazyPut<MaterialController>(() => MaterialController(),fenix: true);
+  Get.lazyPut<UserController>(() => UserController(),fenix: true);
+  Get.lazyPut<InspectionController>(() => InspectionController(),fenix: true);
 }
 
 class MaterialManagerApp extends StatefulWidget {
@@ -66,10 +66,10 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
     final ApiService apiService = Get.find<ApiService>();
 
     if (apiService.accessToken != null && apiService.refreshToken != null &&
-        (JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
+        ((JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
         !JwtDecoder.isExpired(apiService.accessToken!)) || 
         (JwtDecoder.getRemainingTime(apiService.refreshToken!) >= const Duration(minutes: 1) &&
-        !JwtDecoder.isExpired(apiService.refreshToken!))) {
+        !JwtDecoder.isExpired(apiService.refreshToken!)))) {
       goToHome = true;
     } else {
       goToHome = false;

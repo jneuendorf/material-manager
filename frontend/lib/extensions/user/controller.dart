@@ -103,7 +103,7 @@ class UserController extends GetxController {
   Future<void> logout() async {
     await storage.delete(key: atStorageKey);
     await storage.delete(key: rtStorageKey);
-    Get.offNamed(loginRoute);
+    Get.offAllNamed(loginRoute);
   }
 
   /// Fetches all users from backend.
