@@ -1,6 +1,12 @@
-from flask import abort, jsonify, redirect
+from flask import abort, redirect
 from flask_apispec import use_kwargs
-from flask_jwt_extended import create_access_token, current_user
+from flask_jwt_extended import (
+    create_access_token,
+    create_refresh_token,
+    current_user,
+    get_jwt_identity,
+    jwt_required,
+)
 from flask_mail import Message
 from sqlalchemy.exc import IntegrityError
 from webargs import fields, validate
@@ -10,16 +16,17 @@ from core.extensions import mail
 from core.helpers.resource import BaseResource, ModelListResource, ModelResource
 
 from .auth import password_policy
-from .decorators import permissions_required, session_required
+from .decorators import login_required, permissions_required
 from .models import User as UserModel
 
 
 class User(ModelResource):
     url = "/user/<int:user_id>"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "first_name", "last_name")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "first_name", "last_name")
 
     def get(self, user_id: int) -> dict:
         user = UserModel.get(id=user_id)
@@ -90,13 +97,9 @@ class Signup(BaseResource):
                     recipients=[email],
                 )
             )
-            return jsonify(
-                {
-                    "message": (
-                        "Signup successful. Verify your e-mail address to login."
-                    ),
-                }
-            )
+            return {
+                "message": ("Signup successful. Verify your e-mail address to login."),
+            }
         except (ValueError, IntegrityError):
             return abort(403, "E-mail address already taken")
 
@@ -119,6 +122,7 @@ class SignupVerification(BaseResource):
                 is_active=True,
             )
             # TODO: How to not hard-code the login URL?
+            # TODO: Get FE domain from request header 'Origin'
             return redirect(f'{flask_config["CORE_PUBLIC_FRONTEND_URL"]}/#/login')
         else:
             abort(401, "Verification failed")
@@ -139,17 +143,61 @@ class Login(BaseResource):
                 "Invalid credentials or your account has not been activated yet",
             )
 
-        return dict(access_token=create_access_token(identity=user))
+        additional_claims = {
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
+        }
+
+        return dict(
+            access_token=create_access_token(
+                identity=user, additional_claims=additional_claims
+            ),
+            refresh_token=create_refresh_token(identity=user),
+        )
+
+
+class Refresh(BaseResource):
+    url = "/refresh"
+
+    @jwt_required(refresh=True)
+    def get(self):
+        """
+        curl -X GET 'http://localhost:5000/refresh' -H 'Authorization: Bearer <JWT>'
+        """
+        identity = get_jwt_identity()
+        user = UserModel.get_or_none(id=identity)
+
+        if not user:
+            return abort(
+                401,
+                "Account has not been found",
+            )
+
+        additional_claims = {
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
+        }
+
+        return dict(
+            access_token=create_access_token(
+                identity=current_user,
+                fresh=False,
+                additional_claims=additional_claims,
+            ),
+        )
 
 
 class Profile(ModelResource):
     url = "/user/profile"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "first_name", "last_name", "email", "membership_number")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "first_name", "last_name", "email", "membership_number")
 
-    @session_required
+    @login_required
     def get(self) -> dict:
         return self.schema.dump(current_user)
 
@@ -157,9 +205,10 @@ class Profile(ModelResource):
 class Users(ModelListResource):
     url = "/users"
 
-    class Meta:
-        model = UserModel
-        fields = ("id", "last_name")
+    class Schema:
+        class Meta:
+            model = UserModel
+            fields = ("id", "last_name")
 
     @permissions_required("user:read")
     def get(self):
@@ -169,19 +218,20 @@ class Users(ModelListResource):
         users = UserModel.all()
         return self.serialize(users)
 
-    @use_kwargs(
-        {
-            "email": fields.Str(),
-            "first_name": fields.Str(),
-            "last_name": fields.Str(),
-            "membership_number": fields.Str(),
-        }
-    )
-    @permissions_required("user:write")
-    def put(self, **kwargs) -> dict:
-        """Test with
-        curl -X PUT 'http://localhost:5000/users' -H 'Content-Type: application/json' -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
-        curl -X PUT 'http://localhost:5000/users' -F 'first_name=max' -F 'last_name=mustermann' -F 'membership_number=123'
-        """  # noqa
-        user = UserModel.create(**kwargs)
-        return self.schema.dump(user, many=False)
+    # @use_kwargs(
+    #     {
+    #         "email": fields.Str(),
+    #         "first_name": fields.Str(),
+    #         "last_name": fields.Str(),
+    #         "membership_number": fields.Str(),
+    #     }
+    # )
+    # @permissions_required("user:write")
+    # def put(self, **kwargs) -> dict:
+    #     """Test with
+    #     curl -X PUT 'http://localhost:5000/users' \
+    #     -H 'Content-Type: application/json' \
+    #     -d '{"first_name":"max","last_name":"mustermann","membership_number":"123"}'
+    #     """  # noqa
+    #     user = UserModel.create(**kwargs)
+    #     return self.serialize_single(user)

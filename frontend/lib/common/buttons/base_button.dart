@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 
 
-class DavButton extends StatelessWidget {
+class BaseButton extends StatelessWidget {
   final String text;
-  final void Function()? onPressed; 
+  final void Function()? onPressed;
   final Color? color;
 
-  const DavButton({
-    super.key, 
+  const BaseButton({
+    super.key,
     required this.onPressed,
-    required this.text, 
+    required this.text,
     this.color,
   });
 

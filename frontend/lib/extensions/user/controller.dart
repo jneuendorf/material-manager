@@ -8,10 +8,26 @@ import 'package:get/get.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/mock_data.dart';
 import 'package:frontend/extensions/user/model.dart';
+import 'package:frontend/pages/login/controller.dart';
 
 
 class UserController extends GetxController {
   static final apiService = Get.find<ApiService>();
+
+  final RxList<UserModel> users = <UserModel>[].obs;
+  final RxList<Role> roles = <Role>[].obs;
+  final RxList<Permission> permissions = <Permission>[].obs;
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+
+    debugPrint('UserController init');
+
+    users.value = await getAllUserMocks();
+    roles.value = await getAllRoleMocks();
+    permissions.value = await getAllPermissionMocks();
+  } 
 
   /// Fetches all users from backend.
   /// Currently only mock data is used.
@@ -56,6 +72,40 @@ class UserController extends GetxController {
     ];
   }
 
+  /// Logs in the user with the given [email].
+  /// Returns a Map containing access and refresh token if successful.
+  Future<Map<String,String>?> login(String email, String password, bool saveCredentials) async {
+    try {
+      final response = await apiService.authClient.post('/login', data: {
+        'email': email,
+        'password': password,
+      });
+      var accessToken = response.data['access_token'] as String;
+      var refreshToken = response.data['refresh_token'] as String;
+
+      // await apiService.storeAccessToken(accessToken);
+      // await apiService.storeRefreshToken(refreshToken);
+      apiService.accessToken = accessToken;
+      apiService.refreshToken = refreshToken;
+      apiService.saveCredentials = saveCredentials;
+
+      return {
+        atStorageKey: accessToken,
+        rtStorageKey: refreshToken,
+      };
+    } on DioError catch (e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
+  /// Logs out a user.
+  Future<void> logout() async {
+    await storage.delete(key: atStorageKey);
+    await storage.delete(key: rtStorageKey);
+    Get.offNamed(loginRoute);
+  }
+
   /// Fetches all users from backend.
   Future<List<UserModel>?> getAllUsers() async {
     try {
@@ -66,6 +116,21 @@ class UserController extends GetxController {
       return response.data['users'].map(
         (dynamic item) => UserModel.fromJson(item)
       ).toList();
+    } on DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
+  /// Fetches the user with the provided [id] from the backend.
+  Future<UserModel?> getUser(int id) async {
+    try {
+      final response = await apiService.mainClient.get('/user/$id');
+
+      if (response.statusCode != 200) debugPrint('Error getting users');
+
+      return UserModel.fromJson(response.data);
+
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }
@@ -108,7 +173,7 @@ class UserController extends GetxController {
   /// Returns the id of the newly created user.
   Future<int?> addUser(UserModel user) async {
     try {
-      final response = await apiService.mainClient.post('/user', 
+      final response = await apiService.mainClient.post('/user',
         data: {
           'first_name': user.firstName,
           'last_name': user.lastName,

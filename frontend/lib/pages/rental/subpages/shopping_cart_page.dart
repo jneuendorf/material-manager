@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
-import 'package:frontend/common/buttons/dav_button.dart';
+import 'package:frontend/common/buttons/base_button.dart';
 
 
 class ShoppingCartPage extends StatefulWidget {
@@ -109,6 +109,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 controller: rentalPageController.rentalStartController,
                 labelText: 'enter_start_date'.tr,
                 validator: rentalPageController.validateDateTime,
+                onValidChanged: (String s) => rentalPageController.usageStartController.value.text = s,
               ),
             ),
             const SizedBox(width: 8.0),
@@ -117,6 +118,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 controller: rentalPageController.rentalEndController,
                 labelText: 'enter_end_date'.tr,
                 validator: rentalPageController.validateDateTime,
+                onValidChanged: (String s) => rentalPageController.usageEndController.value.text = s,
               ),
             ),
           ],
@@ -126,51 +128,57 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
               controller: rentalPageController.rentalStartController,
               labelText: 'enter_start_date'.tr,
               validator: rentalPageController.validateDateTime,
+              onValidChanged: (String s) => rentalPageController.usageStartController.value.text = s,
             ),
             const SizedBox(height: 12.0),
             buildCustomTextField(
               controller: rentalPageController.rentalEndController,
               labelText: 'enter_end_date'.tr,
               validator: rentalPageController.validateDateTime,
+              onValidChanged: (String s) => rentalPageController.usageEndController.value.text = s,
             ),
           ],
         ),
-        Padding(
-          padding: const EdgeInsets.only(bottom: 8.0, top: 16.0),
-          child: Text('usage_period'.tr.toUpperCase(),
+        ExpansionTile(
+          tilePadding: EdgeInsets.zero,
+          title: Text('usage_period'.tr.toUpperCase(),
             style: Get.textTheme.subtitle2,
           ),
-        ),
-        !kIsWeb ? Row(
           children: [
-            Expanded(
-              child: buildCustomTextField(
-                controller: rentalPageController.usageStartController,
-                labelText: 'enter_start_date'.tr,
-                validator: rentalPageController.validateUsageStartDate,
-              ),
-            ),
-            const SizedBox(width: 8.0),
-            Expanded(
-              child: buildCustomTextField(
-                controller: rentalPageController.usageEndController,
-                labelText: 'enter_end_date'.tr,
-                validator: rentalPageController.validateUsageEndDate,
-              ),
-            ),
-          ],
-        ) : Column(
-          children: [
-            buildCustomTextField(
-              controller: rentalPageController.usageStartController,
-              labelText: 'enter_start_date'.tr,
-              validator: rentalPageController.validateUsageStartDate,
-            ),
-            const SizedBox(height: 12.0),
-            buildCustomTextField(
-              controller: rentalPageController.usageEndController,
-              labelText: 'enter_end_date'.tr,
-              validator: rentalPageController.validateUsageEndDate,
+            const SizedBox(height: 8.0),
+            !kIsWeb ? Row(
+              children: [
+                Expanded(
+                  child: buildCustomTextField(
+                    controller: rentalPageController.usageStartController,
+                    labelText: 'enter_start_date'.tr,
+                    validator: rentalPageController.validateUsageStartDate,
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Expanded(
+                  child: buildCustomTextField(
+                    controller: rentalPageController.usageEndController,
+                    labelText: 'enter_end_date'.tr,
+                    validator: rentalPageController.validateUsageEndDate,
+                  ),
+                ),
+              ],
+            ) : Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                buildCustomTextField(
+                  controller: rentalPageController.usageStartController,
+                  labelText: 'enter_start_date'.tr,
+                  validator: rentalPageController.validateUsageStartDate,
+                ),
+                const SizedBox(height: 12.0),
+                buildCustomTextField(
+                  controller: rentalPageController.usageEndController,
+                  labelText: 'enter_end_date'.tr,
+                  validator: rentalPageController.validateUsageEndDate,
+                ),
+              ],
             ),
           ],
         ),
@@ -194,7 +202,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       ),
       Padding(
         padding: const EdgeInsets.only(top: 32.0),
-        child: DavButton(
+        child: BaseButton(
           onPressed: rentalPageController.onCheckoutTap,
           text: 'checkout'.tr,
           color: Colors.black,
@@ -247,13 +255,22 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     )),
   );
 
-  Widget buildCustomTextField({required TextEditingController controller,
-  required String labelText, required String? Function(String?)? validator}) {
-    controller.addListener(() {
+  /// Builds a [TextFormField] with the given [controller], [labelText] 
+  /// and [validator].
+  /// The [onValidChanged] callback is called when the [TextFormField] has been 
+  /// changed and validated by the [validator]. 
+  Widget buildCustomTextField({
+    required Rx<TextEditingController> controller, 
+    required String labelText, 
+    required String? Function(String?)? validator,  
+    void Function(String)? onValidChanged,
+  }) {
+    controller.value.addListener(() {
       if (hadError.value) rentalPageController.shoppingCartFormKey.currentState!.validate();
     });
-    return TextFormField(
-      controller: controller,
+
+    return Obx(() => TextFormField(
+      controller: controller.value,
       readOnly: true,
       decoration: InputDecoration(
         focusColor: Colors.white,
@@ -263,7 +280,13 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         focusedBorder: const OutlineInputBorder(),
         errorBorder: const OutlineInputBorder(),
       ),
-      onTap: () async => controller.text = (await rentalPageController.pickDate()) ?? '',
+      onTap: () async {
+        controller.value.text = (await rentalPageController.pickDate()) ?? '';
+
+        if (validator!(controller.value.text) != null || onValidChanged == null) return; 
+
+        onValidChanged(controller.value.text);
+      },
       validator: (String? s) {
         String? errorMsg =  validator!(s);
         if (errorMsg != null) {
@@ -271,6 +294,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         }
         return errorMsg;
       },
-    );
+    ));
   }
 }

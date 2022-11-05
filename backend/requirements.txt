@@ -1,4 +1,5 @@
-apispec~=5.2
+# apispec >= 6 requires marshmallow >= 3.18.0
+apispec~=6.0
 # provides support for Signals
 blinker~=1.5
 Flask~=2.2
@@ -11,6 +12,7 @@ Flask-Marshmallow~=0.14
 Flask-Restful~=0.3
 Flask-SQLAlchemy~=3.0
 Marshmallow-SQLAlchemy~=0.28
+marshmallow~=3.18
 passlib[argon2]~=1.7
 password-strength==0.0.3.post2
 SQLAlchemy~=1.4

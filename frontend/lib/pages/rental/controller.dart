@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/api.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -36,17 +35,13 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final Rxn<EquipmentType> selectedFilter = Rxn<EquipmentType>();
   final RxString searchTerm = ''.obs;
 
-  List<MaterialModel> availableMaterial = [];
-  List<MaterialModel> availableSets = [];
-  List<EquipmentType> availableEquipmentTypes = [];
-
   // following variables are used by the shopping cart page
   final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
 
-  final TextEditingController rentalStartController = TextEditingController();
-  final TextEditingController rentalEndController = TextEditingController();
-  final TextEditingController usageStartController = TextEditingController();
-  final TextEditingController usageEndController = TextEditingController();
+  final Rx<TextEditingController> rentalStartController = TextEditingController().obs;
+  final Rx<TextEditingController> rentalEndController = TextEditingController().obs;
+  final Rx<TextEditingController> usageStartController = TextEditingController().obs;
+  final Rx<TextEditingController> usageEndController = TextEditingController().obs;
 
   @override
   Future<void> onInit() async {
@@ -57,12 +52,9 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
-    availableMaterial = await materialController.getAllMaterialMocks();
-    filteredMaterial.value = availableMaterial;
+    filteredMaterial.value = materialController.materials;
 
-    availableEquipmentTypes = await materialController.getAllEquipmentTypeMocks();
-
-    for (EquipmentType item in availableEquipmentTypes) {
+    for (EquipmentType item in materialController.types) {
       filterOptions[item] = item.description;
     }
   }
@@ -81,7 +73,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   /// Filters the [availableMaterial] by the [searchTerm] and the [selectedFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
-    filteredMaterial.value = availableMaterial.where((MaterialModel item) {
+    filteredMaterial.value = materialController.materials.where((MaterialModel item) {
       /// Checks if the [selectedFilter] equals [equipmentType] of the [item].
       bool equipmentTypeFilterCondition() {
         if (selectedFilter.value == null) return true;
@@ -154,8 +146,8 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     }
 
     DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-    DateTime usageStart = dateFormat.parse(usageStartController.text);
-    DateTime rentalStart = dateFormat.parse(rentalStartController.text);
+    DateTime usageStart = dateFormat.parse(usageStartController.value.text);
+    DateTime rentalStart = dateFormat.parse(rentalStartController.value.text);
 
     if (usageStart.isBefore(rentalStart)) {
       return 'usage_start_must_be_after_rental_start'.tr;
@@ -169,8 +161,8 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     }
 
     DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-    DateTime usageEnd = dateFormat.parse(usageStartController.text);
-    DateTime rentalEnd = dateFormat.parse(rentalStartController.text);
+    DateTime usageEnd = dateFormat.parse(usageStartController.value.text);
+    DateTime rentalEnd = dateFormat.parse(rentalStartController.value.text);
 
     if (usageEnd.isBefore(rentalEnd)) {
       return 'usage_end_must_be_before_rental_end'.tr;
@@ -183,14 +175,13 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     if (shoppingCartFormKey.currentState!.validate()) {
       DateFormat dateFormat = DateFormat('dd.MM.yyyy');
       RentalModel rental = RentalModel(
-        customerId: ApiService().tokenInfo!['id'],  // will throw error if tokenInfo is null
         materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
         cost: totalPrice,
         createdAt: DateTime.now(),
-        startDate: dateFormat.parse(rentalStartController.text),
-        endDate: dateFormat.parse(rentalEndController.text),
-        usageStartDate: dateFormat.parse(usageStartController.text),
-        usageEndDate: dateFormat.parse(usageEndController.text),
+        startDate: dateFormat.parse(rentalStartController.value.text),
+        endDate: dateFormat.parse(rentalEndController.value.text),
+        usageStartDate: dateFormat.parse(usageStartController.value.text),
+        usageEndDate: dateFormat.parse(usageEndController.value.text),
       );
       
       final int? id = await rentalController.addRental(rental);

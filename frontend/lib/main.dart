@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/imprint/page.dart';
+import 'package:frontend/pages/privacy_policy/page.dart';
 
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
@@ -33,21 +36,43 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialConfig();
 
-  runApp(const DavApp());
+  runApp(const MaterialManagerApp());
 }
 
 Future<void> initialConfig() async {
   await Get.putAsync(() => ApiService().init());
 
   // init extension controllers
-  Get.put(RentalController(), permanent: true);
-  Get.put(MaterialController(), permanent: true);
-  Get.put(UserController(), permanent: true);
-  Get.put(InspectionController(), permanent: true);
+  Get.lazyPut<RentalController>(() => RentalController());
+  Get.lazyPut<MaterialController>(() => MaterialController());
+  Get.lazyPut<UserController>(() => UserController());
+  Get.lazyPut<InspectionController>(() => InspectionController());
 }
 
-class DavApp extends StatelessWidget {
-  const DavApp({Key? key}) : super(key: key);
+class MaterialManagerApp extends StatefulWidget {
+  const MaterialManagerApp({Key? key}) : super(key: key);
+
+  @override
+  State<MaterialManagerApp> createState() => _MaterialManagerAppState();
+}
+
+class _MaterialManagerAppState extends State<MaterialManagerApp> {
+  late final bool goToHome;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    final ApiService apiService = Get.find<ApiService>();
+
+    if (apiService.accessToken != null && 
+        JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(apiService.accessToken!)) {
+      goToHome = true;
+    } else {
+      goToHome = false;
+    }
+  }
 
   @override
   Widget build(BuildContext context) => GetMaterialApp(
@@ -69,7 +94,7 @@ class DavApp extends StatelessWidget {
         brightness: Brightness.light,
       ),
     ),
-    initialRoute: loginRoute,
+    initialRoute: goToHome ? rentalRoute : loginRoute,
     getPages: [
       GetPage(name: loginRoute, page: () => const LoginPage(),
         binding: LoginPageBinding(),
@@ -104,6 +129,10 @@ class DavApp extends StatelessWidget {
       GetPage(name: profileRoute, page: () => const ProfilePage(),
         binding: ProfilePageBinding(),
       ),
+      // Following paged don´t need a binding, since they don´t use a controller.
+      // This is the case for pages that only display hardcoded information.
+      GetPage(name: privacyPolicyRoute, page: () => const PrivacyPolicyPage()),
+      GetPage(name: imprintRoute, page: () => const ImprintPage()),
     ],
     locale: const Locale('en', 'US'),
     translations: LocaleString(),

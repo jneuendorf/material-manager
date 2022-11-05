@@ -13,6 +13,19 @@ import 'package:frontend/extensions/rental/mock_data_rental.dart';
 class RentalController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final RxList<RentalModel> rentals = <RentalModel>[].obs;
+  final RxList<RentalStatus> statuses = <RentalStatus>[].obs;
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+    
+    debugPrint('RentalController init');
+
+    rentals.value = await getAllRentalMocks();
+    statuses.value = await getAllStatusMocks();
+  }
+
   /// Fetches all rentals from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
@@ -20,7 +33,6 @@ class RentalController extends GetxController {
     if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
-
 
     return mockRentals + mockRentals;
   }
@@ -75,18 +87,26 @@ class RentalController extends GetxController {
   /// Adds a new rental to the backend.
   /// Returns the id of the newly created rental
   /// or null if an error occured.
+  /// The [customerId] will automaically be added to [rental].
+  /// The [ApiService]´s [tokenInfo] must not be null.
   Future<int?> addRental(RentalModel rental) async {
+    assert(apiService.tokenInfo != null);
+
     try {
       final response = await apiService.mainClient.post('/rental',
         data: {
-          'customer_id': rental.customerId,
+          'customer_id': apiService.tokenInfo!['sub'],
           'material_ids': rental.materialIds,
           'cost': rental.cost,
-          'created_at': rental.createdAt,
-          'start_date': rental.startDate,
-          'end_date': rental.endDate,
-          'usage_start_date': rental.usageStartDate,
-          'usage_end_date': rental.usageEndDate,
+          'created_at': rental.createdAt.toIso8601String(),
+          'start_date': rental.startDate.toIso8601String(),
+          'end_date': rental.endDate.toIso8601String(),
+          'usage_start_date': rental.usageStartDate.toIso8601String(),
+          'usage_end_date': rental.usageEndDate.toIso8601String(),
+          if (rental.status != null) 'status': {
+            'id': rental.status!.id,
+            'name': rental.status!.name,
+          },
         },
       );
 
@@ -108,11 +128,11 @@ class RentalController extends GetxController {
           'customer_id': rental.customerId,
           'material_ids': rental.materialIds,
           'cost': rental.cost,
-          'created_at': rental.createdAt,
-          'start_date': rental.startDate,
-          'end_date': rental.endDate,
-          'usage_start_date': rental.usageStartDate,
-          'usage_end_date': rental.usageEndDate,
+          'created_at': rental.createdAt.toIso8601String(),
+          'start_date': rental.startDate.toIso8601String(),
+          'end_date': rental.endDate.toIso8601String(),
+          'usage_start_date': rental.usageStartDate.toIso8601String(),
+          'usage_end_date': rental.usageEndDate.toIso8601String(),
         },
       );
 

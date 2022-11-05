@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 
-import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/extensions/user/controller.dart';
+
 
 const loginRoute = '/login';
-const loginApiRoute = '/login';  // relative to the clients baseUrl
 const afterLoginRoute = rentalRoute;
-
 
 class LoginPageBinding implements Bindings {
   @override
@@ -18,9 +17,11 @@ class LoginPageBinding implements Bindings {
   }
 }
 
-
 class LoginController extends GetxController {
-  final ApiService apiService = Get.find<ApiService>();
+  final userController = Get.find<UserController>();
+
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
@@ -37,20 +38,24 @@ class LoginController extends GetxController {
     rememberMe.value = value;
   }
 
-  Future<void> login() async {
-    try {
-      var response = await apiService.mainClient.post(loginApiRoute, data: {
-          'email': emailController.text,
-          'password': passwordController.text,
-      });
-      var accessToken = response.data['access_token'] as String;
-      apiService.storeAccessToken(accessToken);
-      if (rememberMe.isTrue) {
-        // TODO: delete token on tear down
-      }
-      Get.toNamed(afterLoginRoute);
-    } on DioError catch (e) {
-      apiService.defaultCatch(e);
+  /// Handles a tap on the login button.
+  Future<void> onLoginTap() async {
+    if (!formKey.currentState!.validate()) return; 
+    
+    final String email = emailController.text;
+    final String password = passwordController.text;
+
+    final Map<String,String>? tokens = await userController.login(
+      email, password, rememberMe.value);
+
+    if (tokens == null) return;
+
+    if (rememberMe.value) {
+      await storeAccessToken(tokens[atStorageKey]!);
+      await storeRefreshToken(tokens[rtStorageKey]!);
     }
+
+    Get.offAllNamed(afterLoginRoute);
   }
+
 }
