@@ -29,12 +29,26 @@ class UserController extends GetxController {
 
     initCompleter.future;
 
-    users.value = await getAllUserMocks();
-    roles.value = await getAllRoleMocks();
-    permissions.value = await getAllPermissionMocks();
+    await Future.wait([
+      _initUsers(),
+      _initRoles(),
+      _initPermissions(),
+    ]);
 
     initCompleter.complete();
   } 
+
+  Future<void> _initUsers() async {
+    users.value = await getAllUserMocks();
+  }
+
+  Future<void> _initRoles() async {
+    roles.value = await getAllRoleMocks();
+  }
+
+  Future<void> _initPermissions() async {
+    permissions.value = await getAllPermissionMocks();
+  }
 
   /// Fetches all users from backend.
   /// Currently only mock data is used.

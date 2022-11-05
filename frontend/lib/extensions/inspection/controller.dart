@@ -46,11 +46,11 @@ class InspectionController extends GetxController {
   /// Fetches all inspections from backend.
   Future<List<InspectionModel>?> getAllInspections() async {
     try {
-      final response = await apiService.mainClient.get('/inspection');
+      final response = await apiService.mainClient.get('/inspections');
 
       if (response.statusCode != 200) debugPrint('Error getting inspections');
 
-      return response.data['inspections'].map(
+      return response.data.map<InspectionModel>(
           (dynamic item) => InspectionModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {

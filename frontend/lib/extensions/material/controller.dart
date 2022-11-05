@@ -27,10 +27,15 @@ class MaterialController extends GetxController {
 
     initCompleter.future;
 
+    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) {
+      initCompleter.complete();
+      return;
+    }
+
     await Future.wait([
-      _initMaterials(),
-      _initTypes(),
-    ]);
+        _initMaterials(),
+        _initTypes(),
+      ]);
 
     initCompleter.complete();
   }
