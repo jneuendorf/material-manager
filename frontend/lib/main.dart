@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/pages/imprint/page.dart';
+import 'package:frontend/pages/privacy_policy/page.dart';
 
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -127,6 +129,10 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
       GetPage(name: profileRoute, page: () => const ProfilePage(),
         binding: ProfilePageBinding(),
       ),
+      // Following paged don´t need a binding, since they don´t use a controller.
+      // This is the case for pages that only display hardcoded information.
+      GetPage(name: privacyPolicyRoute, page: () => const PrivacyPolicyPage()),
+      GetPage(name: imprintRoute, page: () => const ImprintPage()),
     ],
     locale: const Locale('en', 'US'),
     translations: LocaleString(),
