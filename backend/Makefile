@@ -35,6 +35,9 @@ test: venv
 run: venv
 	. venv/bin/activate && flask --app core.app --debug run --port 5000
 
+run_test_data: venv
+	. venv/bin/activate && flask --app extensions.test_db.app --debug run --port 5000
+
 clean:
 	rm -rf venv
 	find . -type d -name '.mypy_cache' -delete -exec rm -r {} +
