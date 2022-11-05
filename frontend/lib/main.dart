@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/pages/imprint/page.dart';
-import 'package:frontend/pages/privacy_policy/page.dart';
 
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -30,6 +28,8 @@ import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/pages/login/page.dart';
 import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/pages/signup/page.dart';
+import 'package:frontend/pages/imprint/page.dart';
+import 'package:frontend/pages/privacy_policy/page.dart';
 
 
 void main() async {
