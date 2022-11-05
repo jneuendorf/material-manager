@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:io';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
@@ -5,19 +8,49 @@ import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/model.dart';
+import 'package:frontend/extensions/inspection/mock_data.dart';
 
 
 class InspectionController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
+  final RxList<InspectionModel> inspections = <InspectionModel>[].obs;
+
+  @override
+  Future<void> onInit() async {
+    super.onInit();
+
+    debugPrint('InspectionController init');
+
+    initCompleter.future;
+
+    inspections.value = await getAllInspectionMocks();
+
+    initCompleter.complete();
+  }
+
+  /// Fetches all inspections from backend.
+  /// Currently only mock data is used.
+  /// A delay of 500 milliseconds is used to simulate a network request.
+  Future<List<InspectionModel>> getAllInspectionMocks()  async {
+    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    return mockInspections + mockInspections;
+  }
+
+
   /// Fetches all inspections from backend.
   Future<List<InspectionModel>?> getAllInspections() async {
     try {
-      final response = await apiService.mainClient.get('/inspection');
+      final response = await apiService.mainClient.get('/inspections');
 
       if (response.statusCode != 200) debugPrint('Error getting inspections');
 
-      return response.data['inspections'].map(
+      return response.data.map<InspectionModel>(
           (dynamic item) => InspectionModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {

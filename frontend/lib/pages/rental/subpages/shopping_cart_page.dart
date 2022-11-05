@@ -227,7 +227,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(rentalPageController.shoppingCart[index].equipmentType.description,
+                Text(rentalPageController.shoppingCart[index].materialType.name,
                   style: Get.textTheme.subtitle2,
                 ),
                 Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.unit}'),

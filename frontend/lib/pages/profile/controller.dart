@@ -40,6 +40,8 @@ class ProfilePageController extends GetxController {
 
     currentUser.value = await userController.getUser(uid!);
 
+    await rentalController.initCompleter.future;
+
     currentRentals.value = rentalController.rentals; // TODO should be the users rentals only
   }
 

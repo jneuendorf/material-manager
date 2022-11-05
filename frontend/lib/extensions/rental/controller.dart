@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,8 @@ import 'package:frontend/extensions/rental/mock_data_rental.dart';
 class RentalController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
   final RxList<RentalModel> rentals = <RentalModel>[].obs;
   final RxList<RentalStatus> statuses = <RentalStatus>[].obs;
 
@@ -22,7 +25,21 @@ class RentalController extends GetxController {
     
     debugPrint('RentalController init');
 
+    initCompleter.future;
+
+    await Future.wait([
+      _initRentals(),
+      _initStatuses(),
+    ]);
+
+    initCompleter.complete();
+  }
+
+  Future<void> _initRentals() async {
     rentals.value = await getAllRentalMocks();
+  }
+
+  Future<void> _initStatuses() async {
     statuses.value = await getAllStatusMocks();
   }
 
@@ -59,7 +76,7 @@ class RentalController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error getting rentals');
 
-      return response.data['rentals'].map(
+      return response.data.map<RentalModel>(
         (dynamic item) => RentalModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
@@ -71,11 +88,11 @@ class RentalController extends GetxController {
   /// Fetches all rental statuses from backend.
   Future<List<RentalStatus>?> getAllStatuses() async {
     try {
-      final response = await apiService.mainClient.get('/rental/status');
+      final response = await apiService.mainClient.get('/rental_statuses');
 
       if (response.statusCode != 200) debugPrint('Error getting rental statuses');
 
-      return response.data['rentalStatuses'].map(
+      return response.data.map<RentalStatus>(
         (dynamic item) => RentalStatus.fromJson(item)
       ).toList();
     } on DioError catch(e) {

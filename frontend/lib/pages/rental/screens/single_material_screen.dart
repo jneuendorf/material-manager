@@ -24,7 +24,7 @@ class SingleMaterialScreen extends StatelessWidget {
             'all'.tr,
             ...rentalPageController.filterOptions.values,
           ],
-          selected: rentalPageController.selectedFilter.value?.description ?? 'all'.tr,
+          selected: rentalPageController.selectedFilter.value?.name ?? 'all'.tr,
           onSelected: rentalPageController.onFilterSelected,
         )),
         const SizedBox(width: 16.0),
