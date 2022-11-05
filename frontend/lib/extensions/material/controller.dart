@@ -27,10 +27,20 @@ class MaterialController extends GetxController {
 
     initCompleter.future;
 
-    materials.value = await getAllMaterialMocks();
-    types.value = await getAllMaterialTypeMocks();
+    await Future.wait([
+      _initMaterials(),
+      _initTypes(),
+    ]);
 
     initCompleter.complete();
+  }
+
+  Future<void> _initMaterials() async {
+    materials.value = await getAllMaterialMocks();
+  }
+
+  Future<void> _initTypes() async {
+    types.value = (await getAllMaterialTypes()) ?? [];
   }
 
   /// Fetches all material from backend.
@@ -67,7 +77,7 @@ class MaterialController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error getting material');
 
-      return response.data['material'].map(
+      return response.data.map<MaterialModel>(
         (dynamic item) => MaterialModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
@@ -83,7 +93,7 @@ class MaterialController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error getting material types');
 
-      return response.data.map(
+      return response.data.map<MaterialTypeModel>(
         (dynamic item) => MaterialTypeModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
