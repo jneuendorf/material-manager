@@ -72,9 +72,9 @@ class UserController extends GetxController {
     ];
   }
 
-  /// Logs in a user.
-  /// Returns true if login was successful.
-  Future<bool> login(String email, String password) async {
+  /// Logs in the user with the given [email].
+  /// Returns a Map containing access and refresh token if successful.
+  Future<Map<String,String>?> login(String email, String password, bool saveCredentials) async {
     try {
       final response = await apiService.authClient.post('/login', data: {
         'email': email,
@@ -83,14 +83,20 @@ class UserController extends GetxController {
       var accessToken = response.data['access_token'] as String;
       var refreshToken = response.data['refresh_token'] as String;
 
-      await apiService.storeAccessToken(accessToken);
-      await apiService.storeRefreshToken(refreshToken);
+      // await apiService.storeAccessToken(accessToken);
+      // await apiService.storeRefreshToken(refreshToken);
+      apiService.accessToken = accessToken;
+      apiService.refreshToken = refreshToken;
+      apiService.saveCredentials = saveCredentials;
 
-      return true;
+      return {
+        atStorageKey: accessToken,
+        rtStorageKey: refreshToken,
+      };
     } on DioError catch (e) {
       apiService.defaultCatch(e);
     }
-    return false;
+    return null;
   }
 
   /// Logs out a user.

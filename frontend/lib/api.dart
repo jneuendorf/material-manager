@@ -15,7 +15,7 @@ const rtStorageKey = 'refresh_token';
 const storage = FlutterSecureStorage();
 // TODO: Or `const bool prod = const bool.fromEnvironment('dart.vm.product');`?
 //  See https://stackoverflow.com/questions/49707028/
-const baseUrl = kDebugMode ? 'http://localhost:5000' : '';
+const baseUrl = kDebugMode ? 'http://localhost:5001' : '';
 // const authUrl = 'http://localhost:5000/auth';
 Map<int, String> defaultErrors = {
   400: 'bad_request'.tr,
@@ -36,10 +36,20 @@ class ApiService extends GetxService {
   /// tokenInfo should permissions.
   Map<String, dynamic>? tokenInfo;
 
+  String? refreshToken;
+  String? accessToken; 
+  bool saveCredentials = false;
+
   Future<ApiService> init() async {
     final String? accessToken = await getAccessToken();
     if (accessToken != null) {
       tokenInfo = JwtDecoder.decode(accessToken);
+      this.accessToken = accessToken;
+    }
+
+    final String? refreshToken = await getRefreshToken();
+    if (refreshToken != null) {
+      this.refreshToken = refreshToken;
     }
 
     debugPrint('TokenInfo after init: $tokenInfo');
@@ -94,13 +104,13 @@ class ApiService extends GetxService {
   /// Otherwise it refreshes the accessToken and returns it.
   /// In case of error null is returned,
   Future<String?> checkAndGetRefreshIfExpired() async {
-    String? accessToken = await getAccessToken();
-    String? refreshToken = await getRefreshToken();
+    //String? accessToken = await getAccessToken();
+    //String? refreshToken = await getRefreshToken();
 
     if (accessToken != null &&
         refreshToken != null &&
-        JwtDecoder.getRemainingTime(accessToken) < const Duration(minutes: 1) &&
-        !JwtDecoder.isExpired(refreshToken)) {
+        JwtDecoder.getRemainingTime(accessToken!) < const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(refreshToken!)) {
       debugPrint('refreshing access token');
       // refresh access token
       try {
@@ -111,8 +121,15 @@ class ApiService extends GetxService {
           }),
         );
 
-        accessToken = response.data['access_token'];
-        await storeAccessToken(accessToken!);
+        String aT = response.data['access_token'];
+        if (aT.isNotEmpty) {
+          accessToken = aT;
+          tokenInfo = JwtDecoder.decode(accessToken!);
+
+          if (saveCredentials) {
+            await storeAccessToken(accessToken!);
+          }
+        }
       } on DioError catch(e) {
         debugPrint('error on refresh of accessToken: $e');
         if (e.response != null) {
@@ -126,7 +143,7 @@ class ApiService extends GetxService {
               break;
             default:
               {
-                Get.snackbar('Fehler', 'Ein unbekannter Fehler ist aufgetreten');
+                Get.snackbar('error'.tr, 'unknown_error_occurred'.tr);
               }
               break;
           }
@@ -143,7 +160,9 @@ class ApiService extends GetxService {
     return accessToken;
   }
 
-  /// Returns the accessToken from the secure storage, if found.
+}
+
+/// Returns the accessToken from the secure storage, if found.
   Future<String?> getAccessToken() async {
     // checks if running a test and return null since
     // [FlutterSecureStorage] cant be accessed in tests.
@@ -182,4 +201,3 @@ class ApiService extends GetxService {
   Future<void> storeRefreshToken(String refreshToken) async {
     await storage.write(key: rtStorageKey, value: refreshToken);
   }
-}
