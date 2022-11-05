@@ -42,7 +42,7 @@ class MaterialPreview extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('${item.equipmentType.description}, ${item.properties.first.value} ${item.properties.first.unit}'),
+                          Text('${item.materialType.name}, ${item.properties.first.value} ${item.properties.first.unit}'),
                           Text('${item.rentalFee} €'),
                         ],
                       ),

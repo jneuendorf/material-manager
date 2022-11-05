@@ -87,7 +87,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   String getItemName(RentalModel item, int materialIndex) {
     String itemName = materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).equipmentType.description;
+    material.id == item.materialIds[materialIndex]).materialType.name;
     return itemName;
   }
 

@@ -249,7 +249,7 @@ class CompletedOrdersScreen extends StatelessWidget {
 
   String getItemName(RentalModel item, int localIndex) {
     String itemName = lenderPageController.materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).equipmentType.description;
+    material.id == item.materialIds[localIndex]).materialType.name;
     return itemName;
   }
 

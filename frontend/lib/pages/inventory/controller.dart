@@ -18,10 +18,10 @@ class InventoryPageController extends GetxController {
     final materialController = Get.find<MaterialController>();
 
     final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
-    final RxMap<EquipmentType, String> typeFilterOptions = <EquipmentType, String>{}.obs;
+    final RxMap<MaterialTypeModel, String> typeFilterOptions = <MaterialTypeModel, String>{}.obs;
     final RxBool selectAll = false.obs;
 
-    final Rxn<EquipmentType> selectedTypeFilter = Rxn<EquipmentType>();
+    final Rxn<MaterialTypeModel> selectedTypeFilter = Rxn<MaterialTypeModel>();
     final Rxn<ConditionModel> selectedConditionFilter = Rxn<ConditionModel>();
     final RxString searchTerm = ''.obs;
 
@@ -33,8 +33,8 @@ class InventoryPageController extends GetxController {
 
     filteredMaterial.value = materialController.materials;
 
-    for (EquipmentType item in materialController.types) {
-      typeFilterOptions[item] = item.description;
+    for (MaterialTypeModel item in materialController.types) {
+      typeFilterOptions[item] = item.name;
     }
   }
 
@@ -43,18 +43,18 @@ class InventoryPageController extends GetxController {
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
     filteredMaterial.value = materialController.materials.where((MaterialModel item) {
-      /// Checks if the [selectedTypeFilter] equals [equipmentType] of the [item].
-      bool equipmentTypeFilterCondition() {
+      /// Checks if the [selectedTypeFilter] equals [materialType] of the [item].
+      bool materialTypeFilterCondition() {
         if (selectedTypeFilter.value == null) return true;
         
-        return item.equipmentType == selectedTypeFilter.value;
+        return item.materialType == selectedTypeFilter.value;
       }
 
-      /// Checks if the [term] is contained in [equipmentType] of the [item].
-      bool equipmentTypeNameCondition() {
+      /// Checks if the [term] is contained in [materialType] of the [item].
+      bool materialTypeNameCondition() {
         if (term.isEmpty) return true;
 
-        return item.equipmentType.description.toLowerCase().contains(term);
+        return item.materialType.name.toLowerCase().contains(term);
       }
 
       bool conditionFilterCondition() {
@@ -63,8 +63,8 @@ class InventoryPageController extends GetxController {
         return item.condition == selectedConditionFilter.value;
       }
 
-      return equipmentTypeFilterCondition() && 
-        equipmentTypeNameCondition() && conditionFilterCondition();
+      return materialTypeFilterCondition() && 
+        materialTypeNameCondition() && conditionFilterCondition();
     }).toList();
   }
 
@@ -73,7 +73,7 @@ class InventoryPageController extends GetxController {
     // set selected filter
     if (value != 'all'.tr) {
       selectedTypeFilter.value = typeFilterOptions.entries.firstWhere(
-        (MapEntry<EquipmentType, String> entry) => entry.value == value
+        (MapEntry<MaterialTypeModel, String> entry) => entry.value == value
       ).key;
     } else {
       selectedTypeFilter.value = null;
