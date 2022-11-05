@@ -52,6 +52,8 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       tabIndex.value = tabController.index;
     });
 
+    await materialController.initCompleter.future;
+
     filteredMaterial.value = materialController.materials;
 
     for (EquipmentType item in materialController.types) {

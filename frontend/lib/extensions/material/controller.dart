@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,8 @@ import 'package:frontend/extensions/material/mock_data.dart';
 class MaterialController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
   final RxList<MaterialModel> materials = <MaterialModel>[].obs;
   final RxList<EquipmentType> types = <EquipmentType>[].obs;
 
@@ -22,8 +25,12 @@ class MaterialController extends GetxController {
 
     debugPrint('MaterialController init');
 
+    initCompleter.future;
+
     materials.value = await getAllMaterialMocks();
     types.value = await getAllEquipmentTypeMocks();
+
+    initCompleter.complete();
   }
 
   /// Fetches all material from backend.
