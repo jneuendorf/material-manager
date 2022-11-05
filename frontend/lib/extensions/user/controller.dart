@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,8 @@ import 'package:frontend/pages/login/controller.dart';
 class UserController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
   final RxList<UserModel> users = <UserModel>[].obs;
   final RxList<Role> roles = <Role>[].obs;
   final RxList<Permission> permissions = <Permission>[].obs;
@@ -24,9 +27,13 @@ class UserController extends GetxController {
 
     debugPrint('UserController init');
 
+    initCompleter.future;
+
     users.value = await getAllUserMocks();
     roles.value = await getAllRoleMocks();
     permissions.value = await getAllPermissionMocks();
+
+    initCompleter.complete();
   } 
 
   /// Fetches all users from backend.

@@ -40,6 +40,8 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
       tabBarIndex.value = tabbBarController.index;
     });
 
+    await rentalController.initCompleter.future;
+
     filteredRentals.value = rentalController.rentals;
 
     for (RentalStatus item in rentalController.statuses) {

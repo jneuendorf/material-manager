@@ -25,19 +25,15 @@ class InventoryPageController extends GetxController {
     final Rxn<ConditionModel> selectedConditionFilter = Rxn<ConditionModel>();
     final RxString searchTerm = ''.obs;
 
-    List<EquipmentType> availableEquipmentTypes = [];
-    // List<MaterialModel> availableMaterial = [];
-
   @override
   Future<void> onInit() async {
     super.onInit();
+    
+    await materialController.initCompleter.future;
 
-    //availableMaterial = await materialController.getAllMaterialMocks();
     filteredMaterial.value = materialController.materials;
 
-    availableEquipmentTypes = await materialController.getAllEquipmentTypeMocks();
-
-    for (EquipmentType item in availableEquipmentTypes) {
+    for (EquipmentType item in materialController.types) {
       typeFilterOptions[item] = item.description;
     }
   }

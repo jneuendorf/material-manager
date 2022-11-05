@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -13,6 +14,8 @@ import 'package:frontend/extensions/rental/mock_data_rental.dart';
 class RentalController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
   final RxList<RentalModel> rentals = <RentalModel>[].obs;
   final RxList<RentalStatus> statuses = <RentalStatus>[].obs;
 
@@ -22,8 +25,12 @@ class RentalController extends GetxController {
     
     debugPrint('RentalController init');
 
+    initCompleter.future;
+
     rentals.value = await getAllRentalMocks();
     statuses.value = await getAllStatusMocks();
+
+    initCompleter.complete();
   }
 
   /// Fetches all rentals from backend.
