@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
@@ -43,38 +42,14 @@ Future<void> initialConfig() async {
   await Get.putAsync(() async => await ApiService().init());
 
   // init extension controllers
-  Get.lazyPut<RentalController>(() => RentalController(),fenix: true);
-  Get.lazyPut<MaterialController>(() => MaterialController(),fenix: true);
-  Get.lazyPut<UserController>(() => UserController(),fenix: true);
-  Get.lazyPut<InspectionController>(() => InspectionController(),fenix: true);
+  Get.lazyPut<RentalController>(() => RentalController(), fenix: true);
+  Get.lazyPut<MaterialController>(() => MaterialController(), fenix: true);
+  Get.lazyPut<UserController>(() => UserController(), fenix: true);
+  Get.lazyPut<InspectionController>(() => InspectionController(), fenix: true);
 }
 
-class MaterialManagerApp extends StatefulWidget {
-  const MaterialManagerApp({Key? key}) : super(key: key);
-
-  @override
-  State<MaterialManagerApp> createState() => _MaterialManagerAppState();
-}
-
-class _MaterialManagerAppState extends State<MaterialManagerApp> {
-  late final bool goToHome;
-
-  @override
-  void initState() {
-    super.initState();
-    
-    final ApiService apiService = Get.find<ApiService>();
-
-    if (apiService.accessToken != null && apiService.refreshToken != null &&
-        ((JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
-        !JwtDecoder.isExpired(apiService.accessToken!)) || 
-        (JwtDecoder.getRemainingTime(apiService.refreshToken!) >= const Duration(minutes: 1) &&
-        !JwtDecoder.isExpired(apiService.refreshToken!)))) {
-      goToHome = true;
-    } else {
-      goToHome = false;
-    }
-  }
+class MaterialManagerApp extends StatelessWidget {
+  const MaterialManagerApp({super.key});
 
   @override
   Widget build(BuildContext context) => GetMaterialApp(
@@ -96,7 +71,7 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
         brightness: Brightness.light,
       ),
     ),
-    initialRoute: goToHome ? rentalRoute : loginRoute,
+    initialRoute: rentalRoute,
     getPages: [
       GetPage(name: loginRoute, page: () => const LoginPage(),
         binding: LoginPageBinding(),
@@ -141,4 +116,3 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
     fallbackLocale: const Locale('de', 'DE'),
   );
 }
-

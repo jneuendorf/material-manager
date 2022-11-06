@@ -114,6 +114,7 @@ class LocaleString extends Translations {
       'cancel': 'Cancel',
       'cancel_reservation': 'Cancel Reservation',
       'logout': 'Logout',
+      'login_notice': 'Please login to continue',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -222,6 +223,7 @@ class LocaleString extends Translations {
       'cancel': 'Stornieren',
       'cancel_order': 'Bestellung stornieren',
       'logout': 'Abmelden',
+      'login_notice': 'Bitte anmelden, um fortzufahren',
     }
   };
 }

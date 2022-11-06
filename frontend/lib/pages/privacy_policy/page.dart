@@ -12,7 +12,6 @@ class PrivacyPolicyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
-    loggedIn: false,
     child: Text('privacy_policy'.tr),
   );
 }

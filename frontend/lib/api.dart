@@ -72,6 +72,13 @@ class ApiService extends GetxService {
     return this;
   }
 
+  /// Checks if there is a valid access or refresh token.
+  bool get isAuthorized => accessToken != null && refreshToken != null &&
+    ((JwtDecoder.getRemainingTime(accessToken!) >= const Duration(minutes: 1) &&
+    !JwtDecoder.isExpired(accessToken!)) || 
+    (JwtDecoder.getRemainingTime(refreshToken!) >= const Duration(minutes: 1) &&
+    !JwtDecoder.isExpired(refreshToken!)));
+
   void defaultCatch(DioError e) {
     debugPrint('defaultCatch error: $e');
     var response = e.response;

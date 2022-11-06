@@ -8,7 +8,7 @@ import 'package:frontend/extensions/user/controller.dart';
 
 
 const loginRoute = '/login';
-const afterLoginRoute = rentalRoute;
+String afterLoginRoute = rentalRoute;
 
 class LoginPageBinding implements Bindings {
   @override
@@ -55,7 +55,12 @@ class LoginController extends GetxController {
       await storeRefreshToken(tokens[rtStorageKey]!);
     }
 
-    Get.offAllNamed(afterLoginRoute);
+    //Get.offAllNamed(afterLoginRoute);
+    if (afterLoginRoute == rentalRoute) {
+      Get.offAllNamed(rentalRoute);
+    } else {
+      Get.back();
+    }
   }
 
 }
