@@ -57,13 +57,16 @@ class MaterialPreview extends StatelessWidget {
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
-                  foregroundColor: const Color.fromRGBO(0, 131, 199, 1),
+                  foregroundColor: Get.theme.colorScheme.onSecondary,
                   padding: const EdgeInsets.symmetric(vertical: kIsWeb ? 10.0 : 6.0),
                 ),
                 onPressed: () => rentalPageController.shoppingCart.add(item),
-                child: const Icon(Icons.add_shopping_cart,
-                  size: 30.0,
-                  color: Color.fromRGBO(0, 131, 199, 1),
+                child: Obx(() =>rentalPageController.shoppingCart.contains(item) 
+                    ? const Icon(Icons.check) 
+                    : Icon(Icons.add_shopping_cart,
+                      size: 30.0,
+                      color: Get.theme.colorScheme.onSecondary,
+                    ),
                 ),
               ),
             ),
