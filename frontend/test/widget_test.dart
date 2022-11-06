@@ -31,6 +31,8 @@ import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/pages/lender/page.dart';
 import 'package:frontend/pages/profile/controller.dart';
 import 'package:frontend/pages/profile/page.dart';
+import 'package:frontend/pages/imprint/page.dart';
+import 'package:frontend/pages/privacy_policy/page.dart';
 
 
 void main() {
@@ -155,6 +157,24 @@ void main() {
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
       child: MaterialApp(home: ProfilePage()),
+    ));
+  });
+
+  testWidgets('ImprintPage Widget Test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await tester.pumpWidget(const MediaQuery(
+      data: MediaQueryData(),
+      child: MaterialApp(home: ImprintPage()),
+    ));
+  });
+
+  testWidgets('PrivacyPolicyPage Widget Test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+
+    await tester.pumpWidget(const MediaQuery(
+      data: MediaQueryData(),
+      child: MaterialApp(home: PrivacyPolicyPage()),
     ));
   });
 }

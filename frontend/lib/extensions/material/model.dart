@@ -14,7 +14,7 @@ class MaterialModel {
   int usage;
   PurchaseDetails purchaseDetails;
   List<Property> properties;
-  EquipmentType equipmentType;
+  MaterialTypeModel materialType;
 
 
   MaterialModel({
@@ -32,7 +32,7 @@ class MaterialModel {
     required this.usage,
     required this.purchaseDetails,
     required this.properties,
-    required this.equipmentType,
+    required this.materialType,
   });
 
   factory MaterialModel.fromJson(Map<String, dynamic> json) => MaterialModel(
@@ -50,7 +50,7 @@ class MaterialModel {
     usage: json['usage'],
     purchaseDetails: PurchaseDetails.fromJson(json['purchase_details']),
     properties: List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
-    equipmentType: EquipmentType.fromJson(json['equipment_type']),
+    materialType: MaterialTypeModel.fromJson(json['material_type']),
   );
 }
 
@@ -128,17 +128,20 @@ class Property {
   );
 }
 
-class EquipmentType {
+class MaterialTypeModel {
   final int? id;
+  String name;
   String description;
 
-  EquipmentType({
+  MaterialTypeModel({
     required this.id,
+    required this.name,
     required this.description,
   });
 
-  factory EquipmentType.fromJson(Map<String, dynamic> json) => EquipmentType(
+  factory MaterialTypeModel.fromJson(Map<String, dynamic> json) => MaterialTypeModel(
     id: json['id'],
+    name: json['name'],
     description: json['description'],
   );
 }

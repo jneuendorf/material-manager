@@ -55,7 +55,7 @@ class User(Model):  # type: ignore
         zip_code: str = "",
         *,
         roles: "list[Role]" = None,
-    ):
+    ) -> "User":
         password_hash: str = argon2.hash(password)
         token = secrets.token_urlsafe(nbytes=32)
         related = dict(roles=roles) if roles else None

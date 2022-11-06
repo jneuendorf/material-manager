@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/common/buttons/hover_text_button.dart';
+import 'package:frontend/pages/imprint/page.dart';
+import 'package:frontend/pages/privacy_policy/page.dart';
 
 
 class BaseFooter extends StatelessWidget {
@@ -30,13 +32,13 @@ class BaseFooter extends StatelessWidget {
                 text: 'imprint'.tr,
                 color: Get.theme.colorScheme.secondary,
                 hoverColor: Get.theme.primaryColor,
-                onTap: () {},
+                onTap: () => Get.toNamed(imprintRoute),
               ),
               HoverTextButton(
                 text: 'privacy_policy'.tr,
                 color: Get.theme.colorScheme.secondary,
                 hoverColor: Get.theme.primaryColor,
-                onTap: () {},
+                onTap: () => Get.toNamed(privacyPolicyRoute),
               ),
             ],
           ),
@@ -68,7 +70,7 @@ class BaseFooter extends StatelessWidget {
                 text: 'privacy_policy'.tr,
                 color: Get.theme.colorScheme.secondary,
                 hoverColor: Get.theme.primaryColor,
-                onTap: () {},
+                onTap: () => Get.toNamed(privacyPolicyRoute),
               ),
             ],
           ),

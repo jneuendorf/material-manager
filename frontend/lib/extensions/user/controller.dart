@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
@@ -14,6 +15,8 @@ import 'package:frontend/pages/login/controller.dart';
 class UserController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
+  final Completer initCompleter = Completer();
+
   final RxList<UserModel> users = <UserModel>[].obs;
   final RxList<Role> roles = <Role>[].obs;
   final RxList<Permission> permissions = <Permission>[].obs;
@@ -24,10 +27,28 @@ class UserController extends GetxController {
 
     debugPrint('UserController init');
 
-    users.value = await getAllUserMocks();
-    roles.value = await getAllRoleMocks();
-    permissions.value = await getAllPermissionMocks();
+    initCompleter.future;
+
+    await Future.wait([
+      _initUsers(),
+      _initRoles(),
+      _initPermissions(),
+    ]);
+
+    initCompleter.complete();
   } 
+
+  Future<void> _initUsers() async {
+    users.value = await getAllUserMocks();
+  }
+
+  Future<void> _initRoles() async {
+    roles.value = await getAllRoleMocks();
+  }
+
+  Future<void> _initPermissions() async {
+    permissions.value = await getAllPermissionMocks();
+  }
 
   /// Fetches all users from backend.
   /// Currently only mock data is used.
@@ -72,9 +93,9 @@ class UserController extends GetxController {
     ];
   }
 
-  /// Logs in a user.
-  /// Returns true if login was successful.
-  Future<bool> login(String email, String password) async {
+  /// Logs in the user with the given [email].
+  /// Returns a Map containing access and refresh token if successful.
+  Future<Map<String,String>?> login(String email, String password, bool saveCredentials) async {
     try {
       final response = await apiService.authClient.post('/login', data: {
         'email': email,
@@ -83,21 +104,27 @@ class UserController extends GetxController {
       var accessToken = response.data['access_token'] as String;
       var refreshToken = response.data['refresh_token'] as String;
 
-      await apiService.storeAccessToken(accessToken);
-      await apiService.storeRefreshToken(refreshToken);
+      // await apiService.storeAccessToken(accessToken);
+      // await apiService.storeRefreshToken(refreshToken);
+      apiService.accessToken = accessToken;
+      apiService.refreshToken = refreshToken;
+      apiService.saveCredentials = saveCredentials;
 
-      return true;
+      return {
+        atStorageKey: accessToken,
+        rtStorageKey: refreshToken,
+      };
     } on DioError catch (e) {
       apiService.defaultCatch(e);
     }
-    return false;
+    return null;
   }
 
   /// Logs out a user.
   Future<void> logout() async {
     await storage.delete(key: atStorageKey);
     await storage.delete(key: rtStorageKey);
-    Get.offNamed(loginRoute);
+    Get.offAllNamed(loginRoute);
   }
 
   /// Fetches all users from backend.

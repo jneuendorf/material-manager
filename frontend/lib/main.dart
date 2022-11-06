@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
@@ -27,6 +28,8 @@ import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/pages/login/page.dart';
 import 'package:frontend/pages/signup/controller.dart';
 import 'package:frontend/pages/signup/page.dart';
+import 'package:frontend/pages/imprint/page.dart';
+import 'package:frontend/pages/privacy_policy/page.dart';
 
 
 void main() async {
@@ -37,21 +40,45 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
-  await Get.putAsync(() => ApiService().init());
+  await Get.putAsync(() async => await ApiService().init());
 
   // init extension controllers
-  Get.lazyPut<RentalController>(() => RentalController());
-  Get.lazyPut<MaterialController>(() => MaterialController());
-  Get.lazyPut<UserController>(() => UserController());
-  Get.lazyPut<InspectionController>(() => InspectionController());
+  Get.lazyPut<RentalController>(() => RentalController(),fenix: true);
+  Get.lazyPut<MaterialController>(() => MaterialController(),fenix: true);
+  Get.lazyPut<UserController>(() => UserController(),fenix: true);
+  Get.lazyPut<InspectionController>(() => InspectionController(),fenix: true);
 }
 
-class MaterialManagerApp extends StatelessWidget {
+class MaterialManagerApp extends StatefulWidget {
   const MaterialManagerApp({Key? key}) : super(key: key);
 
   @override
+  State<MaterialManagerApp> createState() => _MaterialManagerAppState();
+}
+
+class _MaterialManagerAppState extends State<MaterialManagerApp> {
+  late final bool goToHome;
+
+  @override
+  void initState() {
+    super.initState();
+    
+    final ApiService apiService = Get.find<ApiService>();
+
+    if (apiService.accessToken != null && apiService.refreshToken != null &&
+        ((JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(apiService.accessToken!)) || 
+        (JwtDecoder.getRemainingTime(apiService.refreshToken!) >= const Duration(minutes: 1) &&
+        !JwtDecoder.isExpired(apiService.refreshToken!)))) {
+      goToHome = true;
+    } else {
+      goToHome = false;
+    }
+  }
+
+  @override
   Widget build(BuildContext context) => GetMaterialApp(
-    title: 'Material Verleih',
+    title: 'Material Manager',
     theme: ThemeData(
       fontFamily: 'FiraSans',
       primaryColor: const Color.fromARGB(255, 97, 183, 50),
@@ -69,7 +96,7 @@ class MaterialManagerApp extends StatelessWidget {
         brightness: Brightness.light,
       ),
     ),
-    initialRoute: loginRoute,
+    initialRoute: goToHome ? rentalRoute : loginRoute,
     getPages: [
       GetPage(name: loginRoute, page: () => const LoginPage(),
         binding: LoginPageBinding(),
@@ -104,6 +131,10 @@ class MaterialManagerApp extends StatelessWidget {
       GetPage(name: profileRoute, page: () => const ProfilePage(),
         binding: ProfilePageBinding(),
       ),
+      // Following paged don´t need a binding, since they don´t use a controller.
+      // This is the case for pages that only display hardcoded information.
+      GetPage(name: privacyPolicyRoute, page: () => const PrivacyPolicyPage()),
+      GetPage(name: imprintRoute, page: () => const ImprintPage()),
     ],
     locale: const Locale('en', 'US'),
     translations: LocaleString(),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/extensions/user/controller.dart';
 
@@ -44,15 +45,17 @@ class LoginController extends GetxController {
     final String email = emailController.text;
     final String password = passwordController.text;
 
-    final bool loginSuccessful = await userController.login(email, password);
+    final Map<String,String>? tokens = await userController.login(
+      email, password, rememberMe.value);
 
-    if (rememberMe.isTrue) {
-      // TODO: delete token on tear down
+    if (tokens == null) return;
+
+    if (rememberMe.value) {
+      await storeAccessToken(tokens[atStorageKey]!);
+      await storeRefreshToken(tokens[rtStorageKey]!);
     }
 
-    if (loginSuccessful) {
-      Get.offAllNamed(afterLoginRoute);
-    }
+    Get.offAllNamed(afterLoginRoute);
   }
 
 }

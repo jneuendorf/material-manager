@@ -6,10 +6,12 @@ material = Extension(
     "material",
     __name__,
     models=(
+        models.MaterialType,
         models.Material,
         models.SerialNumber,
         models.PurchaseDetails,
-        models.EquipmentType,
+        models.MaterialSet,
+        models.MaterialTypeSetMapping,
         models.Property,
         models.MaterialPropertyMapping,
     ),
@@ -17,5 +19,7 @@ material = Extension(
         resources.Material,
         resources.Materials,
         resources.MaterialImages,
+        resources.MaterialType,
+        resources.MaterialTypes,
     ),
 )

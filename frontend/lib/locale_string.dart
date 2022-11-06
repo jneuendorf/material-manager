@@ -113,6 +113,7 @@ class LocaleString extends Translations {
       'order_history': 'Order History',
       'cancel': 'Cancel',
       'cancel_reservation': 'Cancel Reservation',
+      'logout': 'Logout',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -220,6 +221,7 @@ class LocaleString extends Translations {
       'order_history': 'Bestellverlauf',
       'cancel': 'Stornieren',
       'cancel_order': 'Bestellung stornieren',
+      'logout': 'Abmelden',
     }
   };
 }
