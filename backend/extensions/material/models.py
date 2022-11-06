@@ -51,7 +51,7 @@ class Material(Model):  # type: ignore
     # We need `create_constraint=True` because SQLite doesn't support enums natively
     condition = db.Column(db.Enum(Condition, create_constraint=True))
     days_used = db.Column(db.Integer)
-    image = db.Column(db.String)
+    image_count = db.Column(db.Integer, default=0)
     # many to one (FK here)
     material_type_id = db.Column(db.ForeignKey(MaterialType.id))
     material_type = db.relationship("MaterialType", backref="materials")

@@ -191,6 +191,9 @@ class MaterialImages(BaseResource):
     url = "/material_images/<string:kind>/<int:material_id>/<int:image_id>"
 
     def get(self, kind, material_id, image_id):
+        """Test with
+        curl -X GET "http://localhost:5000/material_images/single_material/6/1"
+        """
         if kind != "sets" and kind != "single_material":
             return abort("Invalid kind", 400)
 

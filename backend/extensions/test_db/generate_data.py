@@ -26,13 +26,6 @@ def test_data(data_sheet):
     merchants = ["InterSport", "Globetrotter", "SecondHand", "Amazon"]
 
     for row in data_sheet:
-
-        # generate random number between
-
-        # give the file the selected Image
-        Materialnum = random.randint(6, 27)
-        Materialimg = "Images/Material" + str(Materialnum) + ".jpg"
-
         rand_price = round(random.uniform(0.01, 99.99), 2)
         rand_price1 = round(random.uniform(0.01, 99.99), 2)
         rand_int0 = random.randint(0, 99)
@@ -60,7 +53,10 @@ def test_data(data_sheet):
             rental_fee=rand_price,
             condition=random.choice(conditions),
             days_used=rand_int0,
-            image=Materialimg,
+            image_count=0,  # TODO match to actual images
+            # if image exists, set to 1 otherwise 0 (in case of test data)
+            # in production this schould bei equal to the number of images
+            # for one material item
         )
 
         SerialNumber.create(
