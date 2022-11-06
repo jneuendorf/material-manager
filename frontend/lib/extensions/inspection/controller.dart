@@ -68,12 +68,12 @@ class InspectionController extends GetxController {
           'material_id': inspection.materialId,
           'date': inspection.date,
           'type': inspection.type.name,
-          'comments': inspection.comments.map((Comment c) => {
-            'id': c.id,
-            'date': c.date,
-            'text': c.text,
-            'image_path': c.imagePath,
-          }).toList(),
+          'comment': {
+            'id': inspection.comment.id,
+            'date': inspection.comment.date,
+            'text': inspection.comment.text,
+            'image_path': inspection.comment.imagePath,
+          },
         },
       );
 
@@ -118,12 +118,12 @@ class InspectionController extends GetxController {
           'material_id': inspection.materialId,
           'date': inspection.date,
           'type': inspection.type.name,
-          'comments': inspection.comments.map((Comment c) => {
-            'id': c.id,
-            'date': c.date,
-            'text': c.text,
-            'image_path': c.imagePath,
-          }).toList(),
+          'comment': {
+            'id': inspection.comment.id,
+            'date': inspection.comment.date,
+            'text': inspection.comment.text,
+            'image_path': inspection.comment.imagePath,
+          },
         },
       );
 

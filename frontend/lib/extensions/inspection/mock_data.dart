@@ -29,10 +29,7 @@ List<InspectionModel> mockInspections = [
     materialId: 1,
     date: DateTime.now(),
     type: InspectionType.psaInspection,
-    comments: [
-      mockComment1, 
-      mockComment2,
-    ],
+    comment: mockComment1,
   ),
   InspectionModel(
     id: 2,
@@ -40,9 +37,7 @@ List<InspectionModel> mockInspections = [
     materialId: 1,
     date: DateTime.now(),
     type: InspectionType.sightInspection,
-    comments: [
-      mockComment3,
-    ],
+    comment: mockComment3,
   ),
   InspectionModel(
     id: 3,
@@ -50,10 +45,6 @@ List<InspectionModel> mockInspections = [
     materialId: 1,
     date: DateTime.now(),
     type: InspectionType.psaInspection,
-    comments: [
-      mockComment1, 
-      mockComment2, 
-      mockComment3,
-    ],
+    comment: mockComment2,
   ),
 ];

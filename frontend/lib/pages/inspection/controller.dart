@@ -8,7 +8,7 @@ import 'package:frontend/extensions/material/model.dart';
 
 
 const inspectionRoute = '/inspection';
-const inspectiontDetailRoute = '/inspection/inspectionDetail';
+const inspectionDetailRoute = '/inspection/inspectionDetail';
 
 class InspectionPageBinding implements Bindings {
   @override
@@ -62,7 +62,7 @@ class InspectionPageController extends GetxController {
   void onInspectionSelected(InspectionModel inspection) {
     selectedInspection.value = inspection;
 
-    Get.toNamed(inspectiontDetailRoute);
+    Get.toNamed(inspectionDetailRoute);
   }
 
 }

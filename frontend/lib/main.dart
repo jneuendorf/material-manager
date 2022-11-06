@@ -63,12 +63,12 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
   @override
   void initState() {
     super.initState();
-    
+
     final ApiService apiService = Get.find<ApiService>();
 
     if (apiService.accessToken != null && apiService.refreshToken != null &&
         ((JwtDecoder.getRemainingTime(apiService.accessToken!) >= const Duration(minutes: 1) &&
-        !JwtDecoder.isExpired(apiService.accessToken!)) || 
+        !JwtDecoder.isExpired(apiService.accessToken!)) ||
         (JwtDecoder.getRemainingTime(apiService.refreshToken!) >= const Duration(minutes: 1) &&
         !JwtDecoder.isExpired(apiService.refreshToken!)))) {
       goToHome = true;
@@ -123,7 +123,7 @@ class _MaterialManagerAppState extends State<MaterialManagerApp> {
       GetPage(name: inspectionRoute, page: () => const InspectionPage(),
         binding: InspectionPageBinding(),
       ),
-      GetPage(name: inspectiontDetailRoute, page: () => const InspectionDetailPage(),
+      GetPage(name: inspectionDetailRoute, page: () => const InspectionDetailPage(),
         binding: InspectionPageBinding(),
       ),
       GetPage(name: administrationRoute, page: () => const AdministrationPage(),

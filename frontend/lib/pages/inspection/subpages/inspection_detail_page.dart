@@ -57,7 +57,14 @@ class InspectionDetailPage extends StatelessWidget {
                   itemCount: inspectionPageController.inspectionController.inspections.length,
                   itemBuilder: (context, index) => ConstrainedBox(
                     constraints: const BoxConstraints(),
-                    child: const Card(),
+                    child: Card(
+                      child: Column(
+                        children: [
+                          Row(),
+                          Row(),
+                        ],
+                      ),
+                    ),
                   ),
                 )),
               ),
