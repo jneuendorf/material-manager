@@ -16,5 +16,6 @@ material = Extension(
     resources=(
         resources.Material,
         resources.Materials,
+        resources.MaterialImages,
     ),
 )
