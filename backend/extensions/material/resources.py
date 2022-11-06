@@ -1,15 +1,12 @@
-from flask import abort, send_from_directory
-
-from core.config import flask_config
-from core.helpers.resource import BaseResource, ModelListResource, ModelResource
 from typing import List
 
-from flask import abort
+from flask import abort, send_from_directory
 from flask_apispec import use_kwargs
 from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
-from core.helpers.resource import ModelListResource, ModelResource
+from core.config import flask_config
+from core.helpers.resource import BaseResource, ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
@@ -188,6 +185,7 @@ class Materials(ModelListResource):
         return {
             "materials": [material.id for material in materials],
         }
+
 
 class MaterialImages(BaseResource):
     url = "/material_images/<string:kind>/<int:material_id>/<int:image_id>"

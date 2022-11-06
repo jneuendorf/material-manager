@@ -2,8 +2,8 @@ import datetime
 import random
 
 from extensions.material.models import (  # Property,
-    EquipmentType,
     Material,
+    MaterialType,
     PurchaseDetails,
     SerialNumber,
 )
@@ -44,7 +44,7 @@ def test_data(data_sheet):
             rand_inventory_num[0] + rand_inventory_num[1] + str(rand_int1)
         )
 
-        EquipmentType.get_or_create(
+        MaterialType.get_or_create(
             name=str(row[3]),
             # description=,
         )
