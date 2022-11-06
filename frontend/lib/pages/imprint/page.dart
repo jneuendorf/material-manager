@@ -12,7 +12,6 @@ class ImprintPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
-    loggedIn: false,
     child: Text('imprint'.tr),
   );
 }

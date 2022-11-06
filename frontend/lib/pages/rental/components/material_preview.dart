@@ -14,7 +14,7 @@ class MaterialPreview extends StatelessWidget {
 
   final RxBool hover = false.obs;
 
-  static final rentalPageController = Get.find<RentalPageController>();
+  final rentalPageController = Get.find<RentalPageController>();
 
   @override
   Widget build(BuildContext context) => Padding(

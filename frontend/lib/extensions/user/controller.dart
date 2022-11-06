@@ -122,8 +122,12 @@ class UserController extends GetxController {
 
   /// Logs out a user.
   Future<void> logout() async {
+    apiService.accessToken = null;
+    apiService.refreshToken = null;
+
     await storage.delete(key: atStorageKey);
     await storage.delete(key: rtStorageKey);
+
     Get.offAllNamed(loginRoute);
   }
 
