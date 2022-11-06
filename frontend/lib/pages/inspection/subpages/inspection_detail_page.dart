@@ -33,12 +33,12 @@ class InspectionDetailPage extends StatelessWidget {
             )),
             Expanded(
               child: Obx(() {
-                if (inspectionPageController.currentMaterial.value?.imagePath != null) {
+                if (inspectionPageController.selectedMaterial.value?.imagePath != null) {
                   return SizedBox(
                     height: 100.0,
                     width: 100.0,
                     child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                      ? Image.network(inspectionPageController.currentMaterial.value!.imagePath!)
+                      ? Image.network(inspectionPageController.selectedMaterial.value!.imagePath!)
                       : null,
                   );
                 } else {

@@ -3,11 +3,11 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/extensions/material/model.dart';
 
 import 'package:get/get.dart';
 
 import 'package:frontend/pages/inspection/controller.dart';
-import 'package:frontend/extensions/inspection/model.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 
@@ -51,22 +51,22 @@ class InspectionPage extends GetView<InspectionPageController> {
         const SizedBox(height: 16.0),
         Expanded(
           child: Obx(() => ListView.separated(
-            itemCount: controller.filteredInspection.length,
+            itemCount: controller.filteredMaterial.length,
             separatorBuilder:  (BuildContext context, int index) => const Divider(),
             itemBuilder: (BuildContext context, int index) {
-              final InspectionModel inspection = controller.filteredInspection[index];
+              final MaterialModel material = controller.filteredMaterial[index];
 
               return ListTile(
-                onTap: () => controller.onInspectionSelected(inspection),
-                title: Text(controller.getMaterialById(inspection.materialId).materialType.name),
-                subtitle: Text(controller.getMaterialById(inspection.materialId).inventoryNumber),
+                onTap: () => controller.onMaterialSelected(material),
+                title: Text(material.materialType.name),
+                subtitle: Text(material.inventoryNumber),
                 leading: SizedBox(
                   width: 50,
-                  child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
-                    ? Image.network(controller.getMaterialById(inspection.materialId).imagePath!) 
+                  child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
+                    ? Image.network(material.imagePath!)
                     : null,
                 ),
-                trailing: Text(inspection.type.name),
+                //trailing: Text(material.type.name), // TODO add inspection type
               );
             },
           )),
