@@ -41,9 +41,10 @@ class InspectionSchema(BaseSchema):
     
     
 class Inspection(ModelResource):
-    rul = [
+    url = [
          "/inspection",
         "/inspection/<int:inspection_id>"
+        "/inspections/<int:material_id>"
     ]
     Schema = InspectionSchema
     
