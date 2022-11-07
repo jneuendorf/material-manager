@@ -1,9 +1,13 @@
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/inspection/model.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
 import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/extensions/user/controller.dart';
+import 'package:frontend/extensions/user/model.dart';
+
 
 
 const inspectionRoute = '/inspection';
@@ -19,6 +23,7 @@ class InspectionPageBinding implements Bindings {
 class InspectionPageController extends GetxController {
   final materialController = Get.find<MaterialController>();
   final inspectionController = Get.find<InspectionController>();
+  final userController = Get.find<UserController>();
 
   final RxList<InspectionModel> filteredInspection = <InspectionModel>[].obs;
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
@@ -69,6 +74,16 @@ class InspectionPageController extends GetxController {
 
     Get.toNamed(inspectionDetailRoute);
   }
-
+  String getInspectorName(int index) {
+    String name = '${userController.users.firstWhere(
+            (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId).firstName} '
+        '${userController.users.firstWhere(
+            (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId).lastName}';
+    return name;
+  }
+  String getInspectionDate(int index){
+    String date = DateFormat('dd.MM.yyyy').format(inspectionController.inspections[index].date);
+    return date;
+  }
 }
 

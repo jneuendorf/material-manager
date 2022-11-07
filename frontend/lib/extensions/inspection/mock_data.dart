@@ -33,7 +33,7 @@ List<InspectionModel> mockInspections = [
   ),
   InspectionModel(
     id: 2,
-    inspectorId: 2,
+    inspectorId: 3,
     materialId: 1,
     date: DateTime.now(),
     type: InspectionType.sightInspection,

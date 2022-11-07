@@ -24,7 +24,9 @@ class InspectionDetailPage extends StatelessWidget {
         Expanded(
           flex: 2,
           child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children:  [
+              Text(inspectionPageController.selectedMaterial.value!.materialType.name),
               Obx(() => DropDownFilterButton(
                 options: [
                   'all'.tr,
@@ -42,7 +44,7 @@ class InspectionDetailPage extends StatelessWidget {
                       borderRadius: BorderRadius.circular(10.0)
                     ),
                     child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                        ? Expanded(child: Image.network(inspectionPageController.selectedMaterial.value!.imagePath!))
+                        ? Image.network(inspectionPageController.selectedMaterial.value!.imagePath!)
                         : null,
                   );
                 } else {
@@ -52,7 +54,6 @@ class InspectionDetailPage extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(color: Colors.grey),
         Expanded(
           flex: 4,
           child: Obx(() => ListView.separated(
@@ -60,19 +61,54 @@ class InspectionDetailPage extends StatelessWidget {
             itemCount: inspectionPageController.inspectionController.inspections.length,
             itemBuilder: (context, index) => ConstrainedBox(
               constraints: const BoxConstraints(
-                maxWidth: 370,
-                maxHeight: 370,
+                maxWidth: 400,
+                maxHeight: 400,
               ),
               child: Card(
                 elevation: 3,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text(inspectionPageController.inspectionController.inspections[index].type.name),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text('${'inspection'.tr} : ',
+                                    style:  const TextStyle(color: Colors.black45,fontSize: 16),
+                                  ),
+                                  Text(inspectionPageController.inspectionController.inspections[index].type.name,
+                                    style:  const TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('${'inspection_date'.tr} : ',
+                                    style:  const TextStyle(color: Colors.black45,fontSize: 16),
+                                  ),
+                                  Text(inspectionPageController.getInspectionDate(index),
+                                    style:  const TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text('${'inspector'.tr} : ',
+                                    style:  const TextStyle(color: Colors.black45,fontSize: 16),
+                                  ),
+                                  Text(inspectionPageController.getInspectorName(index),
+                                      style:  const TextStyle(fontSize: 16),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+
                           Container(
                             child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
                                 ? Image.network(inspectionPageController.inspectionController.inspections[index].comment.imagePath!)
@@ -80,16 +116,16 @@ class InspectionDetailPage extends StatelessWidget {
                           )
                         ],
                       ),
-                    ),
-                    TextFormField(
-                      minLines: 4,
-                      maxLines: 6,
-                      initialValue: inspectionPageController.inspectionController.inspections[index].comment.text ,
-                      decoration: InputDecoration(
-                        labelText: 'comment'.tr,
+                      TextFormField(
+                        minLines: 4,
+                        maxLines: 4,
+                        initialValue: inspectionPageController.inspectionController.inspections[index].comment.text ,
+                        decoration: InputDecoration(
+                          labelText: 'comment'.tr,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),

@@ -116,6 +116,8 @@ class LocaleString extends Translations {
       'logout': 'Logout',
       'inspection_details': 'Inspection Details',
       'comment': 'Comment',
+      'inspection_date': 'Inspection Date',
+      'inspector': 'Inspector',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -226,6 +228,8 @@ class LocaleString extends Translations {
       'logout': 'Abmelden',
       'inspection_details': 'Prüfungsdetails',
       'comment': 'Kommentar',
+      'inspection_date': 'Inspektions Datum',
+      'inspector': 'Inspektor',
     }
   };
 }
