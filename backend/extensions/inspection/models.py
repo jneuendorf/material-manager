@@ -18,10 +18,8 @@ class Inspection(Model):  # type: ignore
     material_id = db.Column(db.ForeignKey("material.id"))
     date = db.Column(db.Date)
     type = db.Column(db.Enum(InspectionType, create_constraint=True))
-    comments = db.relationship(
-        "Comment",
-        backref="inspection",
-    )
+    # one to many (FK on child)
+    comments = db.relationship("Comment", backref="inspection")
 
 
 class Comment(Model):  # type: ignore
