@@ -18,12 +18,12 @@ class CommentSchema(BaseSchema):
             "id",
             "inspection_id",
             "comment",
-            "photo"
+            "photo",
         )
     
 
 class Comment(ModelResource):
-    
+    url = "/comment"
     Schema = CommentSchema
     
     
@@ -43,8 +43,8 @@ class InspectionSchema(BaseSchema):
 class Inspection(ModelResource):
     url = [
          "/inspection",
-        "/inspection/<int:inspection_id>"
-        "/inspections/<int:material_id>"
+        "/inspection/<int:inspection_id>",
+        "/inspections/<int:material_id>",
     ]
     Schema = InspectionSchema
     
