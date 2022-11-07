@@ -12,10 +12,14 @@ class Inspection(Model):  # type: ignore
     material_id = db.Column(db.ForeignKey("material.id"))
     date = db.Column(db.Date)
     type = db.Column(db.String)  # PSA- / Sichtprüfung
+    comments = db.relationship(
+        "Comment",
+        backref="inspection",
+    )
 
 
 class Comment(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    inspection_id = db.Column(db.ForeignKey(Inspection.id))
     comment = db.Column(db.String)
     photo = db.Column(db.String)  # URL
+    inspection_id = db.Column(db.ForeignKey(Inspection.id))
