@@ -30,10 +30,7 @@ test: venv
 	. venv/bin/activate && pytest -W ignore::DeprecationWarning
 
 run: venv
-	. venv/bin/activate && flask --app core.app --debug run
-
-run_prod: venv
-	. venv/bin/activate && flask --app core.app load_dotenv && echo 'TODO'
+	. venv/bin/activate && flask run
 
 clean:
 	rm -rf venv
