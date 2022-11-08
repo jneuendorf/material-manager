@@ -117,29 +117,6 @@ def test_creating_materials_ensures_no_duplicate_serial_numbers(client, app):
     assert response.status_code == 200
 
 
-# def test_create_and_fetch_purchase_details(client, app) -> None:
-#     purchase_detail = client.post(
-#         "/purchase_details",
-#         json={
-#             "purchase_date": "2022-11-02",
-#             "invoice_number": "21589u4rhr",
-#             "merchant": "Der Händler",
-#             "purchase_price": "300.45",
-#             "suggested_retail_price": "238.37",
-#         },
-#     ).json
-#
-#     # Check DB data
-#     with app.app_context():
-#         # print("purchase details Id: ", purchase_detail["id"])
-#         purchase_detail_instance = PurchaseDetails.get(id=purchase_detail["id"])
-#         assert purchase_detail_instance.purchase_date == date(2022, 11, 2)
-#         assert purchase_detail_instance.invoice_number == "21589u4rhr"
-#         assert purchase_detail_instance.merchant == "Der Händler"
-#         assert purchase_detail_instance.purchase_price == 300.45
-#         assert purchase_detail_instance.suggested_retail_price == 238.37
-
-
 def test_bulk_create_materials(client, app) -> None:
     material_type = client.post(
         "/material_type",
