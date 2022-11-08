@@ -118,6 +118,7 @@ class LocaleString extends Translations {
       'comment': 'Comment',
       'inspection_date': 'Inspection Date',
       'inspector': 'Inspector',
+      'add_inspection': 'Add Inspection',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -230,6 +231,7 @@ class LocaleString extends Translations {
       'comment': 'Kommentar',
       'inspection_date': 'Inspektions Datum',
       'inspector': 'Inspektor',
+      'add_inspection': 'Neue Inspektion',
     }
   };
 }

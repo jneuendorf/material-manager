@@ -33,6 +33,9 @@ class InspectionPageController extends GetxController {
   final Rxn<MaterialModel> selectedMaterial = Rxn<MaterialModel>();
   final Rxn<InspectionType> selectedInspectionType = Rxn<InspectionType>();
   final RxString searchTerm = ''.obs;
+  final RxBool selectAll = false.obs;
+  final RxList<MaterialModel> selectedMaterials = <MaterialModel>[].obs;
+
 
   @override
   Future<void> onInit() async {

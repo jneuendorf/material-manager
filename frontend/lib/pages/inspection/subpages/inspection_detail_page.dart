@@ -6,8 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/pages/inspection/controller.dart';
-import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
+import 'package:frontend/common/buttons/text_icon_button.dart';
 
 
 class InspectionDetailPage extends StatelessWidget {
@@ -54,6 +54,13 @@ class InspectionDetailPage extends StatelessWidget {
                     return const SizedBox.shrink();
                   }
                 }),
+                const SizedBox(height: 16.0),
+                TextIconButton(
+                  onTap: () {},
+                  iconData: Icons.add,
+                  text: 'add_inspection'.tr,
+                  color: Get.theme.colorScheme.onSecondary,
+                ),
               ],
             ),
           ),
