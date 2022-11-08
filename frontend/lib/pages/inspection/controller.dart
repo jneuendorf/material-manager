@@ -30,11 +30,12 @@ class InspectionPageController extends GetxController {
 
   final RxMap<InspectionType, String> typeFilterOptions = <InspectionType, String>{}.obs;
 
-  final Rxn<MaterialModel> selectedMaterial = Rxn<MaterialModel>();
+  final RxList<MaterialModel> selectedMaterials = <MaterialModel>[].obs;
+
   final Rxn<InspectionType> selectedInspectionType = Rxn<InspectionType>();
   final RxString searchTerm = ''.obs;
   final RxBool selectAll = false.obs;
-  final RxList<MaterialModel> selectedMaterials = <MaterialModel>[].obs;
+
 
 
   @override
@@ -73,7 +74,7 @@ class InspectionPageController extends GetxController {
 
   /// Handles the selection of the provided [material].
   void onMaterialSelected(MaterialModel material) {
-    selectedMaterial.value = material;
+    selectedMaterials.add(material);
 
     Get.toNamed(inspectionDetailRoute);
   }

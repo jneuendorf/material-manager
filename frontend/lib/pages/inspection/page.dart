@@ -104,7 +104,14 @@ class InspectionPage extends GetView<InspectionPageController> {
                 ),
                 leading: Obx(() => Checkbox(
                   value: selected.value,
-                  onChanged: (bool? value) => selected.value = value! ,
+                  onChanged: (bool? value) {
+                    selected.value = value!;
+                    if (value) {
+                      controller.selectedMaterials.remove(material);
+                    } else {
+                      controller.selectedMaterials.add(material);
+                    }
+                  } ,
                 )),
                 //trailing: Text(material.type.name), // TODO add inspection type
               );

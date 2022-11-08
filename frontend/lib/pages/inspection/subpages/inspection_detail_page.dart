@@ -32,14 +32,14 @@ class InspectionDetailPage extends StatelessWidget {
                     Text('${'type'.tr} : ',
                       style:  const TextStyle(color: Colors.black45,fontSize: 16),
                     ),
-                    Text(inspectionPageController.selectedMaterial.value!.materialType.name,
+                    Text(inspectionPageController.selectedMaterials.first.materialType.name,
                         style: const TextStyle(fontSize: 16)
                     ),
                   ],
                 ),
                 const SizedBox(height: 16.0),
                 Obx(() {
-                  if (inspectionPageController.selectedMaterial.value?.imagePath != null) {
+                  if (inspectionPageController.selectedMaterials.first.imagePath != null) {
                     return Container(
                       padding: const EdgeInsets.all(8.0),
                       decoration: BoxDecoration(
@@ -47,7 +47,7 @@ class InspectionDetailPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(10.0)
                       ),
                       child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                          ? Image.network(inspectionPageController.selectedMaterial.value!.imagePath!)
+                          ? Image.network(inspectionPageController.selectedMaterials.first.imagePath!)
                           : null,
                     );
                   } else {
