@@ -5,6 +5,8 @@ from . import models, resources
 material = Extension(
     "material",
     __name__,
+    static_url_path="/material/static",
+    static_folder="static",
     models=(
         models.MaterialType,
         models.Material,
@@ -18,7 +20,6 @@ material = Extension(
     resources=(
         resources.Material,
         resources.Materials,
-        resources.MaterialImages,
         resources.MaterialType,
         resources.MaterialTypes,
     ),

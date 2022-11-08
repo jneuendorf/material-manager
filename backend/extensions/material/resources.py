@@ -1,12 +1,11 @@
 from typing import List
 
-from flask import abort, send_from_directory
+from flask import abort
 from flask_apispec import use_kwargs
 from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
-from core.config import flask_config
-from core.helpers.resource import BaseResource, ModelListResource, ModelResource
+from core.helpers.resource import ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
@@ -142,6 +141,7 @@ class Material(ModelResource):
         *,
         serial_numbers: List[models.SerialNumber],
         purchase_details: models.PurchaseDetails = None,
+        # TODO: add image
         **kwargs,
     ) -> dict:
         related = {"serial_numbers": serial_numbers}
@@ -156,7 +156,7 @@ class Material(ModelResource):
             print(e)
             abort(403, "Duplicate serial number for the same manufacturer")
 
-        return self.serialize(material)
+        return self.serialize(material)  # noqa
 
 
 class Materials(ModelListResource):
@@ -185,19 +185,3 @@ class Materials(ModelListResource):
         return {
             "materials": [material.id for material in materials],
         }
-
-
-class MaterialImages(BaseResource):
-    url = "/material_images/<string:kind>/<int:material_id>/<int:image_id>"
-
-    def get(self, kind, material_id, image_id):
-        """Test with
-        curl -X GET "http://localhost:5000/material_images/single_material/6/1"
-        """
-        if kind != "sets" and kind != "single_material":
-            return abort("Invalid kind", 400)
-
-        return send_from_directory(
-            f"{flask_config['FILESTORAGE_PATH']}/material/",
-            f"{kind}/{material_id}/{image_id}.jpg",
-        )
