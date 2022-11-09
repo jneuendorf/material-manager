@@ -22,15 +22,16 @@ def rand_date(start_yyyy, start_mm, start_dd, end_yyyy, end_mm, end_dd):
     return random_date
 
 
-def test_data(data_sheet):
+def test_data():
     i = 1
     inventory_identifier = ["J", "K", "L", "G"]
     merchants = ["InterSport", "Globetrotter", "SecondHand", "Amazon"]
     units = ["g", "kg", "meter", "cm"]
     set_names = ["bergtour", "eiswand", "wandern", "zelten"]
     material_types = ["gold", "silber", "bronze", "holz"]
+    manufacturers = ["edelrid", "the blue light", "elliot", "black diamont"]
 
-    pro_ID = Property.create(
+    pro_ID = Property.get_or_create(
         id=1,
         name="TODO",
         description="hier sollte eine Beschreibung stehen",
@@ -39,7 +40,7 @@ def test_data(data_sheet):
     )
 
     for j in material_types:
-        mat_ID = MaterialType.create(
+        mat_ID = MaterialType.get_or_create(
             id=material_types.index(j),
             name=j,
             description="shiny",
@@ -49,9 +50,9 @@ def test_data(data_sheet):
         )
 
     for j in set_names:
-        MaterialSet.create(id=set_names.index(j), set_name=j)
+        MaterialSet.get_or_create(id=set_names.index(j), set_name=j)
 
-    for row in data_sheet:
+    while i <= 200:
 
         rand_inventory_num = random.sample(inventory_identifier, k=2)
         rand_inventory_num = (
@@ -69,11 +70,11 @@ def test_data(data_sheet):
             id=i,
             serial_number=i,
             production_date=rand_date(2014, 1, 1, 2022, 1, 1),
-            manufacturer=str(row[5]),
+            manufacturer=random.choice(manufacturers),
             material_id=i,
         )
 
-        pur_ID = PurchaseDetails.create(
+        pur_ID = PurchaseDetails.get_or_create(
             id=i,
             purchase_date=rand_date(2014, 1, 1, 2022, 9, 1),
             invoice_number=random.choice(inventory_identifier) + str(i * 5),
@@ -82,16 +83,16 @@ def test_data(data_sheet):
             suggested_retail_price=round(random.uniform(0.01, 99.99), 2),
         )
 
-        Material.create(
+        Material.get_or_create(
             id=i,
             inventory_number=rand_inventory_num,
-            max_life_expectancy=row[12],
-            max_service_duration=row[13],
+            max_life_expectancy=random.randint(0, 9),
+            max_service_duration=random.randint(0, 9),
             installation_date=rand_date(2014, 1, 1, 2022, 9, 1),
             instructions="Drei Knoten ohne Hände im Kopfstand",
             next_inspection_date=rand_date(2022, 9, 1, 2023, 6, 1),
             rental_fee=round(random.uniform(0.01, 99.99), 2),
-            condition=rand_condition,
+            condition=rand_condition.name,
             days_used=random.randint(0, 99),
             # many to one (FK here)
             # material_type_id = db.Column(db.ForeignKey(MaterialType.id))

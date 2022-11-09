@@ -20,8 +20,8 @@ clear_db:
 sample_data:
 	. venv/bin/activate && flask --app core.app create-sample-data user
 
-test_db: 
-	. venv/bin/activate && flask --app core.app create-test-db
+test_data: 
+	. venv/bin/activate && flask --app core.app create-test-data
 
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
@@ -34,9 +34,6 @@ test: venv
 
 run: venv
 	. venv/bin/activate && flask --app core.app --debug run --port 5000
-
-run_test_data: venv
-	. venv/bin/activate && flask --app extensions.test_db.app --debug run --port 5000
 
 clean:
 	rm -rf venv
