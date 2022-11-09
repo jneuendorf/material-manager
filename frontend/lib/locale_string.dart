@@ -114,6 +114,11 @@ class LocaleString extends Translations {
       'cancel': 'Cancel',
       'cancel_reservation': 'Cancel Reservation',
       'logout': 'Logout',
+      'inspection_details': 'Inspection Details',
+      'comment': 'Comment',
+      'inspection_date': 'Inspection Date',
+      'inspector': 'Inspector',
+      'add_inspection': 'Add Inspection',
       'login_notice': 'Please login to continue',
     },
     'de_DE': {
@@ -223,6 +228,11 @@ class LocaleString extends Translations {
       'cancel': 'Stornieren',
       'cancel_order': 'Bestellung stornieren',
       'logout': 'Abmelden',
+      'inspection_details': 'Prüfungsdetails',
+      'comment': 'Kommentar',
+      'inspection_date': 'Inspektions Datum',
+      'inspector': 'Inspektor',
+      'add_inspection': 'Neue Inspektion',
       'login_notice': 'Bitte anmelden, um fortzufahren',
     }
   };

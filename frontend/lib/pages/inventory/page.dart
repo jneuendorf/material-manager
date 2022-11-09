@@ -137,7 +137,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 50,
-                        child: !kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST') 
+                        child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
                           ? Image.network(controller.filteredMaterial[index].imagePath!) 
                           : null,
                       ),
@@ -182,7 +182,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      image: !kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST') 
+                      image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
                         ? DecorationImage(
                           image: NetworkImage(item.imagePath!),
                         ) 

@@ -25,6 +25,7 @@ import 'package:frontend/pages/administration/page.dart';
 import 'package:frontend/pages/administration/subpages/account_detail_page.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/pages/inspection/page.dart';
+import 'package:frontend/pages/inspection/subpages/inspection_detail_page.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inventory/page.dart';
 import 'package:frontend/pages/lender/controller.dart';
@@ -122,6 +123,17 @@ void main() {
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
       child: MaterialApp(home: InspectionPage()),
+    ));
+  });
+
+  testWidgets('InspectionDetailPage Widget Test', (WidgetTester tester) async {
+    WidgetsFlutterBinding.ensureInitialized();
+    await initialConfig();
+    InspectionPageBinding().dependencies();
+
+    await tester.pumpWidget(const MediaQuery(
+      data: MediaQueryData(),
+      child: MaterialApp(home: InspectionDetailPage()),
     ));
   });
 

@@ -12,7 +12,6 @@ class RentalCompletedPage extends StatelessWidget {
 
   static final rentalPageController = Get.find<RentalPageController>();
 
-
   @override
   Widget build(BuildContext context) => PageWrapper(
     pageTitle: !kIsWeb ? 'reservation_completed'.tr : null,

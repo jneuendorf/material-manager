@@ -13,6 +13,7 @@ import 'package:frontend/pages/administration/page.dart';
 import 'package:frontend/pages/administration/subpages/account_detail_page.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/pages/inspection/page.dart';
+import 'package:frontend/pages/inspection/subpages/inspection_detail_page.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inventory/page.dart';
 import 'package:frontend/pages/lender/controller.dart';
@@ -95,6 +96,9 @@ class MaterialManagerApp extends StatelessWidget {
         binding: LenderPageBinding(),
       ),
       GetPage(name: inspectionRoute, page: () => const InspectionPage(),
+        binding: InspectionPageBinding(),
+      ),
+      GetPage(name: inspectionDetailRoute, page: () => const InspectionDetailPage(),
         binding: InspectionPageBinding(),
       ),
       GetPage(name: administrationRoute, page: () => const AdministrationPage(),
