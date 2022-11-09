@@ -9,7 +9,9 @@ def init_cli_commands(app: Flask, db: SQLAlchemy):
     @app.cli.command("create-test-data")
     def create_test_db():
         with app.app_context():
-            import_module("extensions.test_db.app")
+            import_module("extensions.material.sample_data")
+            # TODO
+            # import_module("extensions.rental.sample_data")
 
     @app.cli.command("create-sample-data")
     @click.argument("extension")
