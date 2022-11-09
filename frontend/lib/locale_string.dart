@@ -115,6 +115,17 @@ class LocaleString extends Translations {
       'cancel_reservation': 'Cancel Reservation',
       'logout': 'Logout',
       'login_notice': 'Please login to continue',
+      'purchase_date' : 'Purchase Date',
+      'invoice_number' : 'Invoice No.',
+      'merchant' : 'Merchant',
+      'production_date' : 'Production Date',
+      'purchase_price' : 'Purchase Price',
+      'suggested_retail_price' : 'Suggested Retail Price',
+      'manufacturer' : 'Manufacturer',
+      'inventory_number' : 'Inventory No.',
+      'max_life_expectancy' : 'Max. Life Expectancy',
+      'max_service_duration' : 'Max. Service Duration',
+      'instructions' : 'Instructions'
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -224,6 +235,17 @@ class LocaleString extends Translations {
       'cancel_order': 'Bestellung stornieren',
       'logout': 'Abmelden',
       'login_notice': 'Bitte anmelden, um fortzufahren',
+      'purchase_date' : 'Kaufdatum',
+      'invoice_number' : 'Rechnungsnr.',
+      'merchant' : 'Händler',
+      'production_date' : 'Produktionsdatum',
+      'purchase_price' : 'Kaufpreis',
+      'suggested_retail_price' : 'Unverbindliche Preisempfehlung',
+      'manufacturer' : 'Hersteller',
+      'inventory_number' : 'Inventarnr.',
+      'max_life_expectancy' : 'Max. Lebenserwartung',
+      'max_service_duration' : 'Max. Dienstdauer',
+      'instructions' : 'Gebrauchsanweisung'
     }
   };
 }
