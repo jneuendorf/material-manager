@@ -14,7 +14,6 @@ class LoginPage extends GetView<LoginController> {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
-    loggedIn: false,
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [

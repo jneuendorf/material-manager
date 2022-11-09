@@ -29,6 +29,7 @@ flask_config = {
         "inspection",
         "rental",
     ],
+    # TODO: load from dotenv
     "CORE_PUBLIC_API_URL": "http://localhost:5000",  # port backend/Makefile
     "CORE_PUBLIC_FRONTEND_URL": "http://localhost:55542",  # port frontend/Makefile
 }

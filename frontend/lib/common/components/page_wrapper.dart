@@ -18,7 +18,6 @@ import 'package:frontend/pages/profile/controller.dart';
 class PageWrapper extends StatelessWidget {
   final Widget child;
   final String? pageTitle;
-  final bool loggedIn;
   final bool showBackButton;
   final bool showFooter;
   final bool showPadding;
@@ -27,7 +26,6 @@ class PageWrapper extends StatelessWidget {
     super.key,
     required this.child,
     this.pageTitle,
-    this.loggedIn = true,
     this.showBackButton = false,
     this.showFooter = true,
     this.showPadding = true,
@@ -40,7 +38,6 @@ class PageWrapper extends StatelessWidget {
     key: scaffoldKey,
     appBar: BaseAppBar(
       title: pageTitle,
-      loggedIn: loggedIn,
       scaffoldKey: scaffoldKey,
       showBackButton: showBackButton,
     ),

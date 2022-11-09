@@ -30,6 +30,7 @@ def create_app(config, db: SQLAlchemy, mail: Mail, drop_db=False):
     print("CREATING NEW APP!")
     app: Flask = Flask(__name__)
     app.config.update(config)
+    app.config.from_prefixed_env()
 
     # Flask Extensions
     db.init_app(app)
