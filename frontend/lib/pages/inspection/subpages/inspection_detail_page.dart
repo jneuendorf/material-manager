@@ -25,43 +25,46 @@ class InspectionDetailPage extends StatelessWidget {
           flex: 2,
           child: Padding(
             padding: const EdgeInsets.only(right: 16.0),
-            child: Column(
-              children:  [
-                Row(
-                  children: [
-                    Text('${'type'.tr} : ',
-                      style:  const TextStyle(color: Colors.black45,fontSize: 16),
-                    ),
-                    Text(inspectionPageController.selectedMaterials.first.materialType.name,
-                        style: const TextStyle(fontSize: 16)
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16.0),
-                Obx(() {
-                  if (inspectionPageController.selectedMaterials.first.imagePath != null) {
-                    return Container(
-                      padding: const EdgeInsets.all(8.0),
-                      decoration: BoxDecoration(
-                        border: Border.all(),
-                        borderRadius: BorderRadius.circular(10.0)
+            child: SingleChildScrollView(
+              child: Column(
+                children:  [
+                  Row(
+                    children: [
+                      Text('${'type'.tr} : ',
+                        style:  const TextStyle(color: Colors.black45,fontSize: 16),
                       ),
-                      child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                          ? Image.network(inspectionPageController.selectedMaterials.first.imagePath!)
-                          : null,
-                    );
-                  } else {
-                    return const SizedBox.shrink();
-                  }
-                }),
-                const SizedBox(height: 16.0),
-                TextIconButton(
-                  onTap: () {},
-                  iconData: Icons.add,
-                  text: 'add_inspection'.tr,
-                  color: Get.theme.colorScheme.onSecondary,
-                ),
-              ],
+                      if (inspectionPageController.selectedMaterials.isNotEmpty) Text(
+                        inspectionPageController.selectedMaterials.first.materialType.name,
+                          style: const TextStyle(fontSize: 16)
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  if (inspectionPageController.selectedMaterials.isNotEmpty) Obx(() {
+                    if (inspectionPageController.selectedMaterials.first.imagePath != null) {
+                      return Container(
+                        padding: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(),
+                          borderRadius: BorderRadius.circular(10.0)
+                        ),
+                        child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
+                            ? Image.network(inspectionPageController.selectedMaterials.first.imagePath!)
+                            : null,
+                      );
+                    } else {
+                      return const SizedBox.shrink();
+                    }
+                  }),
+                  const SizedBox(height: 16.0),
+                  TextIconButton(
+                    onTap: () {},
+                    iconData: Icons.add,
+                    text: 'add_inspection'.tr,
+                    color: Get.theme.colorScheme.onSecondary,
+                  ),
+                ],
+              ),
             ),
           ),
         ),
@@ -87,7 +90,6 @@ class InspectionDetailPage extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Column(
-                              //mainAxisAlignment:MainAxisAlignment.spaceBetween,
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Row(

@@ -63,6 +63,14 @@ class InspectionPageController extends GetxController {
    /// the [selectedTypeFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
+    filteredMaterial.value = materialController.materials.where(
+      (MaterialModel item) {
+        if (term.isEmpty) return true;
+
+        return item.materialType.name.toLowerCase().contains(term);
+      },
+    ).toList();
+
   }
 
   /// Handles the selection of a [value] out of [typeFilterOption].
