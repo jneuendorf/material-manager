@@ -37,10 +37,13 @@ import 'package:frontend/pages/privacy_policy/page.dart';
 
 
 void main() {
+  setUp(() async  {
+    TestWidgetsFlutterBinding.ensureInitialized();
+    await initialConfig();
+  });
 
   testWidgets('LoginPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
+    
     LoginPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -50,8 +53,6 @@ void main() {
   });
 
   testWidgets('SignupPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     SignupPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -61,8 +62,6 @@ void main() {
   });
 
   testWidgets('RentalPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     RentalPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -72,8 +71,6 @@ void main() {
   });
 
   testWidgets('ShoppingCartPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     RentalPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -83,8 +80,6 @@ void main() {
   });
 
   testWidgets('RentalCompletedPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     RentalPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -94,8 +89,6 @@ void main() {
   });
 
   testWidgets('InventoryPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     InventoryPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -105,8 +98,6 @@ void main() {
   });
 
   testWidgets('LenderPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     LenderPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -116,8 +107,6 @@ void main() {
   });
 
   testWidgets('InspectionPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     InspectionPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -127,8 +116,6 @@ void main() {
   });
 
   testWidgets('InspectionDetailPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     InspectionPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -138,8 +125,6 @@ void main() {
   });
 
   testWidgets('AdministrationPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     AdministrationPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
@@ -149,8 +134,6 @@ void main() {
   });
 
   testWidgets('AccountDetailPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     AdministrationPageBinding().dependencies();
     Get.find<AdministrationPageController>().selectedUser.value = mockUsers.first;
 
@@ -161,8 +144,6 @@ void main() {
   });
 
   testWidgets('ProfilePage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-    await initialConfig();
     ProfilePageBinding().dependencies();
     Get.find<ProfilePageController>().currentUser.value = mockUsers.first;
 
@@ -173,8 +154,6 @@ void main() {
   });
 
   testWidgets('ImprintPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
       child: MaterialApp(home: ImprintPage()),
@@ -182,8 +161,6 @@ void main() {
   });
 
   testWidgets('PrivacyPolicyPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
-
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
       child: MaterialApp(home: PrivacyPolicyPage()),
