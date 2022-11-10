@@ -37,7 +37,7 @@ import 'package:frontend/pages/privacy_policy/page.dart';
 
 
 void main() {
-  
+
   testWidgets('LoginPage Widget Test', (WidgetTester tester) async {
     WidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
