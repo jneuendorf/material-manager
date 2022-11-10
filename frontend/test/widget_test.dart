@@ -39,7 +39,7 @@ import 'package:frontend/pages/privacy_policy/page.dart';
 void main() {
   
   testWidgets('LoginPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     LoginPageBinding().dependencies();
 
@@ -50,7 +50,7 @@ void main() {
   });
 
   testWidgets('SignupPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     SignupPageBinding().dependencies();
 
@@ -61,7 +61,7 @@ void main() {
   });
 
   testWidgets('RentalPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     RentalPageBinding().dependencies();
 
@@ -72,7 +72,7 @@ void main() {
   });
 
   testWidgets('ShoppingCartPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     RentalPageBinding().dependencies();
 
@@ -83,7 +83,7 @@ void main() {
   });
 
   testWidgets('RentalCompletedPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     RentalPageBinding().dependencies();
 
@@ -94,7 +94,7 @@ void main() {
   });
 
   testWidgets('InventoryPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     InventoryPageBinding().dependencies();
 
@@ -105,7 +105,7 @@ void main() {
   });
 
   testWidgets('LenderPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     LenderPageBinding().dependencies();
 
@@ -116,7 +116,7 @@ void main() {
   });
 
   testWidgets('InspectionPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     InspectionPageBinding().dependencies();
 
@@ -127,7 +127,7 @@ void main() {
   });
 
   testWidgets('InspectionDetailPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     InspectionPageBinding().dependencies();
 
@@ -138,7 +138,7 @@ void main() {
   });
 
   testWidgets('AdministrationPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     AdministrationPageBinding().dependencies();
 
@@ -149,7 +149,7 @@ void main() {
   });
 
   testWidgets('AccountDetailPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     AdministrationPageBinding().dependencies();
     Get.find<AdministrationPageController>().selectedUser.value = mockUsers.first;
@@ -161,7 +161,7 @@ void main() {
   });
 
   testWidgets('ProfilePage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
     await initialConfig();
     ProfilePageBinding().dependencies();
     Get.find<ProfilePageController>().currentUser.value = mockUsers.first;
@@ -173,7 +173,7 @@ void main() {
   });
 
   testWidgets('ImprintPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
 
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
@@ -182,7 +182,7 @@ void main() {
   });
 
   testWidgets('PrivacyPolicyPage Widget Test', (WidgetTester tester) async {
-    WidgetsFlutterBinding.ensureInitialized();
+    TestWidgetsFlutterBinding.ensureInitialized();
 
     await tester.pumpWidget(const MediaQuery(
       data: MediaQueryData(),
