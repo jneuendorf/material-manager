@@ -9,13 +9,22 @@ from extensions.common.models import File
 Model: Type[CrudModel] = db.Model
 
 
+def resolve_user_model():
+    """Resolve user model lazily. See:
+    https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#late-evaluation-of-relationship-arguments
+    """  # noqa
+    from extensions.user.models import User
+
+    return User
+
+
 class Inspection(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date)
     type = db.Column(db.String)  # PSA- / Sichtprüfung
     # many to one (FK here)
     inspector_id = db.Column(db.ForeignKey("user.id"))
-    inspector = db.relationship("User", backref="inspections")
+    inspector = db.relationship(resolve_user_model(), backref="inspections")
     # one to many (FK on child)
     comments = db.relationship("Comment", backref="inspection")
 
