@@ -24,7 +24,7 @@ class Inspection(Model):  # type: ignore
     type = db.Column(db.String)  # PSA- / Sichtprüfung
     # many to one (FK here)
     inspector_id = db.Column(db.ForeignKey("user.id"))
-    inspector = db.relationship(resolve_user_model(), backref="inspections")
+    inspector = db.relationship(resolve_user_model, backref="inspections")
     # one to many (FK on child)
     comments = db.relationship("Comment", backref="inspection")
 
