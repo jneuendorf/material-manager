@@ -15,7 +15,10 @@ import 'package:frontend/pages/profile/dialogs/cancel_rental_dialog.dart';
 class UserOrderList extends StatefulWidget {
   final UserModel user;
 
-  const UserOrderList({Key? key, required this.user}) : super(key: key);
+  const UserOrderList({
+    Key? key, 
+    required this.user,
+  }) : super(key: key);
 
   @override
   State<UserOrderList> createState() => _UserOrderListState();
@@ -26,25 +29,11 @@ class _UserOrderListState extends State<UserOrderList> {
 
   final RxList<RentalModel> userRentals = <RentalModel>[].obs;
 
-  Color getDataRowColor(Set<MaterialState> states) {
-    const Set<MaterialState> interactiveStates = <MaterialState>{
-      MaterialState.pressed,
-      MaterialState.hovered,
-      MaterialState.focused,
-    };
-
-    if (states.any(interactiveStates.contains)) {
-      return Get.theme.colorScheme.primary.withOpacity(0.12);
-    }
-
-    return Colors.transparent;
-  }
-
   Future<void> asyncInit() async {
     await rentalController.initCompleter.future;
 
     userRentals.value = rentalController.rentals.where(
-            (RentalModel rental) => rental.customerId == widget.user.id
+      (RentalModel rental) => rental.customerId == widget.user.id
     ).toList();
   }
 
@@ -54,6 +43,7 @@ class _UserOrderListState extends State<UserOrderList> {
 
     asyncInit();
   }
+
   @override
   Widget build(BuildContext context) => Expanded(
     child: Column(
@@ -155,4 +145,19 @@ class _UserOrderListState extends State<UserOrderList> {
   String formatDate(DateTime date) {
     return DateFormat('dd.MM.yyyy').format(date);
   }
+
+  Color getDataRowColor(Set<MaterialState> states) {
+    const Set<MaterialState> interactiveStates = <MaterialState>{
+      MaterialState.pressed,
+      MaterialState.hovered,
+      MaterialState.focused,
+    };
+
+    if (states.any(interactiveStates.contains)) {
+      return Get.theme.colorScheme.primary.withOpacity(0.12);
+    }
+
+    return Colors.transparent;
+  }
+
 }

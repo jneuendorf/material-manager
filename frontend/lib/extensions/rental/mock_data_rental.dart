@@ -35,7 +35,7 @@ final List<RentalModel> mockRentals = [
     ),
   RentalModel(
     id: 2, 
-    customerId: 1, 
+    customerId: 2, 
     lenderId: 2, 
     returnToId: 2, 
     materialIds: [1, 2, 3], 
@@ -50,7 +50,7 @@ final List<RentalModel> mockRentals = [
   ),
   RentalModel(
     id: 3, 
-    customerId: 1, 
+    customerId: 3, 
     lenderId: 2, 
     returnToId: 2, 
     materialIds: [1, 2, 3], 
