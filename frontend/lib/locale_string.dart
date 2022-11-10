@@ -120,6 +120,17 @@ class LocaleString extends Translations {
       'inspector': 'Inspector',
       'add_inspection': 'Add Inspection',
       'login_notice': 'Please login to continue',
+      'purchase_date' : 'Purchase Date',
+      'invoice_number' : 'Invoice No.',
+      'merchant' : 'Merchant',
+      'production_date' : 'Production Date',
+      'purchase_price' : 'Purchase Price',
+      'suggested_retail_price' : 'Suggested Retail Price',
+      'manufacturer' : 'Manufacturer',
+      'inventory_number' : 'Inventory No.',
+      'max_life_expectancy' : 'Max. Life Expectancy',
+      'max_service_duration' : 'Max. Service Duration',
+      'instructions' : 'Instructions'
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -234,6 +245,17 @@ class LocaleString extends Translations {
       'inspector': 'Inspektor',
       'add_inspection': 'Neue Inspektion',
       'login_notice': 'Bitte anmelden, um fortzufahren',
+      'purchase_date' : 'Kaufdatum',
+      'invoice_number' : 'Rechnungsnr.',
+      'merchant' : 'Händler',
+      'production_date' : 'Produktionsdatum',
+      'purchase_price' : 'Kaufpreis',
+      'suggested_retail_price' : 'Unverbindliche Preisempfehlung',
+      'manufacturer' : 'Hersteller',
+      'inventory_number' : 'Inventarnr.',
+      'max_life_expectancy' : 'Max. Lebenserwartung',
+      'max_service_duration' : 'Max. Dienstdauer',
+      'instructions' : 'Gebrauchsanweisung'
     }
   };
 }
