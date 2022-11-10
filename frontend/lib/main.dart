@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
@@ -40,6 +41,8 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
+  await dotenv.load(fileName: '.env');
+
   await Get.putAsync(() async => await ApiService().init());
 
   // init extension controllers
