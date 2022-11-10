@@ -16,7 +16,9 @@ const rtStorageKey = 'refresh_token';
 const storage = FlutterSecureStorage();
 // TODO: Or `const bool prod = const bool.fromEnvironment('dart.vm.product');`?
 //  See https://stackoverflow.com/questions/49707028/
-String baseUrl = kDebugMode ? 'http://${dotenv.env['HOST']}:${dotenv.env['PORT']}' : '';
+String baseUrl = kDebugMode 
+  ? 'http://${dotenv.env['HOST']}:${dotenv.env['PORT']}' 
+  : '';
 
 Map<int, String> defaultErrors = {
   400: 'bad_request'.tr,
