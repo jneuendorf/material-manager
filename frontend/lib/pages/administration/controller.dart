@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
+import 'package:frontend/extensions/rental/model.dart';
 
 
 const administrationRoute = '/administration';
@@ -29,6 +30,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
   final RxString searchTerm = ''.obs;
 
   final Rxn<UserModel> selectedUser = Rxn<UserModel>();
+  final Rxn<RentalModel> userRentals = Rxn<RentalModel>();
 
   @override
   Future<void> onInit() async {
