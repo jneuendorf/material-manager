@@ -54,7 +54,6 @@ class Material(Model):  # type: ignore
     # We need `create_constraint=True` because SQLite doesn't support enums natively
     condition = db.Column(db.Enum(Condition, create_constraint=True))
     days_used = db.Column(db.Integer)
-    image_count = db.Column(db.Integer, default=0)
     # many to one (FK here)
     material_type_id = db.Column(db.ForeignKey(MaterialType.id))
     material_type = db.relationship("MaterialType", backref="materials")
@@ -63,11 +62,7 @@ class Material(Model):  # type: ignore
     purchase_details = db.relationship("PurchaseDetails", backref="materials")
     # one to many (FK on child)
     serial_numbers = db.relationship("SerialNumber", backref="material")
-    images = db.relationship(
-        File,
-        foreign_keys=[File.related_pk],
-        primaryjoin="Material.id == File.related_pk",
-    )
+    images = File.reverse_generic_relationship("Material")
     # many to many
     properties = db.relationship(
         "Property",

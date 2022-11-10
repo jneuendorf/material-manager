@@ -29,6 +29,10 @@ class CrudModel(Model):
     # => Meta.abstract = True
     __table_args__ = {"extend_existing": True}
 
+    # Type hint so that any arguments can be passed.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     @classmethod
     def get_query(cls) -> "Query":
         if cls._query is None:
