@@ -18,11 +18,7 @@ clear_db:
 	rm -rf instance/*.db
 
 sample_data:
-	. venv/bin/activate && flask --app core.app create-sample-data user
-
-test_data: 
-	rm -rf instance/*.db
-	. venv/bin/activate && flask --app core.app create-test-data
+	. venv/bin/activate && flask --app core.app create-sample-data user material
 
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
