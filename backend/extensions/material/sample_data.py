@@ -1,4 +1,6 @@
-import datetime
+import itertools as it
+from datetime import date, timedelta
+from hashlib import sha1
 
 from extensions.material.models import (
     Condition,
@@ -10,66 +12,95 @@ from extensions.material.models import (
     SerialNumber,
 )
 
-inventory_identifier = ["J", "K", "L", "G"]
-merchants = ["InterSport", "Globetrotter", "SecondHand", "Amazon"]
-units = ["farbe", "kg", "meter", "cm"]
-colors = ["rot", "grün", "blau", "gelb"]
-material_types = ["helm", "seil", "carabiner", "kletterpickel"]
-manufacturers = ["edelrid", "the blue light", "elliot", "black diamond"]
-years_past = [2021, 2020, 2019, 2018, 2017, 2016, 2015, 2014]
+NUM_PROPERTIES = 18
+NUM_PURCHASE_DETAILS = 30
+NUM_MATERIALS = 50
+
+INVENTORY_IDENTIFIERS = it.cycle(["J", "K", "L", "G"])
+MERCHANTS = it.cycle(["InterSport", "Globetrotter", "SecondHand", "Amazon"])
+PROPERTY_UNITS = it.cycle(["kg", "m", "cm"])
+COLORS = it.cycle(["red", "green", "blue", "yellow"])
+MANUFACTURERS = it.cycle(["edelrid", "the blue light", "elliot", "black diamond"])
 
 # Create material sets
-material_sets = [
-    MaterialSet.get_or_create(set_name="bergtour"),
-    MaterialSet.get_or_create(set_name="eiswand"),
-    MaterialSet.get_or_create(set_name="wandern"),
-    MaterialSet.get_or_create(set_name="zelten"),
-]
+material_sets = it.cycle(
+    [
+        MaterialSet.get_or_create(set_name="ice climbing"),
+        MaterialSet.get_or_create(set_name="mountain face"),
+        MaterialSet.get_or_create(set_name="hiking"),
+        MaterialSet.get_or_create(set_name="camping"),
+    ]
+)
 
 # Create material types
-for i in range(4):
+material_types = ["helmet", "rope", "carabiner", "ice pick"]
+for i, material_type in enumerate(material_types):
     MaterialType.get_or_create(
-        name=material_types[i],
-        description="hier sollte eine beschreibung stehen",
+        name=material_type,
+        description=f"material type description {i}",
         _related=dict(
             sets=[
-                material_sets[i % 3],
-                material_sets[(i + 1) % 3],
+                next(material_sets),
+                next(material_sets),
             ],
         ),
     )
 
+
 # Create properties
-for i in range(20):
+def get_property_name(i: int) -> str:
+    return f"property {i}"
+
+
+for i in range(NUM_PROPERTIES):
     # create matching unit-value pairs for Property
-    if i % 3 == 0:
-        val = colors[(i + i % 5) % 3]
+    if i <= NUM_PROPERTIES // 3:
+        value = next(COLORS)
+        unit = "color"
     else:
-        val = str(i * i % 100)
+        value = str(i * 1.03)
+        unit = next(PROPERTY_UNITS)
     Property.get_or_create(
-        name="name der eigenschaft",
-        description="hier sollte eine Beschreibung stehen",
-        value=val,
-        unit=units[i % 3],
+        name=get_property_name(i),
+        description=f"property description {i}",
+        value=value,
+        unit=unit,
     )
 
 # Create purchase details
-for i in range(70):
-    PurchaseDetails.get_or_create(
-        purchase_date=datetime.date(
-            years_past[i * 3 % 7], i * 2 % 12 + 1, i * 5 % 29 + 1
-        ),
-        invoice_number=inventory_identifier[i % 3]
-        + str(i * 5)
-        + inventory_identifier[(i + 1) % 3]
-        + str(i * i),
-        merchant=merchants[i % 3],
-        purchase_price=float(i * 5 % 100) + float(0.01 * i % 100) + 10.0,
-        suggested_retail_price=1.2 * float(i * 5 % 100) + float(0.01 * i % 100) + 10.0,
+created_purchase_details = []
+for i in range(NUM_PURCHASE_DETAILS):
+    price = (i + 1) ** 3
+    created_purchase_details.append(
+        PurchaseDetails.get_or_create(
+            purchase_date=date(2022, 1, 1) + timedelta(days=i),
+            invoice_number=(
+                f"{next(INVENTORY_IDENTIFIERS)}-"
+                f"{sha1(str(i).encode('utf-8')).hexdigest()[:6]}-"
+                f"{next(INVENTORY_IDENTIFIERS)}"
+            ),
+            merchant=next(MERCHANTS),
+            purchase_price=price,
+            # Some SRP above and some below the purchase price
+            suggested_retail_price=price + (-1) ** i,
+        )
+    )
+
+
+# Create serial numbers
+def get_serial_number_str(i: int) -> str:
+    return f"sn-{i}-{i ** 2}"
+
+
+for i in range(NUM_MATERIALS):
+    SerialNumber.get_or_create(
+        serial_number=get_serial_number_str(i),
+        production_date=date(2022, 1, 1) + timedelta(days=i),
+        manufacturer=next(MANUFACTURERS),
     )
 
 # Create materials
-for i in range(200):
+for i in range(NUM_MATERIALS):
     # create mostly ok condition, some repair, rarely broken for Material.condition
     if i % 50 == 0:
         condition = Condition.BROKEN
@@ -78,38 +109,29 @@ for i in range(200):
     else:
         condition = Condition.OK
 
-    ser_ID_original = SerialNumber.get_or_create(
-        id=i,
-        serial_number=i,
-        production_date=datetime.date(
-            years_past[i * 2 % 7], i * 3 % 12 + 1, i * 4 % 29 + 1
-        ),
-        manufacturer=manufacturers[i % 3],
-        material_id=i,
-    )
-
-    # create IDs for relationships
-    material_type = MaterialType.get_or_create(id=i % 4)
-    purchase_details = PurchaseDetails.get_or_create(id=i % 71)
-    serial_number = SerialNumber.get_or_create(id=i % 30)
-    material_property = Property.get_or_create(id=i % 21)
+    serial_numbers = [SerialNumber.get(serial_number=get_serial_number_str(i))]
+    # Let some materials have multiple serial numbers
+    if i > 100:
+        serial_numbers.append(
+            SerialNumber.get(serial_number=get_serial_number_str(i - 1))
+        )
 
     Material.get_or_create(
-        inventory_number=inventory_identifier[i % 3] + str(i * 3 % 100),
+        inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}",
         max_life_expectancy=i % 9 + 1,
         max_service_duration=i % 5 + 1,
-        installation_date=datetime.date(
-            years_past[i * 4 % 7], i * 3 % 12 + 1, i * 2 % 29 + 1
-        ),
+        installation_date=date(2022, 1, 1) + timedelta(days=i),
         instructions="hier sollte eine gebrauchsanweisung stehen",
-        next_inspection_date=datetime.date(2023, i * 3 % 12 + 1, i * 4 % 29 + 1),
-        rental_fee=float(i * 2 % 40) + float(0.01 * i % 100) + 5.0,
+        next_inspection_date=date(2023, i * 3 % 12 + 1, i * 4 % 29 + 1),
+        rental_fee=1.13 * (i + 1),
         condition=condition,
         days_used=i * 5 % 100,
         _related=dict(
-            material_type=material_type,
-            purchase_details=purchase_details,
-            serial_numbers=[ser_ID_original, serial_number],
-            properties=[material_property],
+            material_type=MaterialType.get(
+                name=material_types[i % len(material_types)]
+            ),
+            purchase_details=created_purchase_details[i % NUM_PURCHASE_DETAILS],
+            serial_numbers=serial_numbers,
+            properties=[Property.get(name=get_property_name(i % NUM_PROPERTIES))],
         ),
     )
