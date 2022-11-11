@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/base_button.dart';
 
@@ -17,9 +19,18 @@ class ShoppingCartPage extends StatefulWidget {
 }
 
 class _ShoppingCartPageState extends State<ShoppingCartPage> {
-  static final rentalPageController = Get.find<RentalPageController>();
+  final apiService = Get.find<ApiService>();
+  final rentalPageController = Get.find<RentalPageController>();
 
+  late bool loggedIn;
   final RxBool hadError = false.obs;
+
+  @override
+  void initState() {
+    super.initState();
+
+    loggedIn = apiService.isAuthorized;
+  }
 
   @override
   Widget build(BuildContext context) => PageWrapper(
@@ -200,14 +211,14 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           )),
         ],
       ),
-      Padding(
+      loggedIn ? Padding(
         padding: const EdgeInsets.only(top: 32.0),
         child: BaseButton(
           onPressed: rentalPageController.onCheckoutTap,
           text: 'checkout'.tr,
           color: Colors.black,
         ),
-      ),
+      ) : buildLoginNotice(),
     ],
   );
 
@@ -253,6 +264,32 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         Text('shopping_cart_is_empty'.tr),
       ],
     )),
+  );
+
+  Widget buildLoginNotice() => Padding(
+    padding: const EdgeInsets.symmetric(vertical: 16.0),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text('login_notice'.tr,
+          style: Get.textTheme.headline6!.copyWith(color: Get.theme.primaryColor),
+        ),
+        const SizedBox(height: 8.0),
+        BaseButton(
+          onPressed: () async {
+            afterLoginRoute = rentalShoppingCartRoute;
+            await Get.toNamed(loginRoute);
+            afterLoginRoute = rentalRoute;
+
+            setState(() {
+              loggedIn = apiService.isAuthorized;
+            });
+          },
+          text: 'login'.tr,
+          color: Colors.black,
+        ),
+      ],
+    ),
   );
 
   /// Builds a [TextFormField] with the given [controller], [labelText] 

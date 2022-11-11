@@ -5,7 +5,7 @@ class InspectionModel {
   final int materialId; // references Material.id
   DateTime date;
   InspectionType type;
-  List<Comment> comments;
+  Comment comment;
 
   InspectionModel({
     required this.id,
@@ -13,7 +13,7 @@ class InspectionModel {
     required this.materialId,
     required this.date,
     required this.type,
-    required this.comments,
+    required this.comment,
   });
 
   factory InspectionModel.fromJson(Map<String, dynamic> json) => InspectionModel(
@@ -22,7 +22,7 @@ class InspectionModel {
     materialId: json['material_id'],
     date: DateTime.parse(json['date']),
     type: InspectionType.values.byName(json['type']),
-    comments: List<Comment>.from(json['comments'].map((x) => Comment.fromJson(x))),
+    comment: Comment.fromJson(json['comment']),
   );
 }
 

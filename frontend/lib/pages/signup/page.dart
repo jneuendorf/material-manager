@@ -13,7 +13,6 @@ class SignupPage extends GetView<SignupController> {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
-    loggedIn: false,
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [

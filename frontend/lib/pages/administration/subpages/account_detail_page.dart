@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/components/user_details_widget.dart';
+import 'package:frontend/common/components/user_order_list.dart';
 
 
 class AccountDetailPage extends StatelessWidget {
@@ -20,7 +21,7 @@ class AccountDetailPage extends StatelessWidget {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        if (kIsWeb) Text('account_details'.tr, 
+        if (kIsWeb) Text('account_details'.tr,
           style: Get.textTheme.headline6!.copyWith(fontSize: 30),
         ),
         if (kIsWeb) Divider(endIndent: MediaQuery.of(context).size.width-250),
@@ -28,10 +29,10 @@ class AccountDetailPage extends StatelessWidget {
         UserDetailsWidget(
           user: administrationPageController.selectedUser.value!,
         ),
-        buildOrderList(),
+        UserOrderList(
+          user: administrationPageController.selectedUser.value!,
+        ),
       ],
     ),
   );
-
-  Widget buildOrderList() => Container(); // TODO implement
 }

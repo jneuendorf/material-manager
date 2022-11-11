@@ -47,6 +47,8 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   Future<void> onInit() async {
     super.onInit();
 
+    debugPrint('RentalPageController init!');
+
     tabController = TabController(length: 2, vsync: this);
     tabController.addListener(() {
       tabIndex.value = tabController.index;
@@ -65,8 +67,11 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   void onClose() {
     tabController.dispose();
 
+    debugPrint('RentalPageController disposed!');
+
     super.onClose();
   }
+  
 
   /// Calculates the total price of all material in the [shoppingCart].
   double get totalPrice => shoppingCart.fold(0.0, 
