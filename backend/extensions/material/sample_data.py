@@ -53,8 +53,10 @@ while i <= 200:
             + inventory_identifier[(i + 1) % 3]
             + str(i * i),
             merchant=merchants[i % 3],
-            purchase_price=float(i * 5 % 100) + float(0.01 * i % 100),
-            suggested_retail_price=1.2 * float(i * 5 % 100) + float(0.01 * i % 100),
+            purchase_price=float(i * 5 % 100) + float(0.01 * i % 100) + 10.0,
+            suggested_retail_price=1.2 * float(i * 5 % 100)
+            + float(0.01 * i % 100)
+            + 10.0,
         )
 
         # create 21 properties
@@ -107,7 +109,7 @@ while i <= 200:
         ),
         instructions="hier sollte eine gebrauchsanweisung stehen",
         next_inspection_date=datetime.date(2023, i * 3 % 12 + 1, i * 4 % 29 + 1),
-        rental_fee=float(i * 2 % 40) + float(0.01 * i % 100),
+        rental_fee=float(i * 2 % 40) + float(0.01 * i % 100) + 5.0,
         condition=new_condition,
         days_used=i * 5 % 100,
         # many to one (FK here)
