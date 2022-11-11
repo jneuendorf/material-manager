@@ -91,7 +91,7 @@ class SerialNumber(Model):  # type: ignore
 
 class MaterialSet(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    image = db.Column(db.String)
+    images = File.reverse_generic_relationship("MaterialSet")
     name = db.Column(db.String(length=32))
 
 

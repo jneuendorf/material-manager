@@ -48,14 +48,24 @@ comment1 = Comment.get_or_create(
 )
 File.get_or_create(
     path=(
-        "https://pixabay.com/get/g7dffc9f8a6fea84f6c367735ecf96db26d3671fb4a822"
-        "904e2edc0568e7142f87730c93f9c2ca7776afd254cee900cbac67d3e4dce431c4292a4"
-        "607bae9a2aa6c4f86e84f0b7bc917daebc8dc7b5bed2_640.jpg"
+        "https://www.anschlagmittel-shop.de/media/catalog/product/cache/"
+        "e4e7b33686f42ecc97289255410c8bc4/f/a/fa5010522b.png"
     ),
-    filename="karabiner.jpg",
-    mime_type="image/jpeg",
+    description="carabiner green",
+    mime_type="image/png",
     _related=dict(
         object=comment1,
     ),
 )
 print(comment1.photo.path)
+icon = File.get_or_create(
+    path="icon.png",
+    description="material manager icon",
+    mime_type="image/png",
+    _related=dict(
+        object=ok_material,
+    ),
+)
+print(ok_material.images[0].path)
+# icon.delete()
+# print(ok_material.images)

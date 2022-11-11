@@ -5,10 +5,12 @@ from flask_apispec import use_kwargs
 from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
+from core.helpers.extension import url_join
 from core.helpers.resource import ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
+from .config import STATIC_URL_PATH
 
 
 class SerialNumberSchema(BaseSchema):
@@ -81,6 +83,7 @@ class MaterialSchema(BaseSchema):
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
     purchase_details_id = fields.Integer()
     purchase_details = fields.Nested(PurchaseDetailsSchema())
+    images = fields.Method("get_image_urls")
 
     class Meta:
         # TODO: specifying model_converter should not be necessary
@@ -89,6 +92,10 @@ class MaterialSchema(BaseSchema):
         model = models.Material
         load_only = ("material_type_id",)
         dump_only = ("id",)
+
+    @staticmethod
+    def get_image_urls(obj: models.Material):
+        return [url_join(STATIC_URL_PATH, image.path) for image in obj.images]
 
 
 class Material(ModelResource):

@@ -1,12 +1,16 @@
 from pathlib import Path
-from typing import Type
+from typing import Optional, Type, cast
 
+from flask import current_app
 from sqlalchemy_utils import generic_relationship
 
 from core.extensions import db
+from core.helpers.extension import Extension
 from core.helpers.orm import CrudModel
 
 Model: Type[CrudModel] = db.Model
+
+EXTENSIONS_DIR = Path(__file__).parent.parent.resolve(strict=True)
 
 
 class File(Model):  # type: ignore
@@ -17,11 +21,16 @@ class File(Model):  # type: ignore
 
     id = db.Column(db.Integer, primary_key=True)
     path = db.Column(db.String(length=128))
-    filename = db.Column(db.String(length=255))
-    # PPTX: application/vnd.openxmlformats-officedocument.presentationml.presentation
+    """The path is used by the extension to generate the URL.
+    Usually, relative to the extension's static folder.
+    """
     mime_type = db.Column(db.String(length=75))
-    # Can be used for e.g. <img alt="...">
+    """Length to fit longest common MIME type for .pptx files:
+
+    application/vnd.openxmlformats-officedocument.presentationml.presentation
+    """
     description = db.Column(db.String(length=100), default="")
+    """Can be used for e.g. <img alt="...">"""
     object_type = db.Column(db.String(length=255))
     object_id = db.Column(db.Integer)
     object = generic_relationship(object_type, object_id)
@@ -42,5 +51,21 @@ class File(Model):  # type: ignore
         )
 
     def delete(self) -> None:
+        initiating_model_cls = cast(CrudModel, type(self.object))
+        initiating_extension: Optional[Extension] = None
+        for name, extension in current_app.extensions.items():
+            for model_cls in getattr(extension, "models", []):
+                if model_cls is initiating_model_cls:
+                    initiating_extension = extension
+                    break
+
+        if not initiating_extension:
+            print("WARNING: File model instance deleted from unknown source")
+            return
+        if not initiating_extension.static_folder:
+            print("WARNING: File model instance deleted without a static folder")
+            return
+
         super().delete()
-        Path(self.path).unlink()
+        resolved_path = EXTENSIONS_DIR / initiating_extension.static_folder / self.path
+        resolved_path.unlink()

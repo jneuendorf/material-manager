@@ -59,6 +59,7 @@ class Extension(Blueprint, ABC, Generic[M, R]):
     ) -> None:
         self.before_install(app=app, jwt=jwt, api=api, api_docs=api_docs)
 
+        app.extensions[self.name] = self
         app.register_blueprint(self, **blueprint_options)
 
         resources: Iterable[Type[BaseResource]] = self.resources

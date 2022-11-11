@@ -74,7 +74,7 @@ class CrudModel(Model):
 
     @classmethod
     @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
-    def get_or_create(cls, *, _related=None, **kwargs):
+    def get_or_create(cls, *, _related=None, **kwargs) -> "CrudModel":
         try:
             return cls.get(**kwargs)
         except NoResultFound:
