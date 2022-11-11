@@ -9,15 +9,20 @@ make run
 ```
 
 This will start the flask app at http://localhost:5000.
+Flask environment variables can be set in `.env`.
 
-## Creating Test Data
+
+
+## Creating Sample Data
+
+This data is useful for manual user testing.
 
 ```bash
 cd backend
-make test_data
+make sample_data
 ```
 
-`NOTICE:` this command will `DELETE` all previous data in material_manager.db
+
 
 ## Development helpers in `core.helpers`
 
