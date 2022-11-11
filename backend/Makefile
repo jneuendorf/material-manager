@@ -21,6 +21,7 @@ sample_data:
 	. venv/bin/activate && flask --app core.app create-sample-data user
 
 test_data: 
+	rm -rf instance/*.db
 	. venv/bin/activate && flask --app core.app create-test-data
 
 precommit: venv

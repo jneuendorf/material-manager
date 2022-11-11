@@ -10,7 +10,14 @@ make run
 
 This will start the flask app at http://localhost:5000.
 
+## Creating Test Data
 
+```bash
+cd backend
+make test_data
+```
+
+`NOTICE:` this command will `DELETE` all previous data in material_manager.db
 
 ## Development helpers in `core.helpers`
 
