@@ -75,36 +75,6 @@ class PurchaseDetailsSchema(BaseSchema):
         )
 
 
-# class PurchaseDetails(ModelResource):
-#     url = "/purchase_details"
-#
-#     Schema = PurchaseDetailsSchema
-#
-#     @use_kwargs(
-#         {
-#             "purchase_date": fields.Date(required=True),
-#             "invoice_number": fields.Str(required=True),
-#             "merchant": fields.Str(),
-#             "purchase_price": fields.Float(),
-#             "suggested_retail_price": fields.Float(),
-#         }
-#     )
-#     def post(self, **kwargs) -> dict:
-#         """Test with
-#         curl -X POST "http://localhost:5000/purchase_details"
-#         -H 'Content-Type: application/json' \
-#         -d '{
-#             "invoice_number": "2154325gu2345",
-#             "merchant": "Händler",
-#             "purchase_date": "2022-11-02",
-#             "purchase_price": 50,
-#             "suggested_retail_price": 1000
-#             }'
-#         """  # noqa
-#         purchase_detail = models.PurchaseDetails.create(**kwargs)
-#         return self.serialize(purchase_detail)
-
-
 class MaterialSchema(BaseSchema):
     material_type_id = fields.Integer()
     material_type = fields.Nested(MaterialTypeSchema())

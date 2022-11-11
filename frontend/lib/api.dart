@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:frontend/pages/login/controller.dart';
 
@@ -15,8 +16,10 @@ const rtStorageKey = 'refresh_token';
 const storage = FlutterSecureStorage();
 // TODO: Or `const bool prod = const bool.fromEnvironment('dart.vm.product');`?
 //  See https://stackoverflow.com/questions/49707028/
-const baseUrl = kDebugMode ? 'http://localhost:5000' : '';
-// const authUrl = 'http://localhost:5000/auth';
+String baseUrl = kDebugMode 
+  ? 'http://${dotenv.env['HOST']}:${dotenv.env['PORT']}' 
+  : '';
+
 Map<int, String> defaultErrors = {
   400: 'bad_request'.tr,
   401: 'unauthorized'.tr,

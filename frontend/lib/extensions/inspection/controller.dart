@@ -31,7 +31,6 @@ class InspectionController extends GetxController {
     initCompleter.complete();
   }
 
-  /// Fetches all inspections from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<InspectionModel>> getAllInspectionMocks()  async {
@@ -41,7 +40,6 @@ class InspectionController extends GetxController {
 
     return mockInspections + mockInspections;
   }
-
 
   /// Fetches all inspections from backend.
   Future<List<InspectionModel>?> getAllInspections() async {
@@ -64,18 +62,18 @@ class InspectionController extends GetxController {
   /// or null if an error occured.
   Future<int?> addInspection(InspectionModel inspection) async {
     try {
-      final response = await apiService.mainClient.post('/inspection', 
+      final response = await apiService.mainClient.post('/inspection',
         data: {
           'inspector_id': inspection.inspectorId,
           'material_id': inspection.materialId,
           'date': inspection.date,
           'type': inspection.type.name,
-          'comments': inspection.comments.map((Comment c) => {
-            'id': c.id,
-            'date': c.date,
-            'text': c.text,
-            'image_path': c.imagePath,
-          }).toList(),
+          'comment': {
+            'id': inspection.comment.id,
+            'date': inspection.comment.date,
+            'text': inspection.comment.text,
+            'image_path': inspection.comment.imagePath,
+          },
         },
       );
 
@@ -93,7 +91,7 @@ class InspectionController extends GetxController {
   /// or null if an error occured.
   Future<int?> addComment(Comment comment) async {
     try {
-      final response = await apiService.mainClient.post('/inspection/comment', 
+      final response = await apiService.mainClient.post('/inspection/comment',
         data: {
           'date': comment.date,
           'text': comment.text,
@@ -114,18 +112,18 @@ class InspectionController extends GetxController {
   /// Returns true if the rental was updated successfully.
   Future<bool> updateInspection(InspectionModel inspection) async {
     try {
-      final response = await apiService.mainClient.put('/inspection/${inspection.id}', 
+      final response = await apiService.mainClient.put('/inspection/${inspection.id}',
         data: {
           'inspector_id': inspection.inspectorId,
           'material_id': inspection.materialId,
           'date': inspection.date,
           'type': inspection.type.name,
-          'comments': inspection.comments.map((Comment c) => {
-            'id': c.id,
-            'date': c.date,
-            'text': c.text,
-            'image_path': c.imagePath,
-          }).toList(),
+          'comment': {
+            'id': inspection.comment.id,
+            'date': inspection.comment.date,
+            'text': inspection.comment.text,
+            'image_path': inspection.comment.imagePath,
+          },
         },
       );
 
@@ -142,7 +140,7 @@ class InspectionController extends GetxController {
   /// Returns true if the rental was updated successfully.
   Future<bool> updateComment(Comment comment) async {
     try {
-      final response = await apiService.mainClient.put('/inspection/comment/${comment.id}', 
+      final response = await apiService.mainClient.put('/inspection/comment/${comment.id}',
         data: {
           'date': comment.date,
           'text': comment.text,

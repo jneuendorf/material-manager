@@ -15,7 +15,9 @@ class MaterialType(Model):  # type: ignore
     name = db.Column(db.String, unique=True)
     description = db.Column(db.String)
     sets = db.relationship(
-        "MaterialSet", secondary="material_type_set_mapping", backref="material_types"
+        "MaterialSet",
+        secondary="material_type_set_mapping",
+        backref="material_types",
     )
 
 
