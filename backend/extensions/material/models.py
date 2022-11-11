@@ -30,7 +30,9 @@ class PurchaseDetails(Model):  # type: ignore
     suggested_retail_price = db.Column(db.Float, nullable=True)
     __table_args__ = (
         UniqueConstraint(
-            "merchant", "invoice_number", name="merchant_invoice_number_uc"
+            "merchant",
+            "invoice_number",
+            name="merchant_invoice_number_uc",
         ),
     )
 
@@ -82,7 +84,9 @@ class SerialNumber(Model):  # type: ignore
     material_id = db.Column(db.ForeignKey(Material.id))
     __table_args__ = (
         UniqueConstraint(
-            "manufacturer", "serial_number", name="manufacturer_serial_number_uc"
+            "manufacturer",
+            "serial_number",
+            name="manufacturer_serial_number_uc",
         ),
     )
 
