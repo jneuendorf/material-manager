@@ -59,7 +59,7 @@ class CrudModel(Model):
 
         instance = cls(**kwargs, **(_related or {}))
         instance.save()
-        model_created.send(cls, instance=instance)
+        model_created.send(cls, data=instance)
         return instance
 
     @classmethod
@@ -103,10 +103,13 @@ class CrudModel(Model):
         db.session.commit()
 
     def delete(self) -> None:
+        # Avoid cyclic imports
+        from core.signals import model_deleted
+
         db = self.__fsa__
         db.session.delete(self)
         db.session.commit()
-        # TODO: send delete signal
+        model_deleted.send(type(self), data=self)
 
     def __repr__(self):
         return "<{} ({})>".format(self.__class__.__name__, getattr(self, self.pk))
