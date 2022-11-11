@@ -83,7 +83,7 @@ class MaterialSchema(BaseSchema):
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
     purchase_details_id = fields.Integer()
     purchase_details = fields.Nested(PurchaseDetailsSchema())
-    images = fields.Method("get_image_urls")
+    image_urls = fields.Method("get_image_urls")
 
     class Meta:
         # TODO: specifying model_converter should not be necessary
@@ -91,10 +91,9 @@ class MaterialSchema(BaseSchema):
         model_converter = ModelConverter
         model = models.Material
         load_only = ("material_type_id",)
-        dump_only = ("id",)
+        dump_only = ("id", "image_urls")
 
-    @staticmethod
-    def get_image_urls(obj: models.Material):
+    def get_image_urls(self, obj: models.Material):
         return [url_join(STATIC_URL_PATH, image.path) for image in obj.images]
 
 
@@ -112,7 +111,7 @@ class Material(ModelResource):
         material = models.Material.get(id=material_id)
         return self.serialize(material)
 
-    @use_kwargs(MaterialSchema.to_dict())
+    @use_kwargs(MaterialSchema.to_dict(exclude=["image_urls"]))
     def post(
         self,
         *,
