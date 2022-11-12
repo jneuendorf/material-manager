@@ -20,8 +20,8 @@ def test_create_and_fetch_material(client, app) -> None:
         "/material",
         json={
             "inventory_number": "12345",
-            "max_life_expectancy": "2 years",
-            "max_service_duration": "1 year",
+            "max_life_expectancy": "2023-01-01",
+            "max_lifespan": 365,
             "installation_date": "2021-01-01",
             "instructions": "Some instructions...",
             "next_inspection_date": "2022-01-01",
@@ -61,8 +61,8 @@ def test_creating_materials_ensures_no_duplicate_serial_numbers(client, app):
         "/material",
         json={
             "inventory_number": "12345",
-            "max_life_expectancy": "2 years",
-            "max_service_duration": "1 year",
+            "max_life_expectancy": "2023-01-01",
+            "max_lifespan": 365,
             "installation_date": "2021-01-01",
             "instructions": "Some instructions...",
             "next_inspection_date": "2022-01-01",
@@ -91,8 +91,8 @@ def test_creating_materials_ensures_no_duplicate_serial_numbers(client, app):
         "/material",
         json={
             "inventory_number": "12345",
-            "max_life_expectancy": "2 years",
-            "max_service_duration": "1 year",
+            "max_life_expectancy": "2021-01-01",
+            "max_lifespan": 365,
             "installation_date": "2021-01-01",
             "instructions": "Some instructions...",
             "next_inspection_date": "2022-01-01",
@@ -128,8 +128,8 @@ def test_bulk_create_materials(client, app) -> None:
     materials_data = [
         {
             "inventory_number": "12345",
-            "max_life_expectancy": "2 years",
-            "max_service_duration": "1 year",
+            "max_life_expectancy": "2023-01-01",
+            "max_lifespan": 365,
             "installation_date": "2021-01-01",
             "instructions": "Some instructions...",
             "next_inspection_date": "2022-01-01",

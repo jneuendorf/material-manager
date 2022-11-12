@@ -129,7 +129,7 @@ class LocaleString extends Translations {
       'manufacturer' : 'Manufacturer',
       'inventory_number' : 'Inventory No.',
       'max_life_expectancy' : 'Max. Life Expectancy',
-      'max_service_duration' : 'Max. Service Duration',
+      'max_lifespan' : 'Max. Lifespan',
       'instructions' : 'Instructions'
     },
     'de_DE': {
@@ -253,8 +253,8 @@ class LocaleString extends Translations {
       'suggested_retail_price' : 'Unverbindliche Preisempfehlung',
       'manufacturer' : 'Hersteller',
       'inventory_number' : 'Inventarnr.',
-      'max_life_expectancy' : 'Max. Lebenserwartung',
-      'max_service_duration' : 'Max. Dienstdauer',
+      'max_life_expectancy' : 'Max. Lebensdauer',
+      'max_lifespan' : 'Max. Gebrauchsdauer',
       'instructions' : 'Gebrauchsanweisung'
     }
   };

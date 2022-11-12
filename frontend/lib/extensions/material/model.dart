@@ -41,7 +41,7 @@ class MaterialModel {
     serialNumbers: List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
     inventoryNumber: json['inventory_number'],
     maxLifeExpectancy: json['max_life_expectancy'],
-    maxServiceDuration: json['max_service_duration'],
+    maxServiceDuration: json['max_lifespan'],
     installationDate: DateTime.parse(json['installation_date']),
     instructions: json['instructions'],
     nextInspectionDate: DateTime.parse(json['next_inspection_date']),

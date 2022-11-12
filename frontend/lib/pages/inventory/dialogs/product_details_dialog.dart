@@ -9,7 +9,7 @@ import 'package:frontend/extensions/material/model.dart';
 
 class ProductDetailsDialog extends StatelessWidget {
   final MaterialModel item;
-  
+
   const ProductDetailsDialog({super.key, required this.item});
 
   static final inventoryPageController = Get.find<InventoryPageController>();
@@ -32,7 +32,7 @@ class ProductDetailsDialog extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text('product_details'.tr, 
+                  child: Text('product_details'.tr,
                     style: Get.textTheme.headline6,
                   ),
                 ),
@@ -54,7 +54,7 @@ class ProductDetailsDialog extends StatelessWidget {
                         children: [
                         Text('${'manufacturer'.tr} : ',
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold, 
+                            fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                           ),
                         ),
@@ -67,59 +67,59 @@ class ProductDetailsDialog extends StatelessWidget {
                       children: [
                         Text('${'inventory_number'.tr} : ',
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold, 
+                            fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                           ),
                         ),
                         Text(item.inventoryNumber,
                           style: const TextStyle(fontSize: 15.0),
                         ),
-                        ] 
+                        ]
                       ),
                       Row(
                         children: [
                         Text('${'max_life_expectancy'.tr} : ',
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold, 
+                            fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                           ),
                         ),
                         Text(item.maxLifeExpectancy,
                           style: const TextStyle(fontSize: 15.0)
                         ),
-                        ] 
+                        ]
                       ),
                       Row(
                         children: [
-                        Text('${'max_service_duration'.tr} : ',
+                        Text('${'max_lifespan'.tr} : ',
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold, 
+                            fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                             ),
                           ),
                         Text(item.maxServiceDuration,
                             style: const TextStyle(fontSize: 15.0)
                         ),
-                        ] 
+                        ]
                       ),
                       Row(
                         children: [
                         Text('${'instructions'.tr} : ',
                           style: const TextStyle(
-                            fontWeight: FontWeight.bold, 
+                            fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                           ),
                         ),
                         Text(item.instructions,
                           style: const TextStyle(fontSize: 15.0)
                         ),
-                        ] 
+                        ]
                       ),
                       for(var property in item.properties) Row(
                         children: [
                           Text('${property.name} : ',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               fontSize: 15.0,
                             )
                           ),
@@ -142,14 +142,14 @@ class ProductDetailsDialog extends StatelessWidget {
                         children: [
                           Text('${'merchant'.tr} : ',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               fontSize: 15.0,
                             ),
                           ),
                           Text(item.purchaseDetails.merchant.toString(),
                           style: const TextStyle(fontSize: 15.0),
                           ),
-                        ] 
+                        ]
                       ),
                       Row(
                         children: [
@@ -165,7 +165,7 @@ class ProductDetailsDialog extends StatelessWidget {
                         children: [
                           Text('${'production_date'.tr} : ',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               fontSize: 15.0,
                             ),
                           ),
@@ -178,20 +178,20 @@ class ProductDetailsDialog extends StatelessWidget {
                         children: [
                           Text('${'purchase_date'.tr} : ',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               fontSize: 15.0,
                             ),
                           ),
                           Text(inventoryPageController.formatDate(item.purchaseDetails.purchaseDate),
                             style: const TextStyle(fontSize: 15.0)
                           ),
-                        ] 
+                        ]
                       ),
                       Row(
                         children: [
                           Text('${'purchase_price'.tr} : ',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               fontSize: 15.0,
                             ),
                           ),
@@ -204,7 +204,7 @@ class ProductDetailsDialog extends StatelessWidget {
                         children: [
                           Text('${'suggested_retail_price'.tr} : ',
                             style: const TextStyle(
-                              fontWeight: FontWeight.bold, 
+                              fontWeight: FontWeight.bold,
                               fontSize: 15.0,
                             ),
                           ),

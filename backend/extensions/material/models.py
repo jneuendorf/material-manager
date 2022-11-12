@@ -14,7 +14,7 @@ Model: Type[CrudModel] = db.Model
 class MaterialType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, unique=True)
-    description = db.Column(db.String)
+    description = db.Column(db.String(length=80))
     sets = db.relationship(
         "MaterialSet",
         secondary="material_type_set_mapping",
@@ -46,21 +46,29 @@ class Condition(enum.Enum):
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    inventory_number = db.Column(db.String(length=20))
-    max_life_expectancy = db.Column(db.String)
-    max_service_duration = db.Column(db.String)
-    installation_date = db.Column(db.Date)
-    instructions = db.Column(db.Text)
-    next_inspection_date = db.Column(db.Date)
-    rental_fee = db.Column(db.Float)
+    inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
+    name = db.Column(db.String(length=80), nullable=False)
+    installation_date = db.Column(db.Date, nullable=False)  # Inbetriebnahme
+    max_life_expectancy = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
+    max_lifespan = db.Column(
+        db.Integer,
+        nullable=False,
+    )  # Gebrauchsdauer, compare to 'days_used'
+    instructions = db.Column(db.Text, nullable=False, default="")
+    next_inspection_date = db.Column(db.Date, nullable=False)
+    rental_fee = db.Column(db.Float, nullable=False)
     # We need `create_constraint=True` because SQLite doesn't support enums natively
-    condition = db.Column(db.Enum(Condition, create_constraint=True))
-    days_used = db.Column(db.Integer)
+    condition = db.Column(
+        db.Enum(Condition, create_constraint=True),
+        nullable=False,
+        default=Condition.OK,
+    )
+    days_used = db.Column(db.Integer, nullable=False, default=0)
     # many to one (FK here)
-    material_type_id = db.Column(db.ForeignKey(MaterialType.id))
+    material_type_id = db.Column(db.ForeignKey(MaterialType.id), nullable=False)
     material_type = db.relationship("MaterialType", backref="materials")
     # many to one (FK here)
-    purchase_details_id = db.Column(db.ForeignKey(PurchaseDetails.id))
+    purchase_details_id = db.Column(db.ForeignKey(PurchaseDetails.id), nullable=True)
     purchase_details = db.relationship("PurchaseDetails", backref="materials")
     # one to many (FK on child)
     serial_numbers = db.relationship("SerialNumber", backref="material")
