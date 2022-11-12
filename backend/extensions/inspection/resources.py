@@ -22,9 +22,8 @@ class CommentSchema(BaseSchema):
         )
     
 
-class Comment(ModelResource):
-    url = "/comment"
-    Schema = CommentSchema
+# class Comment(ModelResource):
+#    Schema = CommentSchema
     
     
 class InspectionSchema(BaseSchema):
@@ -44,12 +43,23 @@ class Inspection(ModelResource):
     url = [
          "/inspection",
         "/inspection/<int:inspection_id>",
-        "/inspections/<int:material_id>",
     ]
     Schema = InspectionSchema
     
     def get(self, inspection_id: int):
-        pass
+        inspection = models.Inspection.get(inspection_id)
+        return inspection
     
     def post(self, inspection_id: int):
         pass
+
+
+
+# I thought we should return all comments by material_id but Do we need Inspection attributes like date?
+class Comments(ModelResource):
+    url = "/inspections/<int:material_id>"
+    Schema = CommentSchema
+    
+    def get(self, material_id: int):
+        inspections = models.Comment.get(material_id)
+        return self.serialize(inspections)
