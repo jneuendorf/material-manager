@@ -158,7 +158,7 @@ for i in range(NUM_MATERIALS):
         installation_date=installation_date,
         max_life_expectancy=installation_date + timedelta(weeks=(-1) ** i * 2),
         max_lifespan=i % 5 + 1,
-        instructions="hier sollte eine gebrauchsanweisung stehen",
+        instructions="some instructions...",
         next_inspection_date=installation_date + timedelta(weeks=(-1) ** i),
         rental_fee=1.13 * (i + 1),
         condition=condition,
