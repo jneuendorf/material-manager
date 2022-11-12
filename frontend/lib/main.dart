@@ -41,7 +41,13 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
-  await dotenv.load(fileName: '.env');
+  try {
+    await dotenv.load(fileName: 'env/.env');
+  } catch (e) {
+    debugPrint('Error loading env file: $e');
+    await dotenv.load(fileName: 'env/dev.env');
+  }
+
 
   await Get.putAsync(() async => await ApiService().init());
 

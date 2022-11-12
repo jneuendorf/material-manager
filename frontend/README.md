@@ -1,5 +1,13 @@
 # Material Manager - Frontend
 
+## ENV
+
+In the `/frontend` directory an `.env` can be created. 
+
+Within this file the variables  `HOST` and `PORT` can be set.
+
+In case the file is not found or the variables arn´t set, the default fallback values are `localhost` and `5000`.
+
 ## Running
 
 Run `flutter run -d <device>` to run on specific device.
