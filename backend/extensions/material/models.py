@@ -6,6 +6,7 @@ from sqlalchemy.schema import UniqueConstraint
 
 from core.extensions import db
 from core.helpers.orm import CrudModel
+from extensions.common.models import File
 
 Model: Type[CrudModel] = db.Model
 
@@ -63,6 +64,7 @@ class Material(Model):  # type: ignore
     purchase_details = db.relationship("PurchaseDetails", backref="materials")
     # one to many (FK on child)
     serial_numbers = db.relationship("SerialNumber", backref="material")
+    images = File.reverse_generic_relationship("Material")
     # many to many
     properties = db.relationship(
         "Property",
@@ -93,7 +95,8 @@ class SerialNumber(Model):  # type: ignore
 
 class MaterialSet(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    set_name = db.Column(db.String(length=32))
+    images = File.reverse_generic_relationship("MaterialSet")
+    name = db.Column(db.String(length=32))
 
 
 MaterialTypeSetMapping: Table = db.Table(

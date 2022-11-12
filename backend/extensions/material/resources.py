@@ -5,10 +5,12 @@ from flask_apispec import use_kwargs
 from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
+from core.helpers.extension import url_join
 from core.helpers.resource import ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
+from .config import STATIC_URL_PATH
 
 
 class SerialNumberSchema(BaseSchema):
@@ -81,6 +83,7 @@ class MaterialSchema(BaseSchema):
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
     purchase_details_id = fields.Integer()
     purchase_details = fields.Nested(PurchaseDetailsSchema())
+    image_urls = fields.Method("get_image_urls")
 
     class Meta:
         # TODO: specifying model_converter should not be necessary
@@ -88,7 +91,10 @@ class MaterialSchema(BaseSchema):
         model_converter = ModelConverter
         model = models.Material
         load_only = ("material_type_id",)
-        dump_only = ("id",)
+        dump_only = ("id", "image_urls")
+
+    def get_image_urls(self, obj: models.Material):
+        return [url_join(STATIC_URL_PATH, image.path) for image in obj.images]
 
 
 class Material(ModelResource):
@@ -105,12 +111,13 @@ class Material(ModelResource):
         material = models.Material.get(id=material_id)
         return self.serialize(material)
 
-    @use_kwargs(MaterialSchema.to_dict())
+    @use_kwargs(MaterialSchema.to_dict(exclude=["image_urls"]))
     def post(
         self,
         *,
         serial_numbers: List[models.SerialNumber],
         purchase_details: models.PurchaseDetails = None,
+        # TODO: add image
         **kwargs,
     ) -> dict:
         related = {"serial_numbers": serial_numbers}
@@ -125,7 +132,7 @@ class Material(ModelResource):
             print(e)
             abort(403, "Duplicate serial number for the same manufacturer")
 
-        return self.serialize(material)
+        return self.serialize(material)  # noqa
 
 
 class Materials(ModelListResource):

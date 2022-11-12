@@ -17,4 +17,5 @@ passlib[argon2]~=1.7
 password-strength==0.0.3.post2
 python-dotenv~=0.21
 SQLAlchemy~=1.4
+SQLAlchemy-Utils~=0.38
 webargs~=8.2

@@ -1,18 +1,11 @@
-from typing import Type, TypedDict
+from typing import Type, TypeVar
 
 from core.helpers.orm import CrudModel
 from core.signals.signal import Signal
 
-Sender = Type[CrudModel]
+M = TypeVar("M", bound=CrudModel)
 
-
-class Kwargs(TypedDict):
-    instance: CrudModel
-
-
-class ModelSignal(Signal[Sender, Kwargs]):
-    ...
-
+ModelSignal = Signal[Type[M], M]
 
 model_created = ModelSignal("model-created")
 model_updated = ModelSignal("model-updated")

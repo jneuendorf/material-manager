@@ -43,6 +43,8 @@ backend-test:
         - cd backend
         - make install
         - make test
+        - make sample_data
+
 
 backend-lint:
     image: python:3.9

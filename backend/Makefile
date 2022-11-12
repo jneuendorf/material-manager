@@ -1,5 +1,5 @@
 # See https://stackoverflow.com/a/59335943/6928824
-.PHONY: all venv install install_prod precommit run shell test clean
+.PHONY: all venv install install_prod sample_data precommit run shell test run clean
 
 all: install run
 
@@ -8,17 +8,17 @@ venv:
 	test -d venv || python3.9 -m venv venv
 
 install: venv
-	. venv/bin/activate && pip install -r requirements-dev.txt && pre-commit install
+	. venv/bin/activate && pip install -Ur requirements-dev.txt && pre-commit install
 
 install_prod: venv
-	. venv/bin/activate && pip install -r requirements.txt
+	. venv/bin/activate && pip install -Ur requirements.txt
 
 # NOTE: sqlite only
 clear_db:
 	rm -rf instance/*.db
 
 sample_data:
-	. venv/bin/activate && flask --app core.app create-sample-data user material
+	. venv/bin/activate && flask create-sample-data user material inspection
 
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
