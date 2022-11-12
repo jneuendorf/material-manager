@@ -6,10 +6,11 @@ inspection = Extension(
     __name__,
     models=(
         models.Inspection,
-        models.Comment,
+     #   models.Comment,
     ),
     resources=(
         resources.Inspection,
-        resources.Comment,
+        # resources.Comment,
+        resources.Comments
         ),
 )
