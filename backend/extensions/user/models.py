@@ -37,6 +37,7 @@ class User(Model):  # type: ignore
         nullable=False,
         default="",
     )  # for 32 bytes as base64
+    # many-to-many
     roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
 
     @classmethod
@@ -91,7 +92,9 @@ class Role(Model):  # type: ignore
     name = db.Column(db.String)
     description = db.Column(db.String)
     permissions = db.relationship(
-        "Permission", secondary="role_permission_mapping", backref="roles"
+        "Permission",
+        secondary="role_permission_mapping",
+        backref="roles",
     )
 
 

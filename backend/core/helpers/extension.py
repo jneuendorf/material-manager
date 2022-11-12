@@ -59,6 +59,7 @@ class Extension(Blueprint, ABC, Generic[M, R]):
     ) -> None:
         self.before_install(app=app, jwt=jwt, api=api, api_docs=api_docs)
 
+        app.extensions[self.name] = self
         app.register_blueprint(self, **blueprint_options)
 
         resources: Iterable[Type[BaseResource]] = self.resources
@@ -69,9 +70,7 @@ class Extension(Blueprint, ABC, Generic[M, R]):
                     if isinstance(resource_cls.url, str)
                     else resource_cls.url
                 )
-                resource_urls = [
-                    url_join(base_url, url.format(ext_name=self.name)) for url in urls
-                ]
+                resource_urls = [url_join(base_url, url) for url in urls]
                 api.add_resource(resource_cls, *resource_urls)
                 print("> Resource:", resource_cls.__name__, "=>", resource_urls)
                 if issubclass(resource_cls, MethodResource):

@@ -296,9 +296,9 @@ we need to know somehow when this happens. For achieving this, we make
 use of the `model-created` signal.
 
 ```python
-from typing import cast
+from typing import Type
 
-from core.signals.model import Sender, Kwargs, model_created
+from core.signals.model import model_created
 from extensions.user.models import User
 
 from .models import UserNotificationInfo
@@ -308,14 +308,13 @@ def send_mail(email: str, subject: str, message: str):
     ...
 
 
-def receiver(sender: Sender, data: Kwargs):
-    instance = cast(UserNotificationInfo, data["instance"])
+def receiver(sender: Type[UserNotificationInfo], data: UserNotificationInfo):
     for user_info in UserNotificationInfo.filter(notify=True):
         user = User.get(id=user_info.user_id)
         send_mail(
             user.email,
             "New material",
-            "New material has arrived!\n\nCheck out https://superawesomematerial.org/material/" + instance.id,
+            "New material has arrived!\n\nCheck out https://superawesomematerial.org/material/" + data.id,
         )
 
 model_created.connect(receiver, sender=UserNotificationInfo)

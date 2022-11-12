@@ -4,6 +4,12 @@ from apispec import APISpec
 from apispec.ext.marshmallow import MarshmallowPlugin
 
 flask_config = {
+    ######################################################################
+    # MATERIAL MANAGER
+    "STATIC_DIR": "./filestorage/",
+    "STATIC_URL": "",
+    ######################################################################
+    # VENDORS
     # configure the SQLite database, relative to the app instance folder
     "SQLALCHEMY_DATABASE_URI": "sqlite:///material_manager.db",
     # TODO: change when in running in production mode

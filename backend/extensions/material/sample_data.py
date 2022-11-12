@@ -25,10 +25,10 @@ MANUFACTURERS = it.cycle(["edelrid", "the blue light", "elliot", "black diamond"
 # Create material sets
 material_sets = it.cycle(
     [
-        MaterialSet.get_or_create(set_name="ice climbing"),
-        MaterialSet.get_or_create(set_name="mountain face"),
-        MaterialSet.get_or_create(set_name="hiking"),
-        MaterialSet.get_or_create(set_name="camping"),
+        MaterialSet.get_or_create(name="ice climbing"),
+        MaterialSet.get_or_create(name="mountain face"),
+        MaterialSet.get_or_create(name="hiking"),
+        MaterialSet.get_or_create(name="camping"),
     ]
 )
 

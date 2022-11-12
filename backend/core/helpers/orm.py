@@ -29,6 +29,10 @@ class CrudModel(Model):
     # => Meta.abstract = True
     __table_args__ = {"extend_existing": True}
 
+    # Type hint so that any arguments can be passed.
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
     @classmethod
     def get_query(cls) -> "Query":
         if cls._query is None:
@@ -55,7 +59,7 @@ class CrudModel(Model):
 
         instance = cls(**kwargs, **(_related or {}))
         instance.save()
-        model_created.send(cls, instance=instance)
+        model_created.send(cls, data=instance)
         return instance
 
     @classmethod
@@ -70,7 +74,7 @@ class CrudModel(Model):
 
     @classmethod
     @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
-    def get_or_create(cls, *, _related=None, **kwargs):
+    def get_or_create(cls, *, _related=None, **kwargs) -> "CrudModel":
         try:
             return cls.get(**kwargs)
         except NoResultFound:
@@ -99,10 +103,13 @@ class CrudModel(Model):
         db.session.commit()
 
     def delete(self) -> None:
+        # Avoid cyclic imports
+        from core.signals import model_deleted
+
         db = self.__fsa__
         db.session.delete(self)
         db.session.commit()
-        # TODO: send delete signal
+        model_deleted.send(type(self), data=self)
 
     def __repr__(self):
         return "<{} ({})>".format(self.__class__.__name__, getattr(self, self.pk))
