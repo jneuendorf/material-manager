@@ -2,6 +2,8 @@ import itertools as it
 from datetime import date, timedelta
 from hashlib import sha1
 
+from gdown import download
+
 from extensions.material.models import (
     Condition,
     Material,
@@ -135,3 +137,9 @@ for i in range(NUM_MATERIALS):
             properties=[Property.get(name=get_property_name(i % NUM_PROPERTIES))],
         ),
     )
+
+
+# Get sample images from google drive
+url = "https://drive.google.com/file/d/160psfXfn0xv-4WjkSbDuaNiJMqe4EAGg/view?usp=share_link"  # noqa: E501
+output = "extensions/material/static/carbine.jpg"
+download(url, output, quiet=False, fuzzy=True)
