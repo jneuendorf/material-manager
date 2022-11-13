@@ -1,11 +1,11 @@
+import mimetypes
 from pathlib import Path
-from typing import Optional, Type, cast
+from typing import Type
 
-from flask import current_app
 from sqlalchemy_utils import generic_relationship
 
 from core.extensions import db
-from core.helpers.extension import Extension
+from core.helpers.extension import get_extension
 from core.helpers.orm import CrudModel
 
 Model: Type[CrudModel] = db.Model
@@ -20,23 +20,23 @@ class File(Model):  # type: ignore
     """
 
     id = db.Column(db.Integer, primary_key=True)
-    path = db.Column(db.String(length=128))
-    """The path is used by the extension to generate the URL.
-    Usually, relative to the extension's static folder.
+    path = db.Column(db.String(length=128), nullable=False, unique=True)
+    """The path where the file is stored.
+    It is relative to the extension's static folder.
     """
-    mime_type = db.Column(db.String(length=75))
+    mime_type = db.Column(db.String(length=75), default="")
     """Length to fit longest common MIME type for .pptx files:
 
     application/vnd.openxmlformats-officedocument.presentationml.presentation
     """
     description = db.Column(db.String(length=100), default="")
     """Can be used for e.g. <img alt="...">"""
-    object_type = db.Column(db.String(length=255))
-    object_id = db.Column(db.Integer)
+    object_type = db.Column(db.String(length=255), nullable=False)
+    object_id = db.Column(db.Integer, nullable=False)
     object = generic_relationship(object_type, object_id)
 
-    @staticmethod
-    def reverse_generic_relationship(from_model: str, has_many: bool = True):
+    @classmethod
+    def reverse_generic_relationship(cls, from_model: str, has_many: bool = True):
         return db.relationship(
             File,
             foreign_keys=[File.object_id],
@@ -50,22 +50,45 @@ class File(Model):  # type: ignore
             uselist=has_many,
         )
 
-    def delete(self) -> None:
-        initiating_model_cls = cast(CrudModel, type(self.object))
-        initiating_extension: Optional[Extension] = None
-        for name, extension in current_app.extensions.items():
-            for model_cls in getattr(extension, "models", []):
-                if model_cls is initiating_model_cls:
-                    initiating_extension = extension
-                    break
+    def download(self, url: str, force: bool = False):
+        """Downloads the file from the given URL and saves it according to
+        this instance's path.
+        WORKS ONLY WHEN DEVELOPMENT REQUIREMENTS ARE INSTALLED!
+        """
 
-        if not initiating_extension:
-            print("WARNING: File model instance deleted from unknown source")
-            return
+        path = self.resolved_path
+        if force or not path.exists():
+            from gdown import download
+
+            download(
+                url,
+                output=str(path),
+                quiet=False,
+                fuzzy=True,
+            )
+
+            mime_type, _ = mimetypes.guess_type(path)
+            if mime_type != self.mime_type:
+                self.update(mime_type=mime_type)
+                print(f"Updated MIME type after download from {url}")
+
+    @property
+    def resolved_path(self) -> Path:
+        extension = get_extension(instance=self.object)
+        if extension is None:
+            raise TypeError(f"Could not find a extension that belongs to {self.object}")
+        return (EXTENSIONS_DIR / extension.static_folder / self.path).resolve()
+
+    def delete(self) -> None:
+        initiating_extension = get_extension(instance=self.object)
+        if initiating_extension is None:
+            raise TypeError(f"Could not find a extension that belongs to {self.object}")
         if not initiating_extension.static_folder:
-            print("WARNING: File model instance deleted without a static folder")
+            print("WARNING: File instance deleted without a static folder")
             return
 
         super().delete()
-        resolved_path = EXTENSIONS_DIR / initiating_extension.static_folder / self.path
-        resolved_path.unlink()
+        path = self.resolved_path
+        if not path.exists():
+            print("WARNING: File instance's path does not exist")
+        self.resolved_path.unlink(missing_ok=True)
