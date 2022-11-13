@@ -2,8 +2,7 @@ import itertools as it
 from datetime import date, timedelta
 from hashlib import sha1
 
-from gdown import download
-
+from extensions.common.models import File
 from extensions.material.models import (
     Condition,
     Material,
@@ -118,7 +117,7 @@ for i in range(NUM_MATERIALS):
             SerialNumber.get(serial_number=get_serial_number_str(i - 1))
         )
 
-    Material.get_or_create(
+    material = Material.get_or_create(
         inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}",
         max_life_expectancy=i % 9 + 1,
         max_service_duration=i % 5 + 1,
@@ -138,8 +137,15 @@ for i in range(NUM_MATERIALS):
         ),
     )
 
-
-# Get sample images from google drive
-url = "https://drive.google.com/file/d/160psfXfn0xv-4WjkSbDuaNiJMqe4EAGg/view?usp=share_link"  # noqa: E501
-output = "extensions/material/static/carbine.jpg"
-download(url, output, quiet=False, fuzzy=True)
+    if i == 0:
+        image: File = File.get_or_create(
+            path="carabiner.jpg",
+            mime_type="image/jpeg",
+            description="silver carabiner",
+            _related=dict(
+                object=material,
+            ),
+        )
+        image.download(
+            url="https://drive.google.com/file/d/160psfXfn0xv-4WjkSbDuaNiJMqe4EAGg/view?usp=share_link",  # noqa
+        )
