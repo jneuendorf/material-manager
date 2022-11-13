@@ -57,15 +57,16 @@ final PurchaseDetails mockPurchaseDetails = PurchaseDetails(
 
 
 final SerialNumber mockSerialNumber = SerialNumber(
-  id: 1,
+  serialNumber: 'sn-0-0',
   manufacturer: 'Kletter-Stuff XY',
+  productionDate: DateTime(2020, 1, 1),
 );
 
 
 final List<MaterialModel> mockMaterial = [
   MaterialModel(
     id: 1,
-    imagePath: 'https://picsum.photos/250?image=1',
+    imageUrls: ['https://picsum.photos/250?image=1'],
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -76,7 +77,7 @@ final List<MaterialModel> mockMaterial = [
     instructions: 'Use with care',
     nextInspectionDate: DateTime(2022, 2, 1),
     rentalFee: 5,
-    condition: ConditionModel.good,
+    condition: ConditionModel.ok,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
     materialType: mockRopeMaterialType,
@@ -87,7 +88,7 @@ final List<MaterialModel> mockMaterial = [
   ),
   MaterialModel(
     id: 2,
-    imagePath: 'https://picsum.photos/250?image=9',
+    imageUrls: ['https://picsum.photos/250?image=9'],
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -98,7 +99,7 @@ final List<MaterialModel> mockMaterial = [
     instructions: 'Use with care',
     nextInspectionDate: DateTime(2022, 2, 1),
     rentalFee: 7,
-    condition: ConditionModel.good,
+    condition: ConditionModel.ok,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
     materialType: mockHelmetMaterialType,
@@ -108,7 +109,7 @@ final List<MaterialModel> mockMaterial = [
   ),
   MaterialModel(
     id: 3,
-    imagePath: 'https://picsum.photos/250?image=9',
+    imageUrls: ['https://picsum.photos/250?image=9'],
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -119,7 +120,7 @@ final List<MaterialModel> mockMaterial = [
     instructions: 'Use with care',
     nextInspectionDate: DateTime(2022, 2, 1),
     rentalFee: 2,
-    condition: ConditionModel.good,
+    condition: ConditionModel.ok,
     usage: 4,
     purchaseDetails: mockPurchaseDetails,
     materialType: mockCarbineMaterialType,
@@ -129,7 +130,7 @@ final List<MaterialModel> mockMaterial = [
   ),
   MaterialModel(
     id: 4,
-    imagePath: 'https://picsum.photos/250?image=1',
+    imageUrls: ['https://picsum.photos/250?image=1'],
     serialNumbers: [
       mockSerialNumber,
     ],

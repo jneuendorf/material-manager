@@ -41,7 +41,7 @@ class InspectionDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16.0),
                   if (inspectionPageController.selectedMaterials.isNotEmpty) Obx(() {
-                    if (inspectionPageController.selectedMaterials.first.imagePath != null) {
+                    if (inspectionPageController.selectedMaterials.first.imageUrls.isNotEmpty) {
                       return Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
@@ -49,7 +49,7 @@ class InspectionDetailPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10.0)
                         ),
                         child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                            ? Image.network(inspectionPageController.selectedMaterials.first.imagePath!)
+                            ? Image.network(inspectionPageController.selectedMaterials.first.imageUrls.first)
                             : null,
                       );
                     } else {

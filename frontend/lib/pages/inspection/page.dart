@@ -83,7 +83,7 @@ class InspectionPage extends GetView<InspectionPageController> {
                     SizedBox(
                       width: 50,
                       child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                          ? Image.network(material.imagePath!)
+                          ? Image.network(material.imageUrls.first)
                           : null,
                     ),
                     Column(

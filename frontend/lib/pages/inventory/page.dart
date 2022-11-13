@@ -45,7 +45,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 title: 'condition'.tr,
                 options: [
                   'all'.tr,
-                  ConditionModel.good.toString().split('.').last.tr,
+                  ConditionModel.ok.toString().split('.').last.tr,
                   ConditionModel.broken.toString().split('.').last.tr,
                 ],
                 selected: controller.selectedConditionFilter.value?.toString().split('.').last ?? 'all'.tr,
@@ -138,7 +138,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       child: SizedBox(
                         width: 50,
                         child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
-                          ? Image.network(controller.filteredMaterial[index].imagePath!) 
+                          ? Image.network(controller.filteredMaterial[index].imageUrls.first) 
                           : null,
                       ),
                     ),
@@ -184,7 +184,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       borderRadius: BorderRadius.circular(10.0),
                       image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
                         ? DecorationImage(
-                          image: NetworkImage(item.imagePath!),
+                          image: NetworkImage(item.imageUrls.first),
                         ) 
                         : null,
                     ),
