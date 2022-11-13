@@ -45,7 +45,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 title: 'condition'.tr,
                 options: [
                   'all'.tr,
-                  ConditionModel.good.toString().split('.').last.tr,
+                  ConditionModel.ok.toString().split('.').last.tr,
                   ConditionModel.broken.toString().split('.').last.tr,
                 ],
                 selected: controller.selectedConditionFilter.value?.toString().split('.').last ?? 'all'.tr,

@@ -70,7 +70,7 @@ class SerialNumber {
 }
 
 enum ConditionModel {
-  good,
+  ok,
   broken,
 }
 
