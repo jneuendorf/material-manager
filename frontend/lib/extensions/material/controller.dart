@@ -115,8 +115,9 @@ class MaterialController extends GetxController {
       final response = await apiService.mainClient.post('/material', 
         data: {
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
-            'id': s.id,
+            'serial_number': s.serialNumber,
             'manufacturer': s.manufacturer,
+            'production_date': s.productionDate,
           }).toList(),
           'inventory_number': material.inventoryNumber,
           'max_life_expectancy': material.maxLifeExpectancy,
@@ -210,8 +211,9 @@ class MaterialController extends GetxController {
         data: {
           'image_path': material.imagePath,
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
-            'id': s.id,
+            'serial_number': s.serialNumber,
             'manufacturer': s.manufacturer,
+            'production_date': s.productionDate,
           }).toList(),
           'inventory_number': material.inventoryNumber,
           'max_life_expectancy': material.maxLifeExpectancy,

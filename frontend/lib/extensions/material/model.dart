@@ -55,17 +55,20 @@ class MaterialModel {
 }
 
 class SerialNumber {
-  final int id;
+  String serialNumber;
   String manufacturer;
+  DateTime productionDate;
 
   SerialNumber({
-    required this.id,
+    required this.serialNumber,
     required this.manufacturer,
+    required this.productionDate,
   });
 
   factory SerialNumber.fromJson(Map<String, dynamic> json) => SerialNumber(
-    id: json['id'],
+    serialNumber: json['serial_number'],
     manufacturer: json['manufacturer'],
+    productionDate: DateTime.parse(json['production_date']),
   );
 }
 

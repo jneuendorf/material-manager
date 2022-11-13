@@ -57,8 +57,9 @@ final PurchaseDetails mockPurchaseDetails = PurchaseDetails(
 
 
 final SerialNumber mockSerialNumber = SerialNumber(
-  id: 1,
+  serialNumber: 'sn-0-0',
   manufacturer: 'Kletter-Stuff XY',
+  productionDate: DateTime(2020, 1, 1),
 );
 
 
