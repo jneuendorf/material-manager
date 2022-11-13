@@ -41,7 +41,7 @@ class InspectionDetailPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 16.0),
                   if (inspectionPageController.selectedMaterials.isNotEmpty) Obx(() {
-                    if (inspectionPageController.selectedMaterials.first.imageUrls != null) {
+                    if (inspectionPageController.selectedMaterials.first.imageUrls.isNotEmpty) {
                       return Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
