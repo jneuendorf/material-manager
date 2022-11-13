@@ -85,7 +85,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   String getMaterialPicture(RentalModel item, int materialIndex) {
     String path = materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).imagePath!;
+    material.id == item.materialIds[materialIndex]).imageUrls.first;
     return path;
   }
 

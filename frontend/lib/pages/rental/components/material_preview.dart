@@ -34,7 +34,7 @@ class MaterialPreview extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: Image.network(item.imagePath!),
+                      child: Image.network(item.imageUrls.first),
                     ),
                     const Divider(),
                     Padding(

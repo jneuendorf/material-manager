@@ -209,7 +209,7 @@ class MaterialController extends GetxController {
     try {
       final response = await apiService.mainClient.put('/material/${material.id}', 
         data: {
-          'image_path': material.imagePath,
+          'image_path': material.imageUrls,
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
             'serial_number': s.serialNumber,
             'manufacturer': s.manufacturer,

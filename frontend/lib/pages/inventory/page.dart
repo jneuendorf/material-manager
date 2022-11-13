@@ -138,7 +138,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       child: SizedBox(
                         width: 50,
                         child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
-                          ? Image.network(controller.filteredMaterial[index].imagePath!) 
+                          ? Image.network(controller.filteredMaterial[index].imageUrls.first) 
                           : null,
                       ),
                     ),
@@ -184,7 +184,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       borderRadius: BorderRadius.circular(10.0),
                       image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
                         ? DecorationImage(
-                          image: NetworkImage(item.imagePath!),
+                          image: NetworkImage(item.imageUrls.first),
                         ) 
                         : null,
                     ),

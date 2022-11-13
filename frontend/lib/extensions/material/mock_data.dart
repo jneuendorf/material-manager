@@ -66,7 +66,7 @@ final SerialNumber mockSerialNumber = SerialNumber(
 final List<MaterialModel> mockMaterial = [
   MaterialModel(
     id: 1,
-    imagePath: 'https://picsum.photos/250?image=1',
+    imageUrls: ['https://picsum.photos/250?image=1'],
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -88,7 +88,7 @@ final List<MaterialModel> mockMaterial = [
   ),
   MaterialModel(
     id: 2,
-    imagePath: 'https://picsum.photos/250?image=9',
+    imageUrls: ['https://picsum.photos/250?image=9'],
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -109,7 +109,7 @@ final List<MaterialModel> mockMaterial = [
   ),
   MaterialModel(
     id: 3,
-    imagePath: 'https://picsum.photos/250?image=9',
+    imageUrls: ['https://picsum.photos/250?image=9'],
     serialNumbers: [
       mockSerialNumber,
     ],
@@ -130,7 +130,7 @@ final List<MaterialModel> mockMaterial = [
   ),
   MaterialModel(
     id: 4,
-    imagePath: 'https://picsum.photos/250?image=1',
+    imageUrls: ['https://picsum.photos/250?image=1'],
     serialNumbers: [
       mockSerialNumber,
     ],
