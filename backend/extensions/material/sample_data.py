@@ -138,7 +138,7 @@ for i in range(NUM_MATERIALS):
     )
 
     if i == 0:
-        image: File = File.get_or_create(
+        image = File = File.get_or_create(
             path="carabiner.jpg",
             mime_type="image/jpeg",
             description="silver carabiner",
@@ -148,4 +148,56 @@ for i in range(NUM_MATERIALS):
         )
         image.download(
             url="https://drive.google.com/file/d/160psfXfn0xv-4WjkSbDuaNiJMqe4EAGg/view?usp=share_link",  # noqa
+        )
+
+    if i == 1:
+        image = File = File.get_or_create(
+            path="express_sling.jpg",
+            mime_type="image/jpeg",
+            description="black/silver express sling",
+            _related=dict(
+                object=material,
+            ),
+        )
+        image.download(
+            url="https://drive.google.com/file/d/1j4gkg4tqGD3BTyLBL6OVY-CoUA2tOVtl/view?usp=sharing",  # noqa
+        )
+
+    if i == 2:
+        image = File = File.get_or_create(
+            path="harness.jpg",
+            mime_type="image/jpeg",
+            description="red/black harness",
+            _related=dict(
+                object=material,
+            ),
+        )
+        image.download(
+            url="https://drive.google.com/file/d/1K_MQ3KSqdIFa-MgyciwYMV--DEjzOhxe/view?usp=sharing",  # noqa
+        )
+
+    if i == 3:
+        image = File = File.get_or_create(
+            path="rope.jpg",
+            mime_type="image/jpeg",
+            description="lime green rope",
+            _related=dict(
+                object=material,
+            ),
+        )
+        image.download(
+            url="https://drive.google.com/file/d/1yKwMOxKo6jcjoftc4XdRzPb8R8t2ScN2/view?usp=sharing",  # noqa
+        )
+
+    if i == 4:
+        image = File = File.get_or_create(
+            path="ribbon.jpg",
+            mime_type="image/jpeg",
+            description="blue ribbon",
+            _related=dict(
+                object=material,
+            ),
+        )
+        image.download(
+            url="https://drive.google.com/file/d/11fQQz9vC2j4f9vooQSU55BaoAxHdGRI3/view?usp=sharing",  # noqa
         )
