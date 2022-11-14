@@ -130,7 +130,10 @@ class LocaleString extends Translations {
       'inventory_number' : 'Inventory No.',
       'max_life_expectancy' : 'Max. Life Expectancy',
       'max_service_duration' : 'Max. Service Duration',
-      'instructions' : 'Instructions'
+      'instructions' : 'Instructions',
+      'value': 'Value',
+      'unit': 'Unit',
+      'add_property': 'Add Property',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -255,7 +258,10 @@ class LocaleString extends Translations {
       'inventory_number' : 'Inventarnr.',
       'max_life_expectancy' : 'Max. Lebenserwartung',
       'max_service_duration' : 'Max. Dienstdauer',
-      'instructions' : 'Gebrauchsanweisung'
+      'instructions' : 'Gebrauchsanweisung',
+      'value': 'Wert',
+      'unit': 'Einheit',
+      'add_property': 'Add Property',
     }
   };
 }

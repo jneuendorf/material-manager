@@ -18,6 +18,8 @@ class MaterialController extends GetxController {
 
   final RxList<MaterialModel> materials = <MaterialModel>[].obs;
   final RxList<MaterialTypeModel> types = <MaterialTypeModel>[].obs;
+  final RxList<Property> properties = <Property>[].obs;
+
 
   @override
   Future<void> onInit() async {
@@ -35,6 +37,7 @@ class MaterialController extends GetxController {
     await Future.wait([
         _initMaterials(),
         _initTypes(),
+        _initProperties(),
       ]);
 
     initCompleter.complete();
@@ -46,6 +49,10 @@ class MaterialController extends GetxController {
 
   Future<void> _initTypes() async {
     types.value = (await getAllMaterialTypes()) ?? [];
+  }
+
+  Future<void> _initProperties() async {
+    properties.value = await getAllMaterialPropertyMocks();
   }
 
   /// Fetches all material from backend.
@@ -60,6 +67,17 @@ class MaterialController extends GetxController {
     return mockMaterial + mockMaterial;
   }
 
+  Future<List<Property>> getAllMaterialPropertyMocks() async {
+    if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    debugPrint('Called getAllMaterialPropertyMocks');
+
+    return [mockLengthProperty,mockThicknessProperty, mockSizeProperty];
+  }
+
+
+
   /// Fetches all material types from backend.
   /// /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
@@ -67,7 +85,7 @@ class MaterialController extends GetxController {
     if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
-    
+
     return [
       mockCarbineMaterialType,
       mockHelmetMaterialType,
@@ -108,11 +126,11 @@ class MaterialController extends GetxController {
   }
 
   /// Adds a new material to the backend.
-  /// Returns the id of the newly created material 
+  /// Returns the id of the newly created material
   /// or null if an error occured.
   Future<int?> addMaterial(MaterialModel material) async {
     try {
-      final response = await apiService.mainClient.post('/material', 
+      final response = await apiService.mainClient.post('/material',
         data: {
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
             'serial_number': s.serialNumber,
@@ -126,7 +144,7 @@ class MaterialController extends GetxController {
           'instructions': material.instructions,
           'next_inspection_date': material.nextInspectionDate,
           'rental_fee': material.rentalFee,
-          'condition': material.condition.name, 
+          'condition': material.condition.name,
           'usage': material.usage,
           'purchase_details': {
             'id' : material.purchaseDetails.id,
@@ -165,7 +183,7 @@ class MaterialController extends GetxController {
   /// Returns the id of the newly created material type.
   Future<int?> addMaterialType(MaterialTypeModel materialType) async {
     try {
-      final response = await apiService.mainClient.post('/material_type', 
+      final response = await apiService.mainClient.post('/material_type',
         data: {
           'name': materialType.name,
           'description': materialType.description,
@@ -185,7 +203,7 @@ class MaterialController extends GetxController {
   /// Returns the id of the newly created property.
   Future<int?> addProperty(Property property) async {
     try {
-      final response = await apiService.mainClient.post('/material_property', 
+      final response = await apiService.mainClient.post('/material_property',
         data: {
           'name': property.name,
           'description': property.description,
@@ -207,7 +225,7 @@ class MaterialController extends GetxController {
   /// Returns true if the material was updated successfully.
   Future<bool> updateMaterial(MaterialModel material) async {
     try {
-      final response = await apiService.mainClient.put('/material/${material.id}', 
+      final response = await apiService.mainClient.put('/material/${material.id}',
         data: {
           'image_path': material.imageUrls,
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
@@ -222,7 +240,7 @@ class MaterialController extends GetxController {
           'instructions': material.instructions,
           'next_inspection_date': material.nextInspectionDate,
           'rental_fee': material.rentalFee,
-          'condition': material.condition.name, 
+          'condition': material.condition.name,
           'usage': material.usage,
           'purchase_details': {
             'id' : material.purchaseDetails.id,
@@ -261,7 +279,7 @@ class MaterialController extends GetxController {
   /// Returns true if the material type was updated successfully.
   Future<bool> updateMaterialType(MaterialTypeModel materialType) async {
     try {
-      final response = await apiService.mainClient.put('/material_type/${materialType.id}', 
+      final response = await apiService.mainClient.put('/material_type/${materialType.id}',
         data: {
           'name': materialType.name,
           'description': materialType.description,
@@ -281,7 +299,7 @@ class MaterialController extends GetxController {
   /// Returns true if the property was updated successfully.
   Future<bool> updateProperty(Property property) async {
     try {
-      final response = await apiService.mainClient.put('/material_property/${property.id}', 
+      final response = await apiService.mainClient.put('/material_property/${property.id}',
         data: {
           'name': property.name,
           'description': property.description,

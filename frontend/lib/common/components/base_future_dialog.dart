@@ -7,13 +7,13 @@ import 'package:lottie/lottie.dart';
 /// A dialog that shows a loading indicator.
 /// Used whenever a dialog must await a Future.
 class BaseFutureDialog extends StatefulWidget {
-  final Size size;
+  final Size? size;
   final Widget child;
   final RxBool loading;
 
   const BaseFutureDialog({
     Key? key,
-    required this.size,
+    this.size,
     required this.child,
     required this.loading,
   }) : super(key: key);
@@ -51,8 +51,8 @@ class _BaseFutureDialogState extends State<BaseFutureDialog> {
     ),
     child: Obx(() => AnimatedContainer(
       duration: BaseFutureDialog.animationDuration,
-      height: !widget.loading.value ? widget.size.height : 200,
-      width: !widget.loading.value ? widget.size.width : 200,
+      height: !widget.loading.value ? widget.size?.height : 200,
+      width: !widget.loading.value ? widget.size?.width : 200,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: widget.loading.value

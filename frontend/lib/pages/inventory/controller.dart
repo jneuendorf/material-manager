@@ -25,10 +25,11 @@ class InventoryPageController extends GetxController {
     final Rxn<ConditionModel> selectedConditionFilter = Rxn<ConditionModel>();
     final RxString searchTerm = ''.obs;
 
+
   @override
   Future<void> onInit() async {
     super.onInit();
-    
+
     await materialController.initCompleter.future;
 
     filteredMaterial.value = materialController.materials;
@@ -38,7 +39,7 @@ class InventoryPageController extends GetxController {
     }
   }
 
-   /// Filters the material by the [searchTerm], 
+   /// Filters the material by the [searchTerm],
    /// the [selectedTypeFilter] and the [selectedConditonFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
@@ -46,7 +47,7 @@ class InventoryPageController extends GetxController {
       /// Checks if the [selectedTypeFilter] equals [materialType] of the [item].
       bool materialTypeFilterCondition() {
         if (selectedTypeFilter.value == null) return true;
-        
+
         return item.materialType == selectedTypeFilter.value;
       }
 
@@ -63,7 +64,7 @@ class InventoryPageController extends GetxController {
         return item.condition == selectedConditionFilter.value;
       }
 
-      return materialTypeFilterCondition() && 
+      return materialTypeFilterCondition() &&
         materialTypeNameCondition() && conditionFilterCondition();
     }).toList();
   }
