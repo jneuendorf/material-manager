@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/rental/model.dart';
-import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
 
@@ -99,7 +97,7 @@ class CompletedOrdersScreen extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.all(6.0),
-            child: SelectableText(getUserName(item)),
+            child: SelectableText(lenderPageController.getUserName(item)),
           ),
           Padding(
             padding: const EdgeInsets.all(6.0),
@@ -109,7 +107,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text('${'membership_number'.tr} : ',style:  const TextStyle(color: Colors.black45)),
-                    SelectableText(getMembershipNum(item)),
+                    SelectableText(lenderPageController.getMembershipNum(item)),
                   ],
                 ),
                 Row(
@@ -135,7 +133,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text('${'rental_period'.tr} : ', style: const TextStyle(color: Colors.black45)),
-                    SelectableText(getRentalPeriod(item)),
+                    SelectableText(lenderPageController.getRentalPeriod(item)),
                   ],
                 )
               ],
@@ -149,7 +147,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                 Row(
                   children: [
                     Text('${'usage_period'.tr} : ', style: const TextStyle(color: Colors.black45),),
-                    SelectableText(getUsagePeriod(item)),
+                    SelectableText(lenderPageController.getUsagePeriod(item)),
                   ],
                 ),
                 const SizedBox(width: 500.0),
@@ -168,11 +166,13 @@ class CompletedOrdersScreen extends StatelessWidget {
                     separatorBuilder: (context, index) => const Divider(),
                     itemCount: item.materialIds.length,
                     itemBuilder: (context, localIndex) => ListTile(
-                      leading: Image.network(getMaterialPicture(item,localIndex)),
+                      leading: Image.network(lenderPageController.getMaterialPicture(item,localIndex)),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Expanded(child: Text(getItemName(item,localIndex))),
+                          Expanded(
+                            child: Text(lenderPageController.getItemName(item,localIndex)),
+                          ),
                           Expanded(
                             child: Center(
                               child: SizedBox(
@@ -181,7 +181,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Expanded(child: Text('${getItemPrice(item,localIndex)} €'))
+                          Expanded(child: Text('${lenderPageController.getItemPrice(item,localIndex)} €'))
                         ],
                       ),
                     ),
@@ -216,47 +216,5 @@ class CompletedOrdersScreen extends StatelessWidget {
       ),
     ),
   );
-
-  String getUserName(RentalModel item) {
-    String userName = '${lenderPageController.userController.users.firstWhere(
-            (UserModel user) => user.id == item.id).firstName} '
-        '${lenderPageController.userController.users.firstWhere(
-            (UserModel user) => user.id == item.id).lastName}';
-    return userName;
-  }
-
-  String getMembershipNum(RentalModel item) {
-    String membershipNum = lenderPageController.userController.users.firstWhere((UserModel user) =>
-    user.id == item.id).membershipNumber.toString();
-    return membershipNum;
-  }
-
-  String getRentalPeriod(RentalModel item) {
-    String rentalPeriod = '${lenderPageController.formatDate(item.startDate)} ${' - '} ${lenderPageController.formatDate(item.endDate)}';
-    return rentalPeriod;
-  }
-
-  String getUsagePeriod(RentalModel item) {
-    String rentalPeriod = '${lenderPageController.formatDate(item.usageStartDate)} ${' - '} ${lenderPageController.formatDate(item.usageEndDate)}';
-    return rentalPeriod;
-  }
-
-  String getMaterialPicture(RentalModel item, int localIndex) {
-    String path = lenderPageController.materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).imagePath!;
-    return path;
-  }
-
-  String getItemName(RentalModel item, int localIndex) {
-    String itemName = lenderPageController.materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).materialType.name;
-    return itemName;
-  }
-
-  String getItemPrice(RentalModel item, int localIndex) {
-    String itemPrice = lenderPageController.materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[localIndex]).rentalFee.toString();
-    return itemPrice;
-  }
 
 }

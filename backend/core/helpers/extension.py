@@ -1,9 +1,9 @@
 import re
 from abc import ABC
 from collections.abc import Iterable, Mapping
-from typing import Any, Generic, Type, TypeVar, Union
+from typing import Any, Generic, Optional, Type, TypeVar, Union
 
-from flask import Blueprint, Flask
+from flask import Blueprint, Flask, current_app
 from flask_apispec import FlaskApiSpec, MethodResource
 from flask_jwt_extended import JWTManager
 from flask_restful import Api
@@ -22,6 +22,15 @@ def url_join(*parts: str) -> str:
     """
 
     return re.sub(r"/+", "/", "/".join(parts))
+
+
+def get_extension(instance: CrudModel) -> "Optional[Extension]":
+    model_cls = type(instance)
+    for name, extension in current_app.extensions.items():
+        for extension_model_cls in getattr(extension, "models", []):
+            if extension_model_cls is model_cls:
+                return extension
+    return None
 
 
 class Extension(Blueprint, ABC, Generic[M, R]):
