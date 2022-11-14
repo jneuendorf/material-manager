@@ -78,26 +78,26 @@ class ProductDetailsDialog extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                        Text('${'max_life_expectancy'.tr} : ',
+                        Text('${'max_operating_date'.tr} : ',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                           ),
                         ),
-                        Text(item.maxLifeExpectancy,
+                        Text(inventoryPageController.formatDate(item.maxOperatingDate),
                           style: const TextStyle(fontSize: 15.0)
                         ),
                         ]
                       ),
                       Row(
                         children: [
-                        Text('${'max_lifespan'.tr} : ',
+                        Text('${'max_days_used'.tr} : ',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                             ),
                           ),
-                        Text(item.maxServiceDuration,
+                        Text('${item.maxDaysUsed}',
                             style: const TextStyle(fontSize: 15.0)
                         ),
                         ]

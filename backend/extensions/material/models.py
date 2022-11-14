@@ -49,11 +49,12 @@ class Material(Model):  # type: ignore
     inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
     name = db.Column(db.String(length=80), nullable=False)
     installation_date = db.Column(db.Date, nullable=False)  # Inbetriebnahme
-    max_life_expectancy = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
-    max_lifespan = db.Column(
+    max_operating_date = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
+    max_days_used = db.Column(
         db.Integer,
         nullable=False,
     )  # Gebrauchsdauer, compare to 'days_used'
+    days_used = db.Column(db.Integer, nullable=False, default=0)
     instructions = db.Column(db.Text, nullable=False, default="")
     next_inspection_date = db.Column(db.Date, nullable=False)
     rental_fee = db.Column(db.Float, nullable=False)
@@ -63,7 +64,6 @@ class Material(Model):  # type: ignore
         nullable=False,
         default=Condition.OK,
     )
-    days_used = db.Column(db.Integer, nullable=False, default=0)
     # many to one (FK here)
     material_type_id = db.Column(db.ForeignKey(MaterialType.id), nullable=False)
     material_type = db.relationship("MaterialType", backref="materials")
