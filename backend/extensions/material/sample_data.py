@@ -137,8 +137,9 @@ for i in range(NUM_MATERIALS):
         ),
     )
 
+    image: File
     if i == 0:
-        image = File = File.get_or_create(
+        image = File.get_or_create(
             path="carabiner.jpg",
             mime_type="image/jpeg",
             description="silver carabiner",
@@ -151,7 +152,7 @@ for i in range(NUM_MATERIALS):
         )
 
     if i == 1:
-        image = File = File.get_or_create(
+        image = File.get_or_create(
             path="express_sling.jpg",
             mime_type="image/jpeg",
             description="black/silver express sling",
@@ -164,7 +165,7 @@ for i in range(NUM_MATERIALS):
         )
 
     if i == 2:
-        image = File = File.get_or_create(
+        image = File.get_or_create(
             path="harness.jpg",
             mime_type="image/jpeg",
             description="red/black harness",
@@ -177,7 +178,7 @@ for i in range(NUM_MATERIALS):
         )
 
     if i == 3:
-        image = File = File.get_or_create(
+        image = File.get_or_create(
             path="rope.jpg",
             mime_type="image/jpeg",
             description="lime green rope",
@@ -190,7 +191,7 @@ for i in range(NUM_MATERIALS):
         )
 
     if i == 4:
-        image = File = File.get_or_create(
+        image = File.get_or_create(
             path="ribbon.jpg",
             mime_type="image/jpeg",
             description="blue ribbon",
