@@ -4,8 +4,8 @@ class MaterialModel {
   List<String> imageUrls;
   List<SerialNumber> serialNumbers;
   String inventoryNumber;
-  String maxLifeExpectancy;
-  String maxServiceDuration;
+  DateTime maxOperatingDate;
+  int maxDaysUsed;
   DateTime installationDate;
   String instructions;
   DateTime nextInspectionDate;
@@ -22,8 +22,8 @@ class MaterialModel {
     required this.imageUrls,
     required this.serialNumbers,
     required this.inventoryNumber,
-    required this.maxLifeExpectancy,
-    required this.maxServiceDuration,
+    required this.maxOperatingDate,
+    required this.maxDaysUsed,
     required this.installationDate,
     required this.instructions,
     required this.nextInspectionDate,
@@ -40,8 +40,8 @@ class MaterialModel {
     imageUrls: json['image_urls'] != null ? List<String>.from(json['image_urls']) : [],
     serialNumbers: List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
     inventoryNumber: json['inventory_number'],
-    maxLifeExpectancy: json['max_life_expectancy'],
-    maxServiceDuration: json['max_service_duration'],
+    maxOperatingDate: DateTime.parse(json['max_operating_date']),
+    maxDaysUsed: json['max_days_used'],
     installationDate: DateTime.parse(json['installation_date']),
     instructions: json['instructions'],
     nextInspectionDate: DateTime.parse(json['next_inspection_date']),

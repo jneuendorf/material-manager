@@ -24,28 +24,63 @@ COLORS = it.cycle(["red", "green", "blue", "yellow"])
 MANUFACTURERS = it.cycle(["edelrid", "the blue light", "elliot", "black diamond"])
 
 # Create material sets
-material_sets = it.cycle(
-    [
+material_sets = {
+    material_set.name: material_set
+    for material_set in [
         MaterialSet.get_or_create(name="ice climbing"),
         MaterialSet.get_or_create(name="mountain face"),
         MaterialSet.get_or_create(name="hiking"),
         MaterialSet.get_or_create(name="camping"),
     ]
-)
+}
 
 # Create material types
-material_types = ["helmet", "rope", "carabiner", "ice pick"]
-for i, material_type in enumerate(material_types):
-    MaterialType.get_or_create(
-        name=material_type,
-        description=f"material type description {i}",
-        _related=dict(
-            sets=[
-                next(material_sets),
-                next(material_sets),
-            ],
+material_types = it.cycle(
+    [
+        MaterialType.get_or_create(
+            name="helmet",
+            description="helmet description",
+            _related=dict(
+                sets=[
+                    material_sets["ice climbing"],
+                    material_sets["mountain face"],
+                ],
+            ),
         ),
-    )
+        MaterialType.get_or_create(
+            name="rope",
+            description="rope description",
+            _related=dict(
+                sets=[
+                    material_sets["ice climbing"],
+                    material_sets["mountain face"],
+                    material_sets["hiking"],
+                    material_sets["camping"],
+                ],
+            ),
+        ),
+        MaterialType.get_or_create(
+            name="carabiner",
+            description="carabiner description",
+            _related=dict(
+                sets=[
+                    material_sets["ice climbing"],
+                    material_sets["mountain face"],
+                    material_sets["camping"],
+                ],
+            ),
+        ),
+        MaterialType.get_or_create(
+            name="ice pick",
+            description="ice pick description",
+            _related=dict(
+                sets=[
+                    material_sets["ice climbing"],
+                ],
+            ),
+        ),
+    ]
+)
 
 
 # Create properties
@@ -117,20 +152,20 @@ for i in range(NUM_MATERIALS):
             SerialNumber.get(serial_number=get_serial_number_str(i - 1))
         )
 
+    installation_date = date(2022, 1, 1) + timedelta(days=i)
     material = Material.get_or_create(
         inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}",
-        max_life_expectancy=i % 9 + 1,
-        max_service_duration=i % 5 + 1,
-        installation_date=date(2022, 1, 1) + timedelta(days=i),
-        instructions="hier sollte eine gebrauchsanweisung stehen",
-        next_inspection_date=date(2023, i * 3 % 12 + 1, i * 4 % 29 + 1),
+        name=f"material {i}",
+        installation_date=installation_date,
+        max_operating_date=installation_date + timedelta(weeks=(-1) ** i * 2),
+        max_days_used=i % 5 + 1,
+        instructions="some instructions...",
+        next_inspection_date=installation_date + timedelta(weeks=(-1) ** i),
         rental_fee=1.13 * (i + 1),
         condition=condition,
         days_used=i * 5 % 100,
         _related=dict(
-            material_type=MaterialType.get(
-                name=material_types[i % len(material_types)]
-            ),
+            material_type=next(material_types),
             purchase_details=created_purchase_details[i % NUM_PURCHASE_DETAILS],
             serial_numbers=serial_numbers,
             properties=[Property.get(name=get_property_name(i % NUM_PROPERTIES))],
