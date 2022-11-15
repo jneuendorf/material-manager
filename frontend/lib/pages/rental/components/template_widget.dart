@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
@@ -31,7 +32,7 @@ class TemplateWidget extends StatelessWidget {
             children: [
               Container(
                 padding: const EdgeInsets.all(8.0),
-                margin:  kIsWeb
+                margin:  isLargeScreen(context)
                   ? const EdgeInsets.all(8.0)
                   : const EdgeInsets.symmetric(vertical: 8.0),
                 width: double.infinity,

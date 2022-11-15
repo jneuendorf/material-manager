@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
@@ -51,14 +51,14 @@ class MaterialPreview extends StatelessWidget {
                 ),
               ),
             ),
-            if (hover.value || !kIsWeb) Positioned(
+            if (hover.value || !isLargeScreen(context)) Positioned(
               top: 0.0,
               right: 0.0,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Get.theme.colorScheme.onSecondary,
-                  padding: const EdgeInsets.symmetric(vertical: kIsWeb ? 10.0 : 6.0),
+                  padding: EdgeInsets.symmetric(vertical: isLargeScreen(context) ? 10.0 : 6.0),
                 ),
                 onPressed: () => rentalPageController.shoppingCart.add(item),
                 child: Obx(() =>rentalPageController.shoppingCart.contains(item) 
