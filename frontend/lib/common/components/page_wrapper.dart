@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
@@ -41,7 +42,7 @@ class PageWrapper extends StatelessWidget {
       scaffoldKey: scaffoldKey,
       showBackButton: showBackButton,
     ),
-    drawer: !kIsWeb ? buildDrawer() : null,
+    drawer: isLargeScreen(context) ? null : buildDrawer(),
     body: SafeArea(
       child: Padding(
         padding: showPadding
@@ -79,7 +80,13 @@ class PageWrapper extends StatelessWidget {
             child: InkWell(
               onTap: () => Get.toNamed(profileRoute),
               borderRadius: BorderRadius.circular(25.0),
-              child: Image.asset('assets/images/dav_logo_small.png'),
+              child: const Padding(
+                padding: EdgeInsets.all(8.0),
+                child: CircleAvatar(
+                  radius: 25.0,
+                  child: Icon(Icons.person, size: 55),
+                ),
+              ),
               ),
           ),
           Obx(() => ListTile(

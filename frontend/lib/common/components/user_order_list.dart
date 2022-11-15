@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -10,6 +9,7 @@ import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/extensions/rental/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/pages/profile/dialogs/cancel_rental_dialog.dart';
+import 'package:frontend/common/util.dart';
 
 
 class UserOrderList extends StatefulWidget {
@@ -48,13 +48,13 @@ class _UserOrderListState extends State<UserOrderList> {
   Widget build(BuildContext context) => Expanded(
     child: Column(
       children: [
-        if (kIsWeb) Text('active_orders'.tr,
+        if (isLargeScreen(context)) Text('active_orders'.tr,
           style: Get.textTheme.headline6!.copyWith(fontSize: 25),
         ),
         const SizedBox(height: 16.0),
         buildActiveOrders(),
         const Divider(),
-        if (kIsWeb) Text('order_history'.tr,
+        if (isLargeScreen(context)) Text('order_history'.tr,
           style: Get.textTheme.headline6!.copyWith(fontSize: 25),
         ),
         const SizedBox(height: 16.0),

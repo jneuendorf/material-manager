@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
@@ -17,7 +18,7 @@ class InspectionDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
-    showBackButton: !kIsWeb,
+    showBackButton: !isLargeScreen(context),
     pageTitle: 'inspection_details'.tr,
     child: Row(
       children: [

@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
@@ -35,9 +35,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   @override
   Widget build(BuildContext context) => PageWrapper(
     showPadding: false,
-    showBackButton: !kIsWeb,
-    pageTitle: !kIsWeb ? 'shopping_cart'.tr : null,
-    child: kIsWeb ? Row(
+    showBackButton: !isLargeScreen(context),
+    pageTitle: !isLargeScreen(context) ? 'shopping_cart'.tr : null,
+    child: isLargeScreen(context) ? Row(
       children: [
         Expanded(
           flex: 3,
@@ -113,7 +113,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
             style: Get.textTheme.subtitle2,
           ),
         ),
-        !kIsWeb ? Row (
+        !isLargeScreen(context) ? Row (
           children: [
             Expanded(
               child: buildCustomTextField(
@@ -157,7 +157,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           ),
           children: [
             const SizedBox(height: 8.0),
-            !kIsWeb ? Row(
+            !isLargeScreen(context) ? Row(
               children: [
                 Expanded(
                   child: buildCustomTextField(

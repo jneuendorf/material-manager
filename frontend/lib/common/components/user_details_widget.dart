@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
@@ -34,7 +34,7 @@ class UserDetailsWidget extends StatelessWidget {
       if (user != null) Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          kIsWeb ? Row(
+          isLargeScreen(context) ? Row(
             children: [
               Text('${user?.firstName} ${user?.lastName}',
                 style: Get.textTheme.headline6,

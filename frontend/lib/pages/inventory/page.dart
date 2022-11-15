@@ -155,7 +155,7 @@ class InventoryPage extends GetView<InventoryPageController> {
           );
           }),
         ),
-        if (kIsWeb)const BaseFooter(),
+        if (kIsWeb) const BaseFooter(),
       ],
     ),
   );
