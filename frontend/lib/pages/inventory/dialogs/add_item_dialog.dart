@@ -193,8 +193,26 @@ class _AddItemDialogState extends State<AddItemDialog> {
           ),
           Row(
             children: [
-              ListView(),
-              ListView(),
+              Flexible(
+                child: ListView(shrinkWrap: true,
+                    children: [
+                      Container(
+                        height: 40 ,
+                        width: 50,
+                        color: Colors.lightBlue,
+                      )
+                    ]),
+              ),
+              Flexible(
+                child: ListView(shrinkWrap: true,
+                    children: [
+                      Container(
+                        height: 40 ,
+                        width: 50,
+                        color: Colors.red,
+                      )
+                    ]),
+              ),
             ],
           ),
         ],
