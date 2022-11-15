@@ -84,10 +84,8 @@ class PurchaseDetailsSchema(BaseSchema):
 
 
 class MaterialSchema(BaseSchema):
-    # material_type_id = fields.Integer()
     material_type = fields.Nested(MaterialTypeSchema())
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
-    # purchase_details_id = fields.Integer()
     purchase_details = fields.Nested(PurchaseDetailsSchema())
     image_urls = fields.Method("get_image_urls")
     properties = fields.List(fields.Nested(MaterialPropertySchema()))
@@ -97,7 +95,6 @@ class MaterialSchema(BaseSchema):
         #  Check why the metaclass doesn't work
         model_converter = ModelConverter
         model = models.Material
-        # load_only = ("material_type_id",)
         dump_only = ("id", "image_urls")
 
     def get_image_urls(self, obj: models.Material):
