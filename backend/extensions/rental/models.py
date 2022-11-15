@@ -22,6 +22,11 @@ class RentalStatus(enum.Enum):
 
 
 class Rental(Model):  # type: ignore
+
+    __tablename__ = (
+        "rental"  # funktioniert hier aus irgendeinem Grund. Liegt nicht am Import
+    )
+
     id = db.Column(db.Integer, primary_key=True)
     customer_id = db.Column(db.ForeignKey("user.id"))
     lender_id = db.Column(db.ForeignKey("user.id"))

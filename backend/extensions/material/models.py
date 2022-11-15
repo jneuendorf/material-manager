@@ -45,6 +45,9 @@ class Condition(enum.Enum):
 
 
 class Material(Model):  # type: ignore
+
+    # __tablename__ = 'mats' geht hier aus irgendeinem grund nicht. Wäre aber sinnvoll
+
     id = db.Column(db.Integer, primary_key=True)
     inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
     name = db.Column(db.String(length=80), nullable=False)
