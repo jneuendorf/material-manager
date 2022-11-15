@@ -124,7 +124,7 @@ class Material(ModelResource):
         *,
         material_type: models.MaterialType,
         serial_numbers: List[models.SerialNumber],
-        properties: List[models.Property],
+        properties: List[models.Property] = None,
         # TODO: handle image uploads
         images: List[models.File] = None,
         purchase_details: models.PurchaseDetails = None,
@@ -133,8 +133,9 @@ class Material(ModelResource):
         related = dict(
             material_type=material_type,
             serial_numbers=serial_numbers,
-            properties=properties,
         )
+        if properties:
+            related["properties"] = properties
         if images:
             related["images"] = images
         if purchase_details:
