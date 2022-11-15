@@ -5,13 +5,9 @@ from sqlalchemy import Table
 
 from core.extensions import db
 from core.helpers.orm import CrudModel
+from extensions.common.models import File
 
 Model: Type[CrudModel] = db.Model
-
-
-# class RentalStatus(Model):  # type: ignore
-#    id = db.Column(db.Integer, primary_key=True)
-#    Name = db.Column(db.String)
 
 
 class RentalStatus(enum.Enum):
@@ -40,11 +36,21 @@ class Rental(Model):  # type: ignore
     usage_start_date = db.Column(db.Date)
     usage_end_date = db.Column(db.Date)
     return_to_id = db.Column(db.ForeignKey("user.id"))
+    # one to many (FK on child)
+    return_infos = db.relationship("ReturnInfo", backref="rental")
     rental_status = db.Column(
         db.Enum(RentalStatus, create_constraint=True),
         nullable=False,
         default=RentalStatus.AVAILABLE,
     )
+
+
+class ReturnInfo(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.Text)
+    images = File.reverse_generic_relationship("ReturnInfo")
+    rental_id = db.Column(db.ForeignKey(Rental.id))
+    material_id = db.Column(db.ForeignKey("material.id"))
 
 
 MaterialRentalMapping: Table = db.Table(

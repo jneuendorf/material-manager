@@ -3,7 +3,6 @@ from datetime import date, timedelta
 from extensions.rental.models import Rental, RentalStatus
 
 NUM_Rental = 50
-NUM_RentalStatus = 50
 
 for i in range(NUM_Rental):
     if i % 50 == 0:
@@ -24,7 +23,7 @@ for i in range(NUM_Rental):
         created_at=date(2022, 1, 1) + timedelta(days=i),
         start_date=date(2022, 1, 1) + timedelta(days=i + 7),
         end_date=date(2022, 1, 1) + timedelta(days=i + 14),
-        # usage_start_date = db.Column(db.Date)
-        # usage_end_date = db.Column(db.Date)
+        usage_start_date=None,
+        usage_end_date=None,
         return_to_id=i,
     )

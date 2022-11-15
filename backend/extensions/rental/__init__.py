@@ -1,6 +1,7 @@
 from core.helpers.extension import Extension
 
 from . import models
+from .config import STATIC_FOLDER, STATIC_URL_PATH
 
 rental = Extension(
     "rental",
@@ -9,6 +10,7 @@ rental = Extension(
         models.Rental,
         models.RentalStatus,
         models.MaterialRentalMapping,
+        models.ReturnInfo,
     ),
     resources=(),
 )
