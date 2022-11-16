@@ -56,7 +56,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.arrow_back_rounded, color: Colors.black),
+                      const Icon(Icons.arrow_back_rounded, 
+                        color: Colors.black,
+                      ),
                       const SizedBox(width: 8.0),
                       Text('back_to_selection'.tr,
                         style: const TextStyle(color: Colors.black),
@@ -206,7 +208,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
           Text('total_price'.tr.toUpperCase(),
             style: Get.textTheme.subtitle2,
           ),
-          Obx(() => Text('€ ${rentalPageController.totalPrice}',
+          Obx(() => Text('€ ${rentalPageController.totalPrice.toStringAsFixed(2)}',
             style: Get.textTheme.subtitle2,
           )),
         ],
@@ -231,7 +233,9 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         style: ListTileStyle.list,
         contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
         onTap: () {},
-        leading: Image.network(rentalPageController.shoppingCart[index].imageUrls.first),
+        leading: rentalPageController.shoppingCart[index].imageUrls.isNotEmpty 
+          ? Image.network(baseUrl + rentalPageController.shoppingCart[index].imageUrls.first)
+          : const Icon(Icons.image),
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
@@ -244,7 +248,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.unit}'),
               ],
             ),
-            Text('€${rentalPageController.shoppingCart[index].rentalFee}'),
+            Text('€${rentalPageController.shoppingCart[index].rentalFee.toStringAsFixed(2)}'),
           ],
         ),
         trailing: IconButton(

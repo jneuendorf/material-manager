@@ -86,7 +86,7 @@ class _UserOrderListState extends State<UserOrderList> {
             (RentalModel rental) => DataRow(
           cells: [
             DataCell(Text(rental.id.toString())),
-            DataCell(Text('€ ${rental.cost.toString()}')),
+            DataCell(Text('€ ${rental.cost.toStringAsFixed(2)}')),
             DataCell(Text(formatDate(rental.createdAt))),
             DataCell(Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -132,7 +132,7 @@ class _UserOrderListState extends State<UserOrderList> {
             (RentalModel rental) => DataRow(
           cells: [
             DataCell(Text(rental.id.toString())),
-            DataCell(Text('€ ${rental.cost.toString()}')),
+            DataCell(Text('€ ${rental.cost.toStringAsFixed(2)}')),
             DataCell(Text(formatDate(rental.createdAt))),
             DataCell(Text(rental.status!.name)),
           ],
