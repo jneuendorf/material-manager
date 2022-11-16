@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common/util.dart';
+
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 class MaterialPreview extends StatelessWidget {
@@ -34,7 +36,9 @@ class MaterialPreview extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: Image.network(item.imageUrls.first),
+                      child: item.imageUrls.isNotEmpty 
+                        ? Image.network(baseUrl + item.imageUrls.first) 
+                        : Center(child: Text('no_image_found'.tr)),
                     ),
                     const Divider(),
                     Padding(

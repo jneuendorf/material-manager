@@ -130,7 +130,8 @@ class LocaleString extends Translations {
       'inventory_number' : 'Inventory No.',
       'max_operating_date' : 'Max. Operational Lifetime',
       'max_days_used' : 'Max. Usage in Days',
-      'instructions' : 'Instructions'
+      'instructions' : 'Instructions',
+      'no_image_found': 'No Image Found',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -255,7 +256,8 @@ class LocaleString extends Translations {
       'inventory_number' : 'Inventarnr.',
       'max_operating_date' : 'Max. Lebensdauer',
       'max_days_used' : 'Max. Gebrauchsdauer in Tagen',
-      'instructions' : 'Gebrauchsanweisung'
+      'instructions' : 'Gebrauchsanweisung',
+      'no_image_found': 'Kein Bild gefunden',
     }
   };
 }
