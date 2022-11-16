@@ -62,7 +62,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                     child: Text(lenderPageController.filteredRentals[index].id.toString()),
                   ),
                   Expanded(
-                    child: Text('€ ${lenderPageController.filteredRentals[index].cost.toString()}'),
+                    child: Text('€ ${lenderPageController.filteredRentals[index].cost.toStringAsFixed(2)}'),
                   ),
                   Expanded(
                     child: Text(lenderPageController.formatDate(lenderPageController.filteredRentals[index].createdAt)),
@@ -221,7 +221,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                             Expanded(
                               child: TextFormField(
                                 enabled: false,
-                                initialValue: '${item.cost.toString()} €',
+                                initialValue: '${item.cost.toStringAsFixed(2)} €',
                                 decoration: InputDecoration(
                                   labelText: 'sum'.tr,
                                 ),

@@ -73,7 +73,7 @@ class ActiveOrderScreen extends StatelessWidget {
   Widget buildTileTitle(Rx<RentalModel> item) => Row(
     children: [
       Expanded(child: Text(item.value.id.toString())),
-      Expanded(child: Text('€ ${item.value.cost.toString()}')),
+      Expanded(child: Text('€ ${item.value.cost.toStringAsFixed(2)}')),
       Flexible(child: Text(lenderPageController.formatDate(item.value.createdAt), 
         overflow: TextOverflow.ellipsis),
       ),
@@ -252,7 +252,7 @@ class ActiveOrderScreen extends StatelessWidget {
                           Expanded(
                             child: TextFormField(
                               enabled: false,
-                              initialValue: '€ ${item.cost.toString()}',
+                              initialValue: '€ ${item.cost.toStringAsFixed(2)}',
                               decoration: InputDecoration(
                                 labelText: 'total'.tr,
                               ),
