@@ -80,7 +80,7 @@ class RentalPage extends GetView<RentalPageController> {
           Expanded(child: Text('${controller.shoppingCart.length} ${'items'.tr}', 
             maxLines: 1,
           )),
-          Text('${controller.totalPrice} €'),
+          Text('${controller.totalPrice.toStringAsFixed(2)} €'),
         ],
       )),
     ),

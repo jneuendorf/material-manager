@@ -42,12 +42,14 @@ class MaterialPreview extends StatelessWidget {
                     ),
                     const Divider(),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                      padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, bottom: 8.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('${item.materialType.name}, ${item.properties.first.value} ${item.properties.first.unit}'),
-                          Text('${item.rentalFee} €'),
+                          Text('${item.materialType.name}, ${cleanPropertyValue(item.properties.first.value)} ${item.properties.first.unit}'),
+                          Text('${item.rentalFee.toStringAsFixed(2)} €'),
                         ],
                       ),
                     ),
@@ -62,7 +64,9 @@ class MaterialPreview extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Get.theme.colorScheme.onSecondary,
-                  padding: EdgeInsets.symmetric(vertical: isLargeScreen(context) ? 10.0 : 6.0),
+                  padding: EdgeInsets.symmetric(
+                    vertical: isLargeScreen(context) ? 10.0 : 6.0,
+                  ),
                 ),
                 onPressed: () => rentalPageController.shoppingCart.add(item),
                 child: Obx(() =>rentalPageController.shoppingCart.contains(item) 
@@ -79,4 +83,13 @@ class MaterialPreview extends StatelessWidget {
       ),
     ),
   );
+
+  String cleanPropertyValue(String value) {
+    double? val = double.tryParse(value);
+
+    // if not a double, return as is
+    if (val == null) return value; 
+
+    return val.toStringAsFixed(2);
+  }
 }
