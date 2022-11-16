@@ -30,10 +30,6 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
   final RxMap<RentalStatus, String> statusOptions = <RentalStatus, String>{}.obs;
-  List<RentalModel> availableRentals = [];
-  List<RentalStatus> availableStatuses = <RentalStatus>[].obs;
-  List<UserModel> availableUsers = [];
-  List<MaterialModel> availableMaterial = [];
 
   @override
   Future<void> onInit() async {
