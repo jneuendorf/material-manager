@@ -6,7 +6,6 @@ from sqlalchemy import Table
 
 from core.extensions import db
 from core.helpers.orm import CrudModel
-from extensions.common.models import File
 
 Model: Type[CrudModel] = db.Model
 
@@ -45,8 +44,10 @@ class Rental(Model):  # type: ignore
         primaryjoin="Rental.return_to_id == User.id",
         uselist=False,
     )
-    # one to many (FK on child)
-    return_infos = db.relationship("ReturnInfo", backref="rental")
+
+    materials = db.relationship(
+        "Material", secondary="material_rental_mapping", backref="rental"
+    )
 
     rental_status = db.Column(
         db.Enum(RentalStatus, create_constraint=True),
@@ -61,14 +62,6 @@ class Rental(Model):  # type: ignore
     end_date = db.Column(db.Date, nullable=False)
     usage_start_date = db.Column(db.Date)
     usage_end_date = db.Column(db.Date)
-
-
-class ReturnInfo(Model):  # type: ignore
-    id = db.Column(db.Integer, primary_key=True)
-    comment = db.Column(db.Text)
-    images = File.reverse_generic_relationship("ReturnInfo")
-    rental_id = db.Column(db.ForeignKey(Rental.id))
-    material_id = db.Column(db.ForeignKey("material.id"))
 
 
 MaterialRentalMapping: Table = db.Table(

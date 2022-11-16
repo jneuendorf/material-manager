@@ -10,7 +10,6 @@ rental = Extension(
         models.Rental,
         models.RentalStatus,
         models.MaterialRentalMapping,
-        models.ReturnInfo,
     ),
     resources=(),
 )

@@ -1,8 +1,10 @@
 from datetime import date, timedelta
 
+from extensions.material.models import Material
 from extensions.rental.models import Rental, RentalStatus
 
 NUM_Rental = 50
+materials = []
 
 for i in range(NUM_Rental):
     if i % 50 == 0:
@@ -13,6 +15,8 @@ for i in range(NUM_Rental):
         rentalStatus = RentalStatus.LENT
     else:
         rentalStatus = RentalStatus.AVAILABLE
+
+    materials = [Material.get(id=i + 1), Material.get(id=(i % 10) + 2)]
     Rental.get_or_create(
         customer_id=i,
         lender_id=i,
@@ -26,4 +30,5 @@ for i in range(NUM_Rental):
         usage_start_date=None,
         usage_end_date=None,
         return_to_id=i,
+        _related=dict(materials=materials),
     )
