@@ -132,6 +132,7 @@ class LocaleString extends Translations {
       'max_days_used' : 'Max. Usage in Days',
       'instructions' : 'Instructions',
       'no_image_found': 'No Image Found',
+      'repair': 'Repair',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -258,6 +259,7 @@ class LocaleString extends Translations {
       'max_days_used' : 'Max. Gebrauchsdauer in Tagen',
       'instructions' : 'Gebrauchsanweisung',
       'no_image_found': 'Kein Bild gefunden',
+      'repair': 'Reparatur',
     }
   };
 }

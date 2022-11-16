@@ -126,7 +126,8 @@ class _BaseAppBarState extends State<BaseAppBar> {
           )),
         ],
       ] : null,
-      if (!loggedIn) Obx(() => IconButton(
+      if ((!isLargeScreen(context) && !loggedIn) || 
+        isLargeScreen(context)) Obx(() => IconButton(
         onPressed: () {
           if (loggedIn) {
             Get.toNamed(profileRoute);
