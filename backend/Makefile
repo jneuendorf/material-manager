@@ -1,5 +1,5 @@
 # See https://stackoverflow.com/a/59335943/6928824
-.PHONY: all venv install install_prod sample_data precommit run shell test run clean
+.PHONY: all venv install install_prod sample_data precommit run run_prod shell test run clean
 
 all: install run
 
@@ -31,6 +31,9 @@ test: venv
 
 run: venv
 	. venv/bin/activate && flask run
+
+run_prod: venv install_prod
+	. venv/bin/activate && gunicorn --bind 127.0.0.1:8080 wsgi:app
 
 clean:
 	rm -rf venv
