@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
@@ -57,9 +58,15 @@ class CompletedOrdersScreen extends StatelessWidget {
               },
               title: Row(
                 children: [
-                  Expanded(child: Text(lenderPageController.filteredRentals[index].id.toString())),
-                  Expanded(child: Text('€ ${lenderPageController.filteredRentals[index].cost.toString()}')),
-                  Expanded(child: Text(lenderPageController.formatDate(lenderPageController.filteredRentals[index].createdAt))),
+                  Expanded(
+                    child: Text(lenderPageController.filteredRentals[index].id.toString()),
+                  ),
+                  Expanded(
+                    child: Text('€ ${lenderPageController.filteredRentals[index].cost.toString()}'),
+                  ),
+                  Expanded(
+                    child: Text(lenderPageController.formatDate(lenderPageController.filteredRentals[index].createdAt)),
+                  ),
                   Expanded(
                     child: Center(
                       child: Row(
@@ -106,13 +113,17 @@ class CompletedOrdersScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'membership_number'.tr} : ',style:  const TextStyle(color: Colors.black45)),
+                    Text('${'membership_number'.tr} : ',
+                      style:  const TextStyle(color: Colors.black45),
+                    ),
                     SelectableText(lenderPageController.getMembershipNum(item)),
                   ],
                 ),
                 Row(
                   children: [
-                    Text('${'order_date'.tr} : ',style:  const TextStyle(color: Colors.black45)),
+                    Text('${'order_date'.tr} : ',
+                      style: const TextStyle(color: Colors.black45),
+                    ),
                     SelectableText( lenderPageController.formatDate(item.createdAt)),
                   ],
                 ),
@@ -126,13 +137,17 @@ class CompletedOrdersScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'order_number'.tr} : ', style: const TextStyle(color: Colors.black45)),
+                    Text('${'order_number'.tr} : ', 
+                      style: const TextStyle(color: Colors.black45),
+                    ),
                     SelectableText(item.id.toString())
                   ],
                 ),
                 Row(
                   children: [
-                    Text('${'rental_period'.tr} : ', style: const TextStyle(color: Colors.black45)),
+                    Text('${'rental_period'.tr} : ', 
+                      style: const TextStyle(color: Colors.black45),
+                    ),
                     SelectableText(lenderPageController.getRentalPeriod(item)),
                   ],
                 )
@@ -146,7 +161,9 @@ class CompletedOrdersScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'usage_period'.tr} : ', style: const TextStyle(color: Colors.black45),),
+                    Text('${'usage_period'.tr} : ', 
+                      style: const TextStyle(color: Colors.black45),
+                    ),
                     SelectableText(lenderPageController.getUsagePeriod(item)),
                   ],
                 ),
@@ -165,8 +182,12 @@ class CompletedOrdersScreen extends StatelessWidget {
                     shrinkWrap: true,
                     separatorBuilder: (context, index) => const Divider(),
                     itemCount: item.materialIds.length,
-                    itemBuilder: (context, localIndex) => ListTile(
-                      leading: Image.network(lenderPageController.getMaterialPicture(item,localIndex)),
+                    itemBuilder: (context, localIndex) {
+                      String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
+                      return ListTile(
+                      leading: imageUrl != null 
+                        ? Image.network(baseUrl + imageUrl) 
+                        : const Icon(Icons.image),
                       title: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -181,10 +202,13 @@ class CompletedOrdersScreen extends StatelessWidget {
                               ),
                             ),
                           ),
-                          Expanded(child: Text('${lenderPageController.getItemPrice(item,localIndex)} €'))
+                          Expanded(
+                            child: Text('${lenderPageController.getItemPrice(item,localIndex)} €'),
+                          ),
                         ],
                       ),
-                    ),
+                    );
+                    },
                   ): Container(),
                 ),
                 Expanded(
