@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/pages/inventory/dialogs/add_item_dialog.dart';
@@ -138,7 +139,9 @@ class InventoryPage extends GetView<InventoryPageController> {
                       child: SizedBox(
                         width: 50,
                         child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
-                          ? Image.network(controller.filteredMaterial[index].imageUrls.first) 
+                          ? controller.filteredMaterial[index].imageUrls.isNotEmpty 
+                            ? Image.network(baseUrl + controller.filteredMaterial[index].imageUrls.first) 
+                            : const Icon(Icons.image)
                           : null,
                       ),
                     ),
@@ -182,12 +185,16 @@ class InventoryPage extends GetView<InventoryPageController> {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
+                      image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) && 
+                          item.imageUrls.isNotEmpty
                         ? DecorationImage(
                           image: NetworkImage(item.imageUrls.first),
-                        ) 
+                        )
                         : null,
                     ),
+                    child: item.imageUrls.isEmpty 
+                      ? const Icon(Icons.image) 
+                      : Container(),
                   ),
                   Row(
                     children: [
