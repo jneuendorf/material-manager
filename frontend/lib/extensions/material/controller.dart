@@ -41,7 +41,7 @@ class MaterialController extends GetxController {
   }
 
   Future<void> _initMaterials() async {
-    materials.value = (await getAllMaterial()) ?? []; //getAllMaterialMocks();
+    materials.value = (await getAllMaterial()) ?? [];
   }
 
   Future<void> _initTypes() async {

@@ -72,7 +72,7 @@ class RentalController extends GetxController {
   /// Fetches all rentals from backend.
   Future<List<RentalModel>?> getAllRentals() async {
     try {
-      final response = await apiService.mainClient.get('/rental');
+      final response = await apiService.mainClient.get('/rentals');
 
       if (response.statusCode != 200) debugPrint('Error getting rentals');
 
