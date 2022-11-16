@@ -3,11 +3,12 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/extensions/material/model.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
+import 'package:frontend/api.dart';
+import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
@@ -83,7 +84,9 @@ class InspectionPage extends GetView<InspectionPageController> {
                     SizedBox(
                       width: 50,
                       child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                          ? Image.network(material.imageUrls.first)
+                          ? material. imageUrls.isNotEmpty 
+                            ? Image.network(baseUrl + material.imageUrls.first) 
+                            : const Icon(Icons.image)
                           : null,
                     ),
                     Column(

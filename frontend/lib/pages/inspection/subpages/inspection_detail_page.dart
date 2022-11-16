@@ -2,13 +2,14 @@ import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
+import 'package:frontend/common/util.dart';
 
 
 class InspectionDetailPage extends StatelessWidget {
@@ -50,7 +51,9 @@ class InspectionDetailPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10.0)
                         ),
                         child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                            ? Image.network(inspectionPageController.selectedMaterials.first.imageUrls.first)
+                            ? inspectionPageController.selectedMaterials.first.imageUrls.isNotEmpty 
+                              ? Image.network(baseUrl + inspectionPageController.selectedMaterials.first.imageUrls.first)
+                              : const Icon(Icons.image)
                             : null,
                       );
                     } else {
