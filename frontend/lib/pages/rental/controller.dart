@@ -85,7 +85,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       bool materialTypeFilterCondition() {
         if (selectedFilter.value == null) return true;
         
-        return item.materialType == selectedFilter.value;
+        return item.materialType.id == selectedFilter.value!.id;
       }
 
       /// Checks if the [term] is contained in [materialType] of the [item].
