@@ -27,7 +27,7 @@ class AccountScreen extends StatelessWidget {
               title: 'roles'.tr,
               options: [
                 'all'.tr,
-                ...administrationPageController.userController.permissions.map((e) => e.name)
+                ...administrationPageController.userController.roles.map((e) => e.name)
               ],
               selected: administrationPageController.selectedFilter.value?.name ?? 'all'.tr,
               onSelected: administrationPageController.onFilterSelected,
