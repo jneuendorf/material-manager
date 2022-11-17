@@ -33,7 +33,7 @@ run: venv
 	. venv/bin/activate && flask run
 
 run_prod: venv install_prod
-	. venv/bin/activate && gunicorn --bind 127.0.0.1:8080 wsgi:app
+	. venv/bin/activate && gunicorn --certfile /etc/letsencrypt/live/terrorfickenhitler.de/fullchain.pem --keyfile /etc/letsencrypt/live/terrorfickenhitler.de/privkey.pem --bind 127.0.0.1:8080 wsgi:app
 
 clean:
 	rm -rf venv
