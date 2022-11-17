@@ -134,6 +134,8 @@ class LocaleString extends Translations {
       'value': 'Value',
       'unit': 'Unit',
       'add_property': 'Add Property',
+      'add_serial_number': 'Add Serial-num.',
+      'serial_number': 'Serial-num',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -261,7 +263,10 @@ class LocaleString extends Translations {
       'instructions' : 'Gebrauchsanweisung',
       'value': 'Wert',
       'unit': 'Einheit',
-      'add_property': 'Add Property',
+      'add_property': 'Eigenschaft hinzufügen',
+      'add_serial_number': 'Seriennum. hinzufügen',
+      'serial_number': 'Seriennummer',
+
     }
   };
 }

@@ -25,7 +25,6 @@ class InventoryPageController extends GetxController {
     final Rxn<ConditionModel> selectedConditionFilter = Rxn<ConditionModel>();
     final RxString searchTerm = ''.obs;
 
-
   @override
   Future<void> onInit() async {
     super.onInit();

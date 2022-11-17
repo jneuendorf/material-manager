@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -22,6 +24,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
   final RxBool loading = false.obs;
   final RxList properties = [].obs;
+  late  RxInt counter = 1.obs;
+  //gets incremented by counter and by "add_serial_number", in case its a set with multiple serial_numbers
+  final RxInt serialNumberCount =0.obs;
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
@@ -30,7 +35,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     child: Form(
       key: formKey,
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        //crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
@@ -51,16 +56,22 @@ class _AddItemDialogState extends State<AddItemDialog> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Expanded(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'description'.tr,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 50.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'description'.tr,
+                    ),
                   ),
                 ),
               ),
               Expanded(
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'rental_fee'.tr,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 50.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      labelText: 'rental_fee'.tr,
+                    ),
                   ),
                 ),
               ),
@@ -73,28 +84,40 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 Expanded(
                   child: Column(
                     children: [
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Expanded(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'max_life_expectancy'.tr,
+                      Padding(
+                        padding: const EdgeInsets.only(top: 50.0,bottom: 50.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 50.0),
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: 'max_life_expectancy'.tr,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: TextFormField(
-                              decoration: InputDecoration(
-                                labelText: 'max_service_duration'.tr,
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.only(right: 50.0),
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    labelText: 'max_service_duration'.tr,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'instructions'.tr,
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 50.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'instructions'.tr,
+                          ),
                         ),
                       ),
                       TextFormField(
@@ -108,15 +131,47 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 Expanded(
                   child: Column(
                     children: [
-                      ListView(
-                        shrinkWrap: true,
-                        children: [
-                           Container(
-                            height: 80,
-                            width: 80,
-                            color: Colors.lightBlue,
-                          )
-                        ]
+                      Obx(() => ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: properties.length,
+                          itemBuilder: (context, index) =>  Card(
+                            elevation: 5,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      labelText: 'name'.tr,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      labelText: 'value'.tr,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    decoration: InputDecoration(
+                                      labelText: 'unit'.tr,
+                                    ),
+                                  ),
+                                ),
+                                IconButton(
+                                  padding: EdgeInsets.zero,
+                                  tooltip: 'remove'.tr,
+                                  onPressed: () => properties.remove(properties[index]),
+                                  iconSize: 15.0,
+                                  splashRadius: 18.0,
+                                  icon: const Icon(CupertinoIcons.xmark),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
                       TextIconButton(
                         onTap: () {
@@ -133,7 +188,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
             ),
           ),
           Container(
+            padding: const EdgeInsets.all(5),
             decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
               border: Border.all(),
             ),
             child: Column(
@@ -141,16 +198,22 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 Row(
                     children: [
                       Expanded(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'purchase_date'.tr,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'purchase_date'.tr,
+                            ),
                           ),
                         ),
                       ),
                       Expanded(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'merchant'.tr,
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 50.0),
+                          child: TextFormField(
+                            decoration: InputDecoration(
+                              labelText: 'merchant'.tr,
+                            ),
                           ),
                         ),
                       ),
@@ -166,16 +229,22 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 Row(
                   children: [
                     Expanded(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'invoice_number'.tr,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 50.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'invoice_number'.tr,
+                          ),
                         ),
                       ),
                     ),
                     Expanded(
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'production_date'.tr,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 50.0),
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            labelText: 'production_date'.tr,
+                          ),
                         ),
                       ),
                     ),
@@ -193,25 +262,123 @@ class _AddItemDialogState extends State<AddItemDialog> {
           ),
           Row(
             children: [
-              Flexible(
-                child: ListView(shrinkWrap: true,
-                    children: [
-                      Container(
-                        height: 40 ,
-                        width: 50,
-                        color: Colors.lightBlue,
-                      )
-                    ]),
+              Expanded(
+                child: Column(
+                  children: [
+                    Obx(() =>ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: counter.value,
+                      itemBuilder: (context, index) =>  Card(
+                        elevation: 5,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  labelText: 'serial_number'.tr,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              tooltip: 'remove'.tr,
+                              onPressed: () => properties.remove(properties[index]),
+                              iconSize: 15.0,
+                              splashRadius: 18.0,
+                              icon: const Icon(CupertinoIcons.xmark),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),),
+                    TextIconButton(
+                      onTap: () {},
+                      iconData: Icons.add,
+                      text: 'add_serial_number'.tr,
+                      color: Get.theme.colorScheme.onSecondary,
+                    ),
+                  ],
+                ),
               ),
-              Flexible(
-                child: ListView(shrinkWrap: true,
-                    children: [
-                      Container(
-                        height: 40 ,
-                        width: 50,
-                        color: Colors.red,
+              Expanded(
+                child: Column(
+                  children: [
+                    Obx(() => ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: counter.value,
+                      itemBuilder: (context, index) =>  Card(
+                        elevation: 5,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Expanded(
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  labelText: 'name'.tr,
+                                ),
+                              ),
+                            ),
+                            IconButton(
+                              padding: EdgeInsets.zero,
+                              tooltip: 'remove'.tr,
+                              onPressed: () => properties.remove(properties[index]),
+                              iconSize: 15.0,
+                              splashRadius: 18.0,
+                              icon: const Icon(CupertinoIcons.xmark),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),),
+                  ],
+                ),
+              ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Obx(() => Container(
+                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Row(children: <Widget>[
+                        IconButton(
+                          icon: const Icon(Icons.remove),
+                          onPressed: () {
+                            setState(() {
+                              counter -= 1;
+                            });
+                          },
+                        ),
+                        Text(counter.toString()),
+                        IconButton(
+                          icon: const Icon(Icons.add),
+                          onPressed: () {
+                            setState(() {
+                              counter += 1;
+                            });
+                          },
+                        ),
+                      ])
+                  )),
+                  CupertinoButton(
+                      onPressed: () {},
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey,
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(6.5),
+                          child: Text('add'.tr, style: const TextStyle(color: Colors.black)),
+                        ),
                       )
-                    ]),
+                  ),
+                ],
               ),
             ],
           ),
