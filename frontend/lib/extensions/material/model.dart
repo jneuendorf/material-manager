@@ -1,3 +1,7 @@
+import 'package:csv/csv.dart';
+import 'package:get/get.dart';
+
+const csvEncoder = ListToCsvConverter();
 
 class MaterialModel {
   final int? id;
@@ -35,23 +39,45 @@ class MaterialModel {
     required this.materialType,
   });
 
-  factory MaterialModel.fromJson(Map<String, dynamic> json) => MaterialModel(
-    id: json['id'],
-    imageUrls: json['image_urls'] != null ? List<String>.from(json['image_urls']) : [],
-    serialNumbers: List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
-    inventoryNumber: json['inventory_number'],
-    maxOperatingDate: DateTime.parse(json['max_operating_date']),
-    maxDaysUsed: json['max_days_used'],
-    installationDate: DateTime.parse(json['installation_date']),
-    instructions: json['instructions'],
-    nextInspectionDate: DateTime.parse(json['next_inspection_date']),
-    rentalFee: json['rental_fee'],
-    condition: ConditionModel.values.byName(json['condition'].toLowerCase()),
-    daysUsed: json['days_used'],
-    purchaseDetails: PurchaseDetails.fromJson(json['purchase_details']),
-    properties: List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
-    materialType: MaterialTypeModel.fromJson(json['material_type']),
-  );
+  MaterialModel.fromJson(Map<String, dynamic> json):
+    id = json['id'],
+    imageUrls = json['image_urls'] != null ? List<String>.from(json['image_urls']) : [],
+    serialNumbers = List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
+    inventoryNumber = json['inventory_number'],
+    maxOperatingDate = DateTime.parse(json['max_operating_date']),
+    maxDaysUsed = json['max_days_used'],
+    installationDate = DateTime.parse(json['installation_date']),
+    instructions = json['instructions'],
+    nextInspectionDate = DateTime.parse(json['next_inspection_date']),
+    rentalFee = json['rental_fee'],
+    condition = ConditionModel.values.byName(json['condition'].toLowerCase()),
+    daysUsed = json['days_used'],
+    purchaseDetails = PurchaseDetails.fromJson(json['purchase_details']),
+    properties = List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
+    materialType = MaterialTypeModel.fromJson(json['material_type']);
+
+  List<dynamic> toCsvRow() => [
+    id, imageUrls.toString(), serialNumbers.toString(), inventoryNumber, maxOperatingDate, maxDaysUsed, installationDate, instructions, nextInspectionDate, 
+    rentalFee, condition.name.tr, daysUsed, purchaseDetails.toString(), properties.toString(), materialType.toString() 
+  ];
+}
+
+extension CSVList on List<MaterialModel> {
+  String toCSV() {
+    // TODO: Purchase details (entweder eigene Spalte (mit eigenem .tr) oder Aufspalten in Einzelbestandteile)
+    // TODO: Einheit fehlt für rental fee und andere Preise (sollten wir wirklich davon ausgehen, 
+    //  dass das Euro (€) sind -> würde unsere i18 Bemühungen untermauern)
+    // TODO: properties haben feste (deutsche) Namen -> sollte irgendwie auch allgemeiner gemacht werden.
+    // TODO: usage_in_days ist inkonsistent mit days_used
+
+    return csvEncoder.convert([
+      [
+        'ID', 'images'.tr, 'serial_numbers'.tr, 'inventory_number'.tr, 'max_operating_date'.tr, 'max_days_used'.tr, 'installation'.tr, 'instructions'.tr, 
+        'next_inspection'.tr, 'rental_fee'.tr, 'condition'.tr, 'usage_in_days'.tr, 'Purchase Details', 'properties'.tr, 'type'.tr],
+      for (final materialModel in this)
+        materialModel.toCsvRow()
+    ]);
+  }
 }
 
 class SerialNumber {
@@ -65,11 +91,13 @@ class SerialNumber {
     required this.productionDate,
   });
 
-  factory SerialNumber.fromJson(Map<String, dynamic> json) => SerialNumber(
-    serialNumber: json['serial_number'],
-    manufacturer: json['manufacturer'],
-    productionDate: DateTime.parse(json['production_date']),
-  );
+  SerialNumber.fromJson(Map<String, dynamic> json): 
+    serialNumber = json['serial_number'],
+    manufacturer = json['manufacturer'],
+    productionDate = DateTime.parse(json['production_date']);
+
+  @override
+  String toString() => '$serialNumber@$manufacturer ($productionDate)';
 }
 
 enum ConditionModel {
@@ -97,15 +125,18 @@ class PurchaseDetails {
     required this.suggestedRetailPrice,
   });
 
-  factory PurchaseDetails.fromJson(Map<String, dynamic> json) => PurchaseDetails(
-    id: json['id'],
-    purchaseDate: DateTime.parse(json['purchase_date']),
-    invoiceNumber: json['invoice_number'],
-    merchant: json['merchant'],
-    //productionDate: DateTime.parse(json['production_date']),
-    purchasePrice: json['purchase_price'],
-    suggestedRetailPrice: json['suggested_retail_price'],
-  );
+  PurchaseDetails.fromJson(Map<String, dynamic> json):
+    id = json['id'],
+    purchaseDate = DateTime.parse(json['purchase_date']),
+    invoiceNumber = json['invoice_number'],
+    merchant = json['merchant'],
+    //productionDate = DateTime.parse(json['production_date']),
+    purchasePrice = json['purchase_price'],
+    suggestedRetailPrice = json['suggested_retail_price'];
+
+  // No id
+  @override
+  String toString() => 'Purchase(date: $purchaseDate, invoice number: $invoiceNumber, merchant: $merchant, price: $purchasePrice, uvp: $suggestedRetailPrice)';
 }
 
 class Property {
@@ -123,13 +154,16 @@ class Property {
     required this.unit,
   });
 
-  factory Property.fromJson(Map<String, dynamic> json) => Property(
-    id: json['id'],
-    name: json['name'],
-    description: json['description'],
-    value: json['value'],
-    unit: json['unit'],
-  );
+  Property.fromJson(Map<String, dynamic> json):
+    id = json['id'],
+    name = json['name'],
+    description = json['description'],
+    value = json['value'],
+    unit = json['unit'];
+
+  // No id or description
+  @override
+  String toString() => '$name: $value $unit';
 }
 
 class MaterialTypeModel {
@@ -143,9 +177,12 @@ class MaterialTypeModel {
     required this.description,
   });
 
-  factory MaterialTypeModel.fromJson(Map<String, dynamic> json) => MaterialTypeModel(
-    id: json['id'],
-    name: json['name'],
-    description: json['description'],
-  );
+  MaterialTypeModel.fromJson(Map<String, dynamic> json):
+    id = json['id'],
+    name = json['name'],
+    description = json['description'];
+
+  // no id or description
+  @override
+  String toString() => name;
 }
