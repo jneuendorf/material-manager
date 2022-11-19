@@ -20,8 +20,7 @@ class BaseButton extends StatelessWidget {
     child: ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: color),
       onPressed: onPressed,
-      child: Text(
-        text,
+      child: Text(text,
         style: const TextStyle(
           fontWeight: FontWeight.w900,
           fontSize: 20,

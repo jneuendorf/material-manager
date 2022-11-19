@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -39,19 +38,13 @@ class RoleScreen extends StatelessWidget {
             administrationPageController.getDataRowColor),
           columns: <DataColumn>[
             DataColumn(
-              label: Text(
-                'name'.tr,
-              ),
+              label: Text('name'.tr),
             ),
             DataColumn(
-              label: Text(
-                'description'.tr,
-              ),
+              label: Text('description'.tr),
             ),
             DataColumn(
-              label: Text(
-                'permissions'.tr,
-              ),
+              label: Text('permissions'.tr),
             ),
           ],
           rows: administrationPageController.userController.roles.map(
@@ -62,12 +55,17 @@ class RoleScreen extends StatelessWidget {
                 DataCell(Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Flexible(child: Text(role.permissions.map((p) => p.name).toList().join(', '))),
-                    CupertinoButton(
+                    Flexible(
+                      child: Text(role.permissions.map(
+                        (p) => p.name).toList().join(', '),
+                      ),
+                    ),
+                    IconButton(
                       onPressed: () {},
-                      color: Get.theme.colorScheme.onSecondary,
-                      padding: EdgeInsets.zero,
-                      child: const Icon(Icons.edit, color: Colors.white,)
+                      splashRadius: 18.0,
+                      icon: Icon(Icons.edit, 
+                        color: Get.theme.colorScheme.onSecondary,
+                      ),
                     ),
                   ],
                 )),
