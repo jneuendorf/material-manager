@@ -41,8 +41,6 @@ class RoleScreen extends StatelessWidget {
             administrationPageController.getDataRowColor),
           columnSpacing: isLargeScreen(context) ? 56.0 : 4.0,
           horizontalMargin: isLargeScreen(context) ? 24.0 : 8.0,
-          //dataRowHeight: isLargeScreen(context) ? 48.0 : 80.0, 
-          
           columns: <DataColumn>[
             DataColumn(
               label: Text('name'.tr),
