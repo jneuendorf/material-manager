@@ -64,7 +64,7 @@ class AccountScreen extends StatelessWidget {
           showCheckboxColumn: false,
           dataRowColor: MaterialStateProperty.resolveWith(
             administrationPageController.getDataRowColor),
-          columnSpacing: isLargeScreen(context) ? 56.0 : 2.0,
+          columnSpacing: isLargeScreen(context) ? 56.0 : 4.0,
           horizontalMargin: isLargeScreen(context) ? 24.0 : 8.0,
           columns: <DataColumn>[
             DataColumn(
