@@ -30,6 +30,10 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
   final TextEditingController emailController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController membershipController = TextEditingController();
+  final TextEditingController streetNameController = TextEditingController();
+  final TextEditingController houseNumberController = TextEditingController();
+  final TextEditingController cityController = TextEditingController();
+  final TextEditingController zipController = TextEditingController();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -49,18 +53,24 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
     emailController.text = widget.user.email;
     phoneController.text = widget.user.phone;
     membershipController.text = widget.user.membershipNumber;
+    streetNameController.text = widget.user.address.street;
+    houseNumberController.text = widget.user.address.houseNumber;
+    cityController.text = widget.user.address.city;
+    zipController.text = widget.user.address.zip;
   }
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
     loading: loading,
     child: ConstrainedBox(
-      constraints: const BoxConstraints(maxHeight: 550),
+      constraints: BoxConstraints(
+        maxHeight: isLargeScreen(context) ? 370 : 450,
+        ),
       child: Form(
         key: formKey,
         child: Column(
           //mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -69,10 +79,8 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
                   child: Text('edit_user'.tr, style: Get.textTheme.headline6),
                 ),
                 IconButton(
+                  onPressed: Get.back,
                   splashRadius: 20,
-                  onPressed: () {
-                    Get.back();
-                  },
                   icon: const Icon(CupertinoIcons.xmark),
                 ),
               ],
@@ -112,6 +120,17 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
                 ],
               ),
             ),
+            const SizedBox(height: 16.0),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: CupertinoButton(
+                onPressed: onConfirmTap,
+                color: Get.theme.primaryColor,
+                child: Text('confirm'.tr,
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ),
+            ),
           ],
         ),
       ),
@@ -120,7 +139,7 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
 
   Widget buildGerneralScreen() => Column(
     mainAxisSize: MainAxisSize.min,
-    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       const SizedBox(height: 8.0),
       isLargeScreen(Get.context!) ? Row(
@@ -153,21 +172,6 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       ),
       const SizedBox(height: 8.0),
       TextFormField(
-        controller: phoneController,
-        decoration: InputDecoration(
-          labelText: 'phone'.tr,
-          border: const OutlineInputBorder(),
-        ),
-        keyboardType: TextInputType.phone,
-        validator: (value) {
-          if (!GetUtils.isPhoneNumber(value!)) {
-            return 'phone_not_valid'.tr;
-          }
-          return null;
-        },
-      ),
-      const SizedBox(height: 8.0),
-      TextFormField(
         controller: membershipController,
         decoration: InputDecoration(
           labelText: 'membership_number'.tr,
@@ -184,23 +188,102 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
           return null;
         },
       ),
-      const SizedBox(height: 16.0),
-      Align(
-        alignment: Alignment.bottomRight,
-        child: CupertinoButton(
-          onPressed: onConfirmTap,
-          color: Get.theme.primaryColor,
-          child: Text('confirm'.tr,
-            style: const TextStyle(color: Colors.white),
-          ),
-        ),
-      ),
     ],
   );
 
   Widget buildAdressScreen() => Column(
     mainAxisSize: MainAxisSize.min,
-    children: [],
+    children: [
+      const SizedBox(height: 8.0),
+      Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: streetNameController,
+              decoration: InputDecoration(
+                labelText: 'street_name'.tr,
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if(value!.isEmpty) {
+                  return 'street_is_mandatory'.tr;
+                }
+                return null;
+              },
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          SizedBox(
+            width: isLargeScreen(Get.context!) ? 200 : 100,
+            child: TextFormField(
+              controller: houseNumberController,
+              decoration: InputDecoration(
+                labelText: 'house_number'.tr,
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if(value!.isEmpty) {
+                  return 'housenumber_is_mandatory'.tr;
+                }
+                return null;
+              },
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 8.0),
+      Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: cityController,
+              decoration: InputDecoration(
+                labelText: 'city'.tr,
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if(value!.isEmpty) {
+                  return 'city_is_mandatory'.tr;
+                }
+                return null;
+              },
+            ),
+          ),
+          const SizedBox(width: 8.0),
+          SizedBox(
+            width: isLargeScreen(Get.context!) ? 200 : 100,
+            child: TextFormField(
+              controller: zipController,
+              decoration: InputDecoration(
+                labelText: 'zip'.tr,
+                border: const OutlineInputBorder(),
+              ),
+              validator: (value) {
+                if(value!.isEmpty) {
+                  return 'zip_is_mandatory'.tr;
+                }
+                return null;
+              },
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(height: 8.0),
+      TextFormField(
+        controller: phoneController,
+        decoration: InputDecoration(
+          labelText: 'phone'.tr,
+          border: const OutlineInputBorder(),
+        ),
+        keyboardType: TextInputType.phone,
+        validator: (value) {
+          if (!GetUtils.isPhoneNumber(value!)) {
+            return 'phone_not_valid'.tr;
+          }
+          return null;
+        },
+      ),
+    ],
   );
 
   TextFormField buildFirstNameTextField() => TextFormField(

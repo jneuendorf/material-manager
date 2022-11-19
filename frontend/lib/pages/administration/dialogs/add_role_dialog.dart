@@ -41,8 +41,8 @@ class AddRoleDialog extends StatelessWidget {
                   child: Text('add_role'.tr, style: Get.textTheme.headline6),
                 ),
                 IconButton(
-                  splashRadius: 20,
                   onPressed: Get.back,
+                  splashRadius: 20,
                   icon: const Icon(CupertinoIcons.xmark),
                 ),
               ],

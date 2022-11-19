@@ -25,9 +25,7 @@ class AddUserDialog extends StatelessWidget {
             ),
             IconButton(
               splashRadius: 20,
-              onPressed: () {
-                Get.back();
-              },
+              onPressed: Get.back,
               icon: const Icon(CupertinoIcons.xmark),
             ),
           ],
