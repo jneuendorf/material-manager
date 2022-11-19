@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -63,11 +62,12 @@ class RoleScreen extends StatelessWidget {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Flexible(child: Text(role.permissions.map((p) => p.name).toList().join(', '))),
-                    CupertinoButton(
-                      onPressed: () {},
-                      color: Get.theme.colorScheme.onSecondary,
-                      padding: EdgeInsets.zero,
-                      child: const Icon(Icons.edit, color: Colors.white,)
+                    IconButton(
+                      onPressed: () {}, 
+                      icon: Icon(Icons.edit, 
+                        color: Get.theme.colorScheme.onSecondary,
+                      ),
+                      splashRadius: 18.0,
                     ),
                   ],
                 )),

@@ -98,6 +98,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
     runFilter();
   }
 
+  /// Returns the color dependent on the [states].
   Color getDataRowColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
       MaterialState.pressed,
