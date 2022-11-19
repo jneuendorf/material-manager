@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-// import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
 import 'package:frontend/common/util.dart';
@@ -19,7 +19,7 @@ class EditUserDialog extends StatefulWidget {
 }
 
 class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProviderStateMixin {
-  //final administrationPageController = Get.find<AdministrationPageController>();
+  final administrationPageController = Get.find<AdministrationPageController>();
 
   late TabController tabController;
 
@@ -69,8 +69,6 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       child: Form(
         key: formKey,
         child: Column(
-          //mainAxisSize: MainAxisSize.min,
-          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
@@ -139,7 +137,6 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
 
   Widget buildGerneralScreen() => Column(
     mainAxisSize: MainAxisSize.min,
-    // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
     children: [
       const SizedBox(height: 8.0),
       isLargeScreen(Get.context!) ? Row(
@@ -318,5 +315,29 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
     if (formKey.currentState!.validate()) {
       loading.value = true;
     }
+    UserModel updatedUser = UserModel(
+      id: widget.user.id,
+      roles: widget.user.roles, // TODO update roles
+      category: widget.user.category,
+      firstName: firstNameController.text,
+      lastName: lastNameController.text,
+      email: emailController.text,
+      membershipNumber: membershipController.text,
+      phone: phoneController.text,
+      address: Address(
+        street: streetNameController.text,
+        houseNumber: houseNumberController.text,
+        city: cityController.text,
+        zip: zipController.text,
+      ),
+    );
+
+    final bool success = await administrationPageController.userController.updateUser(updatedUser);
+
+    if (success) {
+      Get.back();
+    } 
+    
+    loading.value = false;
   }
 }
