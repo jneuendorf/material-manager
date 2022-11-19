@@ -30,6 +30,7 @@ class LocaleString extends Translations {
       'type': 'Type',
       'all': 'All',
       'membership_number': 'Membership No.',
+      'member_number': 'Member No.',
       'first_name': 'First Name',
       'last_name': 'Last Name',
       'street_name': 'Street name',
@@ -136,6 +137,7 @@ class LocaleString extends Translations {
       'extras': 'Extras',
       'export_inventory_to_csv': 'Export inventory to CSV',
       'export': 'Export',
+      'edit': 'Edit',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -162,6 +164,7 @@ class LocaleString extends Translations {
       'type': 'Art',
       'all': 'Alle',
       'membership_number': 'Mitgliedsnr.',
+      'member_number': 'Mitg.Nr.',
       'first_name': 'Vorname',
       'last_name': 'Nachname',
       'street_name': 'Straßenname',
@@ -266,6 +269,7 @@ class LocaleString extends Translations {
       'extras': 'Extras',
       'export_inventory_to_csv': 'Inventar zu CSV exportieren',
       'export': 'Exportieren',
+      'edit' : 'Bearbeiten',
     }
   };
 }
