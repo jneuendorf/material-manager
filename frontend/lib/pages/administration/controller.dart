@@ -36,7 +36,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
   Future<void> onInit() async {
     super.onInit();
 
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     tabController.addListener(() {
       tabIndex.value = tabController.index;
     });
