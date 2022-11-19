@@ -13,9 +13,9 @@ class AddUserDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
-    size: const Size(500.0, 325.0), 
     loading: loading,
     child: Column(
+      mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(

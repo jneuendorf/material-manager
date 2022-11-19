@@ -15,7 +15,6 @@ class AddItemDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
-    size: const Size(500.0, 340.0), 
     loading: loading,
     child: Form(
       key: formKey,
