@@ -134,6 +134,8 @@ class LocaleString extends Translations {
       'no_image_found': 'No Image Found',
       'repair': 'Repair',
       'extras': 'Extras',
+      'export_inventory_to_csv': 'Export inventory to CSV',
+      'export': 'Export',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -262,6 +264,8 @@ class LocaleString extends Translations {
       'no_image_found': 'Kein Bild gefunden',
       'repair': 'Reparatur',
       'extras': 'Extras',
+      'export_inventory_to_csv': 'Inventar zu CSV exportieren',
+      'export': 'Exportieren',
     }
   };
 }
