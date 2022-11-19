@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -39,9 +41,8 @@ class RoleScreen extends StatelessWidget {
             administrationPageController.getDataRowColor),
           columnSpacing: isLargeScreen(context) ? 56.0 : 4.0,
           horizontalMargin: isLargeScreen(context) ? 24.0 : 8.0,
-          dataRowHeight: isLargeScreen(context) ? 48.0 : 80.0, 
-          // TODO remove hardcoded dataRowHeight 
-          // and SingleChildScrollView around description Text
+          //dataRowHeight: isLargeScreen(context) ? 48.0 : 80.0, 
+          
           columns: <DataColumn>[
             DataColumn(
               label: Text('name'.tr),
@@ -53,17 +54,15 @@ class RoleScreen extends StatelessWidget {
               label: Text('permissions'.tr),
             ),
           ],
-          rows: administrationPageController.userController.roles.map(
-            (Role role) => DataRow(
+          rows: administrationPageController.userController.roles.map((Role role) {
+            return DataRow2(
+              specificRowHeight: max(calculateRowHeight(role), 48.0),
               cells: [
                 DataCell(Text(role.name,
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 )),
-                DataCell(Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 8.0),
-                  child: SingleChildScrollView(child: Text(role.description)),
-                )),
+                DataCell(Text(role.description)),
                 DataCell(buildRolePermissions(role)),
               ],
               onSelectChanged: (_) {
@@ -72,8 +71,8 @@ class RoleScreen extends StatelessWidget {
                     administrationPageController.userController.roles.indexOf(role));
                 }
               },
-            ),
-          ).toList(),
+            );
+          }).toList(),
         ),
       ),
     ],
@@ -148,6 +147,26 @@ class RoleScreen extends StatelessWidget {
         ).toList(),
       );
     }
+  }
+
+  double calculateRowHeight(Role role) {
+    final double textScaleFactor = Get.textScaleFactor;
+    final double width = (Get.width-80)/3;
+    
+    Size sizeDescription = getTextSize(
+      text: role.description,
+      maxWidth: width,
+      textScaleFactor: textScaleFactor,
+    );
+    Size sizePermissions = getTextSize(
+      text: role.permissions.map(
+        (Permission p) => p.name).toList().join(', '),
+      maxWidth: width,
+      maxLines: role.permissions.isEmpty ? 1 : role.permissions.length,
+      textScaleFactor: textScaleFactor,
+    );
+
+    return max(sizeDescription.height, sizePermissions.height)+4.0;
   }
 
 }
