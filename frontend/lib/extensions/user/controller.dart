@@ -196,46 +196,6 @@ class UserController extends GetxController {
   }
 
   /// Adds a new user to the backend.
-  /// Returns the id of the newly created user.
-  Future<int?> addUser(UserModel user) async {
-    try {
-      final response = await apiService.mainClient.post('/user',
-        data: {
-          'first_name': user.firstName,
-          'last_name': user.lastName,
-          'email': user.email,
-          'phone': user.phone,
-          'membership_number': user.membershipNumber,
-          'address': {
-            'street': user.address.street,
-            'house_number': user.address.houseNumber,
-            'city': user.address.city,
-            'zip': user.address.zip,
-          },
-          'category': user.category,
-          'roles': user.roles.map((Role r) => {
-            'id': r.id,
-            'name': r.name,
-            'description': r.description,
-            'permissions': r.permissions.map((Permission p) => {
-              'id': p.id,
-              'name': p.name,
-              'description': p.description,
-            }).toList(),
-          }).toList(),
-        },
-      );
-
-      if (response.statusCode != 200) debugPrint('Error adding user');
-
-      return response.data['id'];
-    } on DioError catch(e) {
-      apiService.defaultCatch(e);
-    }
-    return null;
-  }
-
-  /// Adds a new user to the backend.
   /// Returns the id of the newly created role.
   Future<int?> addRole(Role role) async {
     try {

@@ -4,7 +4,8 @@ import 'package:get/get.dart';
 
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/pages/profile/controller.dart';
-import 'package:frontend/pages/administration/dialogs/edit_user_dialog.dart';
+import 'package:frontend/common/components/edit_user_dialog.dart';
+
 
 class UpdateProfileDialog extends StatelessWidget {
   final UserModel user;

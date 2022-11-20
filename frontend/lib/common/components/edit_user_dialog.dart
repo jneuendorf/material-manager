@@ -10,17 +10,20 @@ import 'package:frontend/common/components/multi_select_chip.dart';
 import 'package:frontend/common/util.dart';
 
 
+/// A dialog to update a user.
+/// Dependent on the provided [showRoles], 
+/// the dialog can be used to update a user or a profile. 
 class EditUserDialog extends StatefulWidget {
   final String title;
   final Future<bool> Function(UserModel) onConfirm;
-  final UserModel? user;
+  final UserModel user;
   final bool showRoles;
 
   const EditUserDialog({
     super.key, 
     required this.title, 
     required this.onConfirm,
-    this.user,
+    required this.user,
     this.showRoles = true,
   });
 
@@ -60,21 +63,19 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       tabIndex.value = tabController.index;
     });
 
-    if (widget.user != null) {
-      firstNameController.text = widget.user!.firstName;
-      lastNameController.text = widget.user!.lastName;
-      emailController.text = widget.user!.email;
-      phoneController.text = widget.user!.phone;
-      membershipController.text = widget.user!.membershipNumber;
-      streetNameController.text = widget.user!.address.street;
-      houseNumberController.text = widget.user!.address.houseNumber;
-      cityController.text = widget.user!.address.city;
-      zipController.text = widget.user!.address.zip;
+    firstNameController.text = widget.user.firstName;
+    lastNameController.text = widget.user.lastName;
+    emailController.text = widget.user.email;
+    phoneController.text = widget.user.phone;
+    membershipController.text = widget.user.membershipNumber;
+    streetNameController.text = widget.user.address.street;
+    houseNumberController.text = widget.user.address.houseNumber;
+    cityController.text = widget.user.address.city;
+    zipController.text = widget.user.address.zip;
 
-      selectedRoles.value = widget.user!.roles.map(
-        (Role role) => role.name
-      ).toList();
-    }
+    selectedRoles.value = widget.user.roles.map(
+      (Role role) => role.name
+    ).toList();
   }
 
   @override
@@ -369,9 +370,9 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
     ).toList();
 
     UserModel updatedUser = UserModel(
-      id: widget.user?.id,
+      id: widget.user.id,
       roles: roles,
-      category: widget.user?.category,
+      category: widget.user.category,
       firstName: firstNameController.text,
       lastName: lastNameController.text,
       email: emailController.text,
