@@ -139,7 +139,7 @@ class UserController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error getting users');
 
-      return response.data.map(
+      return response.data.map<UserModel>(
         (dynamic item) => UserModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
@@ -166,11 +166,11 @@ class UserController extends GetxController {
   /// Fetches all roles from backend.
   Future<List<Role>?> getAllRoles() async {
     try {
-      final response = await apiService.mainClient.get('/role');
+      final response = await apiService.mainClient.get('/roles');
 
       if (response.statusCode != 200) debugPrint('Error getting roles');
 
-      return response.data['roles'].map(
+      return response.data.map<Role>(
         (dynamic item) => Role.fromJson(item)
       ).toList();
     } on DioError catch(e) {
@@ -186,7 +186,7 @@ class UserController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error getting permissions');
 
-      return response.data['permissions'].map(
+      return response.data.map<Permission>(
         (dynamic item) => Permission.fromJson(item)
       ).toList();
     } on DioError catch(e) {
