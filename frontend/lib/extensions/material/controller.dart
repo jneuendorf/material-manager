@@ -44,7 +44,7 @@ class MaterialController extends GetxController {
   }
 
   Future<void> _initMaterials() async {
-    materials.value = await getAllMaterialMocks();
+    materials.value = (await getAllMaterial()) ?? [];
   }
 
   Future<void> _initTypes() async {
@@ -96,7 +96,7 @@ class MaterialController extends GetxController {
   /// Fetches all material from backend.
   Future<List<MaterialModel>?> getAllMaterial() async {
     try {
-      final response = await apiService.mainClient.get('/material');
+      final response = await apiService.mainClient.get('/materials');
 
       if (response.statusCode != 200) debugPrint('Error getting material');
 
@@ -138,20 +138,20 @@ class MaterialController extends GetxController {
             'production_date': s.productionDate,
           }).toList(),
           'inventory_number': material.inventoryNumber,
-          'max_life_expectancy': material.maxLifeExpectancy,
-          'max_service_duration': material.maxServiceDuration,
+          'max_operating_date': material.maxOperatingDate,
+          'max_days_used': material.maxDaysUsed,
           'installation_date': material.installationDate,
           'instructions': material.instructions,
           'next_inspection_date': material.nextInspectionDate,
           'rental_fee': material.rentalFee,
           'condition': material.condition.name,
-          'usage': material.usage,
+          'usage': material.daysUsed,
           'purchase_details': {
             'id' : material.purchaseDetails.id,
             'purchase_date': material.purchaseDetails.purchaseDate,
             'invoice_number': material.purchaseDetails.invoiceNumber,
             'merchant': material.purchaseDetails.merchant,
-            'production_date': material.purchaseDetails.productionDate,
+            // 'production_date': material.purchaseDetails.productionDate,
             'purchanse_price': material.purchaseDetails.purchasePrice,
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
@@ -234,20 +234,20 @@ class MaterialController extends GetxController {
             'production_date': s.productionDate,
           }).toList(),
           'inventory_number': material.inventoryNumber,
-          'max_life_expectancy': material.maxLifeExpectancy,
-          'max_service_duration': material.maxServiceDuration,
+          'max_operating_date': material.maxOperatingDate,
+          'max_days_used': material.maxDaysUsed,
           'installation_date': material.installationDate,
           'instructions': material.instructions,
           'next_inspection_date': material.nextInspectionDate,
           'rental_fee': material.rentalFee,
           'condition': material.condition.name,
-          'usage': material.usage,
+          'usage': material.daysUsed,
           'purchase_details': {
             'id' : material.purchaseDetails.id,
             'purchase_date': material.purchaseDetails.purchaseDate,
             'invoice_number': material.purchaseDetails.invoiceNumber,
             'merchant': material.purchaseDetails.merchant,
-            'production_date': material.purchaseDetails.productionDate,
+            // 'production_date': material.purchaseDetails.productionDate,
             'purchanse_price': material.purchaseDetails.purchasePrice,
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },

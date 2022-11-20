@@ -46,8 +46,8 @@ class InventoryPageController extends GetxController {
       /// Checks if the [selectedTypeFilter] equals [materialType] of the [item].
       bool materialTypeFilterCondition() {
         if (selectedTypeFilter.value == null) return true;
-
-        return item.materialType == selectedTypeFilter.value;
+        
+        return item.materialType.id == selectedTypeFilter.value!.id;
       }
 
       /// Checks if the [term] is contained in [materialType] of the [item].

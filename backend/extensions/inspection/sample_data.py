@@ -1,10 +1,12 @@
 from datetime import date
 
 from extensions.common.models import File
-from extensions.material.models import Material, SerialNumber
+from extensions.material.models import Material
 from extensions.user.models import Role, User
 
 from .models import Comment, Inspection
+
+material = Material.all()[0]
 
 inspector_role = Role.get_or_create(
     name="PSA inspector",
@@ -22,16 +24,6 @@ if inspector is None:
     )
     inspector.update(is_active=True)
 
-ok_material = Material.get_or_create(
-    inventory_number="m_ok",
-    _related=dict(
-        serial_numbers=[
-            SerialNumber.get_or_create(
-                serial_number="asdfjsdf9sdf",
-            ),
-        ],
-    ),
-)
 inspection = Inspection.get_or_create(
     date=date(2020, 1, 1),
     type="PSA",
@@ -43,7 +35,7 @@ comment1 = Comment.get_or_create(
     comment="comment 1",
     _related=dict(
         inspection=inspection,
-        material=ok_material,
+        material=material,
     ),
 )
 File.get_or_create(
@@ -63,9 +55,9 @@ icon = File.get_or_create(
     description="material manager icon",
     mime_type="image/png",
     _related=dict(
-        object=ok_material,
+        object=material,
     ),
 )
-print(ok_material.images[0].path)
+print(material.images[0].path)
 # icon.delete()
 # print(ok_material.images)

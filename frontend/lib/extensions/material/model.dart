@@ -4,14 +4,14 @@ class MaterialModel {
   List<String> imageUrls;
   List<SerialNumber> serialNumbers;
   String inventoryNumber;
-  String maxLifeExpectancy;
-  String maxServiceDuration;
+  DateTime maxOperatingDate;
+  int maxDaysUsed;
   DateTime installationDate;
   String instructions;
   DateTime nextInspectionDate;
   double rentalFee;
   ConditionModel condition;
-  int usage;
+  int daysUsed;
   PurchaseDetails purchaseDetails;
   List<Property> properties;
   MaterialTypeModel materialType;
@@ -22,14 +22,14 @@ class MaterialModel {
     required this.imageUrls,
     required this.serialNumbers,
     required this.inventoryNumber,
-    required this.maxLifeExpectancy,
-    required this.maxServiceDuration,
+    required this.maxOperatingDate,
+    required this.maxDaysUsed,
     required this.installationDate,
     required this.instructions,
     required this.nextInspectionDate,
     required this.rentalFee,
     required this.condition,
-    required this.usage,
+    required this.daysUsed,
     required this.purchaseDetails,
     required this.properties,
     required this.materialType,
@@ -40,14 +40,14 @@ class MaterialModel {
     imageUrls: json['image_urls'] != null ? List<String>.from(json['image_urls']) : [],
     serialNumbers: List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
     inventoryNumber: json['inventory_number'],
-    maxLifeExpectancy: json['max_life_expectancy'],
-    maxServiceDuration: json['max_service_duration'],
+    maxOperatingDate: DateTime.parse(json['max_operating_date']),
+    maxDaysUsed: json['max_days_used'],
     installationDate: DateTime.parse(json['installation_date']),
     instructions: json['instructions'],
     nextInspectionDate: DateTime.parse(json['next_inspection_date']),
     rentalFee: json['rental_fee'],
-    condition: ConditionModel.values.byName(json['condition']),
-    usage: json['usage'],
+    condition: ConditionModel.values.byName(json['condition'].toLowerCase()),
+    daysUsed: json['days_used'],
     purchaseDetails: PurchaseDetails.fromJson(json['purchase_details']),
     properties: List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
     materialType: MaterialTypeModel.fromJson(json['material_type']),
@@ -75,6 +75,7 @@ class SerialNumber {
 enum ConditionModel {
   ok,
   broken,
+  repair,
 }
 
 class PurchaseDetails {
@@ -82,7 +83,7 @@ class PurchaseDetails {
   DateTime purchaseDate;
   String invoiceNumber;
   String merchant;
-  DateTime productionDate;
+  //DateTime productionDate;
   double purchasePrice;
   double suggestedRetailPrice;
 
@@ -91,7 +92,7 @@ class PurchaseDetails {
     required this.purchaseDate,
     required this.invoiceNumber,
     required this.merchant,
-    required this.productionDate,
+    //required this.productionDate,
     required this.purchasePrice,
     required this.suggestedRetailPrice,
   });
@@ -101,7 +102,7 @@ class PurchaseDetails {
     purchaseDate: DateTime.parse(json['purchase_date']),
     invoiceNumber: json['invoice_number'],
     merchant: json['merchant'],
-    productionDate: DateTime.parse(json['production_date']),
+    //productionDate: DateTime.parse(json['production_date']),
     purchasePrice: json['purchase_price'],
     suggestedRetailPrice: json['suggested_retail_price'],
   );

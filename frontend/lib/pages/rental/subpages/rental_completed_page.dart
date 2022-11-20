@@ -1,5 +1,5 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
@@ -14,7 +14,7 @@ class RentalCompletedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
-    pageTitle: !kIsWeb ? 'reservation_completed'.tr : null,
+    pageTitle: isLargeScreen(context) ? null : 'reservation_completed'.tr,
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

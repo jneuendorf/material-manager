@@ -20,8 +20,8 @@ class AdministrationPageBinding implements Bindings {
 class AdministrationPageController extends GetxController with GetSingleTickerProviderStateMixin {
   final userController = Get.find<UserController>();
 
-  final RxInt tabIndex = 0.obs;
   late TabController tabController;
+  final RxInt tabIndex = 0.obs;
 
   final RxList<UserModel> filteredUsers = <UserModel>[].obs;
   final RxMap<Role, String> filterOptions = <Role, String>{}.obs;
@@ -36,7 +36,7 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
   Future<void> onInit() async {
     super.onInit();
 
-    tabController = TabController(length: 2, vsync: this);
+    tabController = TabController(length: 3, vsync: this);
     tabController.addListener(() {
       tabIndex.value = tabController.index;
     });
@@ -98,6 +98,9 @@ class AdministrationPageController extends GetxController with GetSingleTickerPr
     runFilter();
   }
 
+  void onEditRolePressed(Role role) {}
+
+  /// Returns the color dependent on the [states].
   Color getDataRowColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
       MaterialState.pressed,
