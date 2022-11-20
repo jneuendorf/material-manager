@@ -1,7 +1,6 @@
-import 'dart:developer';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/extensions/material/model.dart';
 
 import 'package:get/get.dart';
 
@@ -25,12 +24,28 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxBool loading = false.obs;
   final RxList properties = [].obs;
   late  RxInt counter = 1.obs;
-  //gets incremented by counter and by "add_serial_number", in case its a set with multiple serial_numbers
-  final RxInt serialNumberCount =0.obs;
+  final RxList<MapEntry<String?, List<SerialNumber>>> bulkValues = <MapEntry<String?, List<SerialNumber>>>[].obs;
+
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController rentalFeeController = TextEditingController();
+  TextEditingController maxLifeExpectancyController = TextEditingController();
+  TextEditingController maxServiceDurationController = TextEditingController();
+  TextEditingController instructionsController = TextEditingController();
+  TextEditingController nextInspectionController = TextEditingController();
+  TextEditingController propertyNameController = TextEditingController();
+  TextEditingController propertyValueController = TextEditingController();
+  TextEditingController propertyUnitController = TextEditingController();
+  TextEditingController purchaseDateController = TextEditingController();
+  TextEditingController merchantController = TextEditingController();
+  TextEditingController purchasePriceController = TextEditingController();
+  TextEditingController invoiceNumberController = TextEditingController();
+  TextEditingController productionDateController = TextEditingController();
+  TextEditingController suggestedRetailPriceController = TextEditingController();
+  TextEditingController serialNumberController = TextEditingController();
+  TextEditingController inventoryNumberController = TextEditingController();
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
-    //size: Size.infinite,//const Size(800.0, 540.0),
     loading: loading,
     child: Form(
       key: formKey,
@@ -46,7 +61,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 ),
               ),
               IconButton(
-                splashRadius: 20,
+                splashRadius: 18.0,
                 onPressed: Get.back,
                 icon: const Icon(CupertinoIcons.xmark),
               ),
@@ -59,6 +74,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 50.0),
                   child: TextFormField(
+                    controller: descriptionController,
                     decoration: InputDecoration(
                       labelText: 'description'.tr,
                     ),
@@ -69,6 +85,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                 child: Padding(
                   padding: const EdgeInsets.only(right: 50.0),
                   child: TextFormField(
+                    controller: rentalFeeController,
                     decoration: InputDecoration(
                       labelText: 'rental_fee'.tr,
                     ),
@@ -77,22 +94,25 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ],
           ),
-          Expanded(
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 50.0,bottom: 50.0),
-                        child: Row(
+          Flexible(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(
+                maxHeight: 180,
+              ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Expanded(
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 50.0),
                                 child: TextFormField(
+                                  controller: maxLifeExpectancyController,
                                   decoration: InputDecoration(
                                     labelText: 'max_life_expectancy'.tr,
                                   ),
@@ -103,6 +123,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               child: Padding(
                                 padding: const EdgeInsets.only(right: 50.0),
                                 child: TextFormField(
+                                  controller: maxServiceDurationController,
                                   decoration: InputDecoration(
                                     labelText: 'max_service_duration'.tr,
                                   ),
@@ -111,80 +132,93 @@ class _AddItemDialogState extends State<AddItemDialog> {
                             ),
                           ],
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 50.0),
-                        child: TextFormField(
+                        TextFormField(
+                          controller: instructionsController,
                           decoration: InputDecoration(
                             labelText: 'instructions'.tr,
                           ),
                         ),
-                      ),
-                      TextFormField(
-                        decoration: InputDecoration(
-                          labelText: 'next_inspection'.tr,
+                        TextFormField(
+                          controller: nextInspectionController,
+                          decoration: InputDecoration(
+                            labelText: 'next_inspection'.tr,
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Obx(() => ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: properties.length,
-                          itemBuilder: (context, index) =>  Card(
-                            elevation: 5,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Expanded(
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      labelText: 'name'.tr,
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Obx(() => ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: properties.length,
+                              itemBuilder: (context, index) =>  Card(
+                                elevation: 5,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: TextFormField(
+                                          controller: propertyNameController,
+                                          decoration: InputDecoration(
+                                            border: const OutlineInputBorder(),
+                                            labelText: 'name'.tr,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      labelText: 'value'.tr,
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(right: 8.0),
+                                        child: TextFormField(
+                                          controller: propertyValueController,
+                                          decoration: InputDecoration(
+                                            border: const OutlineInputBorder(),
+                                            labelText: 'value'.tr,
+                                          ),
+                                        ),
+                                      ),
                                     ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: TextFormField(
-                                    decoration: InputDecoration(
-                                      labelText: 'unit'.tr,
+                                    Expanded(
+                                      child: TextFormField(
+                                        controller: propertyUnitController,
+                                        decoration: InputDecoration(
+                                          border: const OutlineInputBorder(),
+                                          labelText: 'unit'.tr,
+                                        ),
+                                      ),
                                     ),
-                                  ),
+                                    IconButton(
+                                      padding: EdgeInsets.zero,
+                                      tooltip: 'remove'.tr,
+                                      onPressed: () => properties.remove(properties[index]),
+                                      iconSize: 15.0,
+                                      splashRadius: 18.0,
+                                      icon: const Icon(CupertinoIcons.xmark),
+                                    ),
+                                  ],
                                 ),
-                                IconButton(
-                                  padding: EdgeInsets.zero,
-                                  tooltip: 'remove'.tr,
-                                  onPressed: () => properties.remove(properties[index]),
-                                  iconSize: 15.0,
-                                  splashRadius: 18.0,
-                                  icon: const Icon(CupertinoIcons.xmark),
-                                ),
-                              ],
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                      TextIconButton(
-                        onTap: () {
-                          properties.add(1);
-                        },
-                        iconData: Icons.add,
-                        text: 'add_property'.tr,
-                        color: Get.theme.colorScheme.onSecondary,
-                      ),
-                    ],
+                        TextIconButton(
+                          onTap: () {
+                            properties.add(1);
+                          },
+                          iconData: Icons.add,
+                          text: 'add_property'.tr,
+                          color: Get.theme.colorScheme.onSecondary,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
           ),
           Container(
@@ -196,44 +230,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
             child: Column(
               children: [
                 Row(
-                    children: [
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 50.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'purchase_date'.tr,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 50.0),
-                          child: TextFormField(
-                            decoration: InputDecoration(
-                              labelText: 'merchant'.tr,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            labelText: 'purchase_price'.tr,
-                          ),
-                        ),
-                      ),
-                    ]
-                ),
-                Row(
                   children: [
                     Expanded(
                       child: Padding(
                         padding: const EdgeInsets.only(right: 50.0),
                         child: TextFormField(
+                          controller: purchaseDateController,
                           decoration: InputDecoration(
-                            labelText: 'invoice_number'.tr,
+                            labelText: 'purchase_date'.tr,
                           ),
                         ),
                       ),
@@ -242,14 +246,44 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       child: Padding(
                         padding: const EdgeInsets.only(right: 50.0),
                         child: TextFormField(
+                          controller: merchantController,
                           decoration: InputDecoration(
-                            labelText: 'production_date'.tr,
+                            labelText: 'merchant'.tr,
                           ),
                         ),
                       ),
                     ),
                     Expanded(
                       child: TextFormField(
+                        controller: purchasePriceController,
+                        decoration: InputDecoration(
+                          labelText: 'purchase_price'.tr,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: TextFormField(
+                        controller: invoiceNumberController,
+                        decoration: InputDecoration(
+                          labelText: 'invoice_number'.tr,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: productionDateController,
+                        decoration: InputDecoration(
+                          labelText: 'production_date'.tr,
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: TextFormField(
+                        controller: suggestedRetailPriceController,
                         decoration: InputDecoration(
                           labelText: 'suggested_retail_price'.tr,
                         ),
@@ -260,127 +294,85 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ],
             ),
           ),
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  children: [
-                    Obx(() =>ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: counter.value,
-                      itemBuilder: (context, index) =>  Card(
-                        elevation: 5,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'serial_number'.tr,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              tooltip: 'remove'.tr,
-                              onPressed: () => properties.remove(properties[index]),
-                              iconSize: 15.0,
-                              splashRadius: 18.0,
-                              icon: const Icon(CupertinoIcons.xmark),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),),
-                    TextIconButton(
-                      onTap: () {},
-                      iconData: Icons.add,
-                      text: 'add_serial_number'.tr,
-                      color: Get.theme.colorScheme.onSecondary,
-                    ),
-                  ],
-                ),
-              ),
-              Expanded(
-                child: Column(
-                  children: [
-                    Obx(() => ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: counter.value,
-                      itemBuilder: (context, index) =>  Card(
-                        elevation: 5,
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Expanded(
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  labelText: 'name'.tr,
-                                ),
-                              ),
-                            ),
-                            IconButton(
-                              padding: EdgeInsets.zero,
-                              tooltip: 'remove'.tr,
-                              onPressed: () => properties.remove(properties[index]),
-                              iconSize: 15.0,
-                              splashRadius: 18.0,
-                              icon: const Icon(CupertinoIcons.xmark),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),),
-                  ],
-                ),
-              ),
-              Column(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
+          Expanded(
+            child: Obx(() => ListView.builder(
+              shrinkWrap: true,
+              itemCount: bulkValues.length,
+              itemBuilder: (context, index) =>  Row(
                 children: [
-                  Obx(() => Container(
-                      padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
-                      decoration: BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.circular(5)),
-                      child: Row(children: <Widget>[
-                        IconButton(
-                          icon: const Icon(Icons.remove),
-                          onPressed: () {
-                            setState(() {
-                              counter -= 1;
-                            });
-                          },
-                        ),
-                        Text(counter.toString()),
-                        IconButton(
-                          icon: const Icon(Icons.add),
-                          onPressed: () {
-                            setState(() {
-                              counter += 1;
-                            });
-                          },
-                        ),
-                      ])
-                  )),
-                  CupertinoButton(
-                      onPressed: () {},
-                      child: Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Colors.grey,
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(10.0),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(6.5),
-                          child: Text('add'.tr, style: const TextStyle(color: Colors.black)),
-                        ),
-                      )
+                  IconButton(
+                    onPressed: () {
+                      bulkValues.removeAt(index);
+                    },
+                    splashRadius: 18.0,
+                    icon: const Icon(CupertinoIcons.minus_circle_fill,
+                      color: Colors.red,
+                    ),
                   ),
+                  Expanded(
+                    child: Card(
+                      elevation: 5,
+                      child: TextFormField(
+                        controller: serialNumberController,
+                        onFieldSubmitted: (String value) {
+                          if (value.isEmpty) return;
+
+                          // split string at ',' -> subLists will be contained in parts
+                          List<String> parts = value.split(',');
+
+                          final List<SerialNumber> numbers = [];
+
+                          for (int i = 0; i < parts.length; i++) {
+                            // remove leading or trailing whitespaces
+                            parts[i] = parts[i].trim();
+
+                            numbers.add(SerialNumber(
+                              serialNumber: value,
+                              manufacturer: merchantController.text,
+                              productionDate: DateTime.parse(productionDateController.text), // TODO get actual production Date
+                            ));
+                          }
+
+                          bulkValues[index].value.addAll(numbers);
+
+                          print('Done with length: ${numbers.length}');
+                        },
+                        decoration: InputDecoration(
+                          labelText: 'serial_number'.tr,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: Card(
+                      elevation: 5,
+                      child: TextFormField(
+                        controller: inventoryNumberController,
+                        decoration: InputDecoration(
+                          labelText: 'inventory_number'.tr,
+                        ),
+                      ),
+                    ),
+                  )
                 ],
               ),
-            ],
+            )),
+          ),
+          TextIconButton(
+            onTap: () => bulkValues.add(const MapEntry(null, [])),
+            iconData: Icons.add,
+            text: 'add_item'.tr,
+            color: Get.theme.colorScheme.onSecondary,
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: CupertinoButton(
+              onPressed: () {},
+              color: Get.theme.primaryColor,
+              child: Text('add'.tr,
+                style: const TextStyle(color: Colors.white),
+              ),
+            ),
           ),
         ],
       ),
