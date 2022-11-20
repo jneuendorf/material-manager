@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
+import 'package:frontend/pages/administration/dialogs/update_user_dialog.dart';
+import 'package:frontend/pages/profile/dialogs/update_profile_dialog.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
-import 'package:frontend/pages/administration/dialogs/edit_user_dialog.dart';
+import 'package:frontend/common/util.dart';
 
 
 class UserDetailsWidget extends StatelessWidget {
@@ -18,6 +20,8 @@ class UserDetailsWidget extends StatelessWidget {
     required this.user, 
     this.showLogoutButton = false,
   });
+
+  static final apiService = Get.find<ApiService>();
 
   @override
   Widget build(BuildContext context) => Row(
@@ -65,7 +69,12 @@ class UserDetailsWidget extends StatelessWidget {
       TextIconButton(
         onTap: () {
           if (user == null) return;
-          Get.dialog(EditUserDialog(user: user!));
+
+          if (user!.id == apiService.tokenInfo!['sub']) {
+            Get.dialog(UpdateProfileDialog(user: user!));
+          } else {
+            Get.dialog(UpdateUserDialog(user: user!));
+          }
         }, 
         iconData: Icons.edit,
         text: 'edit_profile'.tr,

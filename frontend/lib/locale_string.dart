@@ -138,6 +138,8 @@ class LocaleString extends Translations {
       'export_inventory_to_csv': 'Export inventory to CSV',
       'export': 'Export',
       'edit': 'Edit',
+      'general': 'General',
+      'address': 'Address',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -270,6 +272,8 @@ class LocaleString extends Translations {
       'export_inventory_to_csv': 'Inventar zu CSV exportieren',
       'export': 'Exportieren',
       'edit' : 'Bearbeiten',
+      'general': 'Allgemein',
+      'address': 'Adresse',
     }
   };
 }

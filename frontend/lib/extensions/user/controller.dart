@@ -29,6 +29,11 @@ class UserController extends GetxController {
 
     initCompleter.future;
 
+    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) {
+      initCompleter.complete();
+      return;
+    }
+
     await Future.wait([
       _initUsers(),
       _initRoles(),
@@ -39,7 +44,8 @@ class UserController extends GetxController {
   } 
 
   Future<void> _initUsers() async {
-    users.value = await getAllUserMocks();
+    //users.value = await getAllUserMocks();
+    users.value = (await getAllUsers()) ?? [];
   }
 
   Future<void> _initRoles() async {
@@ -134,11 +140,11 @@ class UserController extends GetxController {
   /// Fetches all users from backend.
   Future<List<UserModel>?> getAllUsers() async {
     try {
-      final response = await apiService.mainClient.get('/user');
+      final response = await apiService.mainClient.get('/users');
 
       if (response.statusCode != 200) debugPrint('Error getting users');
 
-      return response.data['users'].map(
+      return response.data.map<UserModel>(
         (dynamic item) => UserModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
@@ -165,11 +171,11 @@ class UserController extends GetxController {
   /// Fetches all roles from backend.
   Future<List<Role>?> getAllRoles() async {
     try {
-      final response = await apiService.mainClient.get('/role');
+      final response = await apiService.mainClient.get('/roles');
 
       if (response.statusCode != 200) debugPrint('Error getting roles');
 
-      return response.data['roles'].map(
+      return response.data.map<Role>(
         (dynamic item) => Role.fromJson(item)
       ).toList();
     } on DioError catch(e) {
@@ -185,49 +191,9 @@ class UserController extends GetxController {
 
       if (response.statusCode != 200) debugPrint('Error getting permissions');
 
-      return response.data['permissions'].map(
+      return response.data.map<Permission>(
         (dynamic item) => Permission.fromJson(item)
       ).toList();
-    } on DioError catch(e) {
-      apiService.defaultCatch(e);
-    }
-    return null;
-  }
-
-  /// Adds a new user to the backend.
-  /// Returns the id of the newly created user.
-  Future<int?> addUser(UserModel user) async {
-    try {
-      final response = await apiService.mainClient.post('/user',
-        data: {
-          'first_name': user.firstName,
-          'last_name': user.lastName,
-          'email': user.email,
-          'phone': user.phone,
-          'membership_number': user.membershipNumber,
-          'address': {
-            'street': user.address.street,
-            'house_number': user.address.houseNumber,
-            'city': user.address.city,
-            'zip': user.address.zip,
-          },
-          'category': user.category,
-          'roles': user.roles.map((Role r) => {
-            'id': r.id,
-            'name': r.name,
-            'description': r.description,
-            'permissions': r.permissions.map((Permission p) => {
-              'id': p.id,
-              'name': p.name,
-              'description': p.description,
-            }).toList(),
-          }).toList(),
-        },
-      );
-
-      if (response.statusCode != 200) debugPrint('Error adding user');
-
-      return response.data['id'];
     } on DioError catch(e) {
       apiService.defaultCatch(e);
     }

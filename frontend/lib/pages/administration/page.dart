@@ -27,8 +27,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
                   indicatorColor: Get.theme.primaryColor,
                   tabs: [
                     Obx(() => Tab(
-                      child: Text(
-                        'accounts'.tr,
+                      child: Text('accounts'.tr,
                         style: TextStyle(
                           color: controller.tabIndex.value == 0
                               ? Get.theme.primaryColor
@@ -37,8 +36,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
                       ),
                     )),
                     Obx(() => Tab(
-                      child: Text(
-                        'roles'.tr,
+                      child: Text('roles'.tr,
                         style: TextStyle(
                           color: controller.tabIndex.value == 1
                               ? Get.theme.primaryColor
@@ -47,8 +45,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
                       ),
                     )),
                     Obx(() => Tab(
-                      child: Text(
-                        'extras'.tr,
+                      child: Text('extras'.tr,
                         style: TextStyle(
                           color: controller.tabIndex.value == 2
                               ? Get.theme.primaryColor
