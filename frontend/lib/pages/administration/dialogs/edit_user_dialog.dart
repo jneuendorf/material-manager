@@ -11,9 +11,16 @@ import 'package:frontend/common/util.dart';
 
 
 class EditUserDialog extends StatefulWidget {
-  final UserModel user;
+  final String title;
+  final Future<bool> Function(UserModel) onConfirm;
+  final UserModel? user;
 
-  const EditUserDialog({super.key, required this.user});
+  const EditUserDialog({
+    super.key, 
+    required this.title, 
+    required this.onConfirm,
+    this.user,
+  });
 
   @override
   State<EditUserDialog> createState() => _EditUserDialogState();
@@ -51,19 +58,21 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       tabIndex.value = tabController.index;
     });
 
-    firstNameController.text = widget.user.firstName;
-    lastNameController.text = widget.user.lastName;
-    emailController.text = widget.user.email;
-    phoneController.text = widget.user.phone;
-    membershipController.text = widget.user.membershipNumber;
-    streetNameController.text = widget.user.address.street;
-    houseNumberController.text = widget.user.address.houseNumber;
-    cityController.text = widget.user.address.city;
-    zipController.text = widget.user.address.zip;
+    if (widget.user != null) {
+      firstNameController.text = widget.user!.firstName;
+      lastNameController.text = widget.user!.lastName;
+      emailController.text = widget.user!.email;
+      phoneController.text = widget.user!.phone;
+      membershipController.text = widget.user!.membershipNumber;
+      streetNameController.text = widget.user!.address.street;
+      houseNumberController.text = widget.user!.address.houseNumber;
+      cityController.text = widget.user!.address.city;
+      zipController.text = widget.user!.address.zip;
 
-    selectedRoles.value = widget.user.roles.map(
-      (Role role) => role.name
-    ).toList();
+      selectedRoles.value = widget.user!.roles.map(
+        (Role role) => role.name
+      ).toList();
+    }
   }
 
   @override
@@ -82,7 +91,7 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
             Row(
               children: [
                 Expanded(
-                  child: Text('edit_user'.tr, style: Get.textTheme.headline6),
+                  child: Text(widget.title, style: Get.textTheme.headline6),
                 ),
                 IconButton(
                   onPressed: Get.back,
@@ -348,6 +357,8 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
   Future<void> onConfirmTap() async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
+    } else {
+      return;
     }
 
     final List<Role> roles = selectedRoles.map(
@@ -356,9 +367,9 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
     ).toList();
 
     UserModel updatedUser = UserModel(
-      id: widget.user.id,
+      id: widget.user?.id,
       roles: roles,
-      category: widget.user.category,
+      category: widget.user?.category,
       firstName: firstNameController.text,
       lastName: lastNameController.text,
       email: emailController.text,
@@ -372,7 +383,7 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       ),
     );
 
-    final bool success = await administrationPageController.userController.updateUser(updatedUser);
+    final bool success = await widget.onConfirm(updatedUser);
 
     if (success) {
       Get.back();
