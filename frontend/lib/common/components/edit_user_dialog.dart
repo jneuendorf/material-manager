@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
-import 'package:frontend/pages/administration/controller.dart';
+import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
 import 'package:frontend/common/components/multi_select_chip.dart';
@@ -32,8 +32,8 @@ class EditUserDialog extends StatefulWidget {
 }
 
 class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProviderStateMixin {
-  final administrationPageController = Get.find<AdministrationPageController>();
-
+  final userController = Get.find<UserController>();
+  
   late TabController tabController;
 
   final RxInt tabIndex = 0.obs;
@@ -193,7 +193,7 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       ),
       if (isLargeScreen(Get.context!) && widget.showRoles) const SizedBox(height: 8.0),
       if (widget.showRoles) MultiSelectChip(
-        options: administrationPageController.userController.roles.map(
+        options: userController.roles.map(
           (Role role) => role.name).toList(),
         selectedOptions: selectedRoles,
       ),
@@ -365,7 +365,7 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
     }
 
     final List<Role> roles = selectedRoles.map(
-      (String name) => administrationPageController.userController.roles.firstWhere(
+      (String name) => userController.roles.firstWhere(
         (Role role) => role.name == name)
     ).toList();
 

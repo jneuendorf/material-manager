@@ -60,7 +60,7 @@ class InspectionPageController extends GetxController {
   }
 
   /// Filters the [inspections by the [searchTerm] and
-   /// the [selectedTypeFilter].
+  /// the [selectedTypeFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
     filteredMaterial.value = materialController.materials.where(
