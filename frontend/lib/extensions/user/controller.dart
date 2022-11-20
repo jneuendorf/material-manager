@@ -39,7 +39,8 @@ class UserController extends GetxController {
   } 
 
   Future<void> _initUsers() async {
-    users.value = await getAllUserMocks();
+    // users.value = await getAllUserMocks();
+    users.value = (await getAllUsers()) ?? [];
   }
 
   Future<void> _initRoles() async {
@@ -134,11 +135,11 @@ class UserController extends GetxController {
   /// Fetches all users from backend.
   Future<List<UserModel>?> getAllUsers() async {
     try {
-      final response = await apiService.mainClient.get('/user');
+      final response = await apiService.mainClient.get('/users');
 
       if (response.statusCode != 200) debugPrint('Error getting users');
 
-      return response.data['users'].map(
+      return response.data.map(
         (dynamic item) => UserModel.fromJson(item)
       ).toList();
     } on DioError catch(e) {
