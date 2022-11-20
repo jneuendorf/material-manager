@@ -39,7 +39,7 @@ class UserController extends GetxController {
   } 
 
   Future<void> _initUsers() async {
-    // users.value = await getAllUserMocks();
+    //users.value = await getAllUserMocks();
     users.value = (await getAllUsers()) ?? [];
   }
 

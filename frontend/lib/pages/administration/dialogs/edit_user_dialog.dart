@@ -6,13 +6,23 @@ import 'package:get/get.dart';
 import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
+import 'package:frontend/common/components/multi_select_chip.dart';
 import 'package:frontend/common/util.dart';
 
 
 class EditUserDialog extends StatefulWidget {
-  final UserModel user;
+  final String title;
+  final Future<bool> Function(UserModel) onConfirm;
+  final UserModel? user;
+  final bool showRoles;
 
-  const EditUserDialog({super.key, required this.user});
+  const EditUserDialog({
+    super.key, 
+    required this.title, 
+    required this.onConfirm,
+    this.user,
+    this.showRoles = true,
+  });
 
   @override
   State<EditUserDialog> createState() => _EditUserDialogState();
@@ -37,6 +47,8 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
+  final RxList<String> selectedRoles = <String>[].obs;
+
   final RxBool loading = false.obs;
 
   @override
@@ -48,33 +60,40 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       tabIndex.value = tabController.index;
     });
 
-    firstNameController.text = widget.user.firstName;
-    lastNameController.text = widget.user.lastName;
-    emailController.text = widget.user.email;
-    phoneController.text = widget.user.phone;
-    membershipController.text = widget.user.membershipNumber;
-    streetNameController.text = widget.user.address.street;
-    houseNumberController.text = widget.user.address.houseNumber;
-    cityController.text = widget.user.address.city;
-    zipController.text = widget.user.address.zip;
+    if (widget.user != null) {
+      firstNameController.text = widget.user!.firstName;
+      lastNameController.text = widget.user!.lastName;
+      emailController.text = widget.user!.email;
+      phoneController.text = widget.user!.phone;
+      membershipController.text = widget.user!.membershipNumber;
+      streetNameController.text = widget.user!.address.street;
+      houseNumberController.text = widget.user!.address.houseNumber;
+      cityController.text = widget.user!.address.city;
+      zipController.text = widget.user!.address.zip;
+
+      selectedRoles.value = widget.user!.roles.map(
+        (Role role) => role.name
+      ).toList();
+    }
   }
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
     loading: loading,
     child: ConstrainedBox(
-      constraints: BoxConstraints(
-        maxHeight: isLargeScreen(context) ? 370 : 450,
+      constraints: const BoxConstraints(
+          maxWidth: 600,
         ),
       child: Form(
         key: formKey,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
                 Expanded(
-                  child: Text('edit_user'.tr, style: Get.textTheme.headline6),
+                  child: Text(widget.title, style: Get.textTheme.headline6),
                 ),
                 IconButton(
                   onPressed: Get.back,
@@ -108,7 +127,8 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
               ],
             ),
             const SizedBox(height: 16.0),
-            Flexible(
+            SizedBox(
+              height: isLargeScreen(context) ? 250 : 360,
               child: TabBarView(
                 controller: tabController,
                 physics: const NeverScrollableScrollPhysics(),
@@ -154,21 +174,6 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       ),
       const SizedBox(height: 8.0),
       TextFormField(
-        controller: emailController,
-        decoration: InputDecoration(
-          labelText: 'email'.tr,
-          border: const OutlineInputBorder(),
-        ),
-        keyboardType: TextInputType.emailAddress,
-        validator: (value) {
-          if (!GetUtils.isEmail(value!)) {
-            return 'email_not_valid'.tr;
-          } 
-          return null;
-        },
-      ),
-      const SizedBox(height: 8.0),
-      TextFormField(
         controller: membershipController,
         decoration: InputDecoration(
           labelText: 'membership_number'.tr,
@@ -184,6 +189,12 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
           }
           return null;
         },
+      ),
+      if (isLargeScreen(Get.context!) && widget.showRoles) const SizedBox(height: 8.0),
+      if (widget.showRoles) MultiSelectChip(
+        options: administrationPageController.userController.roles.map(
+          (Role role) => role.name).toList(),
+        selectedOptions: selectedRoles,
       ),
     ],
   );
@@ -266,20 +277,24 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
         ],
       ),
       const SizedBox(height: 8.0),
-      TextFormField(
-        controller: phoneController,
-        decoration: InputDecoration(
-          labelText: 'phone'.tr,
-          border: const OutlineInputBorder(),
-        ),
-        keyboardType: TextInputType.phone,
-        validator: (value) {
-          if (!GetUtils.isPhoneNumber(value!)) {
-            return 'phone_not_valid'.tr;
-          }
-          return null;
-        },
+      isLargeScreen(context) ? Row(
+        children: [
+          Expanded(
+            child: buildEmailTextField(),
+          ),
+          const SizedBox(width: 8.0),
+          Expanded(
+            child: buildEmailTextField(),
+          ),
+        ],
+      ) : Column(
+        children: [
+          buildEmailTextField(),
+          const SizedBox(height: 8.0),
+          buildPhoneTextField(),
+        ],
       ),
+      
     ],
   );
 
@@ -311,14 +326,52 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
     },
   );
 
+  TextFormField buildEmailTextField() => TextFormField(
+      controller: emailController,
+      decoration: InputDecoration(
+        labelText: 'email'.tr,
+        border: const OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.emailAddress,
+      validator: (value) {
+        if (!GetUtils.isEmail(value!)) {
+          return 'email_not_valid'.tr;
+        } 
+        return null;
+      },
+    );
+
+    TextFormField buildPhoneTextField() => TextFormField(
+      controller: phoneController,
+      decoration: InputDecoration(
+        labelText: 'phone'.tr,
+        border: const OutlineInputBorder(),
+      ),
+      keyboardType: TextInputType.phone,
+      validator: (value) {
+        if (!GetUtils.isPhoneNumber(value!)) {
+          return 'phone_not_valid'.tr;
+        }
+        return null;
+      },
+  );
+
   Future<void> onConfirmTap() async {
     if (formKey.currentState!.validate()) {
       loading.value = true;
+    } else {
+      return;
     }
+
+    final List<Role> roles = selectedRoles.map(
+      (String name) => administrationPageController.userController.roles.firstWhere(
+        (Role role) => role.name == name)
+    ).toList();
+
     UserModel updatedUser = UserModel(
-      id: widget.user.id,
-      roles: widget.user.roles, // TODO update roles
-      category: widget.user.category,
+      id: widget.user?.id,
+      roles: roles,
+      category: widget.user?.category,
       firstName: firstNameController.text,
       lastName: lastNameController.text,
       email: emailController.text,
@@ -332,12 +385,12 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
       ),
     );
 
-    final bool success = await administrationPageController.userController.updateUser(updatedUser);
+    final bool success = await widget.onConfirm(updatedUser);
 
     if (success) {
       Get.back();
     } 
-    
+
     loading.value = false;
   }
 }
