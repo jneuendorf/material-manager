@@ -29,6 +29,11 @@ class UserController extends GetxController {
 
     initCompleter.future;
 
+    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) {
+      initCompleter.complete();
+      return;
+    }
+
     await Future.wait([
       _initUsers(),
       _initRoles(),

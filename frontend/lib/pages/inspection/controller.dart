@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -7,7 +9,7 @@ import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
-
+import 'package:frontend/extensions/user/mock_data.dart';
 
 
 const inspectionRoute = '/inspection';
@@ -35,8 +37,6 @@ class InspectionPageController extends GetxController {
   final Rxn<InspectionType> selectedInspectionType = Rxn<InspectionType>();
   final RxString searchTerm = ''.obs;
   final RxBool selectAll = false.obs;
-
-
 
   @override
   Future<void> onInit() async {
@@ -86,15 +86,26 @@ class InspectionPageController extends GetxController {
 
     Get.toNamed(inspectionDetailRoute);
   }
+
   String getInspectorName(int index) {
-    String name = '${userController.users.firstWhere(
-            (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId).firstName} '
-        '${userController.users.firstWhere(
-            (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId).lastName}';
-    return name;
+
+    UserModel user = userController.users.firstWhere(
+      (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId,
+      orElse: () {
+        assert(Platform.environment.containsKey('FLUTTER_TEST'));
+
+        return mockUsers.firstWhere(
+          (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId,
+        );
+      });
+    
+    return '${user.firstName} ${user.lastName}';
   }
+
   String getInspectionDate(int index){
-    String date = DateFormat('dd.MM.yyyy').format(inspectionController.inspections[index].date);
+    String date = DateFormat('dd.MM.yyyy').format(
+      inspectionController.inspections[index].date);
+    
     return date;
   }
 }
