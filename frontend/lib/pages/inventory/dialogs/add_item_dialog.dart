@@ -1,9 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/extensions/material/model.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
@@ -24,7 +24,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxBool loading = false.obs;
   final RxList properties = [].obs;
   late  RxInt counter = 1.obs;
-  final RxList<MapEntry<String?, List<SerialNumber>>> bulkValues = <MapEntry<String?, List<SerialNumber>>>[].obs;
+  // final RxList<Map<String?, List<SerialNumber>>> bulkValues = <Map<String?, List<SerialNumber>>>[].obs;
+  final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[].obs;
 
   TextEditingController descriptionController = TextEditingController();
   TextEditingController rentalFeeController = TextEditingController();
@@ -39,10 +40,24 @@ class _AddItemDialogState extends State<AddItemDialog> {
   TextEditingController merchantController = TextEditingController();
   TextEditingController purchasePriceController = TextEditingController();
   TextEditingController invoiceNumberController = TextEditingController();
-  TextEditingController productionDateController = TextEditingController();
   TextEditingController suggestedRetailPriceController = TextEditingController();
-  TextEditingController serialNumberController = TextEditingController();
-  TextEditingController inventoryNumberController = TextEditingController();
+
+  final List<TextEditingController> serialNumberControllers = <TextEditingController>[];
+  final List<TextEditingController> productionDateControllers = <TextEditingController>[];
+  final List<TextEditingController> inventoryNumberControllers = <TextEditingController>[];
+
+  @override
+  void initState() {
+    super.initState();
+
+    bulkValues.listen((lst) {
+      if (serialNumberControllers.length < lst.length) {
+        serialNumberControllers.add(TextEditingController());
+        productionDateControllers.add(TextEditingController());
+        inventoryNumberControllers.add(TextEditingController());
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
@@ -275,14 +290,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     ),
                     Expanded(
                       child: TextFormField(
-                        controller: productionDateController,
-                        decoration: InputDecoration(
-                          labelText: 'production_date'.tr,
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: TextFormField(
                         controller: suggestedRetailPriceController,
                         decoration: InputDecoration(
                           labelText: 'suggested_retail_price'.tr,
@@ -296,70 +303,113 @@ class _AddItemDialogState extends State<AddItemDialog> {
           ),
           Expanded(
             child: Obx(() => ListView.builder(
-              shrinkWrap: true,
-              itemCount: bulkValues.length,
-              itemBuilder: (context, index) =>  Row(
-                children: [
-                  IconButton(
-                    onPressed: () {
-                      bulkValues.removeAt(index);
-                    },
-                    splashRadius: 18.0,
-                    icon: const Icon(CupertinoIcons.minus_circle_fill,
-                      color: Colors.red,
+                shrinkWrap: true,
+                itemCount: bulkValues.length,
+                itemBuilder: (BuildContext context, int index) => Row(
+                  children: [
+                    IconButton(
+                      onPressed: () {
+                        bulkValues.removeAt(index);
+                        serialNumberControllers.removeAt(index);
+                        productionDateControllers.removeAt(index);
+                        inventoryNumberControllers.removeAt(index);
+                      },
+                      splashRadius: 18.0,
+                      icon: const Icon(CupertinoIcons.minus_circle_fill,
+                        color: Colors.red,
+                      ),
                     ),
-                  ),
-                  Expanded(
-                    child: Card(
-                      elevation: 5,
-                      child: TextFormField(
-                        controller: serialNumberController,
-                        onFieldSubmitted: (String value) {
-                          if (value.isEmpty) return;
+                    Expanded(
+                      child: Card(
+                        elevation: 5,
+                        child: TextFormField(
+                          controller: serialNumberControllers[index],
+                          decoration: InputDecoration(
+                            labelText: 'serial_number'.tr,
+                          ),
+                          onFieldSubmitted: (String value) {
+                            if (value.isEmpty) return;
 
-                          // split string at ',' -> subLists will be contained in parts
-                          List<String> parts = value.split(',');
+                            List<String> serialParts = value.split(',');
 
-                          final List<SerialNumber> numbers = [];
+                            if (bulkValues[index].value.isEmpty) {
+                              for (int i = 0; i < serialParts.length; i++) {
+                                bulkValues[index].value.add(SerialNumber(
+                                  serialNumber: serialParts[i].trim(),
+                                  manufacturer: merchantController.text,
+                                  productionDate: DateTime(4000),
+                                ));
+                              }
+                            } else {
+                              if (bulkValues[index].value.length != serialParts.length) {
+                                debugPrint('Unequal serialNumbers and productionDates');
+                                return;
+                              }
 
-                          for (int i = 0; i < parts.length; i++) {
-                            // remove leading or trailing whitespaces
-                            parts[i] = parts[i].trim();
-
-                            numbers.add(SerialNumber(
-                              serialNumber: value,
-                              manufacturer: merchantController.text,
-                              productionDate: DateTime.parse(productionDateController.text), // TODO get actual production Date
-                            ));
+                              for (int i = 0; i < serialParts.length; i++) {
+                                bulkValues[index].value[i].serialNumber = serialParts[i].trim();
+                              }
+                            }
                           }
-
-                          bulkValues[index].value.addAll(numbers);
-
-                          print('Done with length: ${numbers.length}');
-                        },
-                        decoration: InputDecoration(
-                          labelText: 'serial_number'.tr,
                         ),
                       ),
                     ),
-                  ),
-                  Expanded(
-                    child: Card(
-                      elevation: 5,
-                      child: TextFormField(
-                        controller: inventoryNumberController,
-                        decoration: InputDecoration(
-                          labelText: 'inventory_number'.tr,
+                    Expanded(
+                      child: Card(
+                        elevation: 5,
+                        child: TextFormField(
+                          controller: productionDateControllers[index],
+                          decoration: InputDecoration(
+                            labelText: 'production_date'.tr,
+                          ),
+                          onFieldSubmitted: (String value) {
+                            if (value.isEmpty || serialNumberControllers[index].text.isEmpty) return;
+
+                            List<String> productionParts = value.split(',');
+
+                            if (bulkValues[index].value.isEmpty) {
+                              final List<SerialNumber> numbers = [];
+
+                              for (int i = 0; i < productionParts.length; i++) {
+                                numbers.add(SerialNumber(
+                                  serialNumber: '',
+                                  manufacturer: merchantController.text,
+                                  productionDate: DateTime.parse(productionParts[i].trim()),
+                                ));
+                              }
+
+                              bulkValues[index].value.addAll(numbers);
+                            } else {
+                              if (bulkValues[index].value.length != productionParts.length) {
+                                debugPrint('Unequal serialNumbers and productionDates');
+                                return;
+                              }
+
+                              for (int i = 0; i < productionParts.length; i++) {
+                                bulkValues[index].value[i].serialNumber = productionParts[i].trim();
+                              }
+                            }
+                          },
                         ),
                       ),
                     ),
-                  )
-                ],
-              ),
-            )),
+                    Expanded(
+                      child: Card(
+                        elevation: 5,
+                        child: TextFormField(
+                          controller: inventoryNumberControllers[index],
+                          decoration: InputDecoration(
+                            labelText: 'inventory_number'.tr,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              )),
           ),
           TextIconButton(
-            onTap: () => bulkValues.add(const MapEntry(null, [])),
+            onTap: () => bulkValues.add(NonFinalMapEntry<String?, List<SerialNumber>>(null, [])),
             iconData: Icons.add,
             text: 'add_item'.tr,
             color: Get.theme.colorScheme.onSecondary,
@@ -378,4 +428,11 @@ class _AddItemDialogState extends State<AddItemDialog> {
       ),
     ),
   );
+}
+
+class NonFinalMapEntry<K,V> {
+  K key;
+  V value;
+
+  NonFinalMapEntry(this.key, this.value);
 }
