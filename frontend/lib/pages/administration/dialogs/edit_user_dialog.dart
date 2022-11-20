@@ -14,12 +14,14 @@ class EditUserDialog extends StatefulWidget {
   final String title;
   final Future<bool> Function(UserModel) onConfirm;
   final UserModel? user;
+  final bool showRoles;
 
   const EditUserDialog({
     super.key, 
     required this.title, 
     required this.onConfirm,
     this.user,
+    this.showRoles = true,
   });
 
   @override
@@ -188,8 +190,8 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
           return null;
         },
       ),
-      if (isLargeScreen(Get.context!)) const SizedBox(height: 8.0),
-      MultiSelectChip(
+      if (isLargeScreen(Get.context!) && widget.showRoles) const SizedBox(height: 8.0),
+      if (widget.showRoles) MultiSelectChip(
         options: administrationPageController.userController.roles.map(
           (Role role) => role.name).toList(),
         selectedOptions: selectedRoles,
