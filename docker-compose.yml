@@ -1,0 +1,41 @@
+version: '3.8'
+
+services:
+  database:
+    image: postgres:latest
+    container_name: database
+    restart: unless-stopped
+    volumes:
+      - /var/lib/postgresql
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  backend:
+    container_name: backend
+    restart: always
+    build: ./backend
+    volumes:
+      - ./backend:/usr/src/backend
+    depends_on:
+      - database
+    links:
+      - database
+
+#  frontend:
+#    container_name: frontend
+#    build: ./frontend
+#    volumes:
+#      - ./frontend:/usr/src/frontend
+
+  webserver:
+    container_name: webserver
+    restart: unless-stopped
+    build: ./compose/webserver
+    depends_on:
+      - backend
+    links:
+      - backend
+    ports:
+      - "8000:80"
