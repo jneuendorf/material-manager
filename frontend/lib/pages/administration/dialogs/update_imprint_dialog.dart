@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/buttons/text_icon_button.dart';
 
 import 'package:get/get.dart';
 
@@ -17,6 +18,10 @@ class UpdateImprintDialog extends StatefulWidget {
 }
 
 class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
+  final RxList<BoardMember?> boardMembers = <BoardMember>[].obs;
+
+  final List<TextEditingController> boardMemberControllers = <TextEditingController>[];
+
   final TextEditingController clubNameController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
@@ -30,9 +35,16 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
 
   final GlobalKey<FormState> formKey =  GlobalKey<FormState>();
 
+
   @override
   void initState() {
     super.initState();
+
+    boardMembers.listen((lst) { 
+      if (boardMemberControllers.length < lst.length) {
+        boardMemberControllers.add(TextEditingController());
+      }
+    });
 
     clubNameController.text = widget.imprint.clubName;
     phoneController.text = widget.imprint.phoneNumber;
@@ -40,6 +52,8 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
     registrationNumController.text = widget.imprint.registrationNumber.toString();
     registryCourtController.text = widget.imprint.registryCourt;
     vatNumberController.text = widget.imprint.vatNumber;
+
+    boardMembers.value = widget.imprint.boardMembers;
   }
 
   @override
@@ -217,17 +231,70 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
                   ),
                 ],
               ),
-              const SizedBox(height: 16.0),
-              Align(
-                  alignment: Alignment.bottomRight,
-                  child: CupertinoButton(
-                    onPressed: onConfirmTap,
-                    color: Get.theme.primaryColor,
-                    child: Text('confirm'.tr,
-                      style: const TextStyle(color: Colors.white),
-                    ),
+              const SizedBox(height: 8.0),
+              Flexible(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(
+                    maxHeight: 180,
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          itemCount: boardMemberControllers.length,
+                          itemBuilder: (BuildContext context, int index) => Row(
+                            children: [
+                              IconButton(
+                                onPressed: () {
+                                  boardMembers.removeAt(index);
+                                  boardMemberControllers.removeAt(index);
+                                },
+                                splashRadius: 20,
+                                icon: const Icon(CupertinoIcons.xmark),
+                              ),
+                              Expanded(
+                                child: TextFormField(
+                                  controller: boardMemberControllers[index],
+                                  decoration: InputDecoration(
+                                    labelText: 'board_member'.tr,
+                                    border: const OutlineInputBorder(),
+                                  ),
+                                  validator: (value) {
+                                    if(value!.isEmpty) {
+                                      return 'board_member_is_mandatory'.tr;
+                                    }
+                                    return null;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      TextIconButton(
+                        onTap: () {
+                          boardMembers.add(null);
+                          //boardMemberControllers.add(TextEditingController());
+                        }, 
+                        iconData: Icons.add, 
+                        text: 'add_board_member'.tr,
+                      ),
+                    ],
                   ),
                 ),
+              ),
+              const SizedBox(height: 16.0),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: CupertinoButton(
+                  onPressed: onConfirmTap,
+                  color: Get.theme.primaryColor,
+                  child: Text('confirm'.tr,
+                    style: const TextStyle(color: Colors.white),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
