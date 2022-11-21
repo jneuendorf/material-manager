@@ -36,7 +36,11 @@ def resolve_material_model():
 class Inspection(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date)
-    type = db.Column(db.Enum(InspectionType, create_constraint=True))
+    type = db.Column(
+        db.Enum(InspectionType, create_constraint=True),
+        nullable=False,
+        default=InspectionType.NORMAL,
+    )
     # many to one (FK here)
     inspector_id = db.Column(db.ForeignKey("user.id"))
     inspector = db.relationship(resolve_user_model, backref="inspections")
