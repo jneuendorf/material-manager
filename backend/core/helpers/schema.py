@@ -21,6 +21,7 @@ from marshmallow_sqlalchemy.schema import (
 )
 from sqlalchemy.sql import sqltypes
 
+from core.extensions import db
 from core.helpers.fields import EnumField
 from core.helpers.orm import CrudModel
 
@@ -53,6 +54,11 @@ class BaseSchemaMeta(SQLAlchemyAutoSchemaMeta):
         opts: SQLAlchemyAutoSchemaOpts = klass.opts
         opts.model_converter = ModelConverter
         opts.load_instance = True
+        # Inject the current session. This fixes an error (at least) while testing:
+        #   'DummySession' object has no attribute 'query'
+        # https://github.com/marshmallow-code/flask-marshmallow/issues/44#issuecomment-1002740778
+        # https://github.com/marshmallow-code/marshmallow-sqlalchemy/issues/298#issuecomment-614923691
+        opts.sqla_session = db.session
         return klass
 
     @classmethod

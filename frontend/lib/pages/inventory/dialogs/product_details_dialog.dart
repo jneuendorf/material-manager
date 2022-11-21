@@ -161,19 +161,19 @@ class ProductDetailsDialog extends StatelessWidget {
                           ),
                         ],
                       ),
-                      Row(
-                        children: [
-                          Text('${'production_date'.tr} : ',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 15.0,
-                            ),
-                          ),
-                          Text(inventoryPageController.formatDate(item.purchaseDetails.productionDate),
-                            style: const TextStyle(fontSize: 15.0)
-                          ),
-                        ],
-                      ),
+                      // Row(
+                      //   children: [
+                      //     Text('${'production_date'.tr} : ',
+                      //       style: const TextStyle(
+                      //         fontWeight: FontWeight.bold,
+                      //         fontSize: 15.0,
+                      //       ),
+                      //     ),
+                      //     Text(inventoryPageController.formatDate(item.purchaseDetails.productionDate),
+                      //       style: const TextStyle(fontSize: 15.0)
+                      //     ),
+                      //   ],
+                      // ),
                       Row(
                         children: [
                           Text('${'purchase_date'.tr} : ',

@@ -3,9 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/pages/administration/controller.dart';
-import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/pages/administration/screens/account_screen.dart';
 import 'package:frontend/pages/administration/screens/role_screen.dart';
+import 'package:frontend/pages/administration/screens/extras_screen.dart';
+import 'package:frontend/common/components/page_wrapper.dart';
 
 
 class AdministrationPage extends GetView<AdministrationPageController> {
@@ -26,8 +27,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
                   indicatorColor: Get.theme.primaryColor,
                   tabs: [
                     Obx(() => Tab(
-                      child: Text(
-                        'accounts'.tr,
+                      child: Text('accounts'.tr,
                         style: TextStyle(
                           color: controller.tabIndex.value == 0
                               ? Get.theme.primaryColor
@@ -36,10 +36,18 @@ class AdministrationPage extends GetView<AdministrationPageController> {
                       ),
                     )),
                     Obx(() => Tab(
-                      child: Text(
-                        'roles'.tr,
+                      child: Text('roles'.tr,
                         style: TextStyle(
                           color: controller.tabIndex.value == 1
+                              ? Get.theme.primaryColor
+                              : null,
+                        ),
+                      ),
+                    )),
+                    Obx(() => Tab(
+                      child: Text('extras'.tr,
+                        style: TextStyle(
+                          color: controller.tabIndex.value == 2
                               ? Get.theme.primaryColor
                               : null,
                         ),
@@ -58,6 +66,7 @@ class AdministrationPage extends GetView<AdministrationPageController> {
             children: const [
               AccountScreen(),
               RoleScreen(),
+              ExtrasScreen(),
             ],
           ),
         ),

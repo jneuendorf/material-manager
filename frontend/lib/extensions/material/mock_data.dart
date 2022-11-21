@@ -50,7 +50,7 @@ final PurchaseDetails mockPurchaseDetails = PurchaseDetails(
   purchaseDate: DateTime(2021, 1, 1),
   invoiceNumber: '123456',
   merchant: 'Kletterladen',
-  productionDate: DateTime(2020, 1, 1),
+  // productionDate: DateTime(2020, 1, 1),
   purchasePrice: 10,
   suggestedRetailPrice: 20,
 );
@@ -78,7 +78,7 @@ final List<MaterialModel> mockMaterial = [
     nextInspectionDate: DateTime(2022, 2, 1),
     rentalFee: 5,
     condition: ConditionModel.ok,
-    usage: 4,
+    daysUsed: 4,
     purchaseDetails: mockPurchaseDetails,
     materialType: mockRopeMaterialType,
     properties: [
@@ -100,7 +100,7 @@ final List<MaterialModel> mockMaterial = [
     nextInspectionDate: DateTime(2022, 2, 1),
     rentalFee: 7,
     condition: ConditionModel.ok,
-    usage: 4,
+    daysUsed: 4,
     purchaseDetails: mockPurchaseDetails,
     materialType: mockHelmetMaterialType,
     properties: [
@@ -121,7 +121,7 @@ final List<MaterialModel> mockMaterial = [
     nextInspectionDate: DateTime(2022, 2, 1),
     rentalFee: 2,
     condition: ConditionModel.ok,
-    usage: 4,
+    daysUsed: 4,
     purchaseDetails: mockPurchaseDetails,
     materialType: mockCarbineMaterialType,
     properties: [
@@ -142,7 +142,7 @@ final List<MaterialModel> mockMaterial = [
     nextInspectionDate: DateTime(2022, 6, 1),
     rentalFee: 5,
     condition: ConditionModel.broken,
-    usage: 8,
+    daysUsed: 8,
     purchaseDetails: mockPurchaseDetails,
     materialType: mockRopeMaterialType,
     properties: [

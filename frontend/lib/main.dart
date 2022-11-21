@@ -44,7 +44,7 @@ Future<void> initialConfig() async {
   try {
     await dotenv.load(fileName: 'env/.env');
   } catch (e) {
-    debugPrint('Error loading env file: $e');
+    debugPrint('Production env file not found ... continuing with dev env file.');
     await dotenv.load(fileName: 'env/dev.env');
   }
 
@@ -119,7 +119,7 @@ class MaterialManagerApp extends StatelessWidget {
       GetPage(name: profileRoute, page: () => const ProfilePage(),
         binding: ProfilePageBinding(),
       ),
-      // Following paged don´t need a binding, since they don´t use a controller.
+      // Following pages don´t need a binding, since they don´t use a controller.
       // This is the case for pages that only display hardcoded information.
       GetPage(name: privacyPolicyRoute, page: () => const PrivacyPolicyPage()),
       GetPage(name: imprintRoute, page: () => const ImprintPage()),

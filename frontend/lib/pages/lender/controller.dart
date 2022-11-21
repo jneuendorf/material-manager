@@ -30,10 +30,6 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
   final RxMap<RentalStatus, String> statusOptions = <RentalStatus, String>{}.obs;
-  List<RentalModel> availableRentals = [];
-  List<RentalStatus> availableStatuses = <RentalStatus>[].obs;
-  List<UserModel> availableUsers = [];
-  List<MaterialModel> availableMaterial = [];
 
   @override
   Future<void> onInit() async {
@@ -83,7 +79,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     return rentalPeriod;
   }
 
-  String getMaterialPicture(RentalModel item, int materialIndex) {
+  String? getMaterialPicture(RentalModel item, int materialIndex) {
     String path = materialController.materials.firstWhere((MaterialModel material) =>
     material.id == item.materialIds[materialIndex]).imageUrls.first;
     return path;
@@ -97,7 +93,7 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   String getItemPrice(RentalModel item, int materialIndex) {
     String itemPrice = materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).rentalFee.toString();
+    material.id == item.materialIds[materialIndex]).rentalFee.toStringAsFixed(2);
     return itemPrice;
   }
 

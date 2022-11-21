@@ -1,4 +1,4 @@
-from typing import List, Optional
+from typing import Optional
 
 from flask import abort
 from flask_apispec import use_kwargs
@@ -23,6 +23,12 @@ class MaterialTypeSchema(BaseSchema):
     class Meta:
         model = models.MaterialType
         fields = ("id", "name", "description")
+
+
+class MaterialPropertySchema(BaseSchema):
+    class Meta:
+        model = models.Property
+        fields = ("id", "name", "description", "value", "unit")
 
 
 class MaterialType(ModelResource):
@@ -78,19 +84,17 @@ class PurchaseDetailsSchema(BaseSchema):
 
 
 class MaterialSchema(BaseSchema):
-    material_type_id = fields.Integer()
     material_type = fields.Nested(MaterialTypeSchema())
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
-    purchase_details_id = fields.Integer()
     purchase_details = fields.Nested(PurchaseDetailsSchema())
     image_urls = fields.Method("get_image_urls")
+    properties = fields.List(fields.Nested(MaterialPropertySchema()))
 
     class Meta:
         # TODO: specifying model_converter should not be necessary
         #  Check why the metaclass doesn't work
         model_converter = ModelConverter
         model = models.Material
-        load_only = ("material_type_id",)
         dump_only = ("id", "image_urls")
 
     def get_image_urls(self, obj: models.Material):
@@ -115,12 +119,22 @@ class Material(ModelResource):
     def post(
         self,
         *,
-        serial_numbers: List[models.SerialNumber],
+        material_type: models.MaterialType,
+        serial_numbers: list[models.SerialNumber],
+        properties: Optional[list[models.Property]] = None,
+        # TODO: handle image uploads
+        images: Optional[list[models.File]] = None,
         purchase_details: Optional[models.PurchaseDetails] = None,
-        # TODO: add image
         **kwargs,
     ) -> dict:
-        related = {"serial_numbers": serial_numbers}
+        related = dict(
+            material_type=material_type,
+            serial_numbers=serial_numbers,
+        )
+        if properties:
+            related["properties"] = properties
+        if images:
+            related["images"] = images
         if purchase_details:
             related["purchase_details"] = purchase_details
         try:
@@ -152,12 +166,16 @@ class Materials(ModelListResource):
         }
     )
     def post(
-        self, materials: List[models.Material], purchase_details: models.PurchaseDetails
+        self,
+        materials: list[models.Material],
+        purchase_details: models.PurchaseDetails,
     ):
+        """Saves a purchase: Many materials + purchase details"""
         purchase_details.save()
         for material in materials:
             material.purchase_details = purchase_details
             material.save()
+        # TODO: What data does the FE need here?
         return {
             "materials": [material.id for material in materials],
         }

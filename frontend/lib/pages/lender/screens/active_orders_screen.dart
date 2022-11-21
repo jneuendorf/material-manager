@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
@@ -72,7 +73,7 @@ class ActiveOrderScreen extends StatelessWidget {
   Widget buildTileTitle(Rx<RentalModel> item) => Row(
     children: [
       Expanded(child: Text(item.value.id.toString())),
-      Expanded(child: Text('€ ${item.value.cost.toString()}')),
+      Expanded(child: Text('€ ${item.value.cost.toStringAsFixed(2)}')),
       Flexible(child: Text(lenderPageController.formatDate(item.value.createdAt), 
         overflow: TextOverflow.ellipsis),
       ),
@@ -182,58 +183,61 @@ class ActiveOrderScreen extends StatelessWidget {
                     shrinkWrap: true,
                     separatorBuilder: (context, index) => const Divider(),
                     itemCount: item.materialIds.length,
-                    itemBuilder: (context, localIndex) => ListTile(
-                      leading: Image.network(
-                        lenderPageController.getMaterialPicture(item,localIndex),
+                    itemBuilder: (context, localIndex) {
+                      String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
+                      return ListTile(
+                        leading: imageUrl != null 
+                          ? Image.network(baseUrl + imageUrl) 
+                          : const Icon(Icons.image),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(lenderPageController.getItemName(item,localIndex)),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: SizedBox(
+                                  width: 100,
+                                  child: Obx(() => DropDownFilterButton(
+                                    options: lenderPageController.statusOptions.values.toList(),
+                                    selected: item.status!.name,
+                                    onSelected: (String value) {
+                                      // TODO: update rentalStatus of item
+                                    },
+                                  )),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: CupertinoButton(
+                                onPressed: () {
+                                  // TODO: go to inspection page for the selected item
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.grey,
+                                      width: 1.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                  ),
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(6.5),
+                                    child: Text('inspect'.tr, 
+                                      style: const TextStyle(color: Colors.black),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
+                            ),
+                          ],
                         ),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(lenderPageController.getItemName(item,localIndex)),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: SizedBox(
-                                width: 100,
-                                child: Obx(() => DropDownFilterButton(
-                                  options: lenderPageController.statusOptions.values.toList(),
-                                  selected: item.status!.name,
-                                  onSelected: (String value) {
-                                    // TODO: update rentalStatus of item
-                                  },
-                                )),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: CupertinoButton(
-                              onPressed: () {
-                                // TODO: go to inspection page for the selected item
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Colors.grey,
-                                    width: 1.0,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10.0),
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(6.5),
-                                  child: Text('inspect'.tr, 
-                                    style: const TextStyle(color: Colors.black),
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
-                          ),
-                        ],
-                      ),
-                    ),
+                      );
+                    },
                   ): Center(
                     child: Text('no_items_assigned_to_this_rental_entry'.tr),
                   ),
@@ -248,7 +252,7 @@ class ActiveOrderScreen extends StatelessWidget {
                           Expanded(
                             child: TextFormField(
                               enabled: false,
-                              initialValue: '€ ${item.cost.toString()}',
+                              initialValue: '€ ${item.cost.toStringAsFixed(2)}',
                               decoration: InputDecoration(
                                 labelText: 'total'.tr,
                               ),

@@ -16,19 +16,22 @@ from webargs import fields, validate
 from core.config import flask_config
 from core.extensions import mail
 from core.helpers.resource import BaseResource, ModelListResource, ModelResource
+from core.helpers.schema import BaseSchema
 
 from .auth import password_policy
 from .decorators import login_required, permissions_required
 from .models import User as UserModel
 
 
+class UserSchema(BaseSchema):
+    class Meta:
+        model = UserModel
+        fields = ("id", "first_name", "last_name", "email", "membership_number")
+
+
 class User(ModelResource):
     url = "/user/<int:user_id>"
-
-    class Schema:
-        class Meta:
-            model = UserModel
-            fields = ("id", "first_name", "last_name")
+    Schema = UserSchema
 
     def get(self, user_id: int) -> dict:
         user = UserModel.get(id=user_id)
@@ -193,11 +196,7 @@ class Refresh(BaseResource):
 
 class Profile(ModelResource):
     url = "/user/profile"
-
-    class Schema:
-        class Meta:
-            model = UserModel
-            fields = ("id", "first_name", "last_name", "email", "membership_number")
+    Schema = UserSchema
 
     @login_required
     def get(self) -> dict:
@@ -206,11 +205,7 @@ class Profile(ModelResource):
 
 class Users(ModelListResource):
     url = "/users"
-
-    class Schema:
-        class Meta:
-            model = UserModel
-            fields = ("id", "last_name")
+    Schema = UserSchema
 
     @permissions_required("user:read")
     def get(self):

@@ -1,10 +1,12 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 class MaterialPreview extends StatelessWidget {
@@ -34,16 +36,20 @@ class MaterialPreview extends StatelessWidget {
                 child: Column(
                   children: [
                     Expanded(
-                      child: Image.network(item.imageUrls.first),
+                      child: item.imageUrls.isNotEmpty 
+                        ? Image.network(baseUrl + item.imageUrls.first) 
+                        : Center(child: Text('no_image_found'.tr)),
                     ),
                     const Divider(),
                     Padding(
-                      padding: const EdgeInsets.only(left: 8.0, right: 8.0, bottom: 8.0),
+                      padding: const EdgeInsets.only(
+                        left: 8.0, right: 8.0, bottom: 8.0,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('${item.materialType.name}, ${item.properties.first.value} ${item.properties.first.unit}'),
-                          Text('${item.rentalFee} €'),
+                          Text('${item.materialType.name}, ${cleanPropertyValue(item.properties.first.value)} ${item.properties.first.unit}'),
+                          Text('${item.rentalFee.toStringAsFixed(2)} €'),
                         ],
                       ),
                     ),
@@ -51,14 +57,16 @@ class MaterialPreview extends StatelessWidget {
                 ),
               ),
             ),
-            if (hover.value || !kIsWeb) Positioned(
+            if (hover.value || !isLargeScreen(context)) Positioned(
               top: 0.0,
               right: 0.0,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.white,
                   foregroundColor: Get.theme.colorScheme.onSecondary,
-                  padding: const EdgeInsets.symmetric(vertical: kIsWeb ? 10.0 : 6.0),
+                  padding: EdgeInsets.symmetric(
+                    vertical: isLargeScreen(context) ? 10.0 : 6.0,
+                  ),
                 ),
                 onPressed: () => rentalPageController.shoppingCart.add(item),
                 child: Obx(() =>rentalPageController.shoppingCart.contains(item) 
@@ -75,4 +83,13 @@ class MaterialPreview extends StatelessWidget {
       ),
     ),
   );
+
+  String cleanPropertyValue(String value) {
+    double? val = double.tryParse(value);
+
+    // if not a double, return as is
+    if (val == null) return value; 
+
+    return val.toStringAsFixed(2);
+  }
 }
