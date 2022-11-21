@@ -16,7 +16,7 @@ class CommentSchema(BaseSchema):
         fields = (
             "id",
             "inspection_id",
-            "comment",
+            "material_id" "comment",
             "photo",
         )
 
@@ -55,9 +55,9 @@ class Inspection(ModelResource):
 # I thought we should return all comments by material_id,
 # but Do we need Inspection attributes like date?
 class Comments(ModelListResource):
-    url = "/inspections/<int:material_id>"
+    url = "/comments/<int:material_id>"
     Schema = CommentSchema
 
     def get(self, material_id: int):
-        inspections = models.Comment.get(material_id)
-        return self.serialize(inspections)
+        comments = models.Comment.get(material_id=material_id)
+        return self.serialize(comments)
