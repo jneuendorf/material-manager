@@ -1,5 +1,15 @@
 from collections.abc import Callable
-from typing import Any, Collection, Dict, Generic, Mapping, Type, TypeVar, Union
+from typing import (
+    Any,
+    Collection,
+    Dict,
+    Generic,
+    Mapping,
+    Optional,
+    Type,
+    TypeVar,
+    Union,
+)
 
 from flask_marshmallow.sqla import SQLAlchemyAutoSchema
 from marshmallow import fields
@@ -79,14 +89,14 @@ class BaseSchema(SQLAlchemyAutoSchema, Generic[M], metaclass=BaseSchemaMeta):
     def __init__(
         self,
         *args,
-        only: ma_types.StrSequenceOrSet = None,
+        only: Optional[ma_types.StrSequenceOrSet] = None,
         exclude: ma_types.StrSequenceOrSet = (),
-        many: bool = False,
-        context: dict = None,
+        many: Optional[bool] = False,
+        context: Optional[dict] = None,
         load_only: ma_types.StrSequenceOrSet = (),
         dump_only: ma_types.StrSequenceOrSet = (),
-        partial: Union[bool, ma_types.StrSequenceOrSet] = False,
-        unknown: str = None,
+        partial: Optional[Union[bool, ma_types.StrSequenceOrSet]] = False,
+        unknown: Optional[str] = None,
         **kwargs,
     ):
         super().__init__(

@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Optional
 
 from flask import abort
 from flask_apispec import use_kwargs
@@ -116,7 +116,7 @@ class Material(ModelResource):
         self,
         *,
         serial_numbers: List[models.SerialNumber],
-        purchase_details: models.PurchaseDetails = None,
+        purchase_details: Optional[models.PurchaseDetails] = None,
         # TODO: add image
         **kwargs,
     ) -> dict:

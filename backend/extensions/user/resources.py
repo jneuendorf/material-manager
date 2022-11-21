@@ -1,3 +1,5 @@
+from typing import Optional
+
 from flask import abort, redirect
 from flask_apispec import use_kwargs
 from flask_jwt_extended import (
@@ -132,7 +134,7 @@ class Login(BaseResource):
     url = "/login"
 
     @use_kwargs({"email": fields.Str(), "password": fields.Str()})
-    def post(self, email: str = None, password: str = None):
+    def post(self, email: Optional[str] = None, password: Optional[str] = None):
         """
         curl -X POST 'http://localhost:5000/login' -H 'Content-Type: application/json' -d '{"email":"root@localhost.com","password":"asdf"}'
         """  # noqa
