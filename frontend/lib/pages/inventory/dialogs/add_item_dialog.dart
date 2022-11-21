@@ -22,10 +22,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final RxBool loading = false.obs;
-  final RxList properties = [].obs;
-  late  RxInt counter = 1.obs;
-  // final RxList<Map<String?, List<SerialNumber>>> bulkValues = <Map<String?, List<SerialNumber>>>[].obs;
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[].obs;
+  final RxList<Property> properties = <Property>[].obs;
 
   TextEditingController descriptionController = TextEditingController();
   TextEditingController rentalFeeController = TextEditingController();
@@ -33,14 +31,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
   TextEditingController maxServiceDurationController = TextEditingController();
   TextEditingController instructionsController = TextEditingController();
   TextEditingController nextInspectionController = TextEditingController();
-  TextEditingController propertyNameController = TextEditingController();
-  TextEditingController propertyValueController = TextEditingController();
-  TextEditingController propertyUnitController = TextEditingController();
   TextEditingController purchaseDateController = TextEditingController();
   TextEditingController merchantController = TextEditingController();
   TextEditingController purchasePriceController = TextEditingController();
   TextEditingController invoiceNumberController = TextEditingController();
   TextEditingController suggestedRetailPriceController = TextEditingController();
+
+  final List<TextEditingController> propertyNameController = <TextEditingController>[];
+  final List<TextEditingController> propertyValueController = <TextEditingController>[];
+  final List<TextEditingController> propertyUnitController = <TextEditingController>[];
 
   final List<TextEditingController> serialNumberControllers = <TextEditingController>[];
   final List<TextEditingController> productionDateControllers = <TextEditingController>[];
@@ -55,6 +54,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
         serialNumberControllers.add(TextEditingController());
         productionDateControllers.add(TextEditingController());
         inventoryNumberControllers.add(TextEditingController());
+      }
+
+    });
+    properties.listen((lst) {
+      if (propertyNameController.length < lst.length) {
+        propertyNameController.add(TextEditingController());
+        propertyUnitController.add(TextEditingController());
+        propertyValueController.add(TextEditingController());
       }
     });
   }
@@ -82,32 +89,35 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ],
           ),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 50.0),
-                  child: TextFormField(
-                    controller: descriptionController,
-                    decoration: InputDecoration(
-                      labelText: 'description'.tr,
+          Padding(
+            padding: const EdgeInsets.only(bottom: 8.0),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 10.0),
+                    child: TextFormField(
+                      controller: descriptionController,
+                      decoration: InputDecoration(
+                        labelText: 'description'.tr,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Padding(
-                  padding: const EdgeInsets.only(right: 50.0),
-                  child: TextFormField(
-                    controller: rentalFeeController,
-                    decoration: InputDecoration(
-                      labelText: 'rental_fee'.tr,
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 50.0),
+                    child: TextFormField(
+                      controller: rentalFeeController,
+                      decoration: InputDecoration(
+                        labelText: 'rental_fee'.tr,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Flexible(
             child: ConstrainedBox(
@@ -125,7 +135,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                           children: [
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 50.0),
+                                padding: const EdgeInsets.only(right: 15.0),
                                 child: TextFormField(
                                   controller: maxLifeExpectancyController,
                                   decoration: InputDecoration(
@@ -136,7 +146,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                             ),
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.only(right: 50.0),
+                                padding: const EdgeInsets.only(right: 10.0),
                                 child: TextFormField(
                                   controller: maxServiceDurationController,
                                   decoration: InputDecoration(
@@ -147,16 +157,22 @@ class _AddItemDialogState extends State<AddItemDialog> {
                             ),
                           ],
                         ),
-                        TextFormField(
-                          controller: instructionsController,
-                          decoration: InputDecoration(
-                            labelText: 'instructions'.tr,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: TextFormField(
+                            controller: instructionsController,
+                            decoration: InputDecoration(
+                              labelText: 'instructions'.tr,
+                            ),
                           ),
                         ),
-                        TextFormField(
-                          controller: nextInspectionController,
-                          decoration: InputDecoration(
-                            labelText: 'next_inspection'.tr,
+                        Padding(
+                          padding: const EdgeInsets.only(right: 10.0),
+                          child: TextFormField(
+                            controller: nextInspectionController,
+                            decoration: InputDecoration(
+                              labelText: 'next_inspection'.tr,
+                            ),
                           ),
                         ),
                       ],
@@ -166,64 +182,77 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     child: Column(
                       children: [
                         Expanded(
-                          child: Obx(() => ListView.builder(
+                          child: Obx(() => ListView.separated(
+                            separatorBuilder: (context, index) => const SizedBox(height: 10.0),
                               shrinkWrap: true,
                               itemCount: properties.length,
-                              itemBuilder: (context, index) =>  Card(
-                                elevation: 5,
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: [
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
-                                        child: TextFormField(
-                                          controller: propertyNameController,
-                                          decoration: InputDecoration(
-                                            border: const OutlineInputBorder(),
-                                            labelText: 'name'.tr,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(right: 8.0),
-                                        child: TextFormField(
-                                          controller: propertyValueController,
-                                          decoration: InputDecoration(
-                                            border: const OutlineInputBorder(),
-                                            labelText: 'value'.tr,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                    Expanded(
+                              itemBuilder: (context, index) =>  Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 8.0),
                                       child: TextFormField(
-                                        controller: propertyUnitController,
+                                        onFieldSubmitted: (value) => properties[index].name = value.trim(),
+                                        controller: propertyNameController[index],
                                         decoration: InputDecoration(
                                           border: const OutlineInputBorder(),
-                                          labelText: 'unit'.tr,
+                                          labelText: 'name'.tr,
                                         ),
                                       ),
                                     ),
-                                    IconButton(
-                                      padding: EdgeInsets.zero,
-                                      tooltip: 'remove'.tr,
-                                      onPressed: () => properties.remove(properties[index]),
-                                      iconSize: 15.0,
-                                      splashRadius: 18.0,
-                                      icon: const Icon(CupertinoIcons.xmark),
+                                  ),
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(right: 8.0),
+                                      child: TextFormField(
+                                        onFieldSubmitted: (value) => properties[index].value = value.trim(),
+                                        controller: propertyValueController[index],
+                                        decoration: InputDecoration(
+                                          border: const OutlineInputBorder(),
+                                          labelText: 'value'.tr,
+                                        ),
+                                      ),
                                     ),
-                                  ],
-                                ),
+                                  ),
+                                  Expanded(
+                                    child: TextFormField(
+                                      onFieldSubmitted: (value) => properties[index].unit = value.trim(),
+                                      controller: propertyUnitController[index],
+                                      decoration: InputDecoration(
+                                        border: const OutlineInputBorder(),
+                                        labelText: 'unit'.tr,
+                                      ),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    padding: EdgeInsets.zero,
+                                    tooltip: 'remove'.tr,
+                                    iconSize: 15.0,
+                                    splashRadius: 18.0,
+                                    icon: const Icon(CupertinoIcons.minus_circle_fill,color: Colors.red),
+                                    onPressed: () {
+                                      properties.removeAt(index);
+                                      propertyUnitController.removeAt(index);
+                                      propertyValueController.removeAt(index);
+                                      propertyNameController.removeAt(index);
+                                    },
+
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
                         TextIconButton(
                           onTap: () {
-                            properties.add(1);
+                            properties.add(Property(
+                                id: null,
+                                name: '',
+                                description: '',
+                                value: '',
+                                unit: ''
+                            ));
                           },
                           iconData: Icons.add,
                           text: 'add_property'.tr,
@@ -236,51 +265,52 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ),
           ),
-          Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              border: Border.all(),
-            ),
-            child: Column(
-              children: [
-                Row(
-                  children: [
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 50.0),
-                        child: TextFormField(
-                          controller: purchaseDateController,
-                          decoration: InputDecoration(
-                            labelText: 'purchase_date'.tr,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 50.0),
-                        child: TextFormField(
-                          controller: merchantController,
-                          decoration: InputDecoration(
-                            labelText: 'merchant'.tr,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Expanded(
+          const Divider(color: Colors.black),
+          Column(
+            children: [
+              Row(
+                children: [
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
                       child: TextFormField(
-                        controller: purchasePriceController,
+                        controller: purchaseDateController,
                         decoration: InputDecoration(
-                          labelText: 'purchase_price'.tr,
+                          labelText: 'purchase_date'.tr,
                         ),
                       ),
                     ),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Expanded(
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: TextFormField(
+                        controller: merchantController,
+                        decoration: InputDecoration(
+                          labelText: 'merchant'.tr,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: TextFormField(
+                      controller: purchasePriceController,
+                      decoration: InputDecoration(
+                        labelText: 'purchase_price'.tr,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    flex: 4,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
                       child: TextFormField(
                         controller: invoiceNumberController,
                         decoration: InputDecoration(
@@ -288,19 +318,21 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         ),
                       ),
                     ),
-                    Expanded(
-                      child: TextFormField(
-                        controller: suggestedRetailPriceController,
-                        decoration: InputDecoration(
-                          labelText: 'suggested_retail_price'.tr,
-                        ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: TextFormField(
+                      controller: suggestedRetailPriceController,
+                      decoration: InputDecoration(
+                        labelText: 'suggested_retail_price'.tr,
                       ),
                     ),
-                  ],
-                ),
-              ],
-            ),
+                  ),
+                ],
+              ),
+            ],
           ),
+          const SizedBox(height: 20.0),
           Expanded(
             child: Obx(() => ListView.builder(
                 shrinkWrap: true,
@@ -320,87 +352,83 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       ),
                     ),
                     Expanded(
-                      child: Card(
-                        elevation: 5,
-                        child: TextFormField(
-                          controller: serialNumberControllers[index],
-                          decoration: InputDecoration(
-                            labelText: 'serial_number'.tr,
-                          ),
-                          onFieldSubmitted: (String value) {
-                            if (value.isEmpty) return;
+                      child: TextFormField(
+                        controller: serialNumberControllers[index],
+                        validator: (String? value) => validateSerialNumber(value!, index),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'serial_number'.tr,
+                        ),
+                        onFieldSubmitted: (String value) {
+                          if (value.isEmpty) return;
 
-                            List<String> serialParts = value.split(',');
+                          List<String> serialParts = value.split(',');
 
-                            if (bulkValues[index].value.isEmpty) {
-                              for (int i = 0; i < serialParts.length; i++) {
-                                bulkValues[index].value.add(SerialNumber(
-                                  serialNumber: serialParts[i].trim(),
-                                  manufacturer: merchantController.text,
-                                  productionDate: DateTime(4000),
-                                ));
-                              }
-                            } else {
-                              if (bulkValues[index].value.length != serialParts.length) {
-                                debugPrint('Unequal serialNumbers and productionDates');
-                                return;
-                              }
+                          if (bulkValues[index].value.isEmpty) {
+                            for (int i = 0; i < serialParts.length; i++) {
+                              bulkValues[index].value.add(SerialNumber(
+                                serialNumber: serialParts[i].trim(),
+                                manufacturer: merchantController.text,
+                                productionDate: DateTime(4000),
+                              ));
+                            }
+                          } else {
+                            // if (bulkValues[index].value.length != serialParts.length) {
+                            //   debugPrint('Unequal serialNumbers and productionDates');
+                            //   //return;
+                            // }
 
-                              for (int i = 0; i < serialParts.length; i++) {
-                                bulkValues[index].value[i].serialNumber = serialParts[i].trim();
-                              }
+                            for (int i = 0; i < serialParts.length; i++) {
+                              bulkValues[index].value[i].serialNumber = serialParts[i].trim();
                             }
                           }
-                        ),
+                        },
                       ),
                     ),
                     Expanded(
-                      child: Card(
-                        elevation: 5,
-                        child: TextFormField(
-                          controller: productionDateControllers[index],
-                          decoration: InputDecoration(
-                            labelText: 'production_date'.tr,
-                          ),
-                          onFieldSubmitted: (String value) {
-                            if (value.isEmpty || serialNumberControllers[index].text.isEmpty) return;
+                      child: TextFormField(
+                        controller: productionDateControllers[index],
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'production_date'.tr,
+                        ),
+                        onFieldSubmitted: (String value) {
+                          if (value.isEmpty || serialNumberControllers[index].text.isEmpty) return;
 
-                            List<String> productionParts = value.split(',');
+                          List<String> productionParts = value.split(',');
 
-                            if (bulkValues[index].value.isEmpty) {
-                              final List<SerialNumber> numbers = [];
+                          if (bulkValues[index].value.isEmpty) {
+                            final List<SerialNumber> numbers = [];
 
-                              for (int i = 0; i < productionParts.length; i++) {
-                                numbers.add(SerialNumber(
-                                  serialNumber: '',
-                                  manufacturer: merchantController.text,
-                                  productionDate: DateTime.parse(productionParts[i].trim()),
-                                ));
-                              }
-
-                              bulkValues[index].value.addAll(numbers);
-                            } else {
-                              if (bulkValues[index].value.length != productionParts.length) {
-                                debugPrint('Unequal serialNumbers and productionDates');
-                                return;
-                              }
-
-                              for (int i = 0; i < productionParts.length; i++) {
-                                bulkValues[index].value[i].serialNumber = productionParts[i].trim();
-                              }
+                            for (int i = 0; i < productionParts.length; i++) {
+                              numbers.add(SerialNumber(
+                                serialNumber: '',
+                                manufacturer: merchantController.text,
+                                productionDate: DateTime.parse(productionParts[i].trim()),
+                              ));
                             }
-                          },
-                        ),
+
+                            bulkValues[index].value.addAll(numbers);
+                          } else {
+                            if (bulkValues[index].value.length != productionParts.length) {
+                              debugPrint('Unequal serialNumbers and productionDates');
+                              return;
+                            }
+
+                            for (int i = 0; i < productionParts.length; i++) {
+                              bulkValues[index].value[i].serialNumber = productionParts[i].trim();
+                            }
+                          }
+                        },
                       ),
                     ),
                     Expanded(
-                      child: Card(
-                        elevation: 5,
-                        child: TextFormField(
-                          controller: inventoryNumberControllers[index],
-                          decoration: InputDecoration(
-                            labelText: 'inventory_number'.tr,
-                          ),
+                      child: TextFormField(
+                        controller: inventoryNumberControllers[index],
+                        decoration: InputDecoration(
+                          border: const OutlineInputBorder(),
+                          labelText: 'inventory_number'.tr,
                         ),
                       ),
                     ),
@@ -428,7 +456,25 @@ class _AddItemDialogState extends State<AddItemDialog> {
       ),
     ),
   );
+
+  String? validateSerialNumber(String value, int index) {
+    if(value.isEmpty) {
+      return 'serial_num_is_mandatory'.tr;
+    }
+
+    List<String>? serialParts = value.split(',');
+
+    if (bulkValues[index].value.length > serialParts.length) {
+      return 'not_enough_serial_numbers'.tr ;
+    }
+    // if (bulkValues[index].value.length != serialParts.length) {
+    //   return 'unequal_serialNumbers_and_production_dates'.tr ;
+    // }
+    return null;
+  }
+
 }
+
 
 class NonFinalMapEntry<K,V> {
   K key;

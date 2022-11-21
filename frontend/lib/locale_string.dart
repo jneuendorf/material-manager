@@ -147,6 +147,8 @@ class LocaleString extends Translations {
       'edit': 'Edit',
       'general': 'General',
       'address': 'Address',
+      'serial_num_is_mandatory': 'Serialnum. is Mandatory',
+      'unequal_serialNumbers_and_production_dates': 'Unequal Serial Numbers And Production Dates',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -288,6 +290,8 @@ class LocaleString extends Translations {
       'edit' : 'Bearbeiten',
       'general': 'Allgemein',
       'address': 'Adresse',
+      'serial_num_is_mandatory': 'Serialnum. ist verplichtend',
+      'unequal_serialNumbers_and_production_dates': 'Ungleiche Anzahl an Seriennummern und Productionsdaten',
     }
   };
 }
