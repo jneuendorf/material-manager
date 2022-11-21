@@ -1,11 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/buttons/text_icon_button.dart';
 
 import 'package:get/get.dart';
 
 import 'package:frontend/common/core/models.dart';
 import 'package:frontend/common/util.dart';
+import 'package:frontend/common/buttons/text_icon_button.dart';
 
 
 class UpdateImprintDialog extends StatefulWidget {
@@ -54,6 +54,14 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
     vatNumberController.text = widget.imprint.vatNumber;
 
     boardMembers.value = widget.imprint.boardMembers;
+
+    if (boardMembers.isNotEmpty) {
+      for (int i = 0; i < boardMembers.length; i++) {
+        boardMemberControllers.add(TextEditingController(
+          text: boardMembers[i].toString(),
+        ));
+      }
+    }
   }
 
   @override
@@ -240,9 +248,9 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
                   child: Column(
                     children: [
                       Expanded(
-                        child: ListView.builder(
+                        child: Obx(() => ListView.builder(
                           shrinkWrap: true,
-                          itemCount: boardMemberControllers.length,
+                          itemCount: boardMembers.length,
                           itemBuilder: (BuildContext context, int index) => Row(
                             children: [
                               IconButton(
@@ -270,13 +278,10 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
                               ),
                             ],
                           ),
-                        ),
+                        )),
                       ),
                       TextIconButton(
-                        onTap: () {
-                          boardMembers.add(null);
-                          //boardMemberControllers.add(TextEditingController());
-                        }, 
+                        onTap: () => boardMembers.add(null), 
                         iconData: Icons.add, 
                         text: 'add_board_member'.tr,
                       ),
