@@ -25,72 +25,75 @@ class AddRoleDialog extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => BaseFutureDialog(
-    size: const Size(500.0, 340.0),
     loading: loading,
-    child: Form(
-      key: formKey,
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text('add_role'.tr, style: Get.textTheme.headline6),
+    child: ConstrainedBox(
+      constraints: const BoxConstraints(maxWidth: 500),
+      child: Form(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Expanded(
+                  child: Text('add_role'.tr, style: Get.textTheme.headline6),
+                ),
+                IconButton(
+                  onPressed: Get.back,
+                  splashRadius: 20,
+                  icon: const Icon(CupertinoIcons.xmark),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8.0),
+            TextFormField(
+              controller: nameController,
+              decoration: InputDecoration(
+                labelText: 'name'.tr,
+                border: const OutlineInputBorder(),
               ),
-              IconButton(
-                splashRadius: 20,
-                onPressed: Get.back,
-                icon: const Icon(CupertinoIcons.xmark),
+              validator: (value) {
+                if(value!.isEmpty) {
+                  return 'name_is_mandatory'.tr;
+                }
+                return null;
+              },
+            ),
+            const SizedBox(height: 8.0),
+            TextFormField(
+              controller: descriptionController,
+              decoration: InputDecoration(
+                labelText: 'description'.tr,
+                border: const OutlineInputBorder(),
               ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          TextFormField(
-            controller: nameController,
-            decoration: InputDecoration(
-              labelText: 'name'.tr,
-              border: const OutlineInputBorder(),
+              validator: (value) {
+                if(value!.isEmpty) {
+                  return 'description_is_mandatory'.tr;
+                }
+                return null;
+              },
             ),
-            validator: (value) {
-              if(value!.isEmpty) {
-                return 'name_is_mandatory'.tr;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 8.0),
-          TextFormField(
-            controller: descriptionController,
-            decoration: InputDecoration(
-              labelText: 'description'.tr,
-              border: const OutlineInputBorder(),
-            ),
-            validator: (value) {
-              if(value!.isEmpty) {
-                return 'description_is_mandatory'.tr;
-              }
-              return null;
-            },
-          ),
-          const SizedBox(height: 8.0),
-          MultiSelectChip(
-            options: administrationPageController.userController.permissions.map(
-              (e) => e.name).toList(),
-            selectedOptions: selectedPermissions,
-            ),
-          const SizedBox(height: 16.0),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: CupertinoButton(
-              onPressed: onAddTap,
-              color: Get.theme.primaryColor,
-              child: Text('add'.tr,
-                style: const TextStyle(color: Colors.white),
+            const SizedBox(height: 8.0),
+            MultiSelectChip(
+              options: administrationPageController.userController.permissions.map(
+                (e) => e.name).toList(),
+              selectedOptions: selectedPermissions,
+              ),
+            const SizedBox(height: 16.0),
+            Align(
+              alignment: Alignment.bottomRight,
+              child: CupertinoButton(
+                onPressed: onAddTap,
+                color: Get.theme.primaryColor,
+                child: Text('add'.tr,
+                  style: const TextStyle(color: Colors.white),
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     ),
   );

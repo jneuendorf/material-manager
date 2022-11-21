@@ -181,9 +181,8 @@ class SignupPage extends GetView<SignupController> {
           validator: (value) {
             if (!GetUtils.isNumericOnly(value!)) {
               return 'zip_not_valid'.tr;
-            } else {
-              return null;
-            }
+            } 
+            return null;
           },
         ),
         buildButton(1, controller.addressKey),
@@ -208,10 +207,9 @@ class SignupPage extends GetView<SignupController> {
           autovalidateMode: AutovalidateMode.onUserInteraction,
           validator: (value) {
             if (!GetUtils.isEmail(value!)) {
-              return 'email is not valid'.tr;
-            } else {
-              return null;
-            }
+              return 'email_not_valid'.tr;
+            } 
+            return null;
           },
         ),
         const SizedBox(height: 16.0),
@@ -228,9 +226,8 @@ class SignupPage extends GetView<SignupController> {
           validator: (value) {
             if (!GetUtils.isPhoneNumber(value!)) {
               return 'phone_not_valid'.tr;
-            } else {
-              return null;
-            }
+            } 
+            return null;
           },
         ),
         buildButton(2, controller.contactKey),

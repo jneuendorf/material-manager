@@ -1,3 +1,5 @@
+from typing import Optional
+
 from flask import abort, redirect
 from flask_apispec import use_kwargs
 from flask_jwt_extended import (
@@ -14,19 +16,22 @@ from webargs import fields, validate
 from core.config import flask_config
 from core.extensions import mail
 from core.helpers.resource import BaseResource, ModelListResource, ModelResource
+from core.helpers.schema import BaseSchema
 
 from .auth import password_policy
 from .decorators import login_required, permissions_required
 from .models import User as UserModel
 
 
+class UserSchema(BaseSchema):
+    class Meta:
+        model = UserModel
+        fields = ("id", "first_name", "last_name", "email", "membership_number")
+
+
 class User(ModelResource):
     url = "/user/<int:user_id>"
-
-    class Schema:
-        class Meta:
-            model = UserModel
-            fields = ("id", "first_name", "last_name")
+    Schema = UserSchema
 
     def get(self, user_id: int) -> dict:
         user = UserModel.get(id=user_id)
@@ -132,7 +137,7 @@ class Login(BaseResource):
     url = "/login"
 
     @use_kwargs({"email": fields.Str(), "password": fields.Str()})
-    def post(self, email: str = None, password: str = None):
+    def post(self, email: Optional[str] = None, password: Optional[str] = None):
         """
         curl -X POST 'http://localhost:5000/login' -H 'Content-Type: application/json' -d '{"email":"root@localhost.com","password":"asdf"}'
         """  # noqa
@@ -191,11 +196,7 @@ class Refresh(BaseResource):
 
 class Profile(ModelResource):
     url = "/user/profile"
-
-    class Schema:
-        class Meta:
-            model = UserModel
-            fields = ("id", "first_name", "last_name", "email", "membership_number")
+    Schema = UserSchema
 
     @login_required
     def get(self) -> dict:
@@ -204,11 +205,7 @@ class Profile(ModelResource):
 
 class Users(ModelListResource):
     url = "/users"
-
-    class Schema:
-        class Meta:
-            model = UserModel
-            fields = ("id", "last_name")
+    Schema = UserSchema
 
     @permissions_required("user:read")
     def get(self):
