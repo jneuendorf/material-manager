@@ -11,6 +11,7 @@ inspection = Extension(
     ),
     resources=(
         resources.Inspection,
+        resources.Comment,
         resources.Comments,
     ),
 )
