@@ -1,7 +1,6 @@
 from core.helpers.extension import Extension
 
 from . import models
-from .config import STATIC_FOLDER, STATIC_URL_PATH
 
 rental = Extension(
     "rental",
