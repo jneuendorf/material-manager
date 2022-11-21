@@ -84,7 +84,7 @@ class _EditUserDialogState extends State<EditUserDialog> with SingleTickerProvid
     child: ConstrainedBox(
       constraints: const BoxConstraints(
           maxWidth: 600,
-        ),
+      ),
       child: Form(
         key: formKey,
         child: Column(

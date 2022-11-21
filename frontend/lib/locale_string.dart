@@ -140,6 +140,15 @@ class LocaleString extends Translations {
       'edit': 'Edit',
       'general': 'General',
       'address': 'Address',
+      'edit_imprint': 'Edit Imprint',
+      'club_name': 'Club Name',
+      'club_name_is_mandatory': 'Club Name is mandatory',
+      'vat_number': 'VAT Number',
+      'vat_number_is_mandatory': 'VAT Number is mandatory',
+      'registration_number': 'Registration Number',
+      'registration_number_is_mandatory': 'Registration Number is mandatory',
+      'registry_court': 'Registry Court',
+      'registry_court_is_mandatory': 'Registry Court is mandatory',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -274,6 +283,15 @@ class LocaleString extends Translations {
       'edit' : 'Bearbeiten',
       'general': 'Allgemein',
       'address': 'Adresse',
+      'edit_imprint': 'Impressum bearbeiten',
+      'club_name': 'Vereinsname',
+      'club_name_is_mandatory': 'Vereinsname ist verplichtend',
+      'vat_number': 'USt-IdNr.',
+      'vat_number_is_mandatory': 'USt-IdNr. ist verplichtend',
+      'registration_number': 'Registernummer',
+      'registration_number_is_mandatory': 'Registernummer ist verplichtend',
+      'registry_court': 'Registergericht',
+      'registry_court_is_mandatory': 'Registergericht ist verplichtend',
     }
   };
 }
