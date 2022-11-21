@@ -18,7 +18,7 @@ class UpdateImprintDialog extends StatefulWidget {
 }
 
 class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
-  final RxList<BoardMember?> boardMembers = <BoardMember>[].obs;
+  final RxList<String> boardMembers = <String>[].obs;
 
   final List<TextEditingController> boardMemberControllers = <TextEditingController>[];
 
@@ -40,18 +40,16 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
   void initState() {
     super.initState();
 
-    boardMembers.listen((lst) { 
-      if (boardMemberControllers.length < lst.length) {
-        boardMemberControllers.add(TextEditingController());
-      }
-    });
-
     clubNameController.text = widget.imprint.clubName;
     phoneController.text = widget.imprint.phoneNumber;
     emailController.text = widget.imprint.email;
     registrationNumController.text = widget.imprint.registrationNumber.toString();
     registryCourtController.text = widget.imprint.registryCourt;
     vatNumberController.text = widget.imprint.vatNumber;
+    streetNameController.text = widget.imprint.address.street;
+    houseNumberController.text = widget.imprint.address.houseNumber;
+    cityController.text = widget.imprint.address.city;
+    zipController.text = widget.imprint.address.zip;
 
     boardMembers.value = widget.imprint.boardMembers;
 
@@ -62,6 +60,12 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
         ));
       }
     }
+
+    boardMembers.listen((lst) { 
+      if (boardMemberControllers.length < lst.length) {
+        boardMemberControllers.add(TextEditingController());
+      }
+    });
   }
 
   @override
@@ -251,37 +255,40 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
                         child: Obx(() => ListView.builder(
                           shrinkWrap: true,
                           itemCount: boardMembers.length,
-                          itemBuilder: (BuildContext context, int index) => Row(
-                            children: [
-                              IconButton(
-                                onPressed: () {
-                                  boardMembers.removeAt(index);
-                                  boardMemberControllers.removeAt(index);
-                                },
-                                splashRadius: 20,
-                                icon: const Icon(CupertinoIcons.xmark),
-                              ),
-                              Expanded(
-                                child: TextFormField(
-                                  controller: boardMemberControllers[index],
-                                  decoration: InputDecoration(
-                                    labelText: 'board_member'.tr,
-                                    border: const OutlineInputBorder(),
-                                  ),
-                                  validator: (value) {
-                                    if(value!.isEmpty) {
-                                      return 'board_member_is_mandatory'.tr;
-                                    }
-                                    return null;
+                          itemBuilder: (BuildContext context, int index) => Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 4.0),
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  onPressed: () {
+                                    boardMembers.removeAt(index);
+                                    boardMemberControllers.removeAt(index);
                                   },
+                                  splashRadius: 20,
+                                  icon: const Icon(CupertinoIcons.xmark),
                                 ),
-                              ),
-                            ],
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: boardMemberControllers[index],
+                                    decoration: InputDecoration(
+                                      labelText: 'board_member'.tr,
+                                      border: const OutlineInputBorder(),
+                                    ),
+                                    validator: (value) {
+                                      if(value!.isEmpty) {
+                                        return 'board_member_is_mandatory'.tr;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         )),
                       ),
                       TextIconButton(
-                        onTap: () => boardMembers.add(null), 
+                        onTap: () => boardMembers.add(''), 
                         iconData: Icons.add, 
                         text: 'add_board_member'.tr,
                       ),

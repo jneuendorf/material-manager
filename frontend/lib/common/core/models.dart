@@ -6,7 +6,7 @@ class ImprintModel {
   Address address;
   String phoneNumber;
   String email;
-  List<BoardMember> boardMembers;
+  List<String> boardMembers;
   int registrationNumber;
   String registryCourt;
   String vatNumber;
@@ -28,27 +28,10 @@ class ImprintModel {
       address: Address.fromJson(json['address']),
       phoneNumber: json['phone_number'],
       email: json['email'],
-      boardMembers: List<BoardMember>.from(json['board_members'].map((x) => BoardMember.fromJson(x))),
+      boardMembers: json['board_members'] != null ? List<String>.from(json['board_members']) : [],
       registrationNumber: json['registration_number'],
       registryCourt: json['registry_court'],
       vatNumber: json['vat_number'],
-    );
-  }
-}
-
-class BoardMember {
-  String firstName;
-  String lastName;
-
-  BoardMember({
-    required this.firstName,
-    required this.lastName,
-  });
-
-  factory BoardMember.fromJson(Map<String, dynamic> json) {
-    return BoardMember(
-      firstName: json['first_name'],
-      lastName: json['last_name'],
     );
   }
 }

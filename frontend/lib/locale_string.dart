@@ -150,6 +150,8 @@ class LocaleString extends Translations {
       'registry_court': 'Registry Court',
       'registry_court_is_mandatory': 'Registry Court is mandatory',
       'add_board_member': 'Add Board Member',
+      'board_member': 'Board Member',
+      'board_member_is_mandatory': 'Board Member is mandatory',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -294,6 +296,8 @@ class LocaleString extends Translations {
       'registry_court': 'Registergericht',
       'registry_court_is_mandatory': 'Registergericht ist verplichtend',
       'add_board_member': 'Vorstandsmitglied hinzufügen',
+      'board_member': 'Vorstandsmitglied',
+      'board_member_is_mandatory': 'Vorstandsmitglied ist verplichtend',
     }
   };
 }

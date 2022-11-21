@@ -57,8 +57,8 @@ class ExtrasScreen extends StatelessWidget {
               city: 'City',
             ),
             boardMembers: [
-              BoardMember(firstName: 'Thorsten', lastName: 'Thorpe'),
-              BoardMember(firstName: 'Karin', lastName: 'Thorpe')
+              'Thorsten Thorpe',
+              'Karin Thorpe',
             ],
           ),
         )),
