@@ -265,7 +265,9 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
                                     boardMemberControllers.removeAt(index);
                                   },
                                   splashRadius: 20,
-                                  icon: const Icon(CupertinoIcons.xmark),
+                                  icon: const Icon(CupertinoIcons.minus_circle_fill,
+                                    color: Colors.red,
+                                  ),
                                 ),
                                 Expanded(
                                   child: TextFormField(
@@ -316,5 +318,6 @@ class _UpdateImprintDialogState extends State<UpdateImprintDialog> {
 
   void onConfirmTap() {
     if (!formKey.currentState!.validate()) return;
+    // TODO call enpoint to upadte the imprint config
   }
 }
