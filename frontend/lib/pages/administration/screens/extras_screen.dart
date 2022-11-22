@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
+import 'package:frontend/extensions/material/controller.dart';
+import 'package:frontend/extensions/material/model.dart';
 
 import 'package:get/get.dart';
 
@@ -24,7 +27,14 @@ class ExtrasScreen extends StatelessWidget {
       title: Text('export_inventory_to_csv'.tr),
       trailing: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Get.theme.colorScheme.onSecondary),
-        onPressed: () {},
+        onPressed: () async {
+          final fileName = 'materials(${DateTime.now().millisecond}).csv';
+          final controller = Get.find<MaterialController>();
+          final bytes = controller.materials.toCSV().codeUnits;
+          if (!await downloadPseudoFile(fileName, bytes)){
+            Get.snackbar('error'.tr, 'unknown_error_occurred'.tr);
+          }
+        },
         child: Text('export'.tr,
           style: const TextStyle(
             color: Colors.white,

@@ -114,7 +114,7 @@ class LocaleString extends Translations {
       'ok': 'Okay',
       'broken': 'Broken',
       'repair': 'Repair',
-      'usage_in_days': 'Usage in Days',
+      'days_used': 'Usage in Days',
       'purchase_date' : 'Purchase Date',
       'invoice_number' : 'Invoice No.',
       'merchant' : 'Merchant',
@@ -239,7 +239,7 @@ class LocaleString extends Translations {
       'no_items_assigned_to_this_rental_entry': 'Keine Artikel zu dieser Leihbuchung zugeordnet',
       // Für Material
       'images': 'Bilder',
-      'serial_numbers': 'Gerätenr.', // TODO: finde bessere Übersetzung
+      'serial_numbers': 'Gerätenr.',
       'inventory_number' : 'Inventarnr.',
       'max_operating_date' : 'Max. Lebensdauer',
       'max_days_used' : 'Max. Gebrauchsdauer in Tagen',
@@ -251,7 +251,7 @@ class LocaleString extends Translations {
       'ok': 'Okay',
       'broken': 'Defekt',
       'repair': 'Reparatur',
-      'usage_in_days': 'Nutzungsdauer in Tagen',
+      'days_used': 'Nutzungsdauer in Tagen',
       'purchase_date' : 'Kaufdatum',
       'invoice_number' : 'Rechnungsnr.',
       'merchant' : 'Händler',

@@ -64,16 +64,10 @@ class MaterialModel {
 
 extension CSVList on List<MaterialModel> {
   String toCSV() {
-    // TODO: Purchase details (entweder eigene Spalte (mit eigenem .tr) oder Aufspalten in Einzelbestandteile)
-    // TODO: Einheit fehlt für rental fee und andere Preise (sollten wir wirklich davon ausgehen, 
-    //  dass das Euro (€) sind -> würde unsere i18 Bemühungen untermauern)
-    // TODO: properties haben feste (deutsche) Namen -> sollte irgendwie auch allgemeiner gemacht werden.
-    // TODO: usage_in_days ist inkonsistent mit days_used
-
     return csvEncoder.convert([
       [
         'ID', 'images'.tr, 'serial_numbers'.tr, 'inventory_number'.tr, 'max_operating_date'.tr, 'max_days_used'.tr, 'installation'.tr, 'instructions'.tr, 
-        'next_inspection'.tr, 'rental_fee'.tr, 'condition'.tr, 'usage_in_days'.tr, 'Purchase Details', 'properties'.tr, 'type'.tr],
+        'next_inspection'.tr, 'rental_fee'.tr, 'condition'.tr, 'days_used'.tr, 'Purchase Details', 'properties'.tr, 'type'.tr],
       for (final materialModel in this)
         materialModel.toCsvRow()
     ]);
