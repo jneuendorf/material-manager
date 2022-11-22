@@ -150,7 +150,8 @@ for i in range(NUM_MATERIALS):
 
     serial_numbers = [SerialNumber.get(serial_number=get_serial_number_str(i))]
     inventory_numbers = [InventoryNumber.get(id=i + 1)]
-    # Let some materials have multiple serial numbers / inventory numbers
+
+    # Let some materials have multiple serial/inventory numbers
     if i > 30:
         serial_numbers.append(
             SerialNumber.get(serial_number=get_serial_number_str(i + 50))
