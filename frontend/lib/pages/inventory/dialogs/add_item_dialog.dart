@@ -360,7 +360,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         validator: (String? value) => validateSerialNumber(value!, bulkValues[index]),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         onFieldSubmitted: (String value) {
-                          if (value.isEmpty) return;
+                          if (value.trim().isEmpty) return;
 
                           List<String> serialParts = value.split(',');
                           serialParts.removeWhere((element) => element.trim() == '');
@@ -374,11 +374,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               ));
                             }
                           } else {
-                            // if (bulkValues[index].value.length != serialParts.length) {
-                            //   debugPrint('Unequal serialNumbers and productionDates');
-                            //   //return;
-                            // }
-
                             for (int i = 0; i < bulkValues[index].value.length; i++) {
                               if (i > serialParts.length - 1) {
                                 bulkValues[index].value[i].serialNumber = '';
@@ -387,8 +382,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               }
                             }
 
+                            bulkValues[index].value.removeWhere(
+                              (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
+
                             if (bulkValues[index].value.length < serialParts.length) {
                               for (int i = bulkValues[index].value.length; i < serialParts.length; i++) {
+                                debugPrint('Addding serialNumber: ${serialParts[i].trim()} with length: ${serialParts[i].trim().length}');
                                 bulkValues[index].value.add(SerialNumber(
                                   serialNumber: serialParts[i].trim(),
                                   manufacturer: merchantController.text,
@@ -396,10 +395,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 ));
                               }
                             }
-
-                            // for (int i = 0; i < serialParts.length; i++) {
-                            //   bulkValues[index].value[i].serialNumber = serialParts[i].trim();
-                            // }
                           }
                         },
                       ),
@@ -415,7 +410,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         validator: (String? value) => validateProductionDate(value!,  bulkValues[index]),
                         autovalidateMode: AutovalidateMode.onUserInteraction,
                         onFieldSubmitted: (String value) {
-                          if (value.isEmpty || serialNumberControllers[index].text.isEmpty) return;
+                          if (value.trim().isEmpty) return;
 
                           List<String> productionParts = value.split(',');
                           productionParts.removeWhere((element) => element.trim() == '');
@@ -427,39 +422,32 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               numbers.add(SerialNumber(
                                 serialNumber: '',
                                 manufacturer: merchantController.text,
-                                productionDate: DateFormat().parse(productionParts[i].trim()),
+                                productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
                               ));
                             }
 
                             bulkValues[index].value.addAll(numbers);
                           } else {
-                            // if (bulkValues[index].value.length != productionParts.length) {
-                            //   debugPrint('Unequal serialNumbers and productionDates');
-                            //   return;
-                            // }
-
-                            debugPrint('BulkLength ${bulkValues[index].value.length}, ProductionLength ${productionParts.length}');
                             for (int i = 0; i < bulkValues[index].value.length; i++) {
                               if (i > productionParts.length - 1) {
-                                bulkValues[index].value[i].serialNumber = '';
+                                bulkValues[index].value[i].productionDate = DateTime(4000);
                               } else {
-                                bulkValues[index].value[i].serialNumber = productionParts[i].trim();
+                                bulkValues[index].value[i].productionDate = DateFormat('dd.MM.yyy').parse(productionParts[i].trim());
                               }
                             }
+
+                            bulkValues[index].value.removeWhere(
+                              (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
 
                             if (bulkValues[index].value.length < productionParts.length) {
                               for (int i = bulkValues[index].value.length; i < productionParts.length; i++) {
                                 bulkValues[index].value.add(SerialNumber(
                                   serialNumber: '',
                                   manufacturer: merchantController.text,
-                                  productionDate: DateFormat().parse(productionParts[i].trim()),
+                                  productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
                                 ));
                               }
                             }
-
-                            // for (int i = 0; i < productionParts.length; i++) {
-                            //   bulkValues[index].value[i].serialNumber = productionParts[i].trim();
-                            // }
                           }
                         },
                       ),
@@ -472,6 +460,18 @@ class _AddItemDialogState extends State<AddItemDialog> {
                           border: const OutlineInputBorder(),
                           labelText: 'inventory_number'.tr,
                         ),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
+                        validator: (String? value) {
+                          if (value == null || value.trim().isEmpty) {
+                            return 'inventory_number_is_mandatory'.tr;
+                          }
+                          return null;
+                        },
+                        onFieldSubmitted: (String value) {
+                          if (value.trim().isEmpty) return;
+
+                          bulkValues[index].key = value.trim();
+                        },
                       ),
                     ),
                   ],
@@ -487,9 +487,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
           Align(
             alignment: Alignment.bottomRight,
             child: CupertinoButton(
-              onPressed: () {
-                if (formKey.currentState!.validate()) return;
-              },
+              onPressed: onAdd,
               color: Get.theme.primaryColor,
               child: Text('add'.tr,
                 style: const TextStyle(color: Colors.white),
@@ -501,9 +499,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
     ),
   );
 
-  String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
-      debugPrint('ValidateSerialNumber');
+  void onAdd() {
+    if (!formKey.currentState!.validate()) return;
 
+    for (var element in bulkValues) {
+      debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
+    }
+  }
+
+  String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
     if(value.isEmpty) {
       return 'serial_num_is_mandatory'.tr;
     }
@@ -519,8 +523,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
   }
 
   String? validateProductionDate(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
-    debugPrint('ValidateProductionDate');
-
     if(value.isEmpty) {
       return 'production_date_is_mandatory'.tr;
     }
