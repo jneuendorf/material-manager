@@ -2,7 +2,8 @@ FROM python:3.11
 
 RUN apt-get update && apt-get install -y --no-install-recommends
 RUN mkdir -p /usr/pip/src
-RUN pip install gunicorn
+# gunicorn = production server, gdown => create sample data
+RUN pip install gunicorn gdown
 
 WORKDIR /usr/src/backend
 COPY . .
