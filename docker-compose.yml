@@ -1,42 +1,57 @@
 version: '3.8'
 
+volumes:
+  frontend-build:
+
 services:
-  database:
-    image: postgres:latest
-    container_name: database
-    restart: unless-stopped
-    volumes:
-      - /var/lib/postgresql
-    environment:
-      POSTGRES_DB: postgres
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: postgres
+#  database:
+#    image: postgres:latest
+#    container_name: database
+#    restart: unless-stopped
+#    volumes:
+#      - /var/lib/postgresql
+#    environment:
+#      POSTGRES_DB: postgres
+#      POSTGRES_USER: postgres
+#      POSTGRES_PASSWORD: postgres
 
   backend:
     container_name: backend
     restart: always
     build: ./backend
-    volumes:
-      - ./backend:/usr/src/backend
-    depends_on:
-      - database
-    links:
-      - database
-
-#  frontend:
-#    container_name: frontend
-#    build: ./frontend
 #    volumes:
-#      - ./frontend:/usr/src/frontend
+#      - ./backend:/usr/src/backend
+#    depends_on:
+#      - database
+#    links:
+#      - database
+    ports:
+      - "8000:8000"
+    environment:
+      # The suffix must match the nginx config
+      CORE_PUBLIC_API_URL: http://localhost/api
+      CORE_PUBLIC_FRONTEND_URL: http://localhost
+      # TODO: postgres
+      # SQLALCHEMY_DATABASE_URI:
+
+  frontend:
+    container_name: frontend
+    build: ./frontend
+    volumes:
+      - frontend-build:/usr/src/frontend/build
+    environment:
+      API_URL: /api
 
   webserver:
     container_name: webserver
     restart: unless-stopped
     build: ./compose/webserver
+    volumes:
+      - frontend-build:/usr/src/frontend/build
     depends_on:
       - backend
+      - frontend
     links:
       - backend
     ports:
-      - "8000:80"
       - "80:80"

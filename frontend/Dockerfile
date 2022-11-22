@@ -6,5 +6,8 @@ WORKDIR /usr/src/frontend
 COPY . .
 RUN flutter pub get
 
+ARG API_URL
+ENV API_URL=${API_URL}
+
 ENTRYPOINT []
-CMD ["flutter", "run", "-d", "chrome", "--web-port", "55542"]
+CMD ["flutter", "build", "web"]
