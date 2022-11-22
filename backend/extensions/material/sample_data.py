@@ -5,6 +5,7 @@ from hashlib import sha1
 from extensions.common.models import File
 from extensions.material.models import (
     Condition,
+    InventoryNumber,
     Material,
     MaterialSet,
     MaterialType,
@@ -16,6 +17,7 @@ from extensions.material.models import (
 NUM_PROPERTIES = 18
 NUM_PURCHASE_DETAILS = 30
 NUM_MATERIALS = 50
+NUM_INVENTORY = 100
 
 INVENTORY_IDENTIFIERS = it.cycle(["J", "K", "L", "G"])
 MERCHANTS = it.cycle(["InterSport", "Globetrotter", "SecondHand", "Amazon"])
@@ -128,12 +130,13 @@ def get_serial_number_str(i: int) -> str:
     return f"sn-{i}-{i ** 2}"
 
 
-for i in range(NUM_MATERIALS):
+for i in range(NUM_INVENTORY):
     SerialNumber.get_or_create(
         serial_number=get_serial_number_str(i),
         production_date=date(2022, 1, 1) + timedelta(days=i),
         manufacturer=next(MANUFACTURERS),
     )
+    InventoryNumber.get_or_create(inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}")
 
 # Create materials
 for i in range(NUM_MATERIALS):
@@ -146,15 +149,17 @@ for i in range(NUM_MATERIALS):
         condition = Condition.OK
 
     serial_numbers = [SerialNumber.get(serial_number=get_serial_number_str(i))]
-    # Let some materials have multiple serial numbers
-    if i > 100:
+    inventory_numbers = [InventoryNumber.get(id=i + 1)]
+    # Let some materials have multiple serial numbers / inventory numbers
+    if i > 30:
         serial_numbers.append(
-            SerialNumber.get(serial_number=get_serial_number_str(i - 1))
+            SerialNumber.get(serial_number=get_serial_number_str(i + 50))
         )
+        inventory_numbers.append(InventoryNumber.get(id=i + 51))
 
     installation_date = date(2022, 1, 1) + timedelta(days=i)
     material = Material.get_or_create(
-        inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}",
+        # inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}",
         name=f"material {i}",
         installation_date=installation_date,
         max_operating_date=installation_date + timedelta(weeks=(-1) ** i * 2),
@@ -168,6 +173,7 @@ for i in range(NUM_MATERIALS):
             material_type=next(material_types),
             purchase_details=created_purchase_details[i % NUM_PURCHASE_DETAILS],
             serial_numbers=serial_numbers,
+            inventory_numbers=inventory_numbers,
             properties=[Property.get(name=get_property_name(i % NUM_PROPERTIES))],
         ),
     )

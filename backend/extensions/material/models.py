@@ -46,14 +46,16 @@ class Condition(enum.Enum):
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
+    # inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
+    inventory_numbers = db.relationship("InventoryNumber", backref="material")
     name = db.Column(db.String(length=80), nullable=False)
     installation_date = db.Column(db.Date, nullable=False)  # Inbetriebnahme
     max_operating_date = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
     max_days_used = db.Column(
         db.Integer,
         nullable=False,
-    )  # Gebrauchsdauer, compare to 'days_used'
+    )
+    # Gebrauchsdauer, compare to 'days_used'
     days_used = db.Column(db.Integer, nullable=False, default=0)
     instructions = db.Column(db.Text, nullable=False, default="")
     next_inspection_date = db.Column(db.Date, nullable=False)
@@ -84,6 +86,12 @@ class Material(Model):  # type: ignore
         if not self.serial_numbers:
             raise ValueError("A material must have at least 1 associated serial number")
         super().save()
+
+
+class InventoryNumber(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    inventory_number = db.Column(db.String(length=20), nullable=False)
+    material_id = db.Column(db.ForeignKey(Material.id))
 
 
 class SerialNumber(Model):  # type: ignore
