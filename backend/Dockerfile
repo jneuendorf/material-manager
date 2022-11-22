@@ -7,11 +7,6 @@ RUN pip install gunicorn
 WORKDIR /usr/src/backend
 COPY . .
 
-ARG CORE_PUBLIC_FRONTEND_URL
-ARG CORE_PUBLIC_API_URL
-ENV CORE_PUBLIC_FRONTEND_URL=${CORE_PUBLIC_FRONTEND_URL}
-ENV CORE_PUBLIC_API_URL=${CORE_PUBLIC_API_URL}
-
 RUN pip install --src /usr/pip/src/ --no-cache-dir -r requirements.txt
 RUN make sample_data
 
