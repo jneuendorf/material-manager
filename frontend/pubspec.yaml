@@ -45,6 +45,7 @@ dependencies:
   lottie: ^1.4.3
   jwt_decoder: ^2.0.1
   flutter_dotenv: ^5.0.2
+  cross_file: ^0.3.3+2
 
 dev_dependencies:
   flutter_test:
