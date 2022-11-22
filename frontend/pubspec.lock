@@ -7,7 +7,7 @@ packages:
       name: archive
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "3.3.2"
+    version: "3.3.4"
   async:
     dependency: transitive
     description:
@@ -50,6 +50,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.16.0"
+  convert:
+    dependency: transitive
+    description:
+      name: convert
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "3.1.1"
   crypto:
     dependency: transitive
     description:
@@ -84,7 +91,7 @@ packages:
       name: data_table_2
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.3.7"
+    version: "2.3.8"
   dio:
     dependency: "direct main"
     description:
@@ -204,7 +211,7 @@ packages:
       name: http_parser
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "4.0.1"
+    version: "4.0.2"
   intl:
     dependency: "direct main"
     description:
@@ -232,7 +239,7 @@ packages:
       name: lints
       url: "https://pub.dartlang.org"
     source: hosted
-    version: "2.0.0"
+    version: "2.0.1"
   lottie:
     dependency: "direct main"
     description:
@@ -253,6 +260,7 @@ packages:
       name: material_color_utilities
       url: "https://pub.dartlang.org"
     source: hosted
+    version: "0.2.0"
     version: "0.2.0"
   meta:
     dependency: transitive
@@ -392,6 +400,7 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.9.1"
+    version: "1.9.1"
   stack_trace:
     dependency: transitive
     description:
@@ -405,6 +414,7 @@ packages:
       name: stream_channel
       url: "https://pub.dartlang.org"
     source: hosted
+    version: "2.1.1"
     version: "2.1.1"
   string_scanner:
     dependency: transitive
@@ -426,6 +436,7 @@ packages:
       name: test_api
       url: "https://pub.dartlang.org"
     source: hosted
+    version: "0.4.14"
     version: "0.4.14"
   typed_data:
     dependency: transitive

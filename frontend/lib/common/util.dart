@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
+import 'package:permission_handler/permission_handler.dart';
 
 /// Checks if the screen is larger than 600.
 bool isLargeScreen(BuildContext context) => MediaQuery.of(context).size.width > 600;
@@ -32,6 +33,9 @@ Future<bool> downloadPseudoFile(String name, List<int> bytes, {String mimeType =
     downloadWeb(name, url);
   } else {
     try {
+      if (!await Permission.storage.request().isGranted) {
+        return false;
+      }
       final documentDir = await getDownloadsDirectory() ?? await getApplicationDocumentsDirectory();
       final file = File(p.join(documentDir.path, name));
       await file.writeAsBytes(bytes);
