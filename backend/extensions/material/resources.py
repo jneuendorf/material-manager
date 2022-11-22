@@ -1,4 +1,4 @@
-from typing import List
+from typing import Optional
 
 from flask import abort
 from flask_apispec import use_kwargs
@@ -127,11 +127,11 @@ class Material(ModelResource):
         self,
         *,
         material_type: models.MaterialType,
-        serial_numbers: List[models.SerialNumber],
-        properties: List[models.Property] = None,
+        serial_numbers: list[models.SerialNumber],
+        properties: Optional[list[models.Property]] = None,
         # TODO: handle image uploads
-        images: List[models.File] = None,
-        purchase_details: models.PurchaseDetails = None,
+        images: Optional[list[models.File]] = None,
+        purchase_details: Optional[models.PurchaseDetails] = None,
         **kwargs,
     ) -> dict:
         related = dict(
@@ -174,7 +174,7 @@ class Materials(ModelListResource):
     )
     def post(
         self,
-        materials: List[models.Material],
+        materials: list[models.Material],
         purchase_details: models.PurchaseDetails,
     ):
         """Saves a purchase: Many materials + purchase details"""

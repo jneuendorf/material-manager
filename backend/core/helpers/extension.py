@@ -42,9 +42,9 @@ class Extension(Blueprint, ABC, Generic[M, R]):
         self,
         name: str,
         import_name: str,
-        models: M = None,
-        resources: R = None,
-        permissions: Iterable[Mapping[str, str]] = None,
+        models: Optional[M] = None,
+        resources: Optional[R] = None,
+        permissions: Optional[Iterable[Mapping[str, str]]] = None,
         **kwargs,
     ):
         super().__init__(name, import_name, **kwargs)
