@@ -1,14 +1,10 @@
-# from typing import List
-# from flask import abort
 from flask_apispec import use_kwargs
 from marshmallow import fields
 
 from core.helpers.resource import ModelListResource, ModelResource
-from core.helpers.schema import BaseSchema  # , ModelConverter
+from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
-
-# from sqlalchemy.exc import IntegrityError
 
 
 class CommentSchema(BaseSchema):
@@ -58,6 +54,9 @@ class Comments(ModelListResource):
 
 class InspectionSchema(BaseSchema):
     class Meta:
+        # TODO: specifying model_converter should not be necessary
+        #  Check why the metaclass doesn't work
+        model_converter = ModelConverter
         model = models.Inspection
         fields = ("inspector_id", "date")
 
