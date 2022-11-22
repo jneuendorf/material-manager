@@ -18,7 +18,11 @@ services:
   backend:
     container_name: backend
     restart: always
-    build: ./backend
+    build:
+      context: ./backend
+      args:
+        CORE_PUBLIC_FRONTEND_URL: ${CORE_PUBLIC_FRONTEND_URL}
+        CORE_PUBLIC_API_URL: ${CORE_PUBLIC_API_URL}
 #    volumes:
 #      - ./backend:/usr/src/backend
 #    depends_on:
@@ -27,20 +31,17 @@ services:
 #      - database
     ports:
       - "8000:8000"
-    environment:
-      # The suffix must match the nginx config
-      CORE_PUBLIC_API_URL: http://localhost/api
-      CORE_PUBLIC_FRONTEND_URL: http://localhost
-      # TODO: postgres
-      # SQLALCHEMY_DATABASE_URI:
+    env_file:
+      - ./backend/.env
 
   frontend:
     container_name: frontend
-    build: ./frontend
+    build:
+      context: ./frontend
+      args:
+        API_URL: /api
     volumes:
       - frontend-build:/usr/src/frontend/build
-    environment:
-      API_URL: /api
 
   webserver:
     container_name: webserver
