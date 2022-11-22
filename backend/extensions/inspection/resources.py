@@ -47,8 +47,8 @@ class Comments(ModelListResource):
     url = "/comments/<int:material_id>"
     Schema = CommentSchema
 
-    def get(self, material_id: int):
-        comments = models.Comment.get(material_id=material_id)
+    def get(self, material_id):
+        comments = models.Comment.filter(material_id=material_id)
         return self.serialize(comments)
 
 
@@ -70,7 +70,7 @@ class Inspection(ModelResource):
 
     def get(self, inspection_id: int):
         inspection = models.Inspection.get(id=inspection_id)
-        return inspection
+        return self.serialize(inspection)
 
     @use_kwargs(
         {"inspector_id": fields.Int(required=True), "date": fields.Date(required=True)}
@@ -78,3 +78,13 @@ class Inspection(ModelResource):
     def post(self, **kwargs) -> dict:
         inspection = models.Inspection.create(**kwargs)
         return self.serialize(inspection)
+
+
+# Fetches all inspections
+class Inspections(ModelListResource):
+    url = "/inspections"
+    Schema = InspectionSchema
+
+    def get(self):
+        inspections = models.Inspection.all()
+        return self.serialize(inspections)
