@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
@@ -25,17 +26,17 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[].obs;
   final RxList<Property> properties = <Property>[].obs;
 
-  TextEditingController descriptionController = TextEditingController();
-  TextEditingController rentalFeeController = TextEditingController();
-  TextEditingController maxLifeExpectancyController = TextEditingController();
-  TextEditingController maxServiceDurationController = TextEditingController();
-  TextEditingController instructionsController = TextEditingController();
-  TextEditingController nextInspectionController = TextEditingController();
-  TextEditingController purchaseDateController = TextEditingController();
-  TextEditingController merchantController = TextEditingController();
-  TextEditingController purchasePriceController = TextEditingController();
-  TextEditingController invoiceNumberController = TextEditingController();
-  TextEditingController suggestedRetailPriceController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController rentalFeeController = TextEditingController();
+  final TextEditingController maxLifeExpectancyController = TextEditingController();
+  final TextEditingController maxServiceDurationController = TextEditingController();
+  final TextEditingController instructionsController = TextEditingController();
+  final TextEditingController nextInspectionController = TextEditingController();
+  final TextEditingController purchaseDateController = TextEditingController();
+  final TextEditingController merchantController = TextEditingController();
+  final TextEditingController purchasePriceController = TextEditingController();
+  final TextEditingController invoiceNumberController = TextEditingController();
+  final TextEditingController suggestedRetailPriceController = TextEditingController();
 
   final List<TextEditingController> propertyNameController = <TextEditingController>[];
   final List<TextEditingController> propertyValueController = <TextEditingController>[];
@@ -55,8 +56,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
         productionDateControllers.add(TextEditingController());
         inventoryNumberControllers.add(TextEditingController());
       }
-
     });
+
     properties.listen((lst) {
       if (propertyNameController.length < lst.length) {
         propertyNameController.add(TextEditingController());
@@ -72,7 +73,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
     child: Form(
       key: formKey,
       child: Column(
-        //crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           Row(
@@ -183,7 +183,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       children: [
                         Expanded(
                           child: Obx(() => ListView.separated(
-                            separatorBuilder: (context, index) => const SizedBox(height: 10.0),
+                            separatorBuilder: (context, index) => const SizedBox(height: 8.0),
                               shrinkWrap: true,
                               itemCount: properties.length,
                               itemBuilder: (context, index) =>  Row(
@@ -228,7 +228,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                   IconButton(
                                     padding: EdgeInsets.zero,
                                     tooltip: 'remove'.tr,
-                                    iconSize: 15.0,
                                     splashRadius: 18.0,
                                     icon: const Icon(CupertinoIcons.minus_circle_fill,color: Colors.red),
                                     onPressed: () {
@@ -237,7 +236,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                       propertyValueController.removeAt(index);
                                       propertyNameController.removeAt(index);
                                     },
-
                                   ),
                                 ],
                               ),
@@ -332,11 +330,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ],
           ),
-          const SizedBox(height: 20.0),
+          const SizedBox(height: 16.0),
           Expanded(
-            child: Obx(() => ListView.builder(
+            child: Obx(() => ListView.separated(
                 shrinkWrap: true,
                 itemCount: bulkValues.length,
+                separatorBuilder: (context, index) => const SizedBox(height: 8.0),
                 itemBuilder: (BuildContext context, int index) => Row(
                   children: [
                     IconButton(
@@ -354,16 +353,17 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     Expanded(
                       child: TextFormField(
                         controller: serialNumberControllers[index],
-                        validator: (String? value) => validateSerialNumber(value!, index),
-                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           labelText: 'serial_number'.tr,
                         ),
+                        validator: (String? value) => validateSerialNumber(value!, bulkValues[index]),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         onFieldSubmitted: (String value) {
                           if (value.isEmpty) return;
 
                           List<String> serialParts = value.split(',');
+                          serialParts.removeWhere((element) => element.trim() == '');
 
                           if (bulkValues[index].value.isEmpty) {
                             for (int i = 0; i < serialParts.length; i++) {
@@ -379,13 +379,32 @@ class _AddItemDialogState extends State<AddItemDialog> {
                             //   //return;
                             // }
 
-                            for (int i = 0; i < serialParts.length; i++) {
-                              bulkValues[index].value[i].serialNumber = serialParts[i].trim();
+                            for (int i = 0; i < bulkValues[index].value.length; i++) {
+                              if (i > serialParts.length - 1) {
+                                bulkValues[index].value[i].serialNumber = '';
+                              } else {
+                                bulkValues[index].value[i].serialNumber = serialParts[i].trim();
+                              }
                             }
+
+                            if (bulkValues[index].value.length < serialParts.length) {
+                              for (int i = bulkValues[index].value.length; i < serialParts.length; i++) {
+                                bulkValues[index].value.add(SerialNumber(
+                                  serialNumber: serialParts[i].trim(),
+                                  manufacturer: merchantController.text,
+                                  productionDate: DateTime(4000),
+                                ));
+                              }
+                            }
+
+                            // for (int i = 0; i < serialParts.length; i++) {
+                            //   bulkValues[index].value[i].serialNumber = serialParts[i].trim();
+                            // }
                           }
                         },
                       ),
                     ),
+                    const SizedBox(width: 4.0),
                     Expanded(
                       child: TextFormField(
                         controller: productionDateControllers[index],
@@ -393,10 +412,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
                           border: const OutlineInputBorder(),
                           labelText: 'production_date'.tr,
                         ),
+                        validator: (String? value) => validateProductionDate(value!,  bulkValues[index]),
+                        autovalidateMode: AutovalidateMode.onUserInteraction,
                         onFieldSubmitted: (String value) {
                           if (value.isEmpty || serialNumberControllers[index].text.isEmpty) return;
 
                           List<String> productionParts = value.split(',');
+                          productionParts.removeWhere((element) => element.trim() == '');
 
                           if (bulkValues[index].value.isEmpty) {
                             final List<SerialNumber> numbers = [];
@@ -405,24 +427,44 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               numbers.add(SerialNumber(
                                 serialNumber: '',
                                 manufacturer: merchantController.text,
-                                productionDate: DateTime.parse(productionParts[i].trim()),
+                                productionDate: DateFormat().parse(productionParts[i].trim()),
                               ));
                             }
 
                             bulkValues[index].value.addAll(numbers);
                           } else {
-                            if (bulkValues[index].value.length != productionParts.length) {
-                              debugPrint('Unequal serialNumbers and productionDates');
-                              return;
+                            // if (bulkValues[index].value.length != productionParts.length) {
+                            //   debugPrint('Unequal serialNumbers and productionDates');
+                            //   return;
+                            // }
+
+                            debugPrint('BulkLength ${bulkValues[index].value.length}, ProductionLength ${productionParts.length}');
+                            for (int i = 0; i < bulkValues[index].value.length; i++) {
+                              if (i > productionParts.length - 1) {
+                                bulkValues[index].value[i].serialNumber = '';
+                              } else {
+                                bulkValues[index].value[i].serialNumber = productionParts[i].trim();
+                              }
                             }
 
-                            for (int i = 0; i < productionParts.length; i++) {
-                              bulkValues[index].value[i].serialNumber = productionParts[i].trim();
+                            if (bulkValues[index].value.length < productionParts.length) {
+                              for (int i = bulkValues[index].value.length; i < productionParts.length; i++) {
+                                bulkValues[index].value.add(SerialNumber(
+                                  serialNumber: '',
+                                  manufacturer: merchantController.text,
+                                  productionDate: DateFormat().parse(productionParts[i].trim()),
+                                ));
+                              }
                             }
+
+                            // for (int i = 0; i < productionParts.length; i++) {
+                            //   bulkValues[index].value[i].serialNumber = productionParts[i].trim();
+                            // }
                           }
                         },
                       ),
                     ),
+                    const SizedBox(width: 4.0),
                     Expanded(
                       child: TextFormField(
                         controller: inventoryNumberControllers[index],
@@ -445,7 +487,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
           Align(
             alignment: Alignment.bottomRight,
             child: CupertinoButton(
-              onPressed: () {},
+              onPressed: () {
+                if (formKey.currentState!.validate()) return;
+              },
               color: Get.theme.primaryColor,
               child: Text('add'.tr,
                 style: const TextStyle(color: Colors.white),
@@ -457,19 +501,37 @@ class _AddItemDialogState extends State<AddItemDialog> {
     ),
   );
 
-  String? validateSerialNumber(String value, int index) {
+  String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
+      debugPrint('ValidateSerialNumber');
+
     if(value.isEmpty) {
       return 'serial_num_is_mandatory'.tr;
     }
 
     List<String>? serialParts = value.split(',');
+    serialParts.removeWhere((element) => element.trim() == '');
 
-    if (bulkValues[index].value.length > serialParts.length) {
+    if (entry.value.length > serialParts.length) {
       return 'not_enough_serial_numbers'.tr ;
     }
-    // if (bulkValues[index].value.length != serialParts.length) {
-    //   return 'unequal_serialNumbers_and_production_dates'.tr ;
-    // }
+
+    return null;
+  }
+
+  String? validateProductionDate(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
+    debugPrint('ValidateProductionDate');
+
+    if(value.isEmpty) {
+      return 'production_date_is_mandatory'.tr;
+    }
+
+    List<String>? productionParts = value.split(',');
+    productionParts.removeWhere((element) => element.trim() == '');
+
+    if (entry.value.length > productionParts.length) {
+      return 'not_enough_production_dates'.tr ;
+    }
+
     return null;
   }
 
