@@ -1,4 +1,4 @@
-from typing import List
+from typing import Optional
 
 from flask import abort
 from flask_apispec import use_kwargs
@@ -17,6 +17,12 @@ class SerialNumberSchema(BaseSchema):
     class Meta:
         model = models.SerialNumber
         fields = ("serial_number", "production_date", "manufacturer")
+
+
+class InventoryNumberSchema(BaseSchema):
+    class Meta:
+        model = models.SerialNumber
+        fields = ("id", "inventory_number")
 
 
 class MaterialTypeSchema(BaseSchema):
@@ -86,6 +92,7 @@ class PurchaseDetailsSchema(BaseSchema):
 class MaterialSchema(BaseSchema):
     material_type = fields.Nested(MaterialTypeSchema())
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
+    inventory_numbers = fields.List(fields.Nested(InventoryNumberSchema()))
     purchase_details = fields.Nested(PurchaseDetailsSchema())
     image_urls = fields.Method("get_image_urls")
     properties = fields.List(fields.Nested(MaterialPropertySchema()))
@@ -120,11 +127,11 @@ class Material(ModelResource):
         self,
         *,
         material_type: models.MaterialType,
-        serial_numbers: List[models.SerialNumber],
-        properties: List[models.Property] = None,
+        serial_numbers: list[models.SerialNumber],
+        properties: Optional[list[models.Property]] = None,
         # TODO: handle image uploads
-        images: List[models.File] = None,
-        purchase_details: models.PurchaseDetails = None,
+        images: Optional[list[models.File]] = None,
+        purchase_details: Optional[models.PurchaseDetails] = None,
         **kwargs,
     ) -> dict:
         related = dict(
@@ -167,7 +174,7 @@ class Materials(ModelListResource):
     )
     def post(
         self,
-        materials: List[models.Material],
+        materials: list[models.Material],
         purchase_details: models.PurchaseDetails,
     ):
         """Saves a purchase: Many materials + purchase details"""

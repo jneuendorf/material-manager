@@ -32,9 +32,7 @@ class ModelResource(BaseResource, Generic[M]):
 
     @cached_property
     def schema(self) -> BaseSchema:
-        return self.Schema(
-            many=False,  # type: ignore
-        )
+        return self.Schema(many=False)
 
     def serialize(self, instance: M):
         serialized: dict = self.schema.dump(instance)
@@ -44,10 +42,8 @@ class ModelResource(BaseResource, Generic[M]):
 class ModelListResource(ModelResource, Generic[M]):
     @cached_property
     def schema(self) -> BaseSchema:
-        return self.Schema(
-            many=True,  # type: ignore
-        )
+        return self.Schema(many=True)
 
-    def serialize(self, instance: M):
+    def serialize(self, instance: list[M]):
         serialized: List[dict] = self.schema.dump(instance)
         return serialized

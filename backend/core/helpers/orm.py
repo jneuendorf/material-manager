@@ -64,13 +64,13 @@ class CrudModel(Model):
 
     @classmethod
     @raises(PendingRollbackError)
-    def get(cls, **kwargs):
-        return cls.get_query().get(**kwargs)
+    def get(cls, **kwargs) -> "CrudModel":
+        return cls.get_query().filter(**kwargs).scalar_one()
 
     @classmethod
     @raises(PendingRollbackError)
-    def get_or_none(cls, **kwargs):
-        return cls.get_query().get_or_none(**kwargs)
+    def get_or_none(cls, **kwargs) -> "Optional[CrudModel]":
+        return cls.get_query().filter(**kwargs).scalar_one_or_none()
 
     @classmethod
     @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
@@ -82,13 +82,18 @@ class CrudModel(Model):
 
     @classmethod
     @raises(PendingRollbackError)
-    def all(cls):
+    def all(cls) -> "list[CrudModel]":
         return cls.filter()
 
     @classmethod
     @raises(PendingRollbackError)
-    def filter(cls, **kwargs):
-        return cls.get_query().filter(**kwargs)
+    def filter(cls, **kwargs) -> "list[CrudModel]":
+        return cls.get_query().filter(**kwargs).scalars().all()
+
+    @classmethod
+    @raises(PendingRollbackError)
+    def first_n(cls, n: int, **kwargs) -> "list[CrudModel]":
+        return cls.get_query().filter(_limit=n, **kwargs).scalars().all()
 
     def update(self, **kwargs):
         for field, value in kwargs.items():
@@ -126,26 +131,16 @@ class Query(Generic[M]):
         self.db = db
         self.model = model
 
-    # def execute(self, select: Select) -> Result:
-    #     session: scoped_session = self.db.session
-    #     return session.execute(select)
-
     def select(self) -> Select:
         return self.db.select(self.model)
 
-    def get(self, **kwargs) -> M:
-        return self._filter_by(**kwargs).scalar_one()
+    def filter(self, _limit: Optional[int] = None, **kwargs) -> Result:
+        return self._execute(self.select().filter_by(**kwargs).limit(_limit))
 
-    def get_or_none(self, **kwargs) -> M:
-        return self._filter_by(**kwargs).scalar_one_or_none()
-
-    def filter(self, **kwargs) -> list[M]:
-        return self._filter_by(**kwargs).scalars().all()
-
-    def _filter_by(self, **kwargs) -> Result:
+    def _execute(self, statement: Select) -> Result:
         session: scoped_session = self.db.session
         try:
-            return session.execute(self.select().filter_by(**kwargs))
+            return session.execute(statement)
         except PendingRollbackError:
             session.rollback()
             raise

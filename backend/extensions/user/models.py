@@ -1,5 +1,5 @@
 import secrets
-from typing import Type
+from typing import Optional, Type
 
 from passlib.hash import argon2
 from sqlalchemy import Table
@@ -55,7 +55,7 @@ class User(Model):  # type: ignore
         city: str = "",
         zip_code: str = "",
         *,
-        roles: "list[Role]" = None,
+        roles: "Optional[list[Role]]" = None,
     ) -> "User":
         password_hash: str = argon2.hash(password)
         token = secrets.token_urlsafe(nbytes=32)

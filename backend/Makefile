@@ -5,7 +5,7 @@ all: install run
 
 venv:
 	@# Create venv if it doesn't exist
-	test -d venv || python3.9 -m venv venv
+	test -d venv || python3 -m venv venv
 
 install: venv
 	. venv/bin/activate && pip install -Ur requirements-dev.txt && pre-commit install
@@ -18,7 +18,7 @@ clear_db:
 	rm -rf instance/*.db
 
 sample_data:
-	. venv/bin/activate && flask create-sample-data user material inspection
+	. venv/bin/activate && flask create-sample-data user material inspection rental
 
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
