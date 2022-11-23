@@ -88,7 +88,7 @@ class Material(Model):  # type: ignore
 
 class InventoryNumber(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    inventory_number = db.Column(db.String(length=20), nullable=False)
+    inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
     material_id = db.Column(db.ForeignKey(Material.id))
 
 

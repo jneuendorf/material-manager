@@ -17,7 +17,6 @@ from extensions.material.models import (
 NUM_PROPERTIES = 18
 NUM_PURCHASE_DETAILS = 30
 NUM_MATERIALS = 50
-NUM_INVENTORY = 100
 
 INVENTORY_IDENTIFIERS = it.cycle(["J", "K", "L", "G"])
 MERCHANTS = it.cycle(["InterSport", "Globetrotter", "SecondHand", "Amazon"])
@@ -125,18 +124,22 @@ for i in range(NUM_PURCHASE_DETAILS):
     )
 
 
-# Create serial numbers
-def get_serial_number_str(i: int) -> str:
-    return f"sn-{i}-{i ** 2}"
-
-
-for i in range(NUM_INVENTORY):
-    SerialNumber.get_or_create(
-        serial_number=get_serial_number_str(i),
-        production_date=date(2022, 1, 1) + timedelta(days=i),
-        manufacturer=next(MANUFACTURERS),
+def create_serial_and_inventory_number(
+    index: int,
+) -> tuple[SerialNumber, InventoryNumber]:
+    return (
+        SerialNumber.get_or_create(
+            serial_number=(
+                f"sn-{index}-{sha1(str(index).encode('utf-8')).hexdigest()[:10]}"
+            ),
+            production_date=date(2022, 1, 1) + timedelta(days=index),
+            manufacturer=next(MANUFACTURERS),
+        ),
+        InventoryNumber.get_or_create(
+            inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{index}",
+        ),
     )
-    InventoryNumber.get_or_create(inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}")
+
 
 # Create materials
 for i in range(NUM_MATERIALS):
@@ -148,15 +151,21 @@ for i in range(NUM_MATERIALS):
     else:
         condition = Condition.OK
 
-    serial_numbers = [SerialNumber.get(serial_number=get_serial_number_str(i))]
-    inventory_numbers = [InventoryNumber.get(id=i + 1)]
-
+    serial_numbers: list[SerialNumber]
+    inventory_numbers: list[InventoryNumber]
+    if i < NUM_MATERIALS / 2:
+        serial_number, inventory_number = create_serial_and_inventory_number(i)
+        serial_numbers = [serial_number]
+        inventory_numbers = [inventory_number]
     # Let some materials have multiple serial/inventory numbers
-    if i > 30:
-        serial_numbers.append(
-            SerialNumber.get(serial_number=get_serial_number_str(i + 50))
+    else:
+        serial_number, inventory_number = create_serial_and_inventory_number(i)
+        # Make sure we don't create the same numbers twice
+        serial_number2, inventory_number2 = create_serial_and_inventory_number(
+            i + NUM_MATERIALS
         )
-        inventory_numbers.append(InventoryNumber.get(id=i + 51))
+        serial_numbers = [serial_number, serial_number2]
+        inventory_numbers = [inventory_number, inventory_number2]
 
     installation_date = date(2022, 1, 1) + timedelta(days=i)
     material = Material.get_or_create(
