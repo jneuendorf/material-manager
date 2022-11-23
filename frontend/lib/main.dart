@@ -41,13 +41,12 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
+  await dotenv.load(fileName: 'env/dev.env');
   try {
     await dotenv.load(fileName: 'env/.env');
   } catch (e) {
-    debugPrint('Production env file not found ... continuing with dev env file.');
-    await dotenv.load(fileName: 'env/dev.env');
+    debugPrint('env/.env not found');
   }
-
 
   await Get.putAsync(() async => await ApiService().init());
 
