@@ -12,6 +12,19 @@ class PrivacyPolicyPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) => PageWrapper(
-    child: Text('privacy_policy'.tr),
+        child: 
+    Align(
+      alignment: Alignment.topLeft,
+      child: Padding(
+        padding: const EdgeInsets.only(top: 18.0, left: 250.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('Privacy Policy'.tr, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 35.0)),
+          ],
+        ),
+      ),
+    ),
   );
 }
