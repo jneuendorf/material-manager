@@ -19,7 +19,6 @@ def test_create_and_fetch_material(client, app) -> None:
     material = client.post(
         "/material",
         json={
-            # "inventory_number": "A-12",
             "name": "material name",
             "max_operating_date": "2023-01-01",
             "max_days_used": 365,
@@ -61,7 +60,6 @@ def test_creating_materials_ensures_no_duplicate_serial_numbers(client, app):
     response = client.post(
         "/material",
         json={
-            # "inventory_number": "A-23",
             "name": "material name",
             "max_operating_date": "2023-01-01",
             "max_days_used": 365,
@@ -92,7 +90,6 @@ def test_creating_materials_ensures_no_duplicate_serial_numbers(client, app):
     response = client.post(
         "/material",
         json={
-            # "inventory_number": "B-12",
             "name": "material name",
             "max_operating_date": "2021-01-01",
             "max_days_used": 365,
@@ -130,7 +127,6 @@ def test_bulk_create_materials(client, app) -> None:
     ).json
     materials_data = [
         {
-            # "inventory_number": f"C-18-{j}",
             "name": "material name",
             "max_operating_date": "2023-01-01",
             "max_days_used": 365,

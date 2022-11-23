@@ -160,7 +160,6 @@ for i in range(NUM_MATERIALS):
 
     installation_date = date(2022, 1, 1) + timedelta(days=i)
     material = Material.get_or_create(
-        # inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}",
         name=f"material {i}",
         installation_date=installation_date,
         max_operating_date=installation_date + timedelta(weeks=(-1) ** i * 2),

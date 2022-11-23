@@ -46,7 +46,6 @@ class Condition(enum.Enum):
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    # inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
     inventory_numbers = db.relationship("InventoryNumber", backref="material")
     name = db.Column(db.String(length=80), nullable=False)
     installation_date = db.Column(db.Date, nullable=False)  # Inbetriebnahme
@@ -54,8 +53,7 @@ class Material(Model):  # type: ignore
     max_days_used = db.Column(
         db.Integer,
         nullable=False,
-    )
-    # Gebrauchsdauer, compare to 'days_used'
+    )  # maximale Gebrauchsdauer, compare to 'days_used'
     days_used = db.Column(db.Integer, nullable=False, default=0)
     instructions = db.Column(db.Text, nullable=False, default="")
     next_inspection_date = db.Column(db.Date, nullable=False)
