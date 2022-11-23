@@ -10,4 +10,5 @@ ARG API_URL
 ENV API_URL=${API_URL}
 
 ENTRYPOINT []
+# --tree-shake-icons is not yet available for web
 CMD flutter build web
