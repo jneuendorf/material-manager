@@ -19,6 +19,12 @@ class SerialNumberSchema(BaseSchema):
         fields = ("serial_number", "production_date", "manufacturer")
 
 
+class InventoryNumberSchema(BaseSchema):
+    class Meta:
+        model = models.SerialNumber
+        fields = ("id", "inventory_number")
+
+
 class MaterialTypeSchema(BaseSchema):
     class Meta:
         model = models.MaterialType
@@ -86,6 +92,7 @@ class PurchaseDetailsSchema(BaseSchema):
 class MaterialSchema(BaseSchema):
     material_type = fields.Nested(MaterialTypeSchema())
     serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
+    inventory_numbers = fields.List(fields.Nested(InventoryNumberSchema()))
     purchase_details = fields.Nested(PurchaseDetailsSchema())
     image_urls = fields.Method("get_image_urls")
     properties = fields.List(fields.Nested(MaterialPropertySchema()))
