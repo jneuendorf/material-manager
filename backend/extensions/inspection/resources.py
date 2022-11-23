@@ -78,13 +78,3 @@ class Inspection(ModelResource):
     def post(self, **kwargs) -> dict:
         inspection = models.Inspection.create(**kwargs)
         return self.serialize(inspection)
-
-
-# Fetches all inspections
-class Inspections(ModelListResource):
-    url = "/inspections"
-    Schema = InspectionSchema
-
-    def get(self):
-        inspections = models.Inspection.all()
-        return self.serialize(inspections)
