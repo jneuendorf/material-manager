@@ -20,6 +20,50 @@ class MaterialType(Model):  # type: ignore
         secondary="material_type_set_mapping",
         backref="material_types",
     )
+    # many to many
+    property_types = db.relationship(
+        "PropertyType",
+        secondary="material_type_property_type_mapping",
+        backref="material_types",
+    )
+
+
+class PropertyType(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(length=32), unique=True)
+    description = db.Column(db.String(length=80))
+    unit = db.Column(db.String(length=12))
+
+    __table_args__ = (
+        UniqueConstraint(
+            "name",
+            "unit",
+            name="name_unit_uc",
+        ),
+    )
+
+
+class Property(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    # many to one (FK here)
+    type_id = db.Column(db.ForeignKey(PropertyType.id), nullable=False)
+    type = db.relationship("PropertyType", backref="properties")
+    value = db.Column(db.String(length=32))
+
+    __table_args__ = (
+        UniqueConstraint(
+            "type_id",
+            "value",
+            name="type_value_uc",
+        ),
+    )
+
+
+MaterialTypePropertyTypeMapping: Table = db.Table(
+    "material_type_property_type_mapping",
+    db.Column("material_type_id", db.ForeignKey(MaterialType.id), primary_key=True),
+    db.Column("property_type_id", db.ForeignKey(PropertyType.id), primary_key=True),
+)
 
 
 class PurchaseDetails(Model):  # type: ignore
@@ -87,6 +131,13 @@ class Material(Model):  # type: ignore
         super().save()
 
 
+MaterialPropertyMapping: Table = db.Table(
+    "material_property_mapping",
+    db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
+    db.Column("property_id", db.ForeignKey(Property.id), primary_key=True),
+)
+
+
 class InventoryNumber(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
@@ -99,6 +150,7 @@ class SerialNumber(Model):  # type: ignore
     production_date = db.Column(db.Date)
     manufacturer = db.Column(db.String(length=80))
     material_id = db.Column(db.ForeignKey(Material.id))
+
     __table_args__ = (
         UniqueConstraint(
             "manufacturer",
@@ -118,19 +170,4 @@ MaterialTypeSetMapping: Table = db.Table(
     "material_type_set_mapping",
     db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
     db.Column("material_type_id", db.ForeignKey(MaterialType.id), primary_key=True),
-)
-
-
-class Property(Model):  # type: ignore
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    description = db.Column(db.String)
-    value = db.Column(db.String)
-    unit = db.Column(db.String)
-
-
-MaterialPropertyMapping: Table = db.Table(
-    "material_property_mapping",
-    db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
-    db.Column("property_id", db.ForeignKey(Property.id), primary_key=True),
 )

@@ -16,7 +16,7 @@ material = Extension(
         models.MaterialSet,
         models.MaterialTypeSetMapping,
         models.Property,
-        models.MaterialPropertyMapping,
+        models.MaterialTypePropertyTypeMapping,
     ),
     resources=(
         resources.Material,

@@ -1,5 +1,6 @@
+from collections.abc import Collection
 from dataclasses import dataclass
-from typing import Generic, Optional, Type, TypeVar
+from typing import Generic, Optional, Type, TypeVar, Union
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
@@ -14,6 +15,18 @@ from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql import Select
 
 from .decorators import raises
+
+
+def related_equal(
+    a: "Union[CrudModel, Collection[CrudModel]]",
+    b: "Union[CrudModel, Collection[CrudModel]]",
+) -> bool:
+    if isinstance(a, CrudModel) and isinstance(b, CrudModel):
+        a = [a]
+        b = [b]
+    return {getattr(instance, instance.pk) for instance in a} == {
+        getattr(instance, instance.pk) for instance in b
+    }
 
 
 @dataclass
@@ -54,6 +67,10 @@ class CrudModel(Model):
         except IntegrityError:
             raise
 
+        return cls._create(_related=_related, **kwargs)
+
+    @classmethod
+    def _create(cls, *, _related=None, **kwargs):
         # Avoid cyclic imports
         from core.signals import model_created
 
@@ -63,9 +80,21 @@ class CrudModel(Model):
         return instance
 
     @classmethod
-    @raises(PendingRollbackError)
-    def get(cls, **kwargs) -> "CrudModel":
-        return cls.get_query().filter(**kwargs).scalar_one()
+    @raises(NoResultFound, MultipleResultsFound, PendingRollbackError)
+    def get(cls, *, _related=None, **kwargs) -> "CrudModel":
+        if _related is None:
+            return cls.get_query().filter(**kwargs).scalar_one()
+
+        matches = cls.filter(_related=_related, **kwargs)
+        if not matches:
+            raise NoResultFound("No row was found when one was required")
+        elif len(matches) == 1:
+            return matches[0]
+        else:
+            print(cls, kwargs, _related)
+            raise MultipleResultsFound(
+                "Multiple rows were found when exactly one was required"
+            )
 
     @classmethod
     @raises(PendingRollbackError)
@@ -73,33 +102,12 @@ class CrudModel(Model):
         return cls.get_query().filter(**kwargs).scalar_one_or_none()
 
     @classmethod
-    @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
+    @raises(MultipleResultsFound, IntegrityError, PendingRollbackError)
     def get_or_create(cls, *, _related=None, **kwargs) -> "CrudModel":
         try:
-            partial_matches = cls.filter(**kwargs)
-            if _related is not None:
-                # Check relationships as well
-                exact_matches = [
-                    candidate
-                    for candidate in partial_matches
-                    if all(
-                        getattr(candidate, key, None) == value
-                        for key, value in _related.items()
-                    )
-                ]
-            else:
-                exact_matches = partial_matches
-
-            if not exact_matches:
-                return cls.create(_related=_related, **kwargs)
-            elif len(exact_matches) == 1:
-                return exact_matches[0]
-            else:
-                raise MultipleResultsFound(
-                    "Multiple rows were found when exactly one was required"
-                )
+            return cls.get(_related=_related, **kwargs)
         except NoResultFound:
-            return cls.create(_related=_related, **kwargs)
+            return cls._create(_related=_related, **kwargs)
 
     @classmethod
     @raises(PendingRollbackError)
@@ -108,8 +116,21 @@ class CrudModel(Model):
 
     @classmethod
     @raises(PendingRollbackError)
-    def filter(cls, **kwargs) -> "list[CrudModel]":
-        return cls.get_query().filter(**kwargs).scalars().all()
+    def filter(cls, *, _related=None, **kwargs) -> "list[CrudModel]":
+        partial_matches = cls.get_query().filter(**kwargs).scalars().all()
+        if _related is None:
+            return partial_matches
+
+        # Check relationships
+        exact_matches: list[CrudModel] = [
+            candidate
+            for candidate in partial_matches
+            if all(
+                related_equal(getattr(candidate, key), value)
+                for key, value in _related.items()
+            )
+        ]
+        return exact_matches
 
     @classmethod
     @raises(PendingRollbackError)
