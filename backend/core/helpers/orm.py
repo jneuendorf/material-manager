@@ -76,7 +76,28 @@ class CrudModel(Model):
     @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
     def get_or_create(cls, *, _related=None, **kwargs) -> "CrudModel":
         try:
-            return cls.get(**kwargs)
+            partial_matches = cls.filter(**kwargs)
+            if _related is not None:
+                # Check relationships as well
+                exact_matches = [
+                    candidate
+                    for candidate in partial_matches
+                    if all(
+                        getattr(candidate, key, None) == value
+                        for key, value in _related.items()
+                    )
+                ]
+            else:
+                exact_matches = partial_matches
+
+            if not exact_matches:
+                return cls.create(_related=_related, **kwargs)
+            elif len(exact_matches) == 1:
+                return exact_matches[0]
+            else:
+                raise MultipleResultsFound(
+                    "Multiple rows were found when exactly one was required"
+                )
         except NoResultFound:
             return cls.create(_related=_related, **kwargs)
 

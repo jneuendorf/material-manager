@@ -13,7 +13,7 @@ Model: Type[CrudModel] = db.Model
 
 class MaterialType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
+    name = db.Column(db.String(length=32), unique=True)
     description = db.Column(db.String(length=80))
     sets = db.relationship(
         "MaterialSet",
@@ -46,7 +46,6 @@ class Condition(enum.Enum):
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    inventory_numbers = db.relationship("InventoryNumber", backref="material")
     name = db.Column(db.String(length=80), nullable=False)
     installation_date = db.Column(db.Date, nullable=False)  # Inbetriebnahme
     max_operating_date = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
@@ -72,6 +71,8 @@ class Material(Model):  # type: ignore
     purchase_details = db.relationship("PurchaseDetails", backref="materials")
     # one to many (FK on child)
     serial_numbers = db.relationship("SerialNumber", backref="material")
+    # one to many (FK on child)
+    inventory_numbers = db.relationship("InventoryNumber", backref="material")
     images = File.reverse_generic_relationship("Material")
     # many to many
     properties = db.relationship(

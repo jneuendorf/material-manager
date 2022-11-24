@@ -60,8 +60,8 @@ class Rental(Model):  # type: ignore
     created_at = db.Column(db.DateTime, default=lambda: datetime.now())
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
-    usage_start_date = db.Column(db.Date)
-    usage_end_date = db.Column(db.Date)
+    usage_start_date = db.Column(db.Date, nullable=True)
+    usage_end_date = db.Column(db.Date, nullable=True)
 
 
 MaterialRentalMapping: Table = db.Table(
