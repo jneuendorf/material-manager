@@ -36,6 +36,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final TextEditingController merchantController = TextEditingController();
   final TextEditingController purchasePriceController = TextEditingController();
   final TextEditingController invoiceNumberController = TextEditingController();
+  final TextEditingController manufacturerController = TextEditingController();
   final TextEditingController suggestedRetailPriceController = TextEditingController();
 
   final List<TextEditingController> propertyNameController = <TextEditingController>[];
@@ -306,13 +307,25 @@ class _AddItemDialogState extends State<AddItemDialog> {
               Row(
                 children: [
                   Expanded(
-                    flex: 4,
+                    flex: 2,
                     child: Padding(
                       padding: const EdgeInsets.only(right: 10.0),
                       child: TextFormField(
                         controller: invoiceNumberController,
                         decoration: InputDecoration(
                           labelText: 'invoice_number'.tr,
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 2,
+                    child: Padding(
+                      padding: const EdgeInsets.only(right: 10.0),
+                      child: TextFormField(
+                        controller: manufacturerController,
+                        decoration: InputDecoration(
+                          labelText: 'manufacturer'.tr,
                         ),
                       ),
                     ),
