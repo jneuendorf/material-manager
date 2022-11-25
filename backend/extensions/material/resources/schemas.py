@@ -2,7 +2,9 @@ from marshmallow import fields
 
 from core.helpers.extension import url_join
 from core.helpers.schema import BaseSchema, ModelConverter
-from extensions.material import STATIC_URL_PATH, models
+
+from .. import models
+from ..config import STATIC_URL_PATH
 
 
 class SerialNumberSchema(BaseSchema):
@@ -23,10 +25,18 @@ class MaterialTypeSchema(BaseSchema):
         fields = ("id", "name", "description")
 
 
-class MaterialPropertySchema(BaseSchema):
+class PropertyTypeSchema(BaseSchema):
+    class Meta:
+        model = models.PropertyType
+        fields = ("id", "name", "description", "unit")
+
+
+class PropertySchema(BaseSchema):
+    property_type = fields.Nested(PropertyTypeSchema())
+
     class Meta:
         model = models.Property
-        fields = ("id", "name", "description", "value", "unit")
+        # fields = ("id", "name", "description", "value", "unit")
 
 
 class PurchaseDetailsSchema(BaseSchema):
@@ -48,7 +58,7 @@ class MaterialSchema(BaseSchema):
     inventory_numbers = fields.List(fields.Nested(InventoryNumberSchema()))
     purchase_details = fields.Nested(PurchaseDetailsSchema())
     image_urls = fields.Method("get_image_urls")
-    properties = fields.List(fields.Nested(MaterialPropertySchema()))
+    properties = fields.List(fields.Nested(PropertySchema()))
 
     class Meta:
         # TODO: specifying model_converter should not be necessary

@@ -177,9 +177,9 @@ class Query(Generic[M]):
         return self.db.select(self.model)
 
     def filter(self, _limit: Optional[int] = None, **kwargs) -> Result:
-        return self._execute(self.select().filter_by(**kwargs).limit(_limit))
+        return self.execute(self.select().filter_by(**kwargs).limit(_limit))
 
-    def _execute(self, statement: Select) -> Result:
+    def execute(self, statement: Select) -> Result:
         session: scoped_session = self.db.session
         try:
             return session.execute(statement)
