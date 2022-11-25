@@ -26,7 +26,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[].obs;
   final RxList<Property> properties = <Property>[].obs;
 
-  final TextEditingController descriptionController = TextEditingController();
+  final TextEditingController materialTypeController = TextEditingController();
   final TextEditingController rentalFeeController = TextEditingController();
   final TextEditingController maxLifeExpectancyController = TextEditingController();
   final TextEditingController maxServiceDurationController = TextEditingController();
@@ -99,10 +99,16 @@ class _AddItemDialogState extends State<AddItemDialog> {
                   child: Padding(
                     padding: const EdgeInsets.only(right: 10.0),
                     child: TextFormField(
-                      controller: descriptionController,
+                      controller: materialTypeController,
                       decoration: InputDecoration(
-                        labelText: 'description'.tr,
+                        labelText: 'material_type'.tr,
                       ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'material_type_is_mandatory'.tr;
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ),
@@ -114,6 +120,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       decoration: InputDecoration(
                         labelText: 'rental_fee'.tr,
                       ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'rental_fee_is_mandatory'.tr;
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'rental_fee_must_be_a_number'.tr;
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ),
@@ -123,7 +138,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
           Flexible(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxHeight: 180,
+                maxHeight: 220,
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -142,6 +157,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                   decoration: InputDecoration(
                                     labelText: 'max_life_expectancy'.tr,
                                   ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'max_life_expectancy_is_mandatory'.tr;
+                                    }
+                                    if (double.tryParse(value) == null) {
+                                      return 'max_life_expectancy_must_be_a_number'.tr;
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                             ),
@@ -153,6 +177,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                   decoration: InputDecoration(
                                     labelText: 'max_service_duration'.tr,
                                   ),
+                                  validator: (String? value) {
+                                    if (value == null || value.isEmpty) {
+                                      return 'max_service_duration_is_mandatory'.tr;
+                                    }
+                                    if (double.tryParse(value) == null) {
+                                      return 'max_service_duration_must_be_a_number'.tr;
+                                    }
+                                    return null;
+                                  },
                                 ),
                               ),
                             ),
@@ -161,19 +194,34 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: TextFormField(
-                            controller: instructionsController,
+                            controller: nextInspectionController,
                             decoration: InputDecoration(
-                              labelText: 'instructions'.tr,
+                              labelText: 'next_inspection'.tr,
                             ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'next_inspection_is_mandatory'.tr;
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'next_inspection_must_be_a_number'.tr;
+                              }
+                              return null;
+                            },
                           ),
                         ),
                         Padding(
                           padding: const EdgeInsets.only(right: 10.0),
                           child: TextFormField(
-                            controller: nextInspectionController,
+                            controller: instructionsController,
                             decoration: InputDecoration(
-                              labelText: 'next_inspection'.tr,
+                              labelText: 'instructions'.tr,
                             ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'instructions_are_mandatory'.tr;
+                              }
+                              return null;
+                            },
                           ),
                         ),
                       ],
@@ -228,7 +276,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                   ),
                                   IconButton(
                                     padding: EdgeInsets.zero,
-                                    tooltip: 'remove'.tr,
+                                    tooltip: 'remove_property'.tr,
                                     splashRadius: 18.0,
                                     icon: const Icon(CupertinoIcons.minus_circle_fill,color: Colors.red),
                                     onPressed: () {
@@ -244,15 +292,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
                           ),
                         ),
                         TextIconButton(
-                          onTap: () {
-                            properties.add(Property(
-                                id: null,
-                                name: '',
-                                description: '',
-                                value: '',
-                                unit: ''
-                            ));
-                          },
+                          onTap: () => properties.add(Property(
+                            id: null,
+                            name: '',
+                            description: '',
+                            value: '',
+                            unit: ''
+                          )),
                           iconData: Icons.add,
                           text: 'add_property'.tr,
                           color: Get.theme.colorScheme.onSecondary,
@@ -278,6 +324,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         decoration: InputDecoration(
                           labelText: 'purchase_date'.tr,
                         ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'purchase_date_is_mandatory'.tr;
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ),
@@ -290,6 +342,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         decoration: InputDecoration(
                           labelText: 'merchant'.tr,
                         ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'merchant_is_mandatory'.tr;
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ),
@@ -300,6 +358,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       decoration: InputDecoration(
                         labelText: 'purchase_price'.tr,
                       ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'purchase_price_is_mandatory'.tr;
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'purchase_price_must_be_a_number'.tr;
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
@@ -315,6 +382,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         decoration: InputDecoration(
                           labelText: 'invoice_number'.tr,
                         ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'invoice_number_is_mandatory'.tr;
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ),
@@ -327,6 +400,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         decoration: InputDecoration(
                           labelText: 'manufacturer'.tr,
                         ),
+                        validator: (String? value) {
+                          if (value == null || value.isEmpty) {
+                            return 'manufacturer_is_mandatory'.tr;
+                          }
+                          return null;
+                        },
                       ),
                     ),
                   ),
@@ -337,6 +416,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       decoration: InputDecoration(
                         labelText: 'suggested_retail_price'.tr,
                       ),
+                      validator: (String? value) {
+                        if (value == null || value.isEmpty) {
+                          return 'suggested_retail_price_is_mandatory'.tr;
+                        }
+                        if (double.tryParse(value) == null) {
+                          return 'suggested_retail_price_must_be_a_number'.tr;
+                        }
+                        return null;
+                      },
                     ),
                   ),
                 ],
