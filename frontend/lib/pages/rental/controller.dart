@@ -127,13 +127,22 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     runFilter();
   }
 
-  /// Calls the DatePicker and returns the formated date.
+  /// Calls the DatePicker and returns the formatted date.
   Future<String?> pickDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: Get.context!,
       initialDate: DateTime.now().add(const Duration(days: 1)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) => child != null ? Theme(
+        data: ThemeData(
+          colorScheme: ColorScheme.light(
+            onPrimary: Colors.white,
+            primary: Get.theme.colorScheme.secondary
+          )
+        ),
+        child: child
+      ) : const SizedBox()
     );
     if (pickedDate == null) return null;
 
