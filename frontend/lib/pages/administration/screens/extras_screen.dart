@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
 import 'package:frontend/common/util.dart';
 import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/material/model.dart';
-
-import 'package:get/get.dart';
 
 
 class ExtrasScreen extends StatelessWidget {
@@ -28,7 +30,7 @@ class ExtrasScreen extends StatelessWidget {
       trailing: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Get.theme.colorScheme.onSecondary),
         onPressed: () async {
-          final fileName = 'materials(${DateTime.now().millisecond}).csv';
+          final String fileName = 'materials-${DateFormat('dd-MM-yyyy_hh-mm').format(DateTime.now())}.csv';
           final controller = Get.find<MaterialController>();
           final bytes = controller.materials.toCSV().codeUnits;
           if (!await downloadPseudoFile(fileName, bytes)){

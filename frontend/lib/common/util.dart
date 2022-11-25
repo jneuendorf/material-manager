@@ -12,7 +12,7 @@ import 'package:permission_handler/permission_handler.dart';
 bool isLargeScreen(BuildContext context) => MediaQuery.of(context).size.width > 600;
 
 void downloadWeb(String name, String url) => html.AnchorElement(
-      href: name)
+      href: url)
     ..setAttribute('download', name)
     ..click();
 
