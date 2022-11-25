@@ -11,6 +11,7 @@ Flask-Mail~=0.9
 Flask-Marshmallow~=0.14
 Flask-Restful~=0.3
 Flask-SQLAlchemy~=3.0
+Flask-WeasyPrint~=1.0
 Marshmallow-SQLAlchemy~=0.28
 marshmallow~=3.18
 passlib[argon2]~=1.7
