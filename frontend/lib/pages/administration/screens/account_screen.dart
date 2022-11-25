@@ -6,9 +6,7 @@ import 'package:data_table_2/data_table_2.dart';
 
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/pages/administration/controller.dart';
-import 'package:frontend/pages/administration/dialogs/add_user_dialog.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
-import 'package:frontend/common/buttons/text_icon_button.dart';
 import 'package:frontend/common/util.dart';
 
 
@@ -21,7 +19,6 @@ class AccountScreen extends StatelessWidget {
   Widget build(BuildContext context) => Column(
     children: [
       Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Obx(() => DropDownFilterButton(
               title: 'roles'.tr,
@@ -32,28 +29,25 @@ class AccountScreen extends StatelessWidget {
               selected: administrationPageController.selectedFilter.value?.name ?? 'all'.tr,
               onSelected: administrationPageController.onFilterSelected,
           )),
-          const SizedBox(width: 16.0),
           Flexible(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(
-                minWidth: 200.0,
-                maxWidth: 300.0,
+            child: Padding(
+              padding: EdgeInsets.symmetric(
+                horizontal: isLargeScreen(context) ? 32.0 : 8.0,
               ),
-              child: CupertinoSearchTextField(
-                placeholder: 'search'.tr,
-                onChanged: (String text) {
-                  administrationPageController.searchTerm.value = text;
-                  administrationPageController.runFilter();
-                },
+              child: ConstrainedBox(
+                constraints: const BoxConstraints(
+                  minWidth: 200.0,
+                  maxWidth: 300.0,
+                ),
+                child: CupertinoSearchTextField(
+                  placeholder: 'search'.tr,
+                  onChanged: (String text) {
+                    administrationPageController.searchTerm.value = text;
+                    administrationPageController.runFilter();
+                  },
+                ),
               ),
             ),
-          ),
-          const SizedBox(width: 16.0),
-          TextIconButton(
-            onTap: () => Get.dialog(AddUserDialog()), 
-            iconData: Icons.add, 
-            text: 'add_user'.tr,
-            color: Get.theme.colorScheme.onSecondary,
           ),
         ],
       ),

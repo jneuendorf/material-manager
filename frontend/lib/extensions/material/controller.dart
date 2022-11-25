@@ -4,7 +4,8 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 
 import 'package:get/get.dart';
-import 'package:dio/dio.dart';
+import 'package:dio/dio.dart' as dio;
+import 'package:cross_file/cross_file.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
@@ -85,7 +86,7 @@ class MaterialController extends GetxController {
       return response.data.map<MaterialModel>(
         (dynamic item) => MaterialModel.fromJson(item)
       ).toList();
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return null;
@@ -101,7 +102,7 @@ class MaterialController extends GetxController {
       return response.data.map<MaterialTypeModel>(
         (dynamic item) => MaterialTypeModel.fromJson(item)
       ).toList();
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return null;
@@ -110,10 +111,11 @@ class MaterialController extends GetxController {
   /// Adds a new material to the backend.
   /// Returns the id of the newly created material
   /// or null if an error occured.
-  Future<int?> addMaterial(MaterialModel material) async {
+  Future<int?> addMaterial(MaterialModel material, XFile image) async {
     try {
       final response = await apiService.mainClient.post('/material',
-        data: {
+        data: dio.FormData.fromMap({
+          'file': await dio.MultipartFile.fromFile(image.path),
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
             'serial_number': s.serialNumber,
             'manufacturer': s.manufacturer,
@@ -149,13 +151,13 @@ class MaterialController extends GetxController {
             'name': material.materialType.name,
             'description': material.materialType.description,
           },
-        },
+        }),
       );
 
       if (response.statusCode != 201) debugPrint('Error adding material');
 
       return response.data['id'];
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return null;
@@ -175,7 +177,7 @@ class MaterialController extends GetxController {
       if (response.statusCode != 201) debugPrint('Error adding material type');
 
       return response.data['id'];
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return null;
@@ -197,7 +199,7 @@ class MaterialController extends GetxController {
       if (response.statusCode != 201) debugPrint('Error adding property');
 
       return response.data['id'];
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return null;
@@ -251,7 +253,7 @@ class MaterialController extends GetxController {
       if (response.statusCode != 200) debugPrint('Error updating material');
 
       return response.statusCode == 200;
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return false;
@@ -271,7 +273,7 @@ class MaterialController extends GetxController {
       if (response.statusCode != 200) debugPrint('Error updating material type');
 
       return response.statusCode == 200;
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return false;
@@ -293,7 +295,7 @@ class MaterialController extends GetxController {
       if (response.statusCode != 200) debugPrint('Error updating property');
 
       return response.statusCode == 200;
-    } on DioError catch(e) {
+    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return false;

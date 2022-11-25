@@ -20,8 +20,8 @@ class AdministrationPageBinding implements Bindings {
 class AdministrationPageController extends GetxController with GetSingleTickerProviderStateMixin {
   final userController = Get.find<UserController>();
 
-  final RxInt tabIndex = 0.obs;
   late TabController tabController;
+  final RxInt tabIndex = 0.obs;
 
   final RxList<UserModel> filteredUsers = <UserModel>[].obs;
   final RxMap<Role, String> filterOptions = <Role, String>{}.obs;
