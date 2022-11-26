@@ -36,7 +36,7 @@ class PropertySchema(BaseSchema):
 
     class Meta:
         model = models.Property
-        # fields = ("id", "name", "description", "value", "unit")
+        fields = ("id", "property_type", "value")
 
 
 class PurchaseDetailsSchema(BaseSchema):

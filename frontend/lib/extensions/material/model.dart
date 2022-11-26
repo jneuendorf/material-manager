@@ -8,7 +8,7 @@ class MaterialModel {
   final int? id;
   List<String> imageUrls;
   List<SerialNumber> serialNumbers;
-  String inventoryNumber;
+  List<InventoryNumber> inventoryNumbers;
   DateTime maxOperatingDate;
   int maxDaysUsed;
   DateTime installationDate;
@@ -26,7 +26,7 @@ class MaterialModel {
     required this.id,
     required this.imageUrls,
     required this.serialNumbers,
-    required this.inventoryNumber,
+    required this.inventoryNumbers,
     required this.maxOperatingDate,
     required this.maxDaysUsed,
     required this.installationDate,
@@ -44,7 +44,7 @@ class MaterialModel {
     id = json['id'],
     imageUrls = json['image_urls'] != null ? List<String>.from(json['image_urls']) : [],
     serialNumbers = List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
-    inventoryNumber = json['inventory_number'],
+    inventoryNumbers = List<InventoryNumber>.from(json['inventory_numbers'].map((x) => InventoryNumber.fromJson(x))),
     maxOperatingDate = DateTime.parse(json['max_operating_date']),
     maxDaysUsed = json['max_days_used'],
     installationDate = DateTime.parse(json['installation_date']),
@@ -58,8 +58,8 @@ class MaterialModel {
     materialType = MaterialTypeModel.fromJson(json['material_type']);
 
   List<dynamic> toCsvRow() => [
-    id, imageUrls.toString(), serialNumbers.toString(), inventoryNumber, maxOperatingDate, maxDaysUsed, installationDate, instructions, nextInspectionDate, 
-    rentalFee, condition.name.tr, daysUsed, purchaseDetails.toString(), properties.toString(), materialType.toString() 
+    id, imageUrls.toString(), serialNumbers.toString(), inventoryNumbers, maxOperatingDate, maxDaysUsed, installationDate, instructions, nextInspectionDate,
+    rentalFee, condition.name.tr, daysUsed, purchaseDetails.toString(), properties.toString(), materialType.toString()
   ];
 }
 
@@ -67,7 +67,7 @@ extension CSVList on List<MaterialModel> {
   String toCSV() {
     return csvEncoder.convert([
       [
-        'ID', 'images'.tr, 'serial_numbers'.tr, 'inventory_number'.tr, 'max_operating_date'.tr, 'max_days_used'.tr, 'installation'.tr, 'instructions'.tr, 
+        'ID', 'images'.tr, 'serial_numbers'.tr, 'inventory_number'.tr, 'max_operating_date'.tr, 'max_days_used'.tr, 'installation'.tr, 'instructions'.tr,
         'next_inspection'.tr, 'rental_fee'.tr, 'condition'.tr, 'days_used'.tr, 'Purchase Details', 'properties'.tr, 'type'.tr],
       for (final materialModel in this)
         materialModel.toCsvRow()
@@ -86,7 +86,7 @@ class SerialNumber {
     required this.productionDate,
   });
 
-  SerialNumber.fromJson(Map<String, dynamic> json): 
+  SerialNumber.fromJson(Map<String, dynamic> json):
     serialNumber = json['serial_number'],
     manufacturer = json['manufacturer'],
     productionDate = DateTime.parse(json['production_date']);
@@ -94,6 +94,21 @@ class SerialNumber {
   @override
   String toString() => '$serialNumber@$manufacturer ($productionDate)';
 }
+
+class InventoryNumber {
+  final int? id;
+  String inventoryNumber;
+
+  InventoryNumber({
+    required this.id,
+    required this.inventoryNumber,
+  });
+
+  InventoryNumber.fromJson(Map<String, dynamic> json):
+    id = json['id'],
+    inventoryNumber = json['inventory_number'];
+}
+
 
 enum ConditionModel {
   ok,
@@ -134,32 +149,50 @@ class PurchaseDetails {
   String toString() => 'Purchase(date: $purchaseDate, invoice number: $invoiceNumber, merchant: $merchant, price: $purchasePrice, uvp: $suggestedRetailPrice)';
 }
 
-class Property {
+class PropertyType {
   final int? id;
   String name;
   String description;
-  String value;
   String unit;
 
-  Property({
+  PropertyType({
     required this.id,
     required this.name,
     required this.description,
-    required this.value,
     required this.unit,
   });
 
-  Property.fromJson(Map<String, dynamic> json):
+  PropertyType.fromJson(Map<String, dynamic> json):
     id = json['id'],
     name = json['name'],
     description = json['description'],
-    value = json['value'],
     unit = json['unit'];
 
   // No id or description
   @override
-  String toString() => '$name: $value $unit';
+  String toString() => '$name: $unit';
 }
+
+class Property {
+  final int? id;
+  PropertyType propertyType;
+  String value;
+
+  Property({
+    required this.id,
+    required this.propertyType,
+    required this.value,
+  });
+
+  Property.fromJson(Map<String, dynamic> json):
+    id = json['id'],
+    propertyType = PropertyType.fromJson(json['property_type']),
+    value = json['value'];
+
+  @override
+  String toString() => '${propertyType.name}: $value ${propertyType.unit}';
+}
+
 
 class MaterialTypeModel {
   final int? id;

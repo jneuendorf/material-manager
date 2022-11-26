@@ -71,10 +71,10 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
 
     super.onClose();
   }
-  
+
 
   /// Calculates the total price of all material in the [shoppingCart].
-  double get totalPrice => shoppingCart.fold(0.0, 
+  double get totalPrice => shoppingCart.fold(0.0,
     (double previousValue, MaterialModel item) => previousValue + item.rentalFee);
 
   /// Filters the [availableMaterial] by the [searchTerm] and the [selectedFilter].
@@ -84,7 +84,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       /// Checks if the [selectedFilter] equals [materialType] of the [item].
       bool materialTypeFilterCondition() {
         if (selectedFilter.value == null) return true;
-        
+
         return item.materialType.id == selectedFilter.value!.id;
       }
 
@@ -101,13 +101,13 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
 
         for (Property property in item.properties) {
           if (property.value.toLowerCase().contains(term)) {
-            return true; 
+            return true;
           }
         }
         return false;
       }
 
-      return materialTypeFilterCondition() && 
+      return materialTypeFilterCondition() &&
         (propertyNameCondition() || materialTypeNameCondition());
     }).toList();
   }
@@ -199,7 +199,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
         usageStartDate: dateFormat.parse(usageStartController.value.text),
         usageEndDate: dateFormat.parse(usageEndController.value.text),
       );
-      
+
       final int? id = await rentalController.addRental(rental);
       if (id != null) {
         Get.toNamed(rentalCompletedRoute);

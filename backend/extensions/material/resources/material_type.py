@@ -8,15 +8,15 @@ from extensions.material.resources.schemas import MaterialTypeSchema
 class MaterialType(ModelResource):
     url = [
         "/material_type",
-        "/material_type/<int:type_id>",
+        "/material_type/<int:property_type_id>",
     ]
     Schema = MaterialTypeSchema
 
-    def get(self, type_id: int):
+    def get(self, property_type_id: int):
         """Test with
         curl -X GET "http://localhost:5000/material_type/1"
         """
-        material_type = models.MaterialType.get(id=type_id)
+        material_type = models.MaterialType.get(id=property_type_id)
         return self.serialize(material_type)
 
     @use_kwargs(

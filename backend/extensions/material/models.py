@@ -46,13 +46,13 @@ class PropertyType(Model):  # type: ignore
 class Property(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     # many to one (FK here)
-    type_id = db.Column(db.ForeignKey(PropertyType.id), nullable=False)
-    type = db.relationship("PropertyType", backref="properties")
+    property_type_id = db.Column(db.ForeignKey(PropertyType.id), nullable=False)
+    property_type = db.relationship("PropertyType", backref="properties")
     value = db.Column(db.String(length=32))
 
     __table_args__ = (
         UniqueConstraint(
-            "type_id",
+            "property_type_id",
             "value",
             name="type_value_uc",
         ),

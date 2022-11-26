@@ -56,7 +56,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Icon(Icons.arrow_back_rounded, 
+                      const Icon(Icons.arrow_back_rounded,
                         color: Colors.black,
                       ),
                       const SizedBox(width: 8.0),
@@ -233,7 +233,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
         style: ListTileStyle.list,
         contentPadding: const EdgeInsets.symmetric(vertical: 16.0),
         onTap: () {},
-        leading: rentalPageController.shoppingCart[index].imageUrls.isNotEmpty 
+        leading: rentalPageController.shoppingCart[index].imageUrls.isNotEmpty
           ? Image.network(baseUrl + rentalPageController.shoppingCart[index].imageUrls.first)
           : const Icon(Icons.image),
         title: Row(
@@ -245,7 +245,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 Text(rentalPageController.shoppingCart[index].materialType.name,
                   style: Get.textTheme.subtitle2,
                 ),
-                Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.unit}'),
+                Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.propertyType.unit}'),
               ],
             ),
             Text('€${rentalPageController.shoppingCart[index].rentalFee.toStringAsFixed(2)}'),
@@ -296,14 +296,14 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     ),
   );
 
-  /// Builds a [TextFormField] with the given [controller], [labelText] 
+  /// Builds a [TextFormField] with the given [controller], [labelText]
   /// and [validator].
-  /// The [onValidChanged] callback is called when the [TextFormField] has been 
-  /// changed and validated by the [validator]. 
+  /// The [onValidChanged] callback is called when the [TextFormField] has been
+  /// changed and validated by the [validator].
   Widget buildCustomTextField({
-    required Rx<TextEditingController> controller, 
-    required String labelText, 
-    required String? Function(String?)? validator,  
+    required Rx<TextEditingController> controller,
+    required String labelText,
+    required String? Function(String?)? validator,
     void Function(String)? onValidChanged,
   }) {
     controller.value.addListener(() {
@@ -324,7 +324,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       onTap: () async {
         controller.value.text = (await rentalPageController.pickDate()) ?? '';
 
-        if (validator!(controller.value.text) != null || onValidChanged == null) return; 
+        if (validator!(controller.value.text) != null || onValidChanged == null) return;
 
         onValidChanged(controller.value.text);
       },
