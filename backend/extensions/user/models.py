@@ -31,7 +31,7 @@ class User(Model):  # type: ignore
         nullable=False,
         default="",
     )  # allow leading zeros
-    is_active = db.Column(db.Boolean(), default=False)
+    is_active = db.Column(db.Boolean(create_constraint=True), default=False)
     token = db.Column(
         db.String(length=44),
         nullable=False,

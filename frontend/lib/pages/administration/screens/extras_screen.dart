@@ -1,14 +1,20 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
+import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/pages/administration/dialogs/update_imprint_dialog.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/common/core/models.dart';
+import 'package:frontend/common/util.dart';
 
 
 class ExtrasScreen extends StatelessWidget {
   const ExtrasScreen({super.key});
+
+  static final administartionPageController = Get.find<AdministrationPageController>();
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +34,13 @@ class ExtrasScreen extends StatelessWidget {
       title: Text('export_inventory_to_csv'.tr),
       trailing: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: Get.theme.colorScheme.onSecondary),
-        onPressed: () {},
+        onPressed: () async {
+          final String fileName = 'materials-${DateFormat('dd-MM-yyyy_hh-mm').format(DateTime.now())}.csv';
+          final bytes = administartionPageController.materialController.materials.toCSV().codeUnits;
+          if (!await downloadBytes(fileName, bytes)){
+            Get.snackbar('error'.tr, 'unknown_error_occurred'.tr);
+          }
+        },
         child: Text('export'.tr,
           style: const TextStyle(
             color: Colors.white,

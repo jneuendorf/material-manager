@@ -13,13 +13,57 @@ Model: Type[CrudModel] = db.Model
 
 class MaterialType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True)
+    name = db.Column(db.String(length=32), unique=True)
     description = db.Column(db.String(length=80))
     sets = db.relationship(
         "MaterialSet",
         secondary="material_type_set_mapping",
         backref="material_types",
     )
+    # many to many
+    property_types = db.relationship(
+        "PropertyType",
+        secondary="material_type_property_type_mapping",
+        backref="material_types",
+    )
+
+
+class PropertyType(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(length=32), unique=True)
+    description = db.Column(db.String(length=80))
+    unit = db.Column(db.String(length=12))
+
+    __table_args__ = (
+        UniqueConstraint(
+            "name",
+            "unit",
+            name="name_unit_uc",
+        ),
+    )
+
+
+class Property(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    # many to one (FK here)
+    property_type_id = db.Column(db.ForeignKey(PropertyType.id), nullable=False)
+    property_type = db.relationship("PropertyType", backref="properties")
+    value = db.Column(db.String(length=32))
+
+    __table_args__ = (
+        UniqueConstraint(
+            "property_type_id",
+            "value",
+            name="type_value_uc",
+        ),
+    )
+
+
+MaterialTypePropertyTypeMapping: Table = db.Table(
+    "material_type_property_type_mapping",
+    db.Column("material_type_id", db.ForeignKey(MaterialType.id), primary_key=True),
+    db.Column("property_type_id", db.ForeignKey(PropertyType.id), primary_key=True),
+)
 
 
 class PurchaseDetails(Model):  # type: ignore
@@ -46,14 +90,13 @@ class Condition(enum.Enum):
 
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
     name = db.Column(db.String(length=80), nullable=False)
     installation_date = db.Column(db.Date, nullable=False)  # Inbetriebnahme
     max_operating_date = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
     max_days_used = db.Column(
         db.Integer,
         nullable=False,
-    )  # Gebrauchsdauer, compare to 'days_used'
+    )  # maximale Gebrauchsdauer, compare to 'days_used'
     days_used = db.Column(db.Integer, nullable=False, default=0)
     instructions = db.Column(db.Text, nullable=False, default="")
     next_inspection_date = db.Column(db.Date, nullable=False)
@@ -72,6 +115,8 @@ class Material(Model):  # type: ignore
     purchase_details = db.relationship("PurchaseDetails", backref="materials")
     # one to many (FK on child)
     serial_numbers = db.relationship("SerialNumber", backref="material")
+    # one to many (FK on child)
+    inventory_numbers = db.relationship("InventoryNumber", backref="material")
     images = File.reverse_generic_relationship("Material")
     # many to many
     properties = db.relationship(
@@ -86,12 +131,26 @@ class Material(Model):  # type: ignore
         super().save()
 
 
+MaterialPropertyMapping: Table = db.Table(
+    "material_property_mapping",
+    db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
+    db.Column("property_id", db.ForeignKey(Property.id), primary_key=True),
+)
+
+
+class InventoryNumber(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
+    material_id = db.Column(db.ForeignKey(Material.id))
+
+
 class SerialNumber(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     serial_number = db.Column(db.String(length=32))
     production_date = db.Column(db.Date)
     manufacturer = db.Column(db.String(length=80))
     material_id = db.Column(db.ForeignKey(Material.id))
+
     __table_args__ = (
         UniqueConstraint(
             "manufacturer",
@@ -111,19 +170,4 @@ MaterialTypeSetMapping: Table = db.Table(
     "material_type_set_mapping",
     db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
     db.Column("material_type_id", db.ForeignKey(MaterialType.id), primary_key=True),
-)
-
-
-class Property(Model):  # type: ignore
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
-    description = db.Column(db.String)
-    value = db.Column(db.String)
-    unit = db.Column(db.String)
-
-
-MaterialPropertyMapping: Table = db.Table(
-    "material_property_mapping",
-    db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
-    db.Column("property_id", db.ForeignKey(Property.id), primary_key=True),
 )

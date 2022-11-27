@@ -22,26 +22,35 @@ final MaterialTypeModel mockCarbineMaterialType = MaterialTypeModel(
 
 final Property mockLengthProperty = Property(
   id: 1,
-  name: 'Länge',
-  description: 'Länge des Seils',
+  propertyType: PropertyType(
+    id: 1,
+    name: 'Länge',
+    description: 'Länge des Seils',
+    unit: 'm',
+  ),
   value: '10',
-  unit: 'm',
 );
 
 final Property mockThicknessProperty = Property(
-  id: 2,
-  name: 'Dicke',
-  description: 'Dicke des Seils',
+  id: 1,
+  propertyType: PropertyType(
+    id: 2,
+    name: 'Dicke',
+    description: 'Dicke des Seils',
+    unit: 'cm',
+  ),
   value: '3',
-  unit: 'cm',
 );
 
 final Property mockSizeProperty = Property(
-  id: 3,
-  name: 'Größe',
-  description: 'Größe des Helms',
+  id: 1,
+  propertyType: PropertyType(
+    id: 3,
+    name: 'Größe',
+    description: 'Größe des Helms',
+    unit: 'cm',
+  ),
   value: '55',
-  unit: 'cm',
 );
 
 
@@ -70,7 +79,9 @@ final List<MaterialModel> mockMaterial = [
     serialNumbers: [
       mockSerialNumber,
     ],
-    inventoryNumber: '235vh2354-2',
+    inventoryNumbers: [
+      InventoryNumber(id: 1, inventoryNumber: '235vh2354-2'),
+    ],
     maxOperatingDate: DateTime(2030, 1, 1),
     maxDaysUsed: 100,
     installationDate: DateTime(2021, 1, 1),
@@ -92,7 +103,9 @@ final List<MaterialModel> mockMaterial = [
     serialNumbers: [
       mockSerialNumber,
     ],
-    inventoryNumber: '235vh2354-3',
+    inventoryNumbers: [
+      InventoryNumber(id: 2, inventoryNumber: '235vh2354-3'),
+    ],
     maxOperatingDate: DateTime(2030, 1, 1),
     maxDaysUsed: 10,
     installationDate: DateTime(2021, 1, 1),
@@ -113,7 +126,9 @@ final List<MaterialModel> mockMaterial = [
     serialNumbers: [
       mockSerialNumber,
     ],
-    inventoryNumber: 'cg135vh2354-3',
+    inventoryNumbers: [
+      InventoryNumber(id: 2, inventoryNumber: '235vh2354-3'),
+    ],
     maxOperatingDate: DateTime(2020, 1, 1),
     maxDaysUsed: 100,
     installationDate: DateTime(2019, 1, 1),
@@ -134,7 +149,9 @@ final List<MaterialModel> mockMaterial = [
     serialNumbers: [
       mockSerialNumber,
     ],
-    inventoryNumber: 'q35vh2fc4-2',
+    inventoryNumbers: [
+      InventoryNumber(id: 4, inventoryNumber: 'q35vh2fc4-2'),
+    ],
     maxOperatingDate: DateTime(2030, 1, 1),
     maxDaysUsed: 100,
     installationDate: DateTime(2021, 1, 1),

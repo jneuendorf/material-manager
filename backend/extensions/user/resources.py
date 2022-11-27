@@ -103,7 +103,7 @@ class Signup(BaseResource):
                 )
             )
             return {
-                "message": ("Signup successful. Verify your e-mail address to login."),
+                "message": "Signup successful. Verify your e-mail address to login.",
             }
         except (ValueError, IntegrityError):
             return abort(403, "E-mail address already taken")

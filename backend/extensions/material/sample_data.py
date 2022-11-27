@@ -5,10 +5,12 @@ from hashlib import sha1
 from extensions.common.models import File
 from extensions.material.models import (
     Condition,
+    InventoryNumber,
     Material,
     MaterialSet,
     MaterialType,
     Property,
+    PropertyType,
     PurchaseDetails,
     SerialNumber,
 )
@@ -19,8 +21,6 @@ NUM_MATERIALS = 50
 
 INVENTORY_IDENTIFIERS = it.cycle(["J", "K", "L", "G"])
 MERCHANTS = it.cycle(["InterSport", "Globetrotter", "SecondHand", "Amazon"])
-PROPERTY_UNITS = it.cycle(["kg", "m", "cm"])
-COLORS = it.cycle(["red", "green", "blue", "yellow"])
 MANUFACTURERS = it.cycle(["edelrid", "the blue light", "elliot", "black diamond"])
 
 # Create material sets
@@ -34,6 +34,30 @@ material_sets = {
     ]
 }
 
+# Create property types
+property_types: dict[str, PropertyType] = {
+    "color": PropertyType.get_or_create(
+        name="color",
+        description="color",
+        unit="color",
+    ),
+    "thickness": PropertyType.get_or_create(
+        name="thickness",
+        description="thickness",
+        unit="mm",
+    ),
+    "length": PropertyType.get_or_create(
+        name="length",
+        description="length",
+        unit="m",
+    ),
+    "size": PropertyType.get_or_create(
+        name="size",
+        description="size",
+        unit="",
+    ),
+}
+
 # Create material types
 material_types = it.cycle(
     [
@@ -44,6 +68,10 @@ material_types = it.cycle(
                 sets=[
                     material_sets["ice climbing"],
                     material_sets["mountain face"],
+                ],
+                property_types=[
+                    property_types["color"],
+                    property_types["size"],
                 ],
             ),
         ),
@@ -57,6 +85,11 @@ material_types = it.cycle(
                     material_sets["hiking"],
                     material_sets["camping"],
                 ],
+                property_types=[
+                    property_types["color"],
+                    property_types["length"],
+                    property_types["thickness"],
+                ],
             ),
         ),
         MaterialType.get_or_create(
@@ -67,6 +100,9 @@ material_types = it.cycle(
                     material_sets["ice climbing"],
                     material_sets["mountain face"],
                     material_sets["camping"],
+                ],
+                property_types=[
+                    property_types["color"],
                 ],
             ),
         ),
@@ -81,27 +117,6 @@ material_types = it.cycle(
         ),
     ]
 )
-
-
-# Create properties
-def get_property_name(i: int) -> str:
-    return f"property {i}"
-
-
-for i in range(NUM_PROPERTIES):
-    # create matching unit-value pairs for Property
-    if i <= NUM_PROPERTIES // 3:
-        value = next(COLORS)
-        unit = "color"
-    else:
-        value = str(i * 1.03)
-        unit = next(PROPERTY_UNITS)
-    Property.get_or_create(
-        name=get_property_name(i),
-        description=f"property description {i}",
-        value=value,
-        unit=unit,
-    )
 
 # Create purchase details
 created_purchase_details = []
@@ -123,17 +138,22 @@ for i in range(NUM_PURCHASE_DETAILS):
     )
 
 
-# Create serial numbers
-def get_serial_number_str(i: int) -> str:
-    return f"sn-{i}-{i ** 2}"
-
-
-for i in range(NUM_MATERIALS):
-    SerialNumber.get_or_create(
-        serial_number=get_serial_number_str(i),
-        production_date=date(2022, 1, 1) + timedelta(days=i),
-        manufacturer=next(MANUFACTURERS),
+def create_serial_and_inventory_number(
+    index: int,
+) -> tuple[SerialNumber, InventoryNumber]:
+    return (
+        SerialNumber.get_or_create(
+            serial_number=(
+                f"sn-{index}-{sha1(str(index).encode('utf-8')).hexdigest()[:10]}"
+            ),
+            production_date=date(2022, 1, 1) + timedelta(days=index),
+            manufacturer=next(MANUFACTURERS),
+        ),
+        InventoryNumber.get_or_create(
+            inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{index}",
+        ),
     )
+
 
 # Create materials
 for i in range(NUM_MATERIALS):
@@ -145,16 +165,25 @@ for i in range(NUM_MATERIALS):
     else:
         condition = Condition.OK
 
-    serial_numbers = [SerialNumber.get(serial_number=get_serial_number_str(i))]
-    # Let some materials have multiple serial numbers
-    if i > 100:
-        serial_numbers.append(
-            SerialNumber.get(serial_number=get_serial_number_str(i - 1))
+    serial_numbers: list[SerialNumber]
+    inventory_numbers: list[InventoryNumber]
+    if i < NUM_MATERIALS / 2:
+        serial_number, inventory_number = create_serial_and_inventory_number(i)
+        serial_numbers = [serial_number]
+        inventory_numbers = [inventory_number]
+    # Let some materials have multiple serial/inventory numbers
+    else:
+        serial_number, inventory_number = create_serial_and_inventory_number(i)
+        # Make sure we don't create the same numbers twice
+        serial_number2, inventory_number2 = create_serial_and_inventory_number(
+            i + NUM_MATERIALS
         )
+        serial_numbers = [serial_number, serial_number2]
+        inventory_numbers = [inventory_number, inventory_number2]
 
     installation_date = date(2022, 1, 1) + timedelta(days=i)
+    material_type: MaterialType = next(material_types)
     material = Material.get_or_create(
-        inventory_number=f"{next(INVENTORY_IDENTIFIERS)}-{i}",
         name=f"material {i}",
         installation_date=installation_date,
         max_operating_date=installation_date + timedelta(weeks=(-1) ** i * 2),
@@ -165,10 +194,19 @@ for i in range(NUM_MATERIALS):
         condition=condition,
         days_used=i * 5 % 100,
         _related=dict(
-            material_type=next(material_types),
+            material_type=material_type,
             purchase_details=created_purchase_details[i % NUM_PURCHASE_DETAILS],
             serial_numbers=serial_numbers,
-            properties=[Property.get(name=get_property_name(i % NUM_PROPERTIES))],
+            inventory_numbers=inventory_numbers,
+            properties=[
+                Property.get_or_create(
+                    value=str(i),
+                    _related=dict(
+                        property_type=property_type,
+                    ),
+                )
+                for property_type in material_type.property_types
+            ],
         ),
     )
 

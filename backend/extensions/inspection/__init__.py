@@ -1,6 +1,6 @@
 from core.helpers.extension import Extension
 
-from . import models
+from . import models, resources
 
 inspection = Extension(
     "inspection",
@@ -9,5 +9,9 @@ inspection = Extension(
         models.Inspection,
         models.Comment,
     ),
-    resources=(),
+    resources=(
+        resources.Inspection,
+        resources.Comment,
+        resources.Comments,
+    ),
 )
