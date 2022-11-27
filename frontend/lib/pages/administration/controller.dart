@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/extensions/rental/model.dart';
+import 'package:frontend/extensions/material/controller.dart';
 
 
 const administrationRoute = '/administration';
@@ -19,6 +20,7 @@ class AdministrationPageBinding implements Bindings {
 
 class AdministrationPageController extends GetxController with GetSingleTickerProviderStateMixin {
   final userController = Get.find<UserController>();
+  final materialController = Get.find<MaterialController>();
 
   late TabController tabController;
   final RxInt tabIndex = 0.obs;

@@ -3,17 +3,18 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'package:frontend/common/util.dart';
-import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/material/model.dart';
-
+import 'package:frontend/pages/administration/controller.dart';
 import 'package:frontend/pages/administration/dialogs/update_imprint_dialog.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/common/core/models.dart';
+import 'package:frontend/common/util.dart';
 
 
 class ExtrasScreen extends StatelessWidget {
   const ExtrasScreen({super.key});
+
+  static final administartionPageController = Get.find<AdministrationPageController>();
 
   @override
   Widget build(BuildContext context) {
@@ -35,9 +36,8 @@ class ExtrasScreen extends StatelessWidget {
         style: ElevatedButton.styleFrom(backgroundColor: Get.theme.colorScheme.onSecondary),
         onPressed: () async {
           final String fileName = 'materials-${DateFormat('dd-MM-yyyy_hh-mm').format(DateTime.now())}.csv';
-          final controller = Get.find<MaterialController>();
-          final bytes = controller.materials.toCSV().codeUnits;
-          if (!await downloadPseudoFile(fileName, bytes)){
+          final bytes = administartionPageController.materialController.materials.toCSV().codeUnits;
+          if (!await downloadBytes(fileName, bytes)){
             Get.snackbar('error'.tr, 'unknown_error_occurred'.tr);
           }
         },
