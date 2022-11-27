@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
@@ -48,7 +47,7 @@ class MaterialPreview extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('${item.materialType.name}, ${cleanPropertyValue(item.properties.first.value)} ${item.properties.first.propertyType.unit}'),
+                          Text('${item.materialType.name}, ${getPropertyString(item)}'),
                           Text('${item.rentalFee.toStringAsFixed(2)} €'),
                         ],
                       ),
@@ -69,7 +68,7 @@ class MaterialPreview extends StatelessWidget {
                   ),
                 ),
                 onPressed: () => rentalPageController.shoppingCart.add(item),
-                child: Obx(() =>rentalPageController.shoppingCart.contains(item)
+                child: Obx(() => rentalPageController.shoppingCart.contains(item)
                     ? const Icon(Icons.check)
                     : Icon(Icons.add_shopping_cart,
                       size: 30.0,
@@ -91,5 +90,13 @@ class MaterialPreview extends StatelessWidget {
     if (val == null) return value;
 
     return val.toStringAsFixed(2);
+  }
+
+  String getPropertyString(MaterialModel item) {
+    if (item.properties.isEmpty) return '';
+
+    String value = cleanPropertyValue(item.properties.first.value);
+
+    return '$value ${item.properties.first.propertyType.unit}';
   }
 }
