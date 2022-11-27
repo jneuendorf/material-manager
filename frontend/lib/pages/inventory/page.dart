@@ -226,7 +226,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                   ),
                   buildCustomTextField(
                     item.daysUsed.toString(),
-                    'usage_in_days'.tr,
+                    'days_used'.tr,
                   ),
                 ],
               ),

@@ -41,12 +41,19 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
-  await dotenv.load(fileName: 'env/dev.env');
   try {
-    await dotenv.load(fileName: 'env/.env');
+    debugPrint('try loading env/dev.env + env/.env...');
+    await dotenv.load(fileName: 'env/dev.env');
+    await dotenv.load(
+      fileName: 'env/.env',
+      // Make a shallow copy of the dev env because dotenv.env is cleared when dotenv.load is called
+      mergeWith: Map<String, String>.of(dotenv.env),
+    );
   } catch (e) {
-    debugPrint('env/.env not found');
+    await dotenv.load(fileName: 'env/dev.env');
   }
+  debugPrint('loaded dotenv:');
+  debugPrint('${dotenv.env}');
 
   await Get.putAsync(() async => await ApiService().init());
 
