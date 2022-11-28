@@ -145,7 +145,7 @@ class LocaleString extends Translations {
       'unit': 'Unit',
       'add_property': 'Add Property',
       'add_serial_number': 'Add Serial-num.',
-      'serial_number': 'Serial-num',
+      'serial_number': 'SerialNo.',
       'no_image_found': 'No Image Found',
       'extras': 'Extras',
       'export_inventory_to_csv': 'Export inventory to CSV',

@@ -29,8 +29,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
   final Rxn<MaterialTypeModel> selectedType = Rxn<MaterialTypeModel>();
   final RxList<MaterialTypeModel> filteredTypes = <MaterialTypeModel>[].obs;
-  final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[].obs;
   final RxList<Property> properties = <Property>[].obs;
+  final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[
+    NonFinalMapEntry(null, <SerialNumber>[]),
+  ].obs;
 
   final TextEditingController materialTypeController = TextEditingController();
   final TextEditingController rentalFeeController = TextEditingController();
@@ -49,9 +51,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
   List<TextEditingController> propertyValueController = <TextEditingController>[];
   List<TextEditingController> propertyUnitController = <TextEditingController>[];
 
-  final List<TextEditingController> serialNumberControllers = <TextEditingController>[];
-  final List<TextEditingController> productionDateControllers = <TextEditingController>[];
-  final List<TextEditingController> inventoryNumberControllers = <TextEditingController>[];
+  final List<TextEditingController> serialNumberControllers = <TextEditingController>[
+    TextEditingController(),
+  ];
+  final List<TextEditingController> productionDateControllers = <TextEditingController>[
+    TextEditingController(),
+  ];
+  final List<TextEditingController> inventoryNumberControllers = <TextEditingController>[
+    TextEditingController(),
+  ];
 
   @override
   void initState() {
@@ -137,7 +145,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
           Flexible(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxHeight: 300,
+                maxHeight: 292,
               ),
               child: Row(
                 children: [
@@ -218,7 +226,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               },
                             ),
                             Padding(
-                              padding: const EdgeInsets.only(bottom: 8.0),
+                              padding: const EdgeInsets.only(bottom: 0.0),
                               child: TextFormField(
                                 controller: instructionsController,
                                 decoration: InputDecoration(
@@ -482,7 +490,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ],
           ),
-          const SizedBox(height: 16.0),
+          //const SizedBox(height: 16.0),
           Flexible(
             child: Padding(
               padding: const EdgeInsets.symmetric(vertical: 8.0),
