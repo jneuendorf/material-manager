@@ -66,28 +66,6 @@ Future<bool> downloadBytes(String name, List<int> bytes, {String mimeType = ''})
   return true;
 }
 
-// /// Shows a file picker dialog and returns the selected files.
-// /// Returns null if the user cancels the dialog.
-// Future<List<Image>?> pickImages() async {
-//   final FilePickerResult? result = await FilePicker.platform.pickFiles(
-//     allowMultiple: true,
-//     type: FileType.custom,
-//     allowedExtensions: ['jpg', 'jpeg', 'png'],
-//     withReadStream: true,
-//   );
-//   if (result == null) return null;
-
-//   debugPrint('Files picked: ${result.files.length}');
-  
-//   return result.files.map<Image>(
-//     (PlatformFile file) {
-//       return Image.network(file.path!);
-//     }
-//   ).toList();
-// }
-
 /// Shows a file picker dialog and returns the selected files.
 /// Returns null if the user cancels the dialog.
-Future<List<XFile>?> pickImages() async {
-  return await ImagePicker().pickMultiImage();
-}
+Future<List<XFile>?> pickImages() async => await ImagePicker().pickMultiImage();

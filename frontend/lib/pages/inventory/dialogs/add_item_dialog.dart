@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -13,6 +12,7 @@ import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
+import 'package:frontend/common/util.dart';
 
 
 class AddItemDialog extends StatefulWidget {
@@ -651,11 +651,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       )),
                     ),
                   ),
-                  TextIconButton(
-                    onTap: () => bulkValues.add(NonFinalMapEntry<String?, List<SerialNumber>>(null, [])),
-                    iconData: Icons.add,
-                    text: 'add_item'.tr,
-                    color: Get.theme.colorScheme.onSecondary,
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 8.0),
+                    child: TextIconButton(
+                      onTap: () => bulkValues.add(NonFinalMapEntry<String?, List<SerialNumber>>(null, [])),
+                      iconData: Icons.add,
+                      text: 'add_item'.tr,
+                      color: Get.theme.colorScheme.onSecondary,
+                    ),
                   ),
                   Flexible(
                     child: ConstrainedBox(
@@ -664,13 +667,39 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         scrollDirection: Axis.horizontal,
                         children: [
                           for (Image image in images) 
-                            Container(
-                              height: 100,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                image: DecorationImage(
-                                  image: image.image,
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                              child: Container(
+                                height: 100,
+                                width: 100,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                  image: DecorationImage(
+                                    image: image.image,
+                                    fit: BoxFit.cover,
+                                  ),
+                                ),
+                                child: Align(
+                                  alignment: Alignment.topRight,
+                                  child: InkWell(
+                                    onTap: () => images.remove(image),
+                                    borderRadius: BorderRadius.circular(10.0),
+                                    child: Padding(
+                                      padding: const EdgeInsets.only(
+                                        top: 6.0, right: 6.0,
+                                      ),
+                                      child: Container(
+                                        decoration: const BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          color: Colors.white,
+                                        ),
+                                        child: const Padding(
+                                          padding: EdgeInsets.all(2.0),
+                                          child:  Icon(Icons.close),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                                 ),
                               ),
                             ),
@@ -703,7 +732,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                       foregroundColor: Colors.white,
                                       elevation: 10,
                                       child: const Icon(Icons.add),
-                                    )
+                                    ),
                                   ],
                                 ),
                               ),
@@ -738,21 +767,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
       debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
     }
   }
-
-//   void pickFile() {
-//   final input = html.FileUploadInputElement()..accept = 'image/*';
-//   input.onChange.listen((event) {
-//     if (input.files!.isNotEmpty) {
-//       String fileName = input.files!.first.name; // file name without path!
-      
-//       // synthetic file path can be used with Image.network()
-//       String url = html.Url.createObjectUrl(input.files!.first);
-
-//       images.addAll(input.files!.map((e) => Image.network(e.relativePath!)));
-//     }
-//   });
-//   input.click();
-// }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
     if(value.isEmpty) {
