@@ -1,8 +1,13 @@
+import 'dart:io';
+
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
+import 'package:cross_file/cross_file.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
@@ -33,6 +38,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[
     NonFinalMapEntry(null, <SerialNumber>[]),
   ].obs;
+  final RxList<Image> images = <Image>[].obs;
 
   final TextEditingController materialTypeController = TextEditingController();
   final TextEditingController rentalFeeController = TextEditingController();
@@ -495,7 +501,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       ),
                     ],
                   ),
-                  //const SizedBox(height: 16.0),
                   Flexible(
                     child: Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -636,7 +641,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 },
                                 onFieldSubmitted: (String value) {
                                   if (value.trim().isEmpty) return;
-            
+
                                   bulkValues[index].key = value.trim();
                                 },
                               ),
@@ -651,6 +656,61 @@ class _AddItemDialogState extends State<AddItemDialog> {
                     iconData: Icons.add,
                     text: 'add_item'.tr,
                     color: Get.theme.colorScheme.onSecondary,
+                  ),
+                  Flexible(
+                    child: ConstrainedBox(
+                      constraints: const BoxConstraints(maxHeight: 150.0),
+                      child: Obx(() => ListView(
+                        scrollDirection: Axis.horizontal,
+                        children: [
+                          for (Image image in images) 
+                            Container(
+                              height: 100,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                image: DecorationImage(
+                                  image: image.image,
+                                ),
+                              ),
+                            ),
+                          Container(
+                              width: 150,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(10.0),
+                                border: Border.all(color: Get.theme.colorScheme.onSecondary),
+                              ),
+                              child: Center(
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    const Icon(Icons.image),
+                                    Text('add_image'.tr),
+                                    FloatingActionButton(
+                                      onPressed: () async {
+                                        List<XFile> lst = await pickImages() ?? [];
+                                        images.addAll(lst.map((XFile f) {
+                                          Image? image;
+                                          if (kIsWeb) {
+                                            image = Image.network(f.path);
+                                          } else {
+                                            image = Image.file(File(f.path));
+                                          }
+                                          return image;
+                                        }));
+                                      },
+                                      backgroundColor: Get.theme.colorScheme.onSecondary,
+                                      foregroundColor: Colors.white,
+                                      elevation: 10,
+                                      child: const Icon(Icons.add),
+                                    )
+                                  ],
+                                ),
+                              ),
+                            ),
+                        ],
+                      )),
+                    ),
                   ),
                   Align(
                     alignment: Alignment.bottomRight,
@@ -678,6 +738,21 @@ class _AddItemDialogState extends State<AddItemDialog> {
       debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
     }
   }
+
+//   void pickFile() {
+//   final input = html.FileUploadInputElement()..accept = 'image/*';
+//   input.onChange.listen((event) {
+//     if (input.files!.isNotEmpty) {
+//       String fileName = input.files!.first.name; // file name without path!
+      
+//       // synthetic file path can be used with Image.network()
+//       String url = html.Url.createObjectUrl(input.files!.first);
+
+//       images.addAll(input.files!.map((e) => Image.network(e.relativePath!)));
+//     }
+//   });
+//   input.click();
+// }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
     if(value.isEmpty) {

@@ -190,6 +190,7 @@ class LocaleString extends Translations {
       'manufacturer_is_mandatory': 'Manufacturer is mandatory',
       'suggested_retail_price_is_mandatory': 'Suggested Retail Price is mandatory',
       'suggested_retail_price_must_be_a_number': 'Suggested Retail Price must be a number',
+      'add_image': 'Add Image',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -374,6 +375,7 @@ class LocaleString extends Translations {
       'manufacturer_is_mandatory': 'Hersteller ist verplichtend',
       'suggested_retail_price_is_mandatory': 'UVP ist verplichtend',
       'suggested_retail_price_must_be_a_number': 'UVP muss eine Zahl sein',
+      'add_image': 'Bild hinzufügen',
     }
   };
 }

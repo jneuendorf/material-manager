@@ -51,6 +51,7 @@ dependencies:
   universal_html: ^2.0.8
   path: ^1.8.2
   cross_file: ^0.3.3+2
+  image_picker: ^0.8.6
 
 dev_dependencies:
   flutter_test:
