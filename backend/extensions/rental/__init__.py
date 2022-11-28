@@ -10,5 +10,9 @@ rental = Extension(
         # models.RentalStatus,
         models.MaterialRentalMapping,
     ),
-    resources=(resources.Rental,),
+    resources=(
+        resources.Rental,
+        resources.Rentals,
+        resources.RentalStatus,
+    ),
 )

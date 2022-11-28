@@ -1,10 +1,31 @@
 from flask_apispec import use_kwargs
 from marshmallow import fields
 
-from core.helpers.resource import ModelResource  # , ModelListResource
+from core.helpers.resource import ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema  # , ModelConverter
 
 from . import models
+
+
+# We need to fetch all rental statuses
+# but I am not sure if this works correctly or not
+class RentalStatusSchema(BaseSchema):
+    class Meta:
+        model = models.Rental
+        fields = (
+            "id",
+            "rental_status",
+        )
+
+
+# Fetches all rental statuses.
+class RentalStatus(ModelListResource):
+    url = "/rental_statuses"
+    Schema = RentalStatusSchema
+
+    def get(self):
+        rentals = models.Rental.all()
+        return self.serialize(rentals)
 
 
 class RentalSchema(BaseSchema):
@@ -18,13 +39,18 @@ class RentalSchema(BaseSchema):
 
 
 class Rental(ModelResource):
-    url = "/rental"
+    url = [
+        "/rental"
+        # "/rental/<int:rental_id>"
+    ]
     Schema = RentalSchema
 
+    # Adds a new rental /rental
     @use_kwargs(
         {
             "id": fields.Int(required=True),
-            "material_id": fields.Int(required=True),
+            # "material_id": fields.Int(required=True),
+            # We do not have material_id in rental model !
             # "": fields.Str(required=True),
         }
     )
@@ -36,3 +62,16 @@ class Rental(ModelResource):
         """
         rental = models.Rental.create(**kwargs)
         return self.serialize(rental)
+
+    # To Do
+    # update a rental by using rental_id
+
+
+# Fetches all rentals.
+class Rentals(ModelListResource):
+    url = "/rentals"
+    Schema = RentalSchema
+
+    def get(self):
+        rentals = models.Rental.all()
+        return self.serialize(rentals)
