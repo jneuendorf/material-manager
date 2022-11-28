@@ -23,6 +23,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final RxBool loading = false.obs;
+  final RxBool showSearch = false.obs;
+
+  final FocusNode searchFocusNode = FocusNode();
+
+  final Rxn<MaterialTypeModel> selectedType = Rxn<MaterialTypeModel>();
+  final RxList<MaterialTypeModel> filteredTypes = <MaterialTypeModel>[].obs;
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[].obs;
   final RxList<Property> properties = <Property>[].obs;
 
@@ -66,6 +72,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
         propertyValueController.add(TextEditingController());
       }
     });
+
+    searchFocusNode.addListener(() {
+      Future.delayed(const Duration(milliseconds: 100)).then(
+        (_) => showSearch.value = searchFocusNode.hasFocus,
+      ); 
+    });
+
+    filteredTypes.value = inventoryPageController.materialController.types;
   }
 
   @override
@@ -97,54 +111,89 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
               child: Row(
                 children: [
-                  Expanded(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Flexible(
+                    child: Stack(
                       children: [
-                        TextFormField(
-                          controller: materialTypeController,
-                          decoration: InputDecoration(
-                            labelText: 'material_type'.tr,
-                          ),
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return 'material_type_is_mandatory'.tr;
-                            }
-                            return null;
-                          },
-                        ),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Expanded(
-                              child: TextFormField(
-                                controller: maxLifeExpectancyController,
-                                decoration: InputDecoration(
-                                  labelText: 'max_life_expectancy'.tr,
-                                ),
-                                validator: (String? value) {
-                                  if (value == null || value.isEmpty) {
-                                    return 'max_life_expectancy_is_mandatory'.tr;
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'max_life_expectancy_must_be_a_number'.tr;
-                                  }
-                                  return null;
-                                },
+                            TextFormField(
+                              controller: materialTypeController,
+                              focusNode: searchFocusNode,
+                              decoration: InputDecoration(
+                                labelText: 'material_type'.tr,
                               ),
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'material_type_is_mandatory'.tr;
+                                }
+                                return null;
+                              },
                             ),
-                            Expanded(
+                            Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: maxLifeExpectancyController,
+                                    decoration: InputDecoration(
+                                      labelText: 'max_life_expectancy'.tr,
+                                    ),
+                                    validator: (String? value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'max_life_expectancy_is_mandatory'.tr;
+                                      }
+                                      if (double.tryParse(value) == null) {
+                                        return 'max_life_expectancy_must_be_a_number'.tr;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                                Expanded(
+                                  child: TextFormField(
+                                    controller: maxServiceDurationController,
+                                    decoration: InputDecoration(
+                                      labelText: 'max_service_duration'.tr,
+                                    ),
+                                    validator: (String? value) {
+                                      if (value == null || value.isEmpty) {
+                                        return 'max_service_duration_is_mandatory'.tr;
+                                      }
+                                      if (double.tryParse(value) == null) {
+                                        return 'max_service_duration_must_be_a_number'.tr;
+                                      }
+                                      return null;
+                                    },
+                                  ),
+                                ),
+                              ],
+                            ),
+                            TextFormField(
+                              controller: nextInspectionController,
+                              decoration: InputDecoration(
+                                labelText: 'next_inspection'.tr,
+                              ),
+                              validator: (String? value) {
+                                if (value == null || value.isEmpty) {
+                                  return 'next_inspection_is_mandatory'.tr;
+                                }
+                                if (double.tryParse(value) == null) {
+                                  return 'next_inspection_must_be_a_number'.tr;
+                                }
+                                return null;
+                              },
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(bottom: 8.0),
                               child: TextFormField(
-                                controller: maxServiceDurationController,
+                                controller: instructionsController,
                                 decoration: InputDecoration(
-                                  labelText: 'max_service_duration'.tr,
+                                  labelText: 'instructions'.tr,
                                 ),
                                 validator: (String? value) {
                                   if (value == null || value.isEmpty) {
-                                    return 'max_service_duration_is_mandatory'.tr;
-                                  }
-                                  if (double.tryParse(value) == null) {
-                                    return 'max_service_duration_must_be_a_number'.tr;
+                                    return 'instructions_are_mandatory'.tr;
                                   }
                                   return null;
                                 },
@@ -152,36 +201,26 @@ class _AddItemDialogState extends State<AddItemDialog> {
                             ),
                           ],
                         ),
-                        TextFormField(
-                          controller: nextInspectionController,
-                          decoration: InputDecoration(
-                            labelText: 'next_inspection'.tr,
-                          ),
-                          validator: (String? value) {
-                            if (value == null || value.isEmpty) {
-                              return 'next_inspection_is_mandatory'.tr;
-                            }
-                            if (double.tryParse(value) == null) {
-                              return 'next_inspection_must_be_a_number'.tr;
-                            }
-                            return null;
-                          },
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 8.0),
-                          child: TextFormField(
-                            controller: instructionsController,
-                            decoration: InputDecoration(
-                              labelText: 'instructions'.tr,
+                        Obx(() => showSearch.value ? Padding(
+                          padding: const EdgeInsets.only(top: 50.0),
+                          child: Card(
+                            child: ListView(
+                              shrinkWrap: true,
+                              children: [
+                                for (final materialType in filteredTypes)
+                                  ListTile(
+                                    title: Text(materialType.name),
+                                    onTap: () {
+                                      materialTypeController.text = materialType.name;
+                                      selectedType.value = materialType;
+                                      searchFocusNode.unfocus();
+                                      print(materialType.name);
+                                    },
+                                  ),
+                              ],
                             ),
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return 'instructions_are_mandatory'.tr;
-                              }
-                              return null;
-                            },
                           ),
-                        ),
+                        ) : const SizedBox()),
                       ],
                     ),
                   ),
@@ -412,8 +451,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
             ],
           ),
           const SizedBox(height: 16.0),
-          Expanded(
-            child: Obx(() => ListView.separated(
+          Flexible(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8.0),
+              child: Obx(() => ListView.separated(
                 shrinkWrap: true,
                 itemCount: bulkValues.length,
                 separatorBuilder: (context, index) => const SizedBox(height: 8.0),
@@ -558,6 +599,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                   ],
                 ),
               )),
+            ),
           ),
           TextIconButton(
             onTap: () => bulkValues.add(NonFinalMapEntry<String?, List<SerialNumber>>(null, [])),
