@@ -126,6 +126,22 @@ class MaterialController extends GetxController {
     return null;
   }
 
+  /// Fetches all property types of the provided [materialTypeName] from backend.
+  Future<List<PropertyType>?> getAllPropertyTypesByMaterialTypeName(String materialTypeName) async {
+    try {
+      final response = await apiService.mainClient.get('/property_types/$materialTypeName');
+
+      if (response.statusCode != 200) debugPrint('Error getting property types');
+
+      return response.data.map<PropertyType>(
+        (dynamic item) => PropertyType.fromJson(item)
+      ).toList();
+    } on dio.DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
   /// Adds a new material to the backend.
   /// Returns the id of the newly created material
   /// or null if an error occurred.

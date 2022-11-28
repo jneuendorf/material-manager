@@ -18,7 +18,7 @@ class AddItemDialog extends StatefulWidget {
 }
 
 class _AddItemDialogState extends State<AddItemDialog> {
-  final materialController = Get.find<InventoryPageController>();
+  final inventoryPageController = Get.find<InventoryPageController>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
