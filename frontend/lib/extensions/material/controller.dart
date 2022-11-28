@@ -127,7 +127,7 @@ class MaterialController extends GetxController {
   }
 
   /// Fetches all property types of the provided [materialTypeName] from backend.
-  Future<List<PropertyType>?> getAllPropertyTypesByMaterialTypeName(String materialTypeName) async {
+  Future<List<PropertyType>?> getPropertyTypesByMaterialTypeName(String materialTypeName) async {
     try {
       final response = await apiService.mainClient.get('/property_types/$materialTypeName');
 

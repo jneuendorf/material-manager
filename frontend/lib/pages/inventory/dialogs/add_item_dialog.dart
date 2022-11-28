@@ -45,9 +45,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final TextEditingController manufacturerController = TextEditingController();
   final TextEditingController suggestedRetailPriceController = TextEditingController();
 
-  final List<TextEditingController> propertyNameController = <TextEditingController>[];
-  final List<TextEditingController> propertyValueController = <TextEditingController>[];
-  final List<TextEditingController> propertyUnitController = <TextEditingController>[];
+  List<TextEditingController> propertyNameController = <TextEditingController>[];
+  List<TextEditingController> propertyValueController = <TextEditingController>[];
+  List<TextEditingController> propertyUnitController = <TextEditingController>[];
 
   final List<TextEditingController> serialNumberControllers = <TextEditingController>[];
   final List<TextEditingController> productionDateControllers = <TextEditingController>[];
@@ -65,11 +65,17 @@ class _AddItemDialogState extends State<AddItemDialog> {
       }
     });
 
-    properties.listen((lst) {
+    properties.listen((List<Property> lst) {
       if (propertyNameController.length < lst.length) {
-        propertyNameController.add(TextEditingController());
-        propertyUnitController.add(TextEditingController());
-        propertyValueController.add(TextEditingController());
+        propertyNameController = List.generate(lst.length, (index) => TextEditingController(
+          text: lst[index].propertyType.name,
+        ));
+        propertyUnitController = List.generate(lst.length, (index) => TextEditingController(
+          text: lst[index].propertyType.unit,
+        ));
+        propertyValueController = List.generate(lst.length, (index) => TextEditingController(
+          text: lst[index].value,
+        ));
       }
     });
 
@@ -79,7 +85,31 @@ class _AddItemDialogState extends State<AddItemDialog> {
       ); 
     });
 
+    selectedType.listen((MaterialTypeModel? type ) async {
+      if (type == null) {
+        properties.clear();
+        return;
+      }
+
+      final propertyTypes = await inventoryPageController.materialController.getPropertyTypesByMaterialTypeName(type.name);
+      debugPrint('propertyTypes: $propertyTypes');
+      properties.value = propertyTypes?.map(
+        (PropertyType e) => Property(
+          id: e.id,
+          value: '',
+          propertyType: e,
+        ),
+      ).toList() ?? [];
+    });
+
     filteredTypes.value = inventoryPageController.materialController.types;
+  }
+
+  @override
+  void dispose() {
+    searchFocusNode.dispose();
+
+    super.dispose();
   }
 
   @override
@@ -129,6 +159,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 }
                                 return null;
                               },
+                              onChanged: (String value) => filteredTypes.value = inventoryPageController.materialController.types.where(
+                                (type) => type.name.toLowerCase().contains(value.toLowerCase()),
+                              ).toList(),
                             ),
                             Row(
                               mainAxisSize: MainAxisSize.min,
@@ -214,7 +247,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                       materialTypeController.text = materialType.name;
                                       selectedType.value = materialType;
                                       searchFocusNode.unfocus();
-                                      print(materialType.name);
                                     },
                                   ),
                               ],
