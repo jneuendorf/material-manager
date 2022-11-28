@@ -90,127 +90,85 @@ class _AddItemDialogState extends State<AddItemDialog> {
               ),
             ],
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 8.0),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 10.0),
-                    child: TextFormField(
-                      controller: materialTypeController,
-                      decoration: InputDecoration(
-                        labelText: 'material_type'.tr,
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'material_type_is_mandatory'.tr;
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.only(right: 50.0),
-                    child: TextFormField(
-                      controller: rentalFeeController,
-                      decoration: InputDecoration(
-                        labelText: 'rental_fee'.tr,
-                      ),
-                      validator: (String? value) {
-                        if (value == null || value.isEmpty) {
-                          return 'rental_fee_is_mandatory'.tr;
-                        }
-                        if (double.tryParse(value) == null) {
-                          return 'rental_fee_must_be_a_number'.tr;
-                        }
-                        return null;
-                      },
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
           Flexible(
             child: ConstrainedBox(
               constraints: const BoxConstraints(
-                maxHeight: 220,
+                maxHeight: 300,
               ),
               child: Row(
-                mainAxisSize: MainAxisSize.min,
                 children: [
                   Expanded(
                     child: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        TextFormField(
+                          controller: materialTypeController,
+                          decoration: InputDecoration(
+                            labelText: 'material_type'.tr,
+                          ),
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'material_type_is_mandatory'.tr;
+                            }
+                            return null;
+                          },
+                        ),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 15.0),
-                                child: TextFormField(
-                                  controller: maxLifeExpectancyController,
-                                  decoration: InputDecoration(
-                                    labelText: 'max_life_expectancy'.tr,
-                                  ),
-                                  validator: (String? value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'max_life_expectancy_is_mandatory'.tr;
-                                    }
-                                    if (double.tryParse(value) == null) {
-                                      return 'max_life_expectancy_must_be_a_number'.tr;
-                                    }
-                                    return null;
-                                  },
+                              child: TextFormField(
+                                controller: maxLifeExpectancyController,
+                                decoration: InputDecoration(
+                                  labelText: 'max_life_expectancy'.tr,
                                 ),
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'max_life_expectancy_is_mandatory'.tr;
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'max_life_expectancy_must_be_a_number'.tr;
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.only(right: 10.0),
-                                child: TextFormField(
-                                  controller: maxServiceDurationController,
-                                  decoration: InputDecoration(
-                                    labelText: 'max_service_duration'.tr,
-                                  ),
-                                  validator: (String? value) {
-                                    if (value == null || value.isEmpty) {
-                                      return 'max_service_duration_is_mandatory'.tr;
-                                    }
-                                    if (double.tryParse(value) == null) {
-                                      return 'max_service_duration_must_be_a_number'.tr;
-                                    }
-                                    return null;
-                                  },
+                              child: TextFormField(
+                                controller: maxServiceDurationController,
+                                decoration: InputDecoration(
+                                  labelText: 'max_service_duration'.tr,
                                 ),
+                                validator: (String? value) {
+                                  if (value == null || value.isEmpty) {
+                                    return 'max_service_duration_is_mandatory'.tr;
+                                  }
+                                  if (double.tryParse(value) == null) {
+                                    return 'max_service_duration_must_be_a_number'.tr;
+                                  }
+                                  return null;
+                                },
                               ),
                             ),
                           ],
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
-                          child: TextFormField(
-                            controller: nextInspectionController,
-                            decoration: InputDecoration(
-                              labelText: 'next_inspection'.tr,
-                            ),
-                            validator: (String? value) {
-                              if (value == null || value.isEmpty) {
-                                return 'next_inspection_is_mandatory'.tr;
-                              }
-                              if (double.tryParse(value) == null) {
-                                return 'next_inspection_must_be_a_number'.tr;
-                              }
-                              return null;
-                            },
+                        TextFormField(
+                          controller: nextInspectionController,
+                          decoration: InputDecoration(
+                            labelText: 'next_inspection'.tr,
                           ),
+                          validator: (String? value) {
+                            if (value == null || value.isEmpty) {
+                              return 'next_inspection_is_mandatory'.tr;
+                            }
+                            if (double.tryParse(value) == null) {
+                              return 'next_inspection_must_be_a_number'.tr;
+                            }
+                            return null;
+                          },
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 10.0),
+                          padding: const EdgeInsets.only(bottom: 8.0),
                           child: TextFormField(
                             controller: instructionsController,
                             decoration: InputDecoration(
@@ -227,9 +185,28 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       ],
                     ),
                   ),
+                  const SizedBox(width: 8.0,),
                   Expanded(
                     child: Column(
                       children: [
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8.0),
+                          child: TextFormField(
+                            controller: rentalFeeController,
+                            decoration: InputDecoration(
+                              labelText: 'rental_fee'.tr,
+                            ),
+                            validator: (String? value) {
+                              if (value == null || value.isEmpty) {
+                                return 'rental_fee_is_mandatory'.tr;
+                              }
+                              if (double.tryParse(value) == null) {
+                                return 'rental_fee_must_be_a_number'.tr;
+                              }
+                              return null;
+                            },
+                          ),
+                        ),
                         Expanded(
                           child: Obx(() => ListView.separated(
                             separatorBuilder: (context, index) => const SizedBox(height: 8.0),
