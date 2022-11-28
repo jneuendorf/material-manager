@@ -202,7 +202,7 @@ for i in range(NUM_MATERIALS):
                 Property.get_or_create(
                     value=str(i),
                     _related=dict(
-                        type=property_type,
+                        property_type=property_type,
                     ),
                 )
                 for property_type in material_type.property_types

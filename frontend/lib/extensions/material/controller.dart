@@ -28,7 +28,7 @@ class MaterialController extends GetxController {
 
     initCompleter.future;
 
-    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
       initCompleter.complete();
       return;
     }
@@ -110,7 +110,7 @@ class MaterialController extends GetxController {
 
   /// Adds a new material to the backend.
   /// Returns the id of the newly created material
-  /// or null if an error occured.
+  /// or null if an error occurred.
   Future<int?> addMaterial(MaterialModel material, XFile image) async {
     try {
       final response = await apiService.mainClient.post('/material',
@@ -121,7 +121,7 @@ class MaterialController extends GetxController {
             'manufacturer': s.manufacturer,
             'production_date': s.productionDate,
           }).toList(),
-          'inventory_number': material.inventoryNumber,
+          'inventory_number': material.inventoryNumbers,
           'max_operating_date': material.maxOperatingDate,
           'max_days_used': material.maxDaysUsed,
           'installation_date': material.installationDate,
@@ -141,10 +141,8 @@ class MaterialController extends GetxController {
           },
           'properties': material.properties.map((Property p) => {
             'id': p.id,
-            'name': p.name,
-            'description': p.description,
+            'property_type': p.propertyType,
             'value': p.value,
-            'unit': p.unit,
           }).toList(),
           'material_type': {
             'id': material.materialType.id,
@@ -189,10 +187,8 @@ class MaterialController extends GetxController {
     try {
       final response = await apiService.mainClient.post('/material_property',
         data: {
-          'name': property.name,
-          'description': property.description,
+          'property_type': property.propertyType,
           'value': property.value,
-          'unit': property.unit,
         },
       );
 
@@ -217,7 +213,7 @@ class MaterialController extends GetxController {
             'manufacturer': s.manufacturer,
             'production_date': s.productionDate,
           }).toList(),
-          'inventory_number': material.inventoryNumber,
+          'inventory_number': material.inventoryNumbers,
           'max_operating_date': material.maxOperatingDate,
           'max_days_used': material.maxDaysUsed,
           'installation_date': material.installationDate,
@@ -237,10 +233,8 @@ class MaterialController extends GetxController {
           },
           'properties': material.properties.map((Property p) => {
             'id': p.id,
-            'name': p.name,
-            'description': p.description,
+            'property_type': p.propertyType,
             'value': p.value,
-            'unit': p.unit,
           }).toList(),
           'material_type': {
             'id': material.materialType.id,
@@ -285,10 +279,8 @@ class MaterialController extends GetxController {
     try {
       final response = await apiService.mainClient.put('/material_property/${property.id}',
         data: {
-          'name': property.name,
-          'description': property.description,
+          'property_type': property.propertyType,
           'value': property.value,
-          'unit': property.unit,
         },
       );
 

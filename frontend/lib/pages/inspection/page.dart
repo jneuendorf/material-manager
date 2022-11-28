@@ -84,8 +84,8 @@ class InspectionPage extends GetView<InspectionPageController> {
                     SizedBox(
                       width: 50,
                       child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                          ? material. imageUrls.isNotEmpty 
-                            ? Image.network(baseUrl + material.imageUrls.first) 
+                          ? material. imageUrls.isNotEmpty
+                            ? Image.network(baseUrl + material.imageUrls.first)
                             : const Icon(Icons.image)
                           : null,
                     ),
@@ -93,7 +93,7 @@ class InspectionPage extends GetView<InspectionPageController> {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         Text(material.materialType.name),
-                        Text(material.inventoryNumber, style: const TextStyle(color: Colors.grey),),
+                        Text(material.inventoryNumbers.map((x) => x.inventoryNumber).join(', '), style: const TextStyle(color: Colors.grey),),
                       ],
                     ),
                     Column(
