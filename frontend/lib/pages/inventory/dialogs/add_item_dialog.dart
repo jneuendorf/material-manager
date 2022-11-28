@@ -242,7 +242,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                     child: Padding(
                                       padding: const EdgeInsets.only(right: 8.0),
                                       child: TextFormField(
-                                        onFieldSubmitted: (value) => properties[index].name = value.trim(),
+                                        onFieldSubmitted: (value) => properties[index].propertyType.name = value.trim(),
                                         controller: propertyNameController[index],
                                         decoration: InputDecoration(
                                           border: const OutlineInputBorder(),
@@ -266,7 +266,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                   ),
                                   Expanded(
                                     child: TextFormField(
-                                      onFieldSubmitted: (value) => properties[index].unit = value.trim(),
+                                      onFieldSubmitted: (value) => properties[index].propertyType.unit = value.trim(),
                                       controller: propertyUnitController[index],
                                       decoration: InputDecoration(
                                         border: const OutlineInputBorder(),
@@ -294,10 +294,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         TextIconButton(
                           onTap: () => properties.add(Property(
                             id: null,
-                            name: '',
-                            description: '',
                             value: '',
-                            unit: ''
+                            propertyType: PropertyType(
+                              id: null,
+                              name: '',
+                              unit: '',
+                              description: '',
+                            ),
                           )),
                           iconData: Icons.add,
                           text: 'add_property'.tr,
