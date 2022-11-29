@@ -38,7 +38,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[
     NonFinalMapEntry(null, <SerialNumber>[]),
   ].obs;
-  final RxList<Image> images = <Image>[].obs;
+  final RxList<XFile> images = <XFile>[].obs;
 
   final TextEditingController materialTypeController = TextEditingController();
   final TextEditingController rentalFeeController = TextEditingController();
@@ -275,7 +275,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                               ],
                             ),
                           ),
-                          const SizedBox(width: 8.0,),
+                          const SizedBox(width: 8.0),
                           Expanded(
                             child: Column(
                               children: [
@@ -666,7 +666,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       child: Obx(() => ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          for (Image image in images) 
+                          for (XFile image in images) 
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Container(
@@ -675,7 +675,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   image: DecorationImage(
-                                    image: image.image,
+                                    image: kIsWeb 
+                                      ? Image.network(image.path).image
+                                      : Image.file(File(image.path)).image,
                                     fit: BoxFit.cover,
                                   ),
                                 ),
@@ -716,18 +718,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                     const Icon(Icons.image),
                                     Text('add_image'.tr),
                                     FloatingActionButton(
-                                      onPressed: () async {
-                                        List<XFile> lst = await pickImages() ?? [];
-                                        images.addAll(lst.map((XFile f) {
-                                          Image? image;
-                                          if (kIsWeb) {
-                                            image = Image.network(f.path);
-                                          } else {
-                                            image = Image.file(File(f.path));
-                                          }
-                                          return image;
-                                        }));
-                                      },
+                                      onPressed: () async => images.addAll(
+                                        (await pickImages()) ?? []),
                                       backgroundColor: Get.theme.colorScheme.onSecondary,
                                       foregroundColor: Colors.white,
                                       elevation: 10,
@@ -760,6 +752,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     ),
   );
 
+  /// Handles tap on the add button.
   void onAdd() {
     if (!formKey.currentState!.validate()) return;
 

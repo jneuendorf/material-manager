@@ -6,7 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import 'package:universal_html/html.dart' as uhtml;
+import 'package:universal_html/html.dart' as html;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -32,7 +32,7 @@ Size getTextSize({
     return textPainter.size;
   }
 
-void downloadWeb(String name, String url) => uhtml.AnchorElement(
+void downloadWeb(String name, String url) => html.AnchorElement(
       href: url)
     ..setAttribute('download', name)
     ..click();
