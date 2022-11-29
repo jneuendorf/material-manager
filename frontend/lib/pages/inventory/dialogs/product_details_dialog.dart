@@ -71,7 +71,7 @@ class ProductDetailsDialog extends StatelessWidget {
                             fontSize: 15.0,
                           ),
                         ),
-                        Text(item.inventoryNumber,
+                        Text(item.inventoryNumbers.map((x) => x.inventoryNumber).join(', '),
                           style: const TextStyle(fontSize: 15.0),
                         ),
                         ]
@@ -117,13 +117,13 @@ class ProductDetailsDialog extends StatelessWidget {
                       ),
                       for(var property in item.properties) Row(
                         children: [
-                          Text('${property.name} : ',
+                          Text('${property.propertyType.name} : ',
                             style: const TextStyle(
                               fontWeight: FontWeight.bold,
                               fontSize: 15.0,
                             )
                           ),
-                          Text(property.value + property.unit,
+                          Text(property.value + property.propertyType.unit,
                             style: const TextStyle(fontSize: 15.0)
                           ),
                         ],

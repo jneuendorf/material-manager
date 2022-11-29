@@ -26,7 +26,7 @@ def handle_request_parsing_error(err, req, schema, *, error_status_code, error_h
     abort(error_status_code, errors=err.messages)
 
 
-def create_app(config, db: SQLAlchemy, mail: Mail, drop_db=False):
+def create_app(config: dict, db: SQLAlchemy, mail: Mail, drop_db=False):
     print("CREATING NEW APP!")
     app: Flask = Flask(__name__)
     app.config.update(config)

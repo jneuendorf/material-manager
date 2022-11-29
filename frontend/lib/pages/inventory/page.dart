@@ -68,7 +68,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 ),
               ),
               TextIconButton(
-                onTap: () => Get.dialog(AddItemDialog()),
+                onTap: () => Get.dialog(const AddItemDialog()),
                 iconData: Icons.add,
                 text: 'add_item'.tr,
                 color: Get.theme.colorScheme.onSecondary,
@@ -137,9 +137,9 @@ class InventoryPage extends GetView<InventoryPageController> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 50,
-                        child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) 
-                          ? controller.filteredMaterial[index].imageUrls.isNotEmpty 
-                            ? Image.network(baseUrl + controller.filteredMaterial[index].imageUrls.first) 
+                        child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
+                          ? controller.filteredMaterial[index].imageUrls.isNotEmpty
+                            ? Image.network(baseUrl + controller.filteredMaterial[index].imageUrls.first)
                             : const Icon(Icons.image)
                           : null,
                       ),
@@ -184,15 +184,15 @@ class InventoryPage extends GetView<InventoryPageController> {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) && 
+                      image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) &&
                           item.imageUrls.isNotEmpty
                         ? DecorationImage(
                           image: NetworkImage(item.imageUrls.first),
                         )
                         : null,
                     ),
-                    child: item.imageUrls.isEmpty 
-                      ? const Icon(Icons.image) 
+                    child: item.imageUrls.isEmpty
+                      ? const Icon(Icons.image)
                       : Container(),
                   ),
                   Row(
@@ -226,7 +226,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                   ),
                   buildCustomTextField(
                     item.daysUsed.toString(),
-                    'usage_in_days'.tr,
+                    'days_used'.tr,
                   ),
                 ],
               ),

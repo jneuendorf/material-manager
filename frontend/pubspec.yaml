@@ -45,7 +45,13 @@ dependencies:
   lottie: ^1.4.3
   jwt_decoder: ^2.0.1
   flutter_dotenv: ^5.0.2
+  csv: ^5.0.1
+  path_provider: ^2.0.11
+  permission_handler: ^10.2.0
+  universal_html: ^2.0.8
+  path: ^1.8.2
   cross_file: ^0.3.3+2
+  image_picker: ^0.8.6
 
 dev_dependencies:
   flutter_test:
@@ -80,6 +86,11 @@ flutter:
   # list giving the asset and other descriptors for the font. For
   # example:
   fonts:
+    # Add a zero byte file as font so it's not downloaded from fonts.gstatic.com
+    # https://github.com/flutter/flutter/issues/77580#issuecomment-1112333700
+    - family: Roboto
+      fonts:
+        - asset: google_fonts/Roboto-Regular.ttf
     - family: FiraSans
       fonts:
         - asset: assets/fonts/FiraSans-Bold.otf

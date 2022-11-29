@@ -13,7 +13,7 @@ For more details for each part, see the according documentations:
 Contributors to this project: See the [LICENSE](./LICENSE) file.
 
 Thanks also to
-- R.-Bodo Riediger-Klaus for providing a server
+- R.-Bodo Riediger-Klaus and Fynn Renner for providing development/test server
 - Oliver Wiese for supporting us while development
 
 

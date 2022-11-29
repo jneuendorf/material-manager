@@ -16,9 +16,8 @@ const rtStorageKey = 'refresh_token';
 const storage = FlutterSecureStorage();
 // TODO: Or `const bool prod = const bool.fromEnvironment('dart.vm.product');`?
 //  See https://stackoverflow.com/questions/49707028/
-String baseUrl = kDebugMode 
-  ? 'http://${dotenv.env['HOST']}:${dotenv.env['PORT']}' 
-  : '';
+
+String baseUrl = '${dotenv.env['API_URL']}';
 
 Map<int, String> defaultErrors = {
   400: 'bad_request'.tr,
@@ -40,7 +39,7 @@ class ApiService extends GetxService {
   Map<String, dynamic>? tokenInfo;
 
   String? refreshToken;
-  String? accessToken; 
+  String? accessToken;
   bool saveCredentials = false;
 
   Future<ApiService> init() async {
@@ -78,7 +77,7 @@ class ApiService extends GetxService {
   /// Checks if there is a valid access or refresh token.
   bool get isAuthorized => accessToken != null && refreshToken != null &&
     ((JwtDecoder.getRemainingTime(accessToken!) >= const Duration(minutes: 1) &&
-    !JwtDecoder.isExpired(accessToken!)) || 
+    !JwtDecoder.isExpired(accessToken!)) ||
     (JwtDecoder.getRemainingTime(refreshToken!) >= const Duration(minutes: 1) &&
     !JwtDecoder.isExpired(refreshToken!)));
 

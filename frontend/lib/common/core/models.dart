@@ -35,3 +35,10 @@ class ImprintModel {
     );
   }
 }
+
+class NonFinalMapEntry<K,V> {
+  K key;
+  V value;
+
+  NonFinalMapEntry(this.key, this.value);
+}

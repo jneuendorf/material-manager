@@ -71,10 +71,10 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
 
     super.onClose();
   }
-  
+
 
   /// Calculates the total price of all material in the [shoppingCart].
-  double get totalPrice => shoppingCart.fold(0.0, 
+  double get totalPrice => shoppingCart.fold(0.0,
     (double previousValue, MaterialModel item) => previousValue + item.rentalFee);
 
   /// Filters the [availableMaterial] by the [searchTerm] and the [selectedFilter].
@@ -84,7 +84,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       /// Checks if the [selectedFilter] equals [materialType] of the [item].
       bool materialTypeFilterCondition() {
         if (selectedFilter.value == null) return true;
-        
+
         return item.materialType.id == selectedFilter.value!.id;
       }
 
@@ -101,13 +101,13 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
 
         for (Property property in item.properties) {
           if (property.value.toLowerCase().contains(term)) {
-            return true; 
+            return true;
           }
         }
         return false;
       }
 
-      return materialTypeFilterCondition() && 
+      return materialTypeFilterCondition() &&
         (propertyNameCondition() || materialTypeNameCondition());
     }).toList();
   }
@@ -127,13 +127,22 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     runFilter();
   }
 
-  /// Calls the DatePicker and returns the formated date.
+  /// Calls the DatePicker and returns the formatted date.
   Future<String?> pickDate() async {
     DateTime? pickedDate = await showDatePicker(
       context: Get.context!,
       initialDate: DateTime.now().add(const Duration(days: 1)),
       firstDate: DateTime.now(),
       lastDate: DateTime.now().add(const Duration(days: 365)),
+      builder: (context, child) => child != null ? Theme(
+        data: ThemeData(
+          colorScheme: ColorScheme.light(
+            onPrimary: Colors.white,
+            primary: Get.theme.colorScheme.secondary
+          )
+        ),
+        child: child
+      ) : const SizedBox()
     );
     if (pickedDate == null) return null;
 
@@ -190,7 +199,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
         usageStartDate: dateFormat.parse(usageStartController.value.text),
         usageEndDate: dateFormat.parse(usageEndController.value.text),
       );
-      
+
       final int? id = await rentalController.addRental(rental);
       if (id != null) {
         Get.toNamed(rentalCompletedRoute);
