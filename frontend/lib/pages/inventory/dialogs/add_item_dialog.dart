@@ -786,9 +786,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
       manufacturer: manufacturerController.text,
     );
 
-    if (statusCode != 201) {
-      debugPrint('unexpected response status code');
-    };
     if (statusCode == null) {
       debugPrint('Add Material did not succeed!');
       loading.value = false;
