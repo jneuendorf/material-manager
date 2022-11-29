@@ -7,27 +7,6 @@ from core.helpers.schema import BaseSchema  # , ModelConverter
 from . import models
 
 
-# We need to fetch all rental statuses
-# but I am not sure if this works correctly or not
-class RentalStatusSchema(BaseSchema):
-    class Meta:
-        model = models.Rental
-        fields = (
-            "id",
-            "rental_status",
-        )
-
-
-# Fetches all rental statuses.
-class RentalStatus(ModelListResource):
-    url = "/rental_statuses"
-    Schema = RentalStatusSchema
-
-    def get(self):
-        rental_statuses = models.Rental.all()
-        return self.serialize(rental_statuses)
-
-
 class RentalSchema(BaseSchema):
     class Meta:
         model = models.Rental

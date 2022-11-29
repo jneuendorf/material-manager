@@ -13,6 +13,5 @@ rental = Extension(
     resources=(
         resources.Rental,
         resources.Rentals,
-        resources.RentalStatus,
     ),
 )
