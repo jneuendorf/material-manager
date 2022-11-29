@@ -9,6 +9,8 @@ import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/core/models.dart';
 import 'package:frontend/extensions/user/model.dart';
 
+
+
 const imprintRoute = '/imprint';
 
 final ImprintModel mockImprint = ImprintModel(
@@ -17,7 +19,7 @@ final ImprintModel mockImprint = ImprintModel(
   phoneNumber: '+49 12345678942',
   email: 'muster@mail.com',
   boardMembers: ['Peter Müller','Hans Meyer'],
-  registrationNumber: 7235183613,
+  registrationNumber: 7235,
   registryCourt: 'Amtgericht Berlin',
   vatNumber: '1234 567 89'
 );
@@ -50,43 +52,42 @@ class ImprintPage extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text('${mockImprint.address}', style: const TextStyle(fontSize: 15.0)),
+                    child: Text('${mockImprint.address.street} ${mockImprint.address.houseNumber}, ${mockImprint.address.zip} ${mockImprint.address.city}', style: const TextStyle(fontSize: 15.0)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text('Telefon: ${mockImprint.phoneNumber}', style: const TextStyle(fontSize: 15.0)),
+                    child: Text('${'phone'.tr}: ${mockImprint.phoneNumber}', style: const TextStyle(fontSize: 15.0)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text('Email: ${mockImprint.email}', style: const TextStyle(fontSize: 15.0)),
+                    child: Text('${'email'.tr}: ${mockImprint.email}', style: const TextStyle(fontSize: 15.0)),
+                  ),
+                  Text('Fax: +49 1234 56789', style: const TextStyle(fontSize: 15.0)
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text('Fax: +49 1234 56789', style: const TextStyle(fontSize: 15.0)),
+                    padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
+                    child: Text('${'authorized_board_of_directors'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
+                  for(var boardMember in mockImprint.boardMembers)
+                    Text(boardMember, style: const TextStyle(fontSize: 15.0)),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
-                    child: Text('Vertretungsberechtigter Vorstand', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
+                    child: Text('${'registered_in_club_register'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
-                  Text('${mockImprint.boardMembers}', style: const TextStyle(fontSize: 15.0)),
+                  Text('${mockImprint.registryCourt}: ${mockImprint.registrationNumber}', style: const TextStyle(fontSize: 15.0)),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
-                    child: Text('Eingetragen im Vereinsregister', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
-                  ),
-                  Text('vom ${mockImprint.registryCourt}: ${mockImprint.registrationNumber}', style: const TextStyle(fontSize: 15.0)),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
-                    child: Text('Umsatzsteuer-Identifikationsnummer', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
+                    child: Text('${'vat_number'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
                   Text('${mockImprint.vatNumber}', style: const TextStyle(fontSize: 15.0)),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
-                    child: Text('Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
+                    child: Text('${'regulation_on_online_dispute_resolution_in_consumer_matters'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
                   Text('Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die Sie unter http://ec.europa.eu/consumers/odr/ finden.', style: const TextStyle(fontSize: 15.0)),
                   Padding(
-                    padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
-                    child: Text('Haftungshinweis', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
+                    child: Text('${'liability_note'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
                   Text('Trotz sorgfältiger Prüfung wird keine Haftung für die Richtigkeit der auf dieser Webseite dargestellten Inhalte übernommen. Die Betreiber dieser Webseite haften nicht für Inhalte bzw. Verfügbarkeit anderer Webseiten, auf die mit Hyperlinks verwiesen wird. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.', style: const TextStyle(fontSize: 15.0)),
                 ],

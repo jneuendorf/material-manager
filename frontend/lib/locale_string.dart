@@ -192,6 +192,10 @@ class LocaleString extends Translations {
       'suggested_retail_price_must_be_a_number': 'Suggested Retail Price must be a number',
       'add_image': 'Add Image',
       'max_operating_date_must_be_a_date': 'Max. Operating Date must be a date',
+      'registered_in_club_register' : 'Registered in club register',
+      'liability_note' : 'Liability Note',
+      'authorized_board_of_directors' : 'Authorized board of directors',
+      'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Regulation on online dispute resolution in consumer matters'
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -378,6 +382,10 @@ class LocaleString extends Translations {
       'suggested_retail_price_must_be_a_number': 'UVP muss eine Zahl sein',
       'add_image': 'Bild hinzufügen',
       'max_operating_date_must_be_a_date': 'Max. Dienstdatum muss ein Datum sein',
+      'registered_in_club_register' : 'Eingetragen im Vereinsregister',
+      'liability_note' : 'Haftungshinweis',
+      'authorized_board_of_directors' : 'Vertretungsberechtigter Vorstand',
+      'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten'
     }
   };
 }
