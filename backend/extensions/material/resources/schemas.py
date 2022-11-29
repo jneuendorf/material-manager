@@ -23,6 +23,7 @@ class MaterialTypeSchema(BaseSchema):
     class Meta:
         model = models.MaterialType
         fields = ("id", "name", "description")
+        # load_only = ("id",)
 
 
 class PropertyTypeSchema(BaseSchema):

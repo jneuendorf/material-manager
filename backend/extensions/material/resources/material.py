@@ -7,7 +7,13 @@ from sqlalchemy.exc import IntegrityError
 
 from core.helpers.resource import ModelListResource, ModelResource
 from extensions.material import models
-from extensions.material.resources.schemas import MaterialSchema, PurchaseDetailsSchema
+from extensions.material.resources.schemas import (
+    InventoryNumberSchema,
+    MaterialSchema,
+    MaterialTypeSchema,
+    PurchaseDetailsSchema,
+    SerialNumberSchema,
+)
 
 
 class Material(ModelResource):
@@ -68,10 +74,30 @@ class Materials(ModelListResource):
 
     @use_kwargs(
         {
-            "materials": fields.List(
-                fields.Nested(MaterialSchema(exclude=["id", "purchase_details"]))
+            "material_type": fields.Nested(MaterialTypeSchema()),
+            "serial_numbers": fields.List(
+                fields.Nested(SerialNumberSchema()),
+            ),
+            "inventory_numbers": fields.List(
+                fields.Nested(InventoryNumberSchema(exclude=["id"])),
             ),
             "purchase_details": fields.Nested(PurchaseDetailsSchema()),
+            "images": fields.List(fields.Str()),  # base64
+            **MaterialSchema.to_dict(
+                exclude=[
+                    "name",
+                    "installation_date",
+                    "material_type",
+                    "serial_numbers",
+                    "inventory_numbers",
+                    "purchase_details",
+                    "image_urls",
+                    # "properties",
+                ]
+            ),
+            # "materials": fields.List(
+            #     fields.Nested(MaterialSchema(exclude=["id", "purchase_details"]))
+            # ),
         }
     )
     def post(

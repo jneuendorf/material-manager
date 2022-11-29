@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
+import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
@@ -11,6 +13,9 @@ import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/mock_data.dart';
 import 'package:frontend/common/core/models.dart';
+
+
+final DateFormat isoDateFormatter = DateFormat('yyyy-MM-dd');
 
 
 class MaterialController extends GetxController {
@@ -146,8 +151,8 @@ class MaterialController extends GetxController {
   /// Adds a new material to the backend.
   /// Returns the id of the newly created material
   /// or null if an error occurred.
-  Future<int?> addMaterial({
-    required List<XFile> images,
+  Future<int?> addMaterials({
+    required List<XFile> imageFiles,
     required List<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues,
     required MaterialTypeModel materialType,
     required List<Property> properties,
@@ -161,22 +166,45 @@ class MaterialController extends GetxController {
     required double purchasePrice,
     required double suggestedRetailPrice,
     required String invoiceNumber,
+    required String manufacturer,
   }) async {
     try {
-      final response = await apiService.mainClient.post('/material',
-        data: dio.FormData.fromMap({
-          'images': images.map(
-            (XFile f) async  => dio.MultipartFile.fromBytes(await f.readAsBytes())
-          ).toList(),
+      var serialNumbers = bulkValues.map(
+        (NonFinalMapEntry<String?, List<SerialNumber>> values) => values.value.map(
+          (SerialNumber num) => {
+            'serial_number':  num.serialNumber,
+            'production_date': num.productionDate,
+            'manufacturer': manufacturer,
+          }
+        ).toList()
+      ).toList();
+      var images = await Future.wait(imageFiles.map(
+        (XFile f) async => base64.encode(await f.readAsBytes())
+      ).toList());
+
+      final response = await apiService.mainClient.post('/materials',
+        data: {
           'material_type': {
             'id': materialType.id,
             'name': materialType.name,
             'description': materialType.description,
           },
+          'serial_numbers': serialNumbers,
+          'inventory_numbers': bulkValues.map((NonFinalMapEntry<String?, List<SerialNumber>> values) => {
+            'inventory_number':  values.key,
+          }).toList(),
+          'purchase_details': {
+            'purchase_date': isoDateFormatter.format(purchaseDate),
+            'invoice_number': invoiceNumber,
+            'merchant': merchant,
+            'purchase_price': purchasePrice,
+            'suggested_retail_price': suggestedRetailPrice,
+          },
+          'images': images,
           'rental_fee': rentalFee,
-          'max_operating_date': maxOperatingDate,
+          'max_operating_date': isoDateFormatter.format(maxOperatingDate),
           'max_days_used': maxDaysUsed,
-          'next_inspection_date': nextInspectionDate,
+          'next_inspection_date': isoDateFormatter.format(nextInspectionDate),
           'instructions': instructions,
           'properties': properties.map((Property p) => {
             'id': p.id,
@@ -188,29 +216,22 @@ class MaterialController extends GetxController {
               'unit': p.propertyType.unit,
             },
           }).toList(),
-          'purchase_details': {
-            'purchase_date': purchaseDate,
-            'invoice_number': invoiceNumber,
-            'merchant': merchant,
-            'purchanse_price': purchasePrice,
-            'suggested_retail_price': suggestedRetailPrice,
-          },
-          'materials': bulkValues.map((NonFinalMapEntry<String?, List<SerialNumber>> values) => {
-            'invenotry_number': values.key,
-            'serial_numbers': values.value.map(
-              (SerialNumber num) => num.serialNumber,
-            ).toList(),
-            'production_dates': values.value.map(
-              (SerialNumber num) => num.productionDate,
-            ).toList(),
-          }).toList(),
-        }),
+          // 'materials': bulkValues.map((NonFinalMapEntry<String?, List<SerialNumber>> values) => {
+          //   'inventory_number': values.key,
+          //   'serial_numbers': values.value.map(
+          //     (SerialNumber num) => num.serialNumber,
+          //   ).toList(),
+          //   'production_dates': values.value.map(
+          //     (SerialNumber num) => num.productionDate,
+          //   ).toList(),
+          // }).toList(),
+        },
       );
 
-      if (response.statusCode != 201) debugPrint('Error adding material');
-
-      return response.data['id'];
+      return response.statusCode;
     } on dio.DioError catch(e) {
+      debugPrint('Error while trying to add material:');
+      debugPrint('$e');
       apiService.defaultCatch(e);
     }
     return null;
@@ -283,7 +304,7 @@ class MaterialController extends GetxController {
             'invoice_number': material.purchaseDetails.invoiceNumber,
             'merchant': material.purchaseDetails.merchant,
             // 'production_date': material.purchaseDetails.productionDate,
-            'purchanse_price': material.purchaseDetails.purchasePrice,
+            'purchase_price': material.purchaseDetails.purchasePrice,
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
           'properties': material.properties.map((Property p) => {

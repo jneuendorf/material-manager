@@ -99,7 +99,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     searchFocusNode.addListener(() {
       Future.delayed(const Duration(milliseconds: 100)).then(
         (_) => showSearch.value = searchFocusNode.hasFocus,
-      ); 
+      );
     });
 
     selectedType.listen((MaterialTypeModel? type ) async {
@@ -247,9 +247,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           labelText: 'instructions'.tr,
                                         ),
                                         validator: (String? value) {
-                                          if (value == null || value.isEmpty) {
-                                            return 'instructions_are_mandatory'.tr;
-                                          }
+                                          // if (value == null || value.isEmpty) {
+                                          //   return 'instructions_are_mandatory'.tr;
+                                          // }
                                           return null;
                                         },
                                       ),
@@ -401,6 +401,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                   if (value == null || value.isEmpty) {
                                     return 'purchase_date_is_mandatory'.tr;
                                   }
+                                  if (tryParseDate(value) == null) {
+                                    return 'purchase_date_must_be_a_date'.tr;
+                                  }
                                   return null;
                                 },
                               ),
@@ -490,10 +493,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 labelText: 'suggested_retail_price'.tr,
                               ),
                               validator: (String? value) {
-                                if (value == null || value.isEmpty) {
-                                  return 'suggested_retail_price_is_mandatory'.tr;
-                                }
-                                if (double.tryParse(value) == null) {
+                                // if (value == null || value.isEmpty) {
+                                //   return 'suggested_retail_price_is_mandatory'.tr;
+                                // }
+                                if (value != null && double.tryParse(value) == null) {
                                   return 'suggested_retail_price_must_be_a_number'.tr;
                                 }
                                 return null;
@@ -536,10 +539,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                 onFieldSubmitted: (String value) {
                                   if (value.trim().isEmpty) return;
-            
+
                                   List<String> serialParts = value.split(',');
                                   serialParts.removeWhere((element) => element.trim() == '');
-            
+
                                   if (bulkValues[index].value.isEmpty) {
                                     for (int i = 0; i < serialParts.length; i++) {
                                       bulkValues[index].value.add(SerialNumber(
@@ -556,13 +559,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         bulkValues[index].value[i].serialNumber = serialParts[i].trim();
                                       }
                                     }
-            
+
                                     bulkValues[index].value.removeWhere(
                                       (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
-            
+
                                     if (bulkValues[index].value.length < serialParts.length) {
                                       for (int i = bulkValues[index].value.length; i < serialParts.length; i++) {
-                                        debugPrint('Addding serialNumber: ${serialParts[i].trim()} with length: ${serialParts[i].trim().length}');
+                                        debugPrint('Adding serialNumber: ${serialParts[i].trim()} with length: ${serialParts[i].trim().length}');
                                         bulkValues[index].value.add(SerialNumber(
                                           serialNumber: serialParts[i].trim(),
                                           manufacturer: merchantController.text,
@@ -586,13 +589,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
                                 onFieldSubmitted: (String value) {
                                   if (value.trim().isEmpty) return;
-            
+
                                   List<String> productionParts = value.split(',');
                                   productionParts.removeWhere((element) => element.trim() == '');
-            
+
                                   if (bulkValues[index].value.isEmpty) {
                                     final List<SerialNumber> numbers = [];
-            
+
                                     for (int i = 0; i < productionParts.length; i++) {
                                       numbers.add(SerialNumber(
                                         serialNumber: '',
@@ -600,7 +603,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
                                       ));
                                     }
-            
+
                                     bulkValues[index].value.addAll(numbers);
                                   } else {
                                     for (int i = 0; i < bulkValues[index].value.length; i++) {
@@ -610,10 +613,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         bulkValues[index].value[i].productionDate = DateFormat('dd.MM.yyy').parse(productionParts[i].trim());
                                       }
                                     }
-            
+
                                     bulkValues[index].value.removeWhere(
                                       (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
-            
+
                                     if (bulkValues[index].value.length < productionParts.length) {
                                       for (int i = bulkValues[index].value.length; i < productionParts.length; i++) {
                                         bulkValues[index].value.add(SerialNumber(
@@ -669,7 +672,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       child: Obx(() => ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          for (XFile image in images) 
+                          for (XFile image in images)
                             Padding(
                               padding: const EdgeInsets.symmetric(horizontal: 8.0),
                               child: Container(
@@ -678,7 +681,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   image: DecorationImage(
-                                    image: kIsWeb 
+                                    image: kIsWeb
                                       ? Image.network(image.path).image
                                       : Image.file(File(image.path)).image,
                                     fit: BoxFit.cover,
@@ -765,8 +768,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
     //   debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
     // }
 
-    final int? id = await inventoryPageController.materialController.addMaterial(
-      images: images,
+    final int? statusCode = await inventoryPageController.materialController.addMaterials(
+      imageFiles: images,
       bulkValues: bulkValues,
       materialType: selectedType.value!,
       properties: properties,
@@ -780,15 +783,19 @@ class _AddItemDialogState extends State<AddItemDialog> {
       purchasePrice: double.parse(purchasePriceController.text),
       suggestedRetailPrice: double.parse(suggestedRetailPriceController.text),
       invoiceNumber: invoiceNumberController.text,
+      manufacturer: manufacturerController.text,
     );
 
-    if (id == null) {
+    if (statusCode != 201) {
+      debugPrint('unexpected response status code');
+    };
+    if (statusCode == null) {
       debugPrint('Add Material did not succeed!');
       loading.value = false;
-      return;
     }
-    
-    Get.back();
+    else {
+      Get.back();
+    }
   }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
@@ -816,6 +823,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
     if (entry.value.length > productionParts.length) {
       return 'not_enough_production_dates'.tr ;
+    }
+
+    if (productionParts.any((productionDate) => tryParseDate(productionDate) == null)) {
+      return 'production_date_must_be_a_date'.tr;
     }
 
     return null;
