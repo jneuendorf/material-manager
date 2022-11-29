@@ -58,6 +58,12 @@ class Property(Model):  # type: ignore
         ),
     )
 
+    def __str__(self) -> str:
+        unit = self.property_type.unit
+        return (
+            f"{self.property_type.name}: " f"{self.value}{' ' + unit if unit else ''}"
+        )
+
 
 MaterialTypePropertyTypeMapping: Table = db.Table(
     "material_type_property_type_mapping",
@@ -124,6 +130,10 @@ class Material(Model):  # type: ignore
         secondary="material_property_mapping",
         backref="materials",
     )
+
+    @property
+    def description(self):
+        return f"{self.name} ({', '.join(str(prop) for prop in self.properties)})"
 
     def save(self) -> None:
         if not self.serial_numbers:
