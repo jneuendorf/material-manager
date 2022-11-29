@@ -24,8 +24,8 @@ class RentalStatus(ModelListResource):
     Schema = RentalStatusSchema
 
     def get(self):
-        rentals = models.Rental.all()
-        return self.serialize(rentals)
+        rental_statuses = models.Rental.all()
+        return self.serialize(rental_statuses)
 
 
 class RentalSchema(BaseSchema):
