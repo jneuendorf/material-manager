@@ -759,6 +759,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
     for (var element in bulkValues) {
       debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
     }
+
+    // TODO call reqest to add items
+    //inventoryPageController.materialController.addMaterial(material, images);
   }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {

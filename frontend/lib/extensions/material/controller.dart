@@ -145,11 +145,13 @@ class MaterialController extends GetxController {
   /// Adds a new material to the backend.
   /// Returns the id of the newly created material
   /// or null if an error occurred.
-  Future<int?> addMaterial(MaterialModel material, XFile image) async {
+  Future<int?> addMaterial(MaterialModel material, List<XFile> images) async {
     try {
       final response = await apiService.mainClient.post('/material',
         data: dio.FormData.fromMap({
-          'file': await dio.MultipartFile.fromFile(image.path),
+          'images': images.map(
+            (XFile f) async  => await dio.MultipartFile.fromFile(f.path)
+          ).toList(),
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
             'serial_number': s.serialNumber,
             'manufacturer': s.manufacturer,
