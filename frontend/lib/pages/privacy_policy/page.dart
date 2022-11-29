@@ -32,7 +32,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
-                  child: Text('Allgemeine Hinweise', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Allgemeine Hinweise', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 15.0),
@@ -40,7 +40,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 5.0),
-                  child: Text('Datenerfassung auf dieser Website', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Datenerfassung auf dieser Website', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 10.0,bottom: 10.0),
@@ -84,7 +84,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 5.0),
-                  child: Text('Datenschutz', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Datenschutz', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -100,7 +100,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Hinweis zur verantwortlichen Stelle', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Hinweis zur verantwortlichen Stelle', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -120,7 +120,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Speicherdauer', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Speicherdauer', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -128,7 +128,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Allgemeine Hinweise zu den Rechtsgrundlagen der Datenverarbeitung auf dieser Website', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Allgemeine Hinweise zu den Rechtsgrundlagen der Datenverarbeitung auf dieser Website', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -136,7 +136,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Widerruf Ihrer Einwilligung zur Datenverarbeitung', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Widerruf Ihrer Einwilligung zur Datenverarbeitung', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -144,7 +144,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Widerspruchsrecht gegen die Datenerhebung in besonderen Fällen sowie gegen Direktwerbung (Art. 21 DSGVO)', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Widerspruchsrecht gegen die Datenerhebung in besonderen Fällen sowie gegen Direktwerbung (Art. 21 DSGVO)', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -156,7 +156,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Beschwerderecht bei der zuständigen Aufsichtsbehörde', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Beschwerderecht bei der zuständigen Aufsichtsbehörde', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -164,7 +164,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Recht auf Datenübertragbarkeit', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Recht auf Datenübertragbarkeit', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -172,7 +172,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                  Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Auskunft, Löschung und Berichtigung', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Auskunft, Löschung und Berichtigung', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
@@ -180,7 +180,7 @@ class PrivacyPolicyPage extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                  child: Text('Recht auf Einschränkung der Verarbeitung', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 25.0)),
+                  child: Text('Recht auf Einschränkung der Verarbeitung', style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0)),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 10.0),
