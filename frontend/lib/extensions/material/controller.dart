@@ -10,6 +10,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/mock_data.dart';
+import 'package:frontend/common/core/models.dart';
 
 
 class MaterialController extends GetxController {
@@ -145,46 +146,64 @@ class MaterialController extends GetxController {
   /// Adds a new material to the backend.
   /// Returns the id of the newly created material
   /// or null if an error occurred.
-  Future<int?> addMaterial(MaterialModel material, List<XFile> images) async {
+  Future<int?> addMaterial({
+    required List<XFile> images,
+    required List<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues,
+    required MaterialTypeModel materialType,
+    required List<Property> properties,
+    required double rentalFee,
+    required DateTime maxOperatingDate,
+    required int maxDaysUsed,
+    required DateTime nextInspectionDate,
+    required String merchant,
+    required String instructions,
+    required DateTime purchaseDate,
+    required double purchasePrice,
+    required double suggestedRetailPrice,
+    required String invoiceNumber,
+  }) async {
     try {
       final response = await apiService.mainClient.post('/material',
         data: dio.FormData.fromMap({
           'images': images.map(
-            (XFile f) async  => await dio.MultipartFile.fromFile(f.path)
+            (XFile f) async  => dio.MultipartFile.fromBytes(await f.readAsBytes())
           ).toList(),
-          'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
-            'serial_number': s.serialNumber,
-            'manufacturer': s.manufacturer,
-            'production_date': s.productionDate,
-          }).toList(),
-          'inventory_number': material.inventoryNumbers,
-          'max_operating_date': material.maxOperatingDate,
-          'max_days_used': material.maxDaysUsed,
-          'installation_date': material.installationDate,
-          'instructions': material.instructions,
-          'next_inspection_date': material.nextInspectionDate,
-          'rental_fee': material.rentalFee,
-          'condition': material.condition.name,
-          'usage': material.daysUsed,
-          'purchase_details': {
-            'id' : material.purchaseDetails.id,
-            'purchase_date': material.purchaseDetails.purchaseDate,
-            'invoice_number': material.purchaseDetails.invoiceNumber,
-            'merchant': material.purchaseDetails.merchant,
-            // 'production_date': material.purchaseDetails.productionDate,
-            'purchanse_price': material.purchaseDetails.purchasePrice,
-            'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
-          },
-          'properties': material.properties.map((Property p) => {
-            'id': p.id,
-            'property_type': p.propertyType,
-            'value': p.value,
-          }).toList(),
           'material_type': {
-            'id': material.materialType.id,
-            'name': material.materialType.name,
-            'description': material.materialType.description,
+            'id': materialType.id,
+            'name': materialType.name,
+            'description': materialType.description,
           },
+          'rental_fee': rentalFee,
+          'max_operating_date': maxOperatingDate,
+          'max_days_used': maxDaysUsed,
+          'next_inspection_date': nextInspectionDate,
+          'instructions': instructions,
+          'properties': properties.map((Property p) => {
+            'id': p.id,
+            'value': p.value,
+            'property_type': {
+              'id': p.propertyType.id,
+              'name': p.propertyType.name,
+              'description': p.propertyType.description,
+              'unit': p.propertyType.unit,
+            },
+          }).toList(),
+          'purchase_details': {
+            'purchase_date': purchaseDate,
+            'invoice_number': invoiceNumber,
+            'merchant': merchant,
+            'purchanse_price': purchasePrice,
+            'suggested_retail_price': suggestedRetailPrice,
+          },
+          'materials': bulkValues.map((NonFinalMapEntry<String?, List<SerialNumber>> values) => {
+            'invenotry_number': values.key,
+            'serial_numbers': values.value.map(
+              (SerialNumber num) => num.serialNumber,
+            ).toList(),
+            'production_dates': values.value.map(
+              (SerialNumber num) => num.productionDate,
+            ).toList(),
+          }).toList(),
         }),
       );
 

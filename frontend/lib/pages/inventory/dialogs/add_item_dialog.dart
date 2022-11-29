@@ -12,6 +12,7 @@ import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
+import 'package:frontend/common/core/models.dart';
 import 'package:frontend/common/util.dart';
 
 
@@ -43,7 +44,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final TextEditingController materialTypeController = TextEditingController();
   final TextEditingController rentalFeeController = TextEditingController();
   final TextEditingController maxLifeExpectancyController = TextEditingController();
-  final TextEditingController maxServiceDurationController = TextEditingController();
+  final TextEditingController maxOperatingDateController = TextEditingController();
   final TextEditingController instructionsController = TextEditingController();
   final TextEditingController nextInspectionController = TextEditingController();
   final TextEditingController purchaseDateController = TextEditingController();
@@ -66,6 +67,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final List<TextEditingController> inventoryNumberControllers = <TextEditingController>[
     TextEditingController(),
   ];
+
+  final DateFormat dateFormat = DateFormat('dd.MM.yyyy');
 
   @override
   void initState() {
@@ -195,7 +198,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                               if (value == null || value.isEmpty) {
                                                 return 'max_life_expectancy_is_mandatory'.tr;
                                               }
-                                              if (double.tryParse(value) == null) {
+                                              if (int.tryParse(value) == null) {
                                                 return 'max_life_expectancy_must_be_a_number'.tr;
                                               }
                                               return null;
@@ -204,16 +207,16 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         ),
                                         Expanded(
                                           child: TextFormField(
-                                            controller: maxServiceDurationController,
+                                            controller: maxOperatingDateController,
                                             decoration: InputDecoration(
-                                              labelText: 'max_service_duration'.tr,
+                                              labelText: 'max_operating_date'.tr,
                                             ),
                                             validator: (String? value) {
                                               if (value == null || value.isEmpty) {
-                                                return 'max_service_duration_is_mandatory'.tr;
+                                                return 'max_operating_date_is_mandatory'.tr;
                                               }
-                                              if (double.tryParse(value) == null) {
-                                                return 'max_service_duration_must_be_a_number'.tr;
+                                              if (tryParseDate(value) == null) {
+                                                return 'max_operating_date_must_be_a_date'.tr;
                                               }
                                               return null;
                                             },
@@ -230,8 +233,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         if (value == null || value.isEmpty) {
                                           return 'next_inspection_is_mandatory'.tr;
                                         }
-                                        if (double.tryParse(value) == null) {
-                                          return 'next_inspection_must_be_a_number'.tr;
+                                        if (tryParseDate(value) == null) {
+                                          return 'next_inspection_must_be_a_date'.tr;
                                         }
                                         return null;
                                       },
@@ -753,15 +756,39 @@ class _AddItemDialogState extends State<AddItemDialog> {
   );
 
   /// Handles tap on the add button.
-  void onAdd() {
+  Future<void> onAdd() async {
     if (!formKey.currentState!.validate()) return;
 
-    for (var element in bulkValues) {
-      debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
-    }
+    loading.value = true;
 
-    // TODO call reqest to add items
-    //inventoryPageController.materialController.addMaterial(material, images);
+    // for (var element in bulkValues) {
+    //   debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
+    // }
+
+    final int? id = await inventoryPageController.materialController.addMaterial(
+      images: images,
+      bulkValues: bulkValues,
+      materialType: selectedType.value!,
+      properties: properties,
+      rentalFee: double.parse(rentalFeeController.text),
+      maxOperatingDate: dateFormat.parse(maxOperatingDateController.text),
+      maxDaysUsed: int.parse(maxLifeExpectancyController.text),
+      nextInspectionDate: dateFormat.parse(nextInspectionController.text),
+      merchant: merchantController.text,
+      instructions: instructionsController.text,
+      purchaseDate: dateFormat.parse(purchaseDateController.text),
+      purchasePrice: double.parse(purchasePriceController.text),
+      suggestedRetailPrice: double.parse(suggestedRetailPriceController.text),
+      invoiceNumber: invoiceNumberController.text,
+    );
+
+    if (id == null) {
+      debugPrint('Add Material did not succeed!');
+      loading.value = false;
+      return;
+    }
+    
+    Get.back();
   }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
@@ -794,12 +821,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
     return null;
   }
 
+  DateTime? tryParseDate(String input) {
+    try {
+      return dateFormat.parse(input);
+    } on FormatException {
+      return null;
+    }
+  }
+
 }
 
-
-class NonFinalMapEntry<K,V> {
-  K key;
-  V value;
-
-  NonFinalMapEntry(this.key, this.value);
-}
