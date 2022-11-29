@@ -35,3 +35,15 @@ class ImprintModel {
     );
   }
 }
+
+//mock data
+final ImprintModel mockImprint = ImprintModel(
+  clubName: 'Deutscher Alpenverein Sektion Berlin e.V.',
+  address: Address(street:'Musterstraße' ,houseNumber:'56A',zip:'12553' ,city:'Berlin'),
+  phoneNumber: '+49 12345678942',
+  email: 'muster@mail.com',
+  boardMembers: ['Peter Müller','Hans Meyer'],
+  registrationNumber: 7235183613,
+  registryCourt: 'Amtgericht Berlin',
+  vatNumber: '1234 567 89'
+);

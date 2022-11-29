@@ -5,13 +5,26 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:frontend/common/components/page_wrapper.dart';
-///import 'package:url_launcher/url_launcher.dart';
 
+import 'package:frontend/common/core/models.dart';
+import 'package:frontend/extensions/user/model.dart';
 
 const imprintRoute = '/imprint';
 
+final ImprintModel mockImprint = ImprintModel(
+  clubName: 'Deutscher Alpenverein Sektion Berlin e.V.',
+  address: Address(street:'Musterstraße' ,houseNumber:'56A',zip:'12553' ,city:'Berlin'),
+  phoneNumber: '+49 12345678942',
+  email: 'muster@mail.com',
+  boardMembers: ['Peter Müller','Hans Meyer'],
+  registrationNumber: 7235183613,
+  registryCourt: 'Amtgericht Berlin',
+  vatNumber: '1234 567 89'
+);
+
 class ImprintPage extends StatelessWidget {
   const ImprintPage({super.key});
+
 
   @override
   Widget build(BuildContext context) => PageWrapper(
@@ -27,7 +40,7 @@ class ImprintPage extends StatelessWidget {
             Text('imprint'.tr, style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 35.0)),
             Padding(
               padding: const EdgeInsets.only(top: 35.0, bottom: 15.0),
-              child: Text('Vereinsname', style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
+              child: Text(mockImprint.clubName, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 20.0)),
             ),
             Expanded(
               child: Column(
@@ -37,15 +50,15 @@ class ImprintPage extends StatelessWidget {
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text('Musterstraße 123, 14302 Musterstadt', style: const TextStyle(fontSize: 15.0)),
+                    child: Text('${mockImprint.address}', style: const TextStyle(fontSize: 15.0)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text('Telefon: +49 12345678942', style: const TextStyle(fontSize: 15.0)),
+                    child: Text('Telefon: ${mockImprint.phoneNumber}', style: const TextStyle(fontSize: 15.0)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 9.0),
-                    child: Text('Email: Muster@mail.com', style: const TextStyle(fontSize: 15.0)),
+                    child: Text('Email: ${mockImprint.email}', style: const TextStyle(fontSize: 15.0)),
                   ),
                   Padding(
                     padding: const EdgeInsets.only(bottom: 9.0),
@@ -55,17 +68,17 @@ class ImprintPage extends StatelessWidget {
                     padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
                     child: Text('Vertretungsberechtigter Vorstand', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
-                  Text('Max Mustermann, Helmut Meyer, Sabine Müller', style: const TextStyle(fontSize: 15.0)),
+                  Text('${mockImprint.boardMembers}', style: const TextStyle(fontSize: 15.0)),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
                     child: Text('Eingetragen im Vereinsregister', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
-                  Text('des Amtgerichts Berlin: VR 1234', style: const TextStyle(fontSize: 15.0)),
+                  Text('vom ${mockImprint.registryCourt}: ${mockImprint.registrationNumber}', style: const TextStyle(fontSize: 15.0)),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
                     child: Text('Umsatzsteuer-Identifikationsnummer', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
-                  Text('gemäß § 27a UStG: 1234 567 89', style: const TextStyle(fontSize: 15.0)),
+                  Text('${mockImprint.vatNumber}', style: const TextStyle(fontSize: 15.0)),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 15.0),
                     child: Text('Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
