@@ -216,7 +216,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                                 return 'max_operating_date_is_mandatory'.tr;
                                               }
                                               if (tryParseDate(value) == null) {
-                                                return 'max_operating_date_must_be_a_date'.tr;
+                                                return 'must_be_date_format'.tr;
                                               }
                                               return null;
                                             },
@@ -234,24 +234,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           return 'next_inspection_is_mandatory'.tr;
                                         }
                                         if (tryParseDate(value) == null) {
-                                          return 'next_inspection_must_be_a_date'.tr;
+                                          return 'must_be_date_format'.tr;
                                         }
                                         return null;
                                       },
                                     ),
-                                    Padding(
-                                      padding: const EdgeInsets.only(bottom: 0.0),
-                                      child: TextFormField(
-                                        controller: instructionsController,
-                                        decoration: InputDecoration(
-                                          labelText: 'instructions'.tr,
-                                        ),
-                                        validator: (String? value) {
-                                          // if (value == null || value.isEmpty) {
-                                          //   return 'instructions_are_mandatory'.tr;
-                                          // }
-                                          return null;
-                                        },
+                                    TextFormField(
+                                      controller: instructionsController,
+                                      decoration: InputDecoration(
+                                        labelText: 'instructions'.tr,
                                       ),
                                     ),
                                   ],
@@ -402,7 +393,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                     return 'purchase_date_is_mandatory'.tr;
                                   }
                                   if (tryParseDate(value) == null) {
-                                    return 'purchase_date_must_be_a_date'.tr;
+                                    return 'must_be_date_format'.tr;
                                   }
                                   return null;
                                 },
@@ -822,7 +813,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     }
 
     if (productionParts.any((productionDate) => tryParseDate(productionDate) == null)) {
-      return 'production_date_must_be_a_date'.tr;
+      return 'must_be_date_format'.tr;
     }
 
     return null;

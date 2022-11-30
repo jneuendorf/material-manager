@@ -181,7 +181,6 @@ class LocaleString extends Translations {
       'max_service_duration_must_be_a_number': 'Max. Service Duration must be a number',
       'instructions_are_mandatory': 'Instructions are mandatory',
       'next_inspection_is_mandatory': 'Next Inspection Date is mandatory',
-      'next_inspection_must_be_a_date': 'Next Inspection Date must be a date',
       'purchase_date_is_mandatory': 'Purchase Date is mandatory',
       'merchant_is_mandatory': 'Merchant is mandatory',
       'purchase_price_is_mandatory': 'Purchase Price is mandatory',
@@ -191,7 +190,7 @@ class LocaleString extends Translations {
       'suggested_retail_price_is_mandatory': 'Suggested Retail Price is mandatory',
       'suggested_retail_price_must_be_a_number': 'Suggested Retail Price must be a number',
       'add_image': 'Add Image',
-      'max_operating_date_must_be_a_date': 'Max. Operating Date must be a date',
+      'must_be_date_format': 'Must be TT.MM.YYYY format',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -367,7 +366,6 @@ class LocaleString extends Translations {
       'max_service_duration_must_be_a_number': 'Max. Dienstdauer muss eine Zahl sein',
       'instructions_are_mandatory': 'Gebrauchsanweisung ist verplichtend',
       'next_inspection_is_mandatory': 'Nächste Inspektionsdatum ist verplichtend',
-      'next_inspection_must_be_a_date': 'Nächste Inspektionsdatum muss ein Datum sein',
       'purchase_date_is_mandatory': 'Kaufdatum ist verplichtend',
       'merchant_is_mandatory': 'Händler ist verplichtend',
       'purchase_price_is_mandatory': 'Kaufpreis ist verplichtend',
@@ -377,7 +375,7 @@ class LocaleString extends Translations {
       'suggested_retail_price_is_mandatory': 'UVP ist verplichtend',
       'suggested_retail_price_must_be_a_number': 'UVP muss eine Zahl sein',
       'add_image': 'Bild hinzufügen',
-      'max_operating_date_must_be_a_date': 'Max. Dienstdatum muss ein Datum sein',
+      'must_be_date_format': 'Muss TT.MM.YYYY Format sein',
     }
   };
 }
