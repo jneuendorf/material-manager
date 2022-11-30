@@ -15,9 +15,6 @@ import 'package:frontend/extensions/material/mock_data.dart';
 import 'package:frontend/common/core/models.dart';
 
 
-final DateFormat isoDateFormatter = DateFormat('yyyy-MM-dd');
-
-
 class MaterialController extends GetxController {
   static final apiService = Get.find<ApiService>();
 
@@ -173,7 +170,7 @@ class MaterialController extends GetxController {
         (NonFinalMapEntry<String?, List<SerialNumber>> values) => values.value.map(
           (SerialNumber num) => {
             'serial_number':  num.serialNumber,
-            'production_date': num.productionDate,
+            'production_date': num.productionDate.toIso8601String(),
             'manufacturer': manufacturer,
           }
         ).toList()
@@ -194,7 +191,7 @@ class MaterialController extends GetxController {
             'inventory_number':  values.key,
           }).toList(),
           'purchase_details': {
-            'purchase_date': isoDateFormatter.format(purchaseDate),
+            'purchase_date': purchaseDate.toIso8601String(),
             'invoice_number': invoiceNumber,
             'merchant': merchant,
             'purchase_price': purchasePrice,
@@ -202,9 +199,9 @@ class MaterialController extends GetxController {
           },
           'images': images,
           'rental_fee': rentalFee,
-          'max_operating_date': isoDateFormatter.format(maxOperatingDate),
+          'max_operating_date': maxOperatingDate.toIso8601String(),
           'max_days_used': maxDaysUsed,
-          'next_inspection_date': isoDateFormatter.format(nextInspectionDate),
+          'next_inspection_date': nextInspectionDate.toIso8601String(),
           'instructions': instructions,
           'properties': properties.map((Property p) => {
             'id': p.id,

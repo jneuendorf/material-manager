@@ -764,9 +764,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
     loading.value = true;
 
-    // for (var element in bulkValues) {
-    //   debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
-    // }
+    for (var element in bulkValues) {
+      debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
+    }
 
     final int? statusCode = await inventoryPageController.materialController.addMaterials(
       imageFiles: images,
@@ -787,11 +787,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
     );
 
     if (statusCode == null) {
-      debugPrint('Add Material did not succeed!');
       loading.value = false;
-    }
-    else {
+    } else {
       Get.back();
+      // TODO refresh the material list
     }
   }
 
