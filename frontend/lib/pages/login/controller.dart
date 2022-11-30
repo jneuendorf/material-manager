@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:dio/dio.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
-import 'package:frontend/extensions/user/controller.dart';
 
 
 const loginRoute = '/login';
@@ -18,35 +18,45 @@ class LoginPageBinding implements Bindings {
 }
 
 class LoginController extends GetxController {
-  final userController = Get.find<UserController>();
+  final apiService = Get.find<ApiService>();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
   final TextEditingController emailController = TextEditingController();
   final TextEditingController passwordController = TextEditingController();
 
-  final BoxConstraints constraints = const BoxConstraints(maxWidth: 500);
-
   final RxBool hideChars = true.obs;
   final RxBool rememberMe = false.obs;
 
-  void toggleHideChars() {
-    hideChars.value = !hideChars.value;
-  }
+  /// Returns a Map containing access and refresh token if successful.
+  Future<Map<String,String>?> login() async {
+    try {
+      final response = await apiService.authClient.post('/login', data: {
+        'email': emailController.text,
+        'password': passwordController.text,
+      });
+      var accessToken = response.data['access_token'] as String;
+      var refreshToken = response.data['refresh_token'] as String;
 
-  void toggleRememberMe(bool value) {
-    rememberMe.value = value;
+      apiService.accessToken = accessToken;
+      apiService.refreshToken = refreshToken;
+      apiService.saveCredentials = rememberMe.value;
+
+      return {
+        atStorageKey: accessToken,
+        rtStorageKey: refreshToken,
+      };
+    } on DioError catch (e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
   }
 
   /// Handles a tap on the login button.
   Future<void> onLoginTap() async {
     if (!formKey.currentState!.validate()) return; 
-    
-    final String email = emailController.text;
-    final String password = passwordController.text;
 
-    final Map<String,String>? tokens = await userController.login(
-      email, password, rememberMe.value);
+    final Map<String,String>? tokens = await login();
 
     if (tokens == null) return;
 
@@ -55,12 +65,19 @@ class LoginController extends GetxController {
       await storeRefreshToken(tokens[rtStorageKey]!);
     }
 
-    //Get.offAllNamed(afterLoginRoute);
     if (afterLoginRoute == rentalRoute) {
       Get.offAllNamed(rentalRoute);
     } else {
       Get.back();
     }
+  }
+
+  void toggleHideChars() {
+    hideChars.value = !hideChars.value;
+  }
+
+  void toggleRememberMe(bool value) {
+    rememberMe.value = value;
   }
 
 }
