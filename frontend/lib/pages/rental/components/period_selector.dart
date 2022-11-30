@@ -32,7 +32,9 @@ class PeriodSelector extends StatelessWidget {
                   controller: rentalPageController.rentalStartController,
                   labelText: 'enter_start_date'.tr,
                   validator: rentalPageController.validateDateTime,
-                  onValidChanged: (String s) => rentalPageController.usageStartController.value.text = s,
+                  onValidChanged: (String s) {
+                    rentalPageController.usageStartController.value.text = s;
+                  },
                   hadError: hadError,
                 ),
               ),
