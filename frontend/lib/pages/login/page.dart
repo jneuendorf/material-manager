@@ -103,11 +103,14 @@ class LoginPage extends GetView<LoginController> {
                         onChanged: controller.rememberMe,
                       )),
                     ),
-                    Text(
-                      'remember_me'.tr,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Colors.grey.shade700,
+                    InkWell(
+                      onTap: () => controller.rememberMe.value = !controller.rememberMe.value,
+                      child: Text(
+                        'remember_me'.tr,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.grey.shade700,
+                        ),
                       ),
                     ),
                   ],
