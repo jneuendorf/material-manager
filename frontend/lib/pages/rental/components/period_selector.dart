@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+
 import 'package:frontend/pages/rental/components/custom_text_field.dart';
 import 'package:frontend/pages/rental/controller.dart';
-import 'package:get/get.dart';
-
 import 'package:frontend/common/util.dart';
+
 
 class PeriodSelector extends StatelessWidget {
   PeriodSelector({Key? key}) : super(key: key);
@@ -11,6 +14,7 @@ class PeriodSelector extends StatelessWidget {
   final rentalPageController = Get.find<RentalPageController>();
 
   final RxBool hadError = false.obs;
+  final DateFormat dateFormat = DateFormat('dd.MM.yyyy');
 
   @override
   Widget build(BuildContext context) {
@@ -33,6 +37,9 @@ class PeriodSelector extends StatelessWidget {
                   labelText: 'enter_start_date'.tr,
                   validator: rentalPageController.validateDateTime,
                   onValidChanged: (String s) {
+                    if(rentalPageController.rentalEndController.value.text != '') {
+                      rentalPageController.rentalPeriod.value = RentalPeriod(startDate: dateFormat.parse(s), endDate: dateFormat.parse(rentalPageController.rentalEndController.value.text));
+                    }
                     rentalPageController.usageStartController.value.text = s;
                   },
                   hadError: hadError,
@@ -44,7 +51,12 @@ class PeriodSelector extends StatelessWidget {
                   controller: rentalPageController.rentalEndController,
                   labelText: 'enter_end_date'.tr,
                   validator: rentalPageController.validateDateTime,
-                  onValidChanged: (String s) => rentalPageController.usageEndController.value.text = s,
+                  onValidChanged: (String s) {
+                    if(rentalPageController.rentalStartController.value.text != '') {
+                      rentalPageController.rentalPeriod.value = RentalPeriod(startDate: dateFormat.parse(rentalPageController.rentalStartController.value.text), endDate: dateFormat.parse(s));
+                    }
+                    rentalPageController.usageEndController.value.text = s;
+                  },
                   hadError: hadError,
                 ),
               ),
@@ -55,7 +67,12 @@ class PeriodSelector extends StatelessWidget {
                 controller: rentalPageController.rentalStartController,
                 labelText: 'enter_start_date'.tr,
                 validator: rentalPageController.validateDateTime,
-                onValidChanged: (String s) => rentalPageController.usageStartController.value.text = s,
+                onValidChanged: (String s) {
+                  if(rentalPageController.rentalEndController.value.text != '') {
+                    rentalPageController.rentalPeriod.value = RentalPeriod(startDate: dateFormat.parse(s), endDate: dateFormat.parse(rentalPageController.rentalEndController.value.text));
+                  }
+                  rentalPageController.usageStartController.value.text = s;
+                },
                 hadError: hadError,
               ),
               const SizedBox(height: 12.0),
@@ -63,7 +80,12 @@ class PeriodSelector extends StatelessWidget {
                 controller: rentalPageController.rentalEndController,
                 labelText: 'enter_end_date'.tr,
                 validator: rentalPageController.validateDateTime,
-                onValidChanged: (String s) => rentalPageController.usageEndController.value.text = s,
+                onValidChanged: (String s) {
+                  if(rentalPageController.rentalStartController.value.text != '') {
+                    rentalPageController.rentalPeriod.value = RentalPeriod(startDate: dateFormat.parse(rentalPageController.rentalStartController.value.text), endDate: dateFormat.parse(s));
+                  }
+                  rentalPageController.usageEndController.value.text = s;
+                },
                 hadError: hadError,
               ),
             ],

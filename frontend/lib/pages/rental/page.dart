@@ -46,6 +46,7 @@ class RentalPage extends GetView<RentalPageController> {
                 ),
               ),
               const SizedBox(width: 16.0),
+              Expanded(child: PeriodSelector()),
               buildCartButton(context),
             ],
           ),
