@@ -105,11 +105,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
     selectedType.listen((MaterialTypeModel? type ) async {
       if (type == null) {
         properties.clear();
-        return;
+        return; 
       }
 
       final propertyTypes = await inventoryPageController.materialController.getPropertyTypesByMaterialTypeName(type.name);
-      debugPrint('propertyTypes: $propertyTypes');
       properties.value = propertyTypes?.map(
         (PropertyType e) => Property(
           id: e.id,
@@ -525,43 +524,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 ),
                                 validator: (String? value) => validateSerialNumber(value!, bulkValues[index]),
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                                onFieldSubmitted: (String value) {
-                                  if (value.trim().isEmpty) return;
-
-                                  List<String> serialParts = value.split(',');
-                                  serialParts.removeWhere((element) => element.trim() == '');
-
-                                  if (bulkValues[index].value.isEmpty) {
-                                    for (int i = 0; i < serialParts.length; i++) {
-                                      bulkValues[index].value.add(SerialNumber(
-                                        serialNumber: serialParts[i].trim(),
-                                        manufacturer: manufacturerController.text,
-                                        productionDate: DateTime(4000),
-                                      ));
-                                    }
-                                  } else {
-                                    for (int i = 0; i < bulkValues[index].value.length; i++) {
-                                      if (i > serialParts.length - 1) {
-                                        bulkValues[index].value[i].serialNumber = '';
-                                      } else {
-                                        bulkValues[index].value[i].serialNumber = serialParts[i].trim();
-                                      }
-                                    }
-
-                                    bulkValues[index].value.removeWhere(
-                                      (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
-
-                                    if (bulkValues[index].value.length < serialParts.length) {
-                                      for (int i = bulkValues[index].value.length; i < serialParts.length; i++) {
-                                        bulkValues[index].value.add(SerialNumber(
-                                          serialNumber: serialParts[i].trim(),
-                                          manufacturer: manufacturerController.text,
-                                          productionDate: DateTime(4000),
-                                        ));
-                                      }
-                                    }
-                                  }
-                                },
                               ),
                             ),
                             const SizedBox(width: 4.0),
@@ -574,47 +536,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 ),
                                 validator: (String? value) => validateProductionDate(value!,  bulkValues[index]),
                                 autovalidateMode: AutovalidateMode.onUserInteraction,
-                                onFieldSubmitted: (String value) {
-                                  if (value.trim().isEmpty) return;
-
-                                  List<String> productionParts = value.split(',');
-                                  productionParts.removeWhere((element) => element.trim() == '');
-
-                                  if (bulkValues[index].value.isEmpty) {
-                                    final List<SerialNumber> numbers = [];
-
-                                    for (int i = 0; i < productionParts.length; i++) {
-                                      numbers.add(SerialNumber(
-                                        serialNumber: '',
-                                        manufacturer: manufacturerController.text,
-                                        productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
-                                      ));
-                                    }
-
-                                    bulkValues[index].value.addAll(numbers);
-                                  } else {
-                                    for (int i = 0; i < bulkValues[index].value.length; i++) {
-                                      if (i > productionParts.length - 1) {
-                                        bulkValues[index].value[i].productionDate = DateTime(4000);
-                                      } else {
-                                        bulkValues[index].value[i].productionDate = DateFormat('dd.MM.yyy').parse(productionParts[i].trim());
-                                      }
-                                    }
-
-                                    bulkValues[index].value.removeWhere(
-                                      (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
-
-                                    if (bulkValues[index].value.length < productionParts.length) {
-                                      for (int i = bulkValues[index].value.length; i < productionParts.length; i++) {
-                                        bulkValues[index].value.add(SerialNumber(
-                                          serialNumber: '',
-                                          manufacturer: manufacturerController.text,
-                                          productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
-                                        ));
-                                      }
-                                    }
-                                  }
-                                },
                               ),
                             ),
                             const SizedBox(width: 4.0),
@@ -630,12 +551,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                   if (value == null || value.trim().isEmpty) {
                                     return 'inventory_number_is_mandatory'.tr;
                                   }
-                                  return null;
-                                },
-                                onFieldSubmitted: (String value) {
-                                  if (value.trim().isEmpty) return;
-
                                   bulkValues[index].key = value.trim();
+                                  return null;
                                 },
                               ),
                             ),
@@ -751,13 +668,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
     loading.value = true;
 
-    for (var element in bulkValues) {
-      debugPrint('Key is null: ${element.key == null}');
-      debugPrint('Value is empty: ${element.value.isEmpty}');
-      debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
-      debugPrint('Key: ${element.key} Value: ${element.value}');
-    }
-
     final int? statusCode = await inventoryPageController.materialController.addMaterials(
       imageFiles: images,
       bulkValues: bulkValues,
@@ -779,13 +689,16 @@ class _AddItemDialogState extends State<AddItemDialog> {
     if (statusCode == null) {
       loading.value = false;
     } else {
+      // since potentially new material, new types and new properties could have been added, 
+      // we can just call the init function to refresh the data
+      inventoryPageController.materialController.onInit();
+      inventoryPageController.onInit();
+      // the futures must not be awaited because the state changes as soon as the initCompleter is completed
       Get.back();
-      // TODO refresh the material list
     }
   }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
-    print('Validate Serial Number');
     if(value.isEmpty) {
       return 'serial_num_is_mandatory'.tr;
     }
@@ -795,6 +708,37 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
     if (entry.value.length > serialParts.length) {
       return 'not_enough_serial_numbers'.tr ;
+    }
+
+    if (entry.value.isEmpty) {
+      for (int i = 0; i < serialParts.length; i++) {
+        entry.value.add(SerialNumber(
+          serialNumber: serialParts[i].trim(),
+          manufacturer: manufacturerController.text,
+          productionDate: DateTime(4000),
+        ));
+      }
+    } else {
+      for (int i = 0; i < entry.value.length; i++) {
+        if (i > serialParts.length - 1) {
+          entry.value[i].serialNumber = '';
+        } else {
+          entry.value[i].serialNumber = serialParts[i].trim();
+        }
+      }
+
+      entry.value.removeWhere(
+        (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
+
+      if (entry.value.length < serialParts.length) {
+        for (int i = entry.value.length; i < serialParts.length; i++) {
+          entry.value.add(SerialNumber(
+            serialNumber: serialParts[i].trim(),
+            manufacturer: manufacturerController.text,
+            productionDate: DateTime(4000),
+          ));
+        }
+      }
     }
 
     return null;
@@ -814,6 +758,41 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
     if (productionParts.any((productionDate) => tryParseDate(productionDate) == null)) {
       return 'must_be_date_format'.tr;
+    }
+
+    if (entry.value.isEmpty) {
+      final List<SerialNumber> numbers = [];
+
+      for (int i = 0; i < productionParts.length; i++) {
+        numbers.add(SerialNumber(
+          serialNumber: '',
+          manufacturer: manufacturerController.text,
+          productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
+        ));
+      }
+
+      entry.value.addAll(numbers);
+    } else {
+      for (int i = 0; i < entry.value.length; i++) {
+        if (i > productionParts.length - 1) {
+          entry.value[i].productionDate = DateTime(4000);
+        } else {
+          entry.value[i].productionDate = DateFormat('dd.MM.yyy').parse(productionParts[i].trim());
+        }
+      }
+
+      entry.value.removeWhere(
+        (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
+
+      if (entry.value.length < productionParts.length) {
+        for (int i = entry.value.length; i < productionParts.length; i++) {
+          entry.value.add(SerialNumber(
+            serialNumber: '',
+            manufacturer: manufacturerController.text,
+            productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
+          ));
+        }
+      }
     }
 
     return null;
