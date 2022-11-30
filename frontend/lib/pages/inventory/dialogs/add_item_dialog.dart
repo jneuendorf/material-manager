@@ -484,9 +484,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 labelText: 'suggested_retail_price'.tr,
                               ),
                               validator: (String? value) {
-                                // if (value == null || value.isEmpty) {
-                                //   return 'suggested_retail_price_is_mandatory'.tr;
-                                // }
                                 if (value != null && double.tryParse(value) == null) {
                                   return 'suggested_retail_price_must_be_a_number'.tr;
                                 }
@@ -556,7 +553,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
                                     if (bulkValues[index].value.length < serialParts.length) {
                                       for (int i = bulkValues[index].value.length; i < serialParts.length; i++) {
-                                        debugPrint('Adding serialNumber: ${serialParts[i].trim()} with length: ${serialParts[i].trim().length}');
                                         bulkValues[index].value.add(SerialNumber(
                                           serialNumber: serialParts[i].trim(),
                                           manufacturer: manufacturerController.text,
@@ -756,7 +752,10 @@ class _AddItemDialogState extends State<AddItemDialog> {
     loading.value = true;
 
     for (var element in bulkValues) {
+      debugPrint('Key is null: ${element.key == null}');
+      debugPrint('Value is empty: ${element.value.isEmpty}');
       debugPrint('InventoryNumber:${element.key!} Serials:${element.value.map((e) => '${e.serialNumber},').toList()}, Prod.Dates:${element.value.map((e) => '${e.productionDate},').toList()}');
+      debugPrint('Key: ${element.key} Value: ${element.value}');
     }
 
     final int? statusCode = await inventoryPageController.materialController.addMaterials(
@@ -786,6 +785,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
+    print('Validate Serial Number');
     if(value.isEmpty) {
       return 'serial_num_is_mandatory'.tr;
     }
@@ -828,4 +828,3 @@ class _AddItemDialogState extends State<AddItemDialog> {
   }
 
 }
-

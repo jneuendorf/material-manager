@@ -177,10 +177,16 @@ class MaterialController extends GetxController {
           }
         ).toList()
       ).toList();
-      var images = await Future.wait(imageFiles.map(
-        (XFile f) async => base64.encode(await f.readAsBytes())
+      // var images = await Future.wait(imageFiles.map(
+      //   (XFile f) async => base64.encode(await f.readAsBytes())
+      // ).toList());
+      List images = await Future.wait(imageFiles.map(
+        (XFile f) async => {
+          'base64': base64.encode(await f.readAsBytes()),
+          'mime_type': f.mimeType,
+          'name': f.name,
+          }
       ).toList());
-
       final response = await apiService.mainClient.post('/materials',
         data: {
           'material_type': {
