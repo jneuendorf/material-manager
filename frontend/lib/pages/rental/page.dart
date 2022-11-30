@@ -7,6 +7,8 @@ import 'package:frontend/pages/rental/screens/sets_screen.dart';
 import 'package:frontend/pages/rental/screens/single_material_screen.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 
+import 'package:frontend/pages/rental/components/period_selector.dart';
+
 
 class RentalPage extends GetView<RentalPageController> {
   const RentalPage({Key? key}) : super(key: key);
@@ -15,7 +17,7 @@ class RentalPage extends GetView<RentalPageController> {
   Widget build(BuildContext context) => PageWrapper(
     pageTitle: 'rental'.tr,
     showFooter: false,
-    child: Column(
+    child: Obx(() => controller.rentalPeriod.value != null ? Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
@@ -59,7 +61,7 @@ class RentalPage extends GetView<RentalPageController> {
           ),
         ),
       ],
-    ),
+    ) : PeriodSelector()),
   );
 
   Widget buildCartButton(context) => InkWell(
@@ -77,7 +79,7 @@ class RentalPage extends GetView<RentalPageController> {
         children: [
           const Icon(Icons.shopping_cart),
           const SizedBox(width: 4.0),
-          Expanded(child: Text('${controller.shoppingCart.length} ${'items'.tr}', 
+          Expanded(child: Text('${controller.shoppingCart.length} ${'items'.tr}',
             maxLines: 1,
           )),
           Text('${controller.totalPrice.toStringAsFixed(2)} €'),

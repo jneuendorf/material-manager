@@ -42,6 +42,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final Rx<TextEditingController> rentalEndController = TextEditingController().obs;
   final Rx<TextEditingController> usageStartController = TextEditingController().obs;
   final Rx<TextEditingController> usageEndController = TextEditingController().obs;
+  final Rxn<RentalPeriod> rentalPeriod = Rxn<RentalPeriod>();
 
   @override
   Future<void> onInit() async {
@@ -206,5 +207,16 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       }
     }
   }
+
+}
+
+class RentalPeriod {
+  final DateTime startDate;
+  final DateTime endDate;
+
+  RentalPeriod({
+    required this.startDate,
+    required this.endDate,
+  });
 
 }
