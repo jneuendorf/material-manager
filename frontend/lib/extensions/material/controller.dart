@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/foundation.dart';
-import 'package:intl/intl.dart';
 
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
