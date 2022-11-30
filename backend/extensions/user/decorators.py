@@ -19,7 +19,7 @@ def permissions_required(*required_permissions: str):
         @wraps(fn)
         @jwt_required()
         def wrapper(*args, **kwargs):
-            user: "User" = current_user
+            user: User = current_user
             user_permissions = set(permission.name for permission in user.permissions)
             if current_app.debug:
                 # TODO: use logging
