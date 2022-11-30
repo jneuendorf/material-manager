@@ -13,12 +13,13 @@ import 'package:frontend/extensions/user/model.dart';
 
 const imprintRoute = '/imprint';
 
+//mock data -- remove when endpoint exists
 final ImprintModel mockImprint = ImprintModel(
   clubName: 'Deutscher Alpenverein Sektion Berlin e.V.',
   address: Address(street:'Musterstraße' ,houseNumber:'56A',zip:'12553' ,city:'Berlin'),
   phoneNumber: '+49 12345678942',
   email: 'muster@mail.com',
-  boardMembers: ['Peter Müller','Hans Meyer'],
+  boardMembers: ['Peter Müller (Vorsitzender)','Hans Meyer (Stellvertreter)'],
   registrationNumber: 7235,
   registryCourt: 'Amtgericht Berlin',
   vatNumber: '1234 567 89'
@@ -62,34 +63,33 @@ class ImprintPage extends StatelessWidget {
                     padding: const EdgeInsets.only(bottom: 9.0),
                     child: Text('${'email'.tr}: ${mockImprint.email}', style: const TextStyle(fontSize: 15.0)),
                   ),
-                  Text('Fax: +49 1234 56789', style: const TextStyle(fontSize: 15.0)
-                  ),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
-                    child: Text('${'authorized_board_of_directors'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    child: Text('authorized_board_of_directors'.tr, style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
                   for(var boardMember in mockImprint.boardMembers)
                     Text(boardMember, style: const TextStyle(fontSize: 15.0)),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
-                    child: Text('${'registered_in_club_register'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    child: Text('registered_in_club_register'.tr, style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
                   Text('${mockImprint.registryCourt}: ${mockImprint.registrationNumber}', style: const TextStyle(fontSize: 15.0)),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
-                    child: Text('${'vat_number'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    child: Text('vat_number'.tr, style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
-                  Text('${mockImprint.vatNumber}', style: const TextStyle(fontSize: 15.0)),
+                  Text(mockImprint.vatNumber, style: const TextStyle(fontSize: 15.0)),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
-                    child: Text('${'regulation_on_online_dispute_resolution_in_consumer_matters'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    child: Text('regulation_on_online_dispute_resolution_in_consumer_matters'.tr, style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
-                  Text('Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die Sie unter http://ec.europa.eu/consumers/odr/ finden.', style: const TextStyle(fontSize: 15.0)),
+                  //launch url "http://ec.europa.eu/consumers/odr/"
+                  const Text('Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die Sie unter http://ec.europa.eu/consumers/odr/ finden.', style: TextStyle(fontSize: 15.0)),
                   Padding(
                     padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
-                    child: Text('${'liability_note'.tr}', style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
+                    child: Text('liability_note'.tr, style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold)),
                   ),
-                  Text('Trotz sorgfältiger Prüfung wird keine Haftung für die Richtigkeit der auf dieser Webseite dargestellten Inhalte übernommen. Die Betreiber dieser Webseite haften nicht für Inhalte bzw. Verfügbarkeit anderer Webseiten, auf die mit Hyperlinks verwiesen wird. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.', style: const TextStyle(fontSize: 15.0)),
+                  const Text('Trotz sorgfältiger Prüfung wird keine Haftung für die Richtigkeit der auf dieser Webseite dargestellten Inhalte übernommen. Die Betreiber dieser Webseite haften nicht für Inhalte bzw. Verfügbarkeit anderer Webseiten, auf die mit Hyperlinks verwiesen wird. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.', style: TextStyle(fontSize: 15.0)),
                 ],
               ),
             )
