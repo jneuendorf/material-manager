@@ -538,7 +538,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                     for (int i = 0; i < serialParts.length; i++) {
                                       bulkValues[index].value.add(SerialNumber(
                                         serialNumber: serialParts[i].trim(),
-                                        manufacturer: merchantController.text,
+                                        manufacturer: manufacturerController.text,
                                         productionDate: DateTime(4000),
                                       ));
                                     }
@@ -559,7 +559,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         debugPrint('Adding serialNumber: ${serialParts[i].trim()} with length: ${serialParts[i].trim().length}');
                                         bulkValues[index].value.add(SerialNumber(
                                           serialNumber: serialParts[i].trim(),
-                                          manufacturer: merchantController.text,
+                                          manufacturer: manufacturerController.text,
                                           productionDate: DateTime(4000),
                                         ));
                                       }
@@ -590,7 +590,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                     for (int i = 0; i < productionParts.length; i++) {
                                       numbers.add(SerialNumber(
                                         serialNumber: '',
-                                        manufacturer: merchantController.text,
+                                        manufacturer: manufacturerController.text,
                                         productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
                                       ));
                                     }
@@ -612,7 +612,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                       for (int i = bulkValues[index].value.length; i < productionParts.length; i++) {
                                         bulkValues[index].value.add(SerialNumber(
                                           serialNumber: '',
-                                          manufacturer: merchantController.text,
+                                          manufacturer: manufacturerController.text,
                                           productionDate: DateFormat('dd.MM.yyy').parse(productionParts[i].trim()),
                                         ));
                                       }
