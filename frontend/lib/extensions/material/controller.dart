@@ -10,6 +10,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/mock_data.dart';
+import 'package:frontend/common/core/models.dart';
 
 
 class MaterialController extends GetxController {
@@ -19,6 +20,8 @@ class MaterialController extends GetxController {
 
   final RxList<MaterialModel> materials = <MaterialModel>[].obs;
   final RxList<MaterialTypeModel> types = <MaterialTypeModel>[].obs;
+  final RxList<Property> properties = <Property>[].obs;
+
 
   @override
   Future<void> onInit() async {
@@ -36,6 +39,7 @@ class MaterialController extends GetxController {
     await Future.wait([
         _initMaterials(),
         _initTypes(),
+        _initProperties(),
       ]);
 
     initCompleter.complete();
@@ -49,6 +53,10 @@ class MaterialController extends GetxController {
     types.value = (await getAllMaterialTypes()) ?? [];
   }
 
+  Future<void> _initProperties() async {
+    properties.value = await getAllMaterialPropertyMocks();
+  }
+
   /// Fetches all material from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
@@ -60,6 +68,17 @@ class MaterialController extends GetxController {
 
     return mockMaterial + mockMaterial;
   }
+
+  Future<List<Property>> getAllMaterialPropertyMocks() async {
+    if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+    debugPrint('Called getAllMaterialPropertyMocks');
+
+    return [mockLengthProperty,mockThicknessProperty, mockSizeProperty];
+  }
+
+
 
   /// Fetches all material types from backend.
   /// /// Currently only mock data is used.
@@ -108,47 +127,83 @@ class MaterialController extends GetxController {
     return null;
   }
 
+  /// Fetches all property types of the provided [materialTypeName] from backend.
+  Future<List<PropertyType>?> getPropertyTypesByMaterialTypeName(String materialTypeName) async {
+    try {
+      final response = await apiService.mainClient.get('/property_types/$materialTypeName');
+
+      if (response.statusCode != 200) debugPrint('Error getting property types');
+
+      return response.data.map<PropertyType>(
+        (dynamic item) => PropertyType.fromJson(item)
+      ).toList();
+    } on dio.DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
   /// Adds a new material to the backend.
   /// Returns the id of the newly created material
   /// or null if an error occurred.
-  Future<int?> addMaterial(MaterialModel material, XFile image) async {
+  Future<int?> addMaterial({
+    required List<XFile> images,
+    required List<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues,
+    required MaterialTypeModel materialType,
+    required List<Property> properties,
+    required double rentalFee,
+    required DateTime maxOperatingDate,
+    required int maxDaysUsed,
+    required DateTime nextInspectionDate,
+    required String merchant,
+    required String instructions,
+    required DateTime purchaseDate,
+    required double purchasePrice,
+    required double suggestedRetailPrice,
+    required String invoiceNumber,
+  }) async {
     try {
       final response = await apiService.mainClient.post('/material',
         data: dio.FormData.fromMap({
-          'file': await dio.MultipartFile.fromFile(image.path),
-          'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
-            'serial_number': s.serialNumber,
-            'manufacturer': s.manufacturer,
-            'production_date': s.productionDate,
-          }).toList(),
-          'inventory_number': material.inventoryNumbers,
-          'max_operating_date': material.maxOperatingDate,
-          'max_days_used': material.maxDaysUsed,
-          'installation_date': material.installationDate,
-          'instructions': material.instructions,
-          'next_inspection_date': material.nextInspectionDate,
-          'rental_fee': material.rentalFee,
-          'condition': material.condition.name,
-          'usage': material.daysUsed,
-          'purchase_details': {
-            'id' : material.purchaseDetails.id,
-            'purchase_date': material.purchaseDetails.purchaseDate,
-            'invoice_number': material.purchaseDetails.invoiceNumber,
-            'merchant': material.purchaseDetails.merchant,
-            // 'production_date': material.purchaseDetails.productionDate,
-            'purchanse_price': material.purchaseDetails.purchasePrice,
-            'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
-          },
-          'properties': material.properties.map((Property p) => {
-            'id': p.id,
-            'property_type': p.propertyType,
-            'value': p.value,
-          }).toList(),
+          'images': images.map(
+            (XFile f) async  => dio.MultipartFile.fromBytes(await f.readAsBytes())
+          ).toList(),
           'material_type': {
-            'id': material.materialType.id,
-            'name': material.materialType.name,
-            'description': material.materialType.description,
+            'id': materialType.id,
+            'name': materialType.name,
+            'description': materialType.description,
           },
+          'rental_fee': rentalFee,
+          'max_operating_date': maxOperatingDate,
+          'max_days_used': maxDaysUsed,
+          'next_inspection_date': nextInspectionDate,
+          'instructions': instructions,
+          'properties': properties.map((Property p) => {
+            'id': p.id,
+            'value': p.value,
+            'property_type': {
+              'id': p.propertyType.id,
+              'name': p.propertyType.name,
+              'description': p.propertyType.description,
+              'unit': p.propertyType.unit,
+            },
+          }).toList(),
+          'purchase_details': {
+            'purchase_date': purchaseDate,
+            'invoice_number': invoiceNumber,
+            'merchant': merchant,
+            'purchanse_price': purchasePrice,
+            'suggested_retail_price': suggestedRetailPrice,
+          },
+          'materials': bulkValues.map((NonFinalMapEntry<String?, List<SerialNumber>> values) => {
+            'invenotry_number': values.key,
+            'serial_numbers': values.value.map(
+              (SerialNumber num) => num.serialNumber,
+            ).toList(),
+            'production_dates': values.value.map(
+              (SerialNumber num) => num.productionDate,
+            ).toList(),
+          }).toList(),
         }),
       );
 

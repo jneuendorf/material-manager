@@ -7,7 +7,6 @@ import 'package:frontend/api.dart';
 
 
 const signupRoute = '/signup';
-const signupApiRoute = '/signup';
 
 class SignupPageBinding implements Bindings {
   @override
@@ -44,7 +43,7 @@ class SignupController extends GetxController {
 
   Future<void> signup() async {
     try {
-      await apiService.mainClient.post(signupApiRoute, data: {
+      await apiService.mainClient.post('/signup', data: {
           'email': signupEmailController.text,
           'password': signupPasswordController.text,
           'first_name': firstNameController.text,

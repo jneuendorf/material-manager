@@ -156,7 +156,8 @@ class Login(BaseResource):
 
         return dict(
             access_token=create_access_token(
-                identity=user, additional_claims=additional_claims
+                identity=user,
+                additional_claims=additional_claims,
             ),
             refresh_token=create_refresh_token(identity=user),
         )

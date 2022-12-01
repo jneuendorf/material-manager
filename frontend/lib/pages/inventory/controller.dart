@@ -28,7 +28,7 @@ class InventoryPageController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    
+
     await materialController.initCompleter.future;
 
     filteredMaterial.value = materialController.materials;
@@ -38,7 +38,7 @@ class InventoryPageController extends GetxController {
     }
   }
 
-   /// Filters the material by the [searchTerm], 
+   /// Filters the material by the [searchTerm],
    /// the [selectedTypeFilter] and the [selectedConditonFilter].
   void runFilter() {
     final String term = searchTerm.value.toLowerCase();
@@ -63,7 +63,7 @@ class InventoryPageController extends GetxController {
         return item.condition == selectedConditionFilter.value;
       }
 
-      return materialTypeFilterCondition() && 
+      return materialTypeFilterCondition() &&
         materialTypeNameCondition() && conditionFilterCondition();
     }).toList();
   }
