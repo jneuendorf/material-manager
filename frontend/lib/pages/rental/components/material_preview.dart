@@ -13,9 +13,9 @@ class MaterialPreview extends StatelessWidget {
 
   MaterialPreview({Key? key, required this.item}) : super(key: key);
 
+  final rentalPageController = Get.find<RentalPageController>();
   final RxBool hover = false.obs;
 
-  final rentalPageController = Get.find<RentalPageController>();
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -67,7 +67,9 @@ class MaterialPreview extends StatelessWidget {
                     vertical: isLargeScreen(context) ? 10.0 : 6.0,
                   ),
                 ),
-                onPressed: () => rentalPageController.shoppingCart.add(item),
+                onPressed: () {
+                  rentalPageController.rentalPeriod.value != null ? rentalPageController.shoppingCart.add(item) : ScaffoldMessenger.of(context).showSnackBar(rentalPageController.snackBar);
+                },
                 child: Obx(() => rentalPageController.shoppingCart.contains(item)
                     ? const Icon(Icons.check)
                     : Icon(Icons.add_shopping_cart,

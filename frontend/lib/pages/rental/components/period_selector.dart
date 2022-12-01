@@ -3,23 +3,23 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
-import 'package:frontend/pages/rental/components/custom_text_field.dart';
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/common/util.dart';
 
 
 class PeriodSelector extends StatelessWidget {
-  PeriodSelector({Key? key}) : super(key: key);
+  PeriodSelector({Key? key,required this.small}) : super(key: key);
 
   final rentalPageController = Get.find<RentalPageController>();
-
   final RxBool hadError = false.obs;
   final DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+  final bool small;
+  final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Form(
-      key: rentalPageController.shoppingCartFormKey,
+      key: shoppingCartFormKey,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -29,7 +29,7 @@ class PeriodSelector extends StatelessWidget {
               style: Get.textTheme.subtitle2,
             ),
           ),
-          !isLargeScreen(context) ? Row (
+          !isLargeScreen(context) || small ? Row (
             children: [
               Expanded(
                 child: buildCustomTextField(
@@ -90,7 +90,7 @@ class PeriodSelector extends StatelessWidget {
               ),
             ],
           ),
-          ExpansionTile(
+           !small ? ExpansionTile(
             tilePadding: EdgeInsets.zero,
             title: Text('usage_period'.tr.toUpperCase(),
               style: Get.textTheme.subtitle2,
@@ -136,9 +136,52 @@ class PeriodSelector extends StatelessWidget {
                 ],
               ),
             ],
-          ),
+          ): Container(),
         ],
       ),
     );
   }
+  /// Builds a [TextFormField] with the given [controller], [labelText]
+  /// and [validator].
+  /// The [onValidChanged] callback is called when the [TextFormField] has been
+  /// changed and validated by the [validator].
+  Widget buildCustomTextField({
+    required Rx<TextEditingController> controller,
+    required String labelText,
+    required String? Function(String?)? validator,
+    void Function(String)? onValidChanged,
+    required RxBool hadError,
+  }) {
+    controller.value.addListener(() {
+      if (hadError.value) shoppingCartFormKey.currentState!.validate();
+    });
+
+    return Obx(() => TextFormField(
+      controller: controller.value,
+      readOnly: true,
+      decoration: InputDecoration(
+        focusColor: Colors.white,
+        prefixIcon: const Icon(Icons.calendar_today),
+        labelText: labelText,
+        enabledBorder: const OutlineInputBorder(),
+        focusedBorder: const OutlineInputBorder(),
+        errorBorder: const OutlineInputBorder(),
+      ),
+      onTap: () async {
+        controller.value.text = (await rentalPageController.pickDate()) ?? '';
+
+        if (validator!(controller.value.text) != null || onValidChanged == null) return;
+
+        onValidChanged(controller.value.text);
+      },
+      validator: (String? s) {
+        String? errorMsg =  validator!(s);
+        if (errorMsg != null) {
+          hadError.value = true;
+        }
+        return errorMsg;
+      },
+    ));
+  }
+
 }

@@ -17,7 +17,7 @@ class RentalPage extends GetView<RentalPageController> {
   Widget build(BuildContext context) => PageWrapper(
     pageTitle: 'rental'.tr,
     showFooter: false,
-    child: Obx(() => controller.rentalPeriod.value != null ? Column(
+    child: Column(
       children: [
         Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 16.0),
@@ -46,7 +46,12 @@ class RentalPage extends GetView<RentalPageController> {
                 ),
               ),
               const SizedBox(width: 16.0),
-              Expanded(child: PeriodSelector()),
+              Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: PeriodSelector(small: true,),
+                  )
+              ),
               buildCartButton(context),
             ],
           ),
@@ -62,11 +67,13 @@ class RentalPage extends GetView<RentalPageController> {
           ),
         ),
       ],
-    ) : PeriodSelector()),
+    ),
   );
 
   Widget buildCartButton(context) => InkWell(
-    onTap: () => Get.toNamed(rentalShoppingCartRoute),
+    onTap: () {
+      controller.rentalPeriod.value != null ? Get.toNamed(rentalShoppingCartRoute) : ScaffoldMessenger.of(context).showSnackBar(controller.snackBar);
+    },
     borderRadius: BorderRadius.circular(5.0),
     child: Container(
       width: 150,

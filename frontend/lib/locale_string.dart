@@ -157,6 +157,7 @@ class LocaleString extends Translations {
       'add_board_member': 'Add Board Member',
       'board_member': 'Board Member',
       'board_member_is_mandatory': 'Board Member is mandatory',
+      'missing_rental_period': 'Please enter the Rental Period first to continue',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -308,6 +309,7 @@ class LocaleString extends Translations {
       'add_board_member': 'Vorstandsmitglied hinzufügen',
       'board_member': 'Vorstandsmitglied',
       'board_member_is_mandatory': 'Vorstandsmitglied ist verplichtend',
+      'missing_rental_period': 'Bitte gib zuerst eine Mietdauer an um fortzufahren',
     }
   };
 }

@@ -34,9 +34,10 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
 
   final Rxn<MaterialTypeModel> selectedFilter = Rxn<MaterialTypeModel>();
   final RxString searchTerm = ''.obs;
+  SnackBar snackBar = SnackBar(content: Text('missing_rental_period'.tr));
 
   // following variables are used by the shopping cart page
-  final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
+  // final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
 
   final Rx<TextEditingController> rentalStartController = TextEditingController().obs;
   final Rx<TextEditingController> rentalEndController = TextEditingController().obs;
@@ -187,9 +188,9 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     return null;
   }
 
-  /// Handle ckeckout button press.
+  /// Handle checkout button press.
   Future<void> onCheckoutTap() async {
-    if (shoppingCartFormKey.currentState!.validate()) {
+     // if (shoppingCartFormKey.currentState!.validate()) {
       DateFormat dateFormat = DateFormat('dd.MM.yyyy');
       RentalModel rental = RentalModel(
         materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
@@ -205,7 +206,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       if (id != null) {
         Get.toNamed(rentalCompletedRoute);
       }
-    }
+    // }
   }
 
 }
