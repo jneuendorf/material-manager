@@ -2,26 +2,24 @@ from flask_apispec import use_kwargs
 from marshmallow import fields
 
 from core.helpers.resource import ModelListResource, ModelResource
-from core.helpers.schema import BaseSchema  # , ModelConverter
+from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
 
 
 class RentalSchema(BaseSchema):
     class Meta:
+        model_converter = ModelConverter
         model = models.Rental
-        fields = (
-            # "id",
-            # "user_id",
-            # "material_id",
-        )
+
+    # fields = (
+    # "id",
+    # "user_id",
+    # "material_id",)
 
 
 class Rental(ModelResource):
-    url = [
-        "/rental"
-        # "/rental/<int:rental_id>"
-    ]
+    url = ["/rental", "/rental/<int:rental_id>"]
     Schema = RentalSchema
 
     # Adds a new rental /rental
@@ -42,8 +40,12 @@ class Rental(ModelResource):
         rental = models.Rental.create(**kwargs)
         return self.serialize(rental)
 
-    # To Do
     # update a rental by using rental_id
+    @use_kwargs({"id": fields.Int(required=True)})
+    def put(self, rental_id, **kwargs):
+        rental = models.Rental.get(id=rental_id)
+        rental_to_update = models.Rental.update(rental, **kwargs)
+        return self.serialize(rental_to_update)
 
 
 # Fetches all rentals.
