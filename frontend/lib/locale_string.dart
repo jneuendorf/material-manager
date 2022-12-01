@@ -197,6 +197,8 @@ class LocaleString extends Translations {
       'authorized_board_of_directors' : 'Authorized board of directors',
       'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Regulation on online dispute resolution in consumer matters',
       'could_not_launch_url': 'Could not launch URL',
+      'liability_note_text': 'Despite careful examination, no liability is assumed for the accuracy of the content presented on this website. The operators of this website are not liable for the content or availability of other websites to which hyperlinks are provided. The operators of the linked sites are solely responsible for their content.',
+      'dispute_resolution_text' : 'The European Commission provides a platform for online dispute resolution, which you can find at the following link:',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -388,6 +390,8 @@ class LocaleString extends Translations {
       'authorized_board_of_directors' : 'Vertretungsberechtigter Vorstand',
       'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten',
       'could_not_launch_url': 'Link konnte nicht geöffnet werden',
+      'liability_note_text': 'Trotz sorgfältiger Prüfung wird keine Haftung für die Richtigkeit der auf dieser Webseite dargestellten Inhalte übernommen. Die Betreiber dieser Webseite haften nicht für Inhalte bzw. Verfügbarkeit anderer Webseiten, auf die mit Hyperlinks verwiesen wird. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.',
+      'dispute_resolution_text': 'Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die Sie unter folgendem Link finden:',
     }
   };
 }

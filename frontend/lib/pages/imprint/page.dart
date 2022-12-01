@@ -15,10 +15,10 @@ const imprintRoute = '/imprint';
 final ImprintModel mockImprint = ImprintModel(
   clubName: 'Deutscher Alpenverein Sektion Berlin e.V.',
   address: Address(
-    street:'Musterstraße',
-    houseNumber:'56A',
-    zip:'12553',
-    city:'Berlin',
+    street: 'Musterstraße',
+    houseNumber: '56A',
+    zip: '12553',
+    city: 'Berlin',
   ),
   phoneNumber: '+49 12345678942',
   email: 'muster@mail.com',
@@ -106,8 +106,8 @@ class ImprintPage extends StatelessWidget {
                         style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    const Text('Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die Sie unter folgendem Link finden:',
-                      style: TextStyle(fontSize: 15.0),
+                    Text('dispute_resolution_text'.tr,
+                      style: const TextStyle(fontSize: 15.0),
                     ),
                     InkWell(
                       onTap: () async {
@@ -125,8 +125,8 @@ class ImprintPage extends StatelessWidget {
                         style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    const Text('Trotz sorgfältiger Prüfung wird keine Haftung für die Richtigkeit der auf dieser Webseite dargestellten Inhalte übernommen. Die Betreiber dieser Webseite haften nicht für Inhalte bzw. Verfügbarkeit anderer Webseiten, auf die mit Hyperlinks verwiesen wird. Für den Inhalt der verlinkten Seiten sind ausschließlich deren Betreiber verantwortlich.',
-                      style: TextStyle(fontSize: 15.0),
+                    Text('liability_note_text'.tr,
+                      style: const TextStyle(fontSize: 15.0),
                     ),
                   ],
                 ),
