@@ -72,6 +72,7 @@ class ExtrasScreen extends StatelessWidget {
               'Thorsten Thorpe',
               'Karin Thorpe',
             ],
+            disputeResolutionURI: Uri.parse('https://www.google.com'),
           ),
         )),
         child: Text('edit'.tr,
