@@ -59,13 +59,11 @@ class CrudModel(Model):
         try:
             cls.get(**kwargs)
             raise ValueError(f"{cls.__name__}(**{kwargs}) already exists")
-        except MultipleResultsFound:
+        # This could be left out but makes it clear what errors can occur.
+        except (IntegrityError, MultipleResultsFound):
             raise
         except NoResultFound:
             pass
-        # This could be left out but makes it clear what errors can occur.
-        except IntegrityError:
-            raise
 
         return cls._create(_related=_related, **kwargs)
 

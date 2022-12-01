@@ -1,4 +1,5 @@
-from typing import Optional
+from datetime import date
+from typing import Optional, TypedDict
 
 from flask import abort
 from flask_apispec import use_kwargs
@@ -6,12 +7,12 @@ from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
 from core.helpers.resource import ModelListResource, ModelResource
+from extensions.common.models import File
 from extensions.material import models
 from extensions.material.resources.schemas import (
+    ImageSchema,
     InventoryNumberSchema,
     MaterialSchema,
-    MaterialTypeSchema,
-    PurchaseDetailsSchema,
     SerialNumberSchema,
 )
 
@@ -64,6 +65,12 @@ class Material(ModelResource):
         return self.serialize(material)  # noqa
 
 
+class ImageDict(TypedDict):
+    base64: str
+    filename: str
+    mime_type: str
+
+
 class Materials(ModelListResource):
     url = "/materials"
     Schema = MaterialSchema
@@ -74,43 +81,89 @@ class Materials(ModelListResource):
 
     @use_kwargs(
         {
-            "material_type": fields.Nested(MaterialTypeSchema()),
             "serial_numbers": fields.List(
-                fields.Nested(SerialNumberSchema()),
+                fields.List(
+                    fields.Nested(SerialNumberSchema()),
+                ),
             ),
             "inventory_numbers": fields.List(
                 fields.Nested(InventoryNumberSchema(exclude=["id"])),
             ),
-            "purchase_details": fields.Nested(PurchaseDetailsSchema()),
-            "images": fields.List(fields.Str()),  # base64
+            "images": fields.List(
+                fields.Nested(ImageSchema()),
+            ),
             **MaterialSchema.to_dict(
-                exclude=[
-                    "name",
-                    "installation_date",
+                include=[
                     "material_type",
-                    "serial_numbers",
-                    "inventory_numbers",
                     "purchase_details",
-                    "image_urls",
-                    # "properties",
+                    "properties",
+                    "max_operating_date",
+                    "max_days_used",
+                    "instructions",
+                    "next_inspection_date",
+                    "rental_fee",
                 ]
             ),
-            # "materials": fields.List(
-            #     fields.Nested(MaterialSchema(exclude=["id", "purchase_details"]))
-            # ),
         }
     )
     def post(
         self,
-        materials: list[models.Material],
+        material_type: models.MaterialType,
+        serial_numbers: list[list[models.SerialNumber]],
+        inventory_numbers: list[models.InventoryNumber],
         purchase_details: models.PurchaseDetails,
+        images: list[ImageDict],
+        max_operating_date: date,
+        max_days_used: int,
+        instructions: str,
+        next_inspection_date: date,
+        rental_fee: float,
+        properties: list[models.Property],
     ):
-        """Saves a purchase: Many materials + purchase details"""
+        """Saves a batch of materials that share some identical data. I.e.
+        - purchase details
+        - material type
+        - images
+        """
+        if len(serial_numbers) != len(inventory_numbers):
+            abort(
+                400,
+                "number of serial numbers does not match number of inventory numbers",
+            )
+
+        material_type.save()
         purchase_details.save()
-        for material in materials:
-            material.purchase_details = purchase_details
-            material.save()
-        # TODO: What data does the FE need here?
-        return {
-            "materials": [material.id for material in materials],
-        }
+        image_files = [
+            File.from_base64(
+                related_extension="material",
+                base64=image["base64"],
+                filename=f"{purchase_details.id}-{image['filename']}",
+                mime_type=image["mime_type"],
+            )
+            for image in images
+        ]
+        try:
+            for serial_nums, inventory_num in zip(serial_numbers, inventory_numbers):
+                material = models.Material.create(
+                    name="",
+                    installation_date=None,
+                    max_operating_date=max_operating_date,
+                    max_days_used=max_days_used,
+                    instructions=instructions,
+                    next_inspection_date=next_inspection_date,
+                    rental_fee=rental_fee,
+                    _related=dict(
+                        material_type=material_type,
+                        purchase_details=purchase_details,
+                        serial_numbers=list(serial_nums),
+                        inventory_numbers=[inventory_num],
+                        images=image_files,
+                        properties=properties,
+                    ),
+                )
+                print(material)
+        except Exception as e:
+            print(e)
+            return abort(500, "unknown error")
+
+        return {"success": True}

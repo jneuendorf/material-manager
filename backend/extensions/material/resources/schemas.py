@@ -1,4 +1,4 @@
-from marshmallow import fields
+from marshmallow import Schema, fields
 
 from core.helpers.extension import url_join
 from core.helpers.schema import BaseSchema, ModelConverter
@@ -51,6 +51,12 @@ class PurchaseDetailsSchema(BaseSchema):
             "purchase_price",
             "suggested_retail_price",
         )
+
+
+class ImageSchema(Schema):
+    base64 = fields.Str()
+    name = fields.Str()
+    mime_type = fields.Str(required=False)
 
 
 class MaterialSchema(BaseSchema):

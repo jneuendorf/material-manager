@@ -55,7 +55,10 @@ class Comment(Model):  # type: ignore
     # many to one (FK here)
     material_id = db.Column(db.ForeignKey("material.id"))
     material = db.relationship(resolve_material_model, backref="comments")
-    photo = File.reverse_generic_relationship("Comment", has_many=False)
+    # one to one
+    photo_id = db.Column(db.ForeignKey(File.id))
+    photo = db.relationship("File", uselist=False)
+
     __table_args__ = (
         UniqueConstraint("inspection_id", "material_id", name="inspection_material_uc"),
     )

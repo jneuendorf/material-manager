@@ -184,8 +184,8 @@ class MaterialController extends GetxController {
         (XFile f) async => {
           'base64': base64.encode(await f.readAsBytes()),
           'mime_type': f.mimeType,
-          'name': f.name,
-          }
+          'filename': f.name,
+        }
       ).toList());
       final response = await apiService.mainClient.post('/materials',
         data: {
