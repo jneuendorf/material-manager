@@ -1,10 +1,11 @@
 from flask_apispec import use_kwargs
-from marshmallow import fields
 
 from core.helpers.resource import ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema, ModelConverter
 
 from . import models
+
+# from marshmallow import fields
 
 
 class RentalSchema(BaseSchema):
@@ -24,12 +25,11 @@ class Rental(ModelResource):
 
     # Adds a new rental /rental
     @use_kwargs(
-        {
-            "id": fields.Int(required=True),
-            # "material_id": fields.Int(required=True),
-            # We do not have material_id in rental model !
-            # "": fields.Str(required=True),
-        }
+        RentalSchema.to_dict()
+        # {"id": fields.Int(required=True),
+        # "material_id": fields.Int(required=True),
+        # We do not have material_id in rental model !
+        # "": fields.Str(required=True),}
     )
     def post(self, **kwargs) -> dict:
         """Test with
@@ -41,7 +41,7 @@ class Rental(ModelResource):
         return self.serialize(rental)
 
     # update a rental by using rental_id
-    @use_kwargs({"id": fields.Int(required=True)})
+    @use_kwargs(RentalSchema.to_dict())
     def put(self, rental_id, **kwargs):
         rental = models.Rental.get(id=rental_id)
         rental_to_update = models.Rental.update(rental, **kwargs)
