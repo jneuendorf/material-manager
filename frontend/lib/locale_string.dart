@@ -195,7 +195,8 @@ class LocaleString extends Translations {
       'registered_in_club_register' : 'Registered in club register',
       'liability_note' : 'Liability Note',
       'authorized_board_of_directors' : 'Authorized board of directors',
-      'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Regulation on online dispute resolution in consumer matters'
+      'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Regulation on online dispute resolution in consumer matters',
+      'could_not_launch_url': 'Could not launch URL',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -385,7 +386,8 @@ class LocaleString extends Translations {
       'registered_in_club_register' : 'Eingetragen im Vereinsregister',
       'liability_note' : 'Haftungshinweis',
       'authorized_board_of_directors' : 'Vertretungsberechtigter Vorstand',
-      'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten'
+      'regulation_on_online_dispute_resolution_in_consumer_matters' : 'Verordnung über Online-Streitbeilegung in Verbraucherangelegenheiten',
+      'could_not_launch_url': 'Link konnte nicht geöffnet werden',
     }
   };
 }

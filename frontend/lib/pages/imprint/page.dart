@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/components/base_footer.dart';
@@ -24,7 +25,8 @@ final ImprintModel mockImprint = ImprintModel(
   boardMembers: ['Peter Müller (Vorsitzender)','Hans Meyer (Stellvertreter)'],
   registrationNumber: 7235,
   registryCourt: 'Amtgericht Berlin',
-  vatNumber: '1234 567 89'
+  vatNumber: '1234 567 89',
+  disputeResolutionURI: Uri.parse('http://ec.europa.eu/consumers/odr/'),
 );
 
 class ImprintPage extends StatelessWidget {
@@ -104,9 +106,18 @@ class ImprintPage extends StatelessWidget {
                         style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                     ),
-                    //launch url "http://ec.europa.eu/consumers/odr/"
-                    const Text('Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die Sie unter http://ec.europa.eu/consumers/odr/ finden.',
+                    const Text('Die Europäische Kommission stellt eine Plattform zur Online-Streitbeilegung bereit, die Sie unter folgendem Link finden:',
                       style: TextStyle(fontSize: 15.0),
+                    ),
+                    InkWell(
+                      onTap: () async {
+                        if (!await launchUrl(mockImprint.disputeResolutionURI)) {
+                          Get.snackbar('error'.tr, 'could_not_launch_url'.tr);
+                        }
+                      },
+                      child: Text(mockImprint.disputeResolutionURI.toString(),
+                        style: TextStyle(fontSize: 15.0, color: Get.theme.colorScheme.onSecondary),
+                      ),
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
