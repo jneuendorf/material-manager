@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/rental/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
@@ -9,6 +8,7 @@ import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 const lenderRoute = '/lender';
@@ -95,10 +95,6 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     String itemPrice = materialController.materials.firstWhere((MaterialModel material) =>
     material.id == item.materialIds[materialIndex]).rentalFee.toStringAsFixed(2);
     return itemPrice;
-  }
-
-  String formatDate(DateTime date) {
-    return DateFormat('dd.MM.yyyy').format(date);
   }
 
 }

@@ -1,14 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/pages/rental/components/period_selector.dart';
 import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/base_button.dart';
+import 'package:frontend/common/util.dart';
 
 
 class ShoppingCartPage extends StatefulWidget {
@@ -23,7 +24,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   final rentalPageController = Get.find<RentalPageController>();
 
   late bool loggedIn;
-  final RxBool hadError = false.obs;
 
   @override
   void initState() {
@@ -83,7 +83,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   Text('summary'.tr, style: Get.textTheme.headline6),
                   const Divider(),
                   const Spacer(),
-                  buildPeriodDetails(),
+                  PeriodSelector(),
                   const Spacer(),
                   buildTotal(),
                 ],
@@ -97,107 +97,13 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       child: Column(
         children: [
           buildShoppingCartList(),
-          buildPeriodDetails(),
+          PeriodSelector(),
           buildTotal(),
         ],
       ),
     ),
   );
 
-  Widget buildPeriodDetails() => Form(
-    key: rentalPageController.shoppingCartFormKey,
-    child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8.0),
-          child: Text('rental_period'.tr.toUpperCase(),
-            style: Get.textTheme.subtitle2,
-          ),
-        ),
-        !isLargeScreen(context) ? Row (
-          children: [
-            Expanded(
-              child: buildCustomTextField(
-                controller: rentalPageController.rentalStartController,
-                labelText: 'enter_start_date'.tr,
-                validator: rentalPageController.validateDateTime,
-                onValidChanged: (String s) => rentalPageController.usageStartController.value.text = s,
-              ),
-            ),
-            const SizedBox(width: 8.0),
-            Expanded(
-              child: buildCustomTextField(
-                controller: rentalPageController.rentalEndController,
-                labelText: 'enter_end_date'.tr,
-                validator: rentalPageController.validateDateTime,
-                onValidChanged: (String s) => rentalPageController.usageEndController.value.text = s,
-              ),
-            ),
-          ],
-        ) : Column(
-          children: [
-            buildCustomTextField(
-              controller: rentalPageController.rentalStartController,
-              labelText: 'enter_start_date'.tr,
-              validator: rentalPageController.validateDateTime,
-              onValidChanged: (String s) => rentalPageController.usageStartController.value.text = s,
-            ),
-            const SizedBox(height: 12.0),
-            buildCustomTextField(
-              controller: rentalPageController.rentalEndController,
-              labelText: 'enter_end_date'.tr,
-              validator: rentalPageController.validateDateTime,
-              onValidChanged: (String s) => rentalPageController.usageEndController.value.text = s,
-            ),
-          ],
-        ),
-        ExpansionTile(
-          tilePadding: EdgeInsets.zero,
-          title: Text('usage_period'.tr.toUpperCase(),
-            style: Get.textTheme.subtitle2,
-          ),
-          children: [
-            const SizedBox(height: 8.0),
-            !isLargeScreen(context) ? Row(
-              children: [
-                Expanded(
-                  child: buildCustomTextField(
-                    controller: rentalPageController.usageStartController,
-                    labelText: 'enter_start_date'.tr,
-                    validator: rentalPageController.validateUsageStartDate,
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                Expanded(
-                  child: buildCustomTextField(
-                    controller: rentalPageController.usageEndController,
-                    labelText: 'enter_end_date'.tr,
-                    validator: rentalPageController.validateUsageEndDate,
-                  ),
-                ),
-              ],
-            ) : Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                buildCustomTextField(
-                  controller: rentalPageController.usageStartController,
-                  labelText: 'enter_start_date'.tr,
-                  validator: rentalPageController.validateUsageStartDate,
-                ),
-                const SizedBox(height: 12.0),
-                buildCustomTextField(
-                  controller: rentalPageController.usageEndController,
-                  labelText: 'enter_end_date'.tr,
-                  validator: rentalPageController.validateUsageEndDate,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ],
-    ),
-  );
 
   Widget buildTotal() => Column(
     children: [
@@ -245,7 +151,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 Text(rentalPageController.shoppingCart[index].materialType.name,
                   style: Get.textTheme.subtitle2,
                 ),
-                Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.propertyType.unit}'),
+                Text(rentalPageController.getPropertyString(rentalPageController.shoppingCart[index])),
               ],
             ),
             Text('€${rentalPageController.shoppingCart[index].rentalFee.toStringAsFixed(2)}'),
@@ -296,45 +202,4 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
     ),
   );
 
-  /// Builds a [TextFormField] with the given [controller], [labelText]
-  /// and [validator].
-  /// The [onValidChanged] callback is called when the [TextFormField] has been
-  /// changed and validated by the [validator].
-  Widget buildCustomTextField({
-    required Rx<TextEditingController> controller,
-    required String labelText,
-    required String? Function(String?)? validator,
-    void Function(String)? onValidChanged,
-  }) {
-    controller.value.addListener(() {
-      if (hadError.value) rentalPageController.shoppingCartFormKey.currentState!.validate();
-    });
-
-    return Obx(() => TextFormField(
-      controller: controller.value,
-      readOnly: true,
-      decoration: InputDecoration(
-        focusColor: Colors.white,
-        prefixIcon: const Icon(Icons.calendar_today),
-        labelText: labelText,
-        enabledBorder: const OutlineInputBorder(),
-        focusedBorder: const OutlineInputBorder(),
-        errorBorder: const OutlineInputBorder(),
-      ),
-      onTap: () async {
-        controller.value.text = (await rentalPageController.pickDate()) ?? '';
-
-        if (validator!(controller.value.text) != null || onValidChanged == null) return;
-
-        onValidChanged(controller.value.text);
-      },
-      validator: (String? s) {
-        String? errorMsg =  validator!(s);
-        if (errorMsg != null) {
-          hadError.value = true;
-        }
-        return errorMsg;
-      },
-    ));
-  }
 }

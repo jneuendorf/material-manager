@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
@@ -96,7 +95,4 @@ class InventoryPageController extends GetxController {
     runFilter();
   }
 
-  String formatDate(DateTime date) {
-    return DateFormat('dd.MM.yyyy').format(date);
-  }
 }

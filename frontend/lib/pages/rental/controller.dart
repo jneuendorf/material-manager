@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/extensions/rental/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 const rentalRoute = '/rental';
@@ -27,6 +27,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
 
+  final Rxn<RentalPeriod> rentalPeriod = Rxn<RentalPeriod>();
   final RxList<MaterialModel> shoppingCart = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredSets = <MaterialModel>[].obs;
@@ -34,9 +35,6 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
 
   final Rxn<MaterialTypeModel> selectedFilter = Rxn<MaterialTypeModel>();
   final RxString searchTerm = ''.obs;
-
-  // following variables are used by the shopping cart page
-  final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
 
   final Rx<TextEditingController> rentalStartController = TextEditingController().obs;
   final Rx<TextEditingController> rentalEndController = TextEditingController().obs;
@@ -146,7 +144,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     );
     if (pickedDate == null) return null;
 
-    return DateFormat('dd.MM.yyyy').format(pickedDate);
+    return dateFormat.format(pickedDate);
   }
 
   String? validateDateTime(String? value) {
@@ -157,12 +155,11 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String? validateUsageStartDate(String? value) {
-    if(value!.isEmpty) {
+    if(value == null || value.isEmpty) {
       return 'date_is_mandatory'.tr;
     }
 
-    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-    DateTime usageStart = dateFormat.parse(usageStartController.value.text);
+    DateTime usageStart = dateFormat.parse(value);
     DateTime rentalStart = dateFormat.parse(rentalStartController.value.text);
 
     if (usageStart.isBefore(rentalStart)) {
@@ -172,39 +169,70 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String? validateUsageEndDate(String? value) {
-    if(value!.isEmpty) {
+    if(value == null || value.isEmpty) {
       return 'date_is_mandatory'.tr;
     }
 
-    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-    DateTime usageEnd = dateFormat.parse(usageStartController.value.text);
-    DateTime rentalEnd = dateFormat.parse(rentalStartController.value.text);
+    DateTime usageEnd = dateFormat.parse(value);
+    DateTime rentalEnd = dateFormat.parse(rentalEndController.value.text);
 
-    if (usageEnd.isBefore(rentalEnd)) {
+    if (rentalEnd.isBefore(usageEnd)) {
       return 'usage_end_must_be_before_rental_end'.tr;
     }
     return null;
   }
 
-  /// Handle ckeckout button press.
+  /// Handle checkout button press.
   Future<void> onCheckoutTap() async {
-    if (shoppingCartFormKey.currentState!.validate()) {
-      DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-      RentalModel rental = RentalModel(
-        materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
-        cost: totalPrice,
-        createdAt: DateTime.now(),
-        startDate: dateFormat.parse(rentalStartController.value.text),
-        endDate: dateFormat.parse(rentalEndController.value.text),
-        usageStartDate: dateFormat.parse(usageStartController.value.text),
-        usageEndDate: dateFormat.parse(usageEndController.value.text),
-      );
+    if (rentalPeriod.value == null || !rentalPeriod.value!.valid) {
+      Get.snackbar('usage_period'.tr, 'usage_period_not_valid'.tr);
+      return;
+    }
 
-      final int? id = await rentalController.addRental(rental);
-      if (id != null) {
-        Get.toNamed(rentalCompletedRoute);
-      }
+    RentalModel rental = RentalModel(
+      materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
+      cost: totalPrice,
+      createdAt: DateTime.now(),
+      startDate: dateFormat.parse(rentalStartController.value.text),
+      endDate: dateFormat.parse(rentalEndController.value.text),
+      usageStartDate: dateFormat.parse(usageStartController.value.text),
+      usageEndDate: dateFormat.parse(usageEndController.value.text),
+    );
+
+    final int? id = await rentalController.addRental(rental);
+    if (id != null) {
+      Get.toNamed(rentalCompletedRoute);
     }
   }
+
+  String cleanPropertyValue(String value) {
+    double? val = double.tryParse(value);
+
+    // if not a double, return as is
+    if (val == null) return value;
+
+    return val.toStringAsFixed(2);
+  }
+
+  String getPropertyString(MaterialModel item) {
+    if (item.properties.isEmpty) return '';
+
+    String value = cleanPropertyValue(item.properties.first.value);
+
+    return '$value ${item.properties.first.propertyType.unit}';
+  }
+
+}
+
+class RentalPeriod {
+  final DateTime startDate;
+  final DateTime endDate;
+  final bool valid;
+
+  RentalPeriod({
+    required this.startDate,
+    required this.endDate,
+    required this.valid,
+  });
 
 }
