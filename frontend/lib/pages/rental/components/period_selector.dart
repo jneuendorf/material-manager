@@ -131,6 +131,7 @@ class PeriodSelector extends StatelessWidget {
                     controller: rentalPageController.usageStartController,
                     labelText: 'enter_start_date'.tr,
                     validator: rentalPageController.validateUsageStartDate,
+                    validateMode: AutovalidateMode.onUserInteraction,
                   ),
                 ),
                 const SizedBox(width: 8.0),
@@ -139,6 +140,7 @@ class PeriodSelector extends StatelessWidget {
                     controller: rentalPageController.usageEndController,
                     labelText: 'enter_end_date'.tr,
                     validator: rentalPageController.validateUsageEndDate,
+                    validateMode: AutovalidateMode.onUserInteraction,
                   ),
                 ),
               ],
@@ -149,12 +151,14 @@ class PeriodSelector extends StatelessWidget {
                   controller: rentalPageController.usageStartController,
                   labelText: 'enter_start_date'.tr,
                   validator: rentalPageController.validateUsageStartDate,
+                  validateMode: AutovalidateMode.onUserInteraction,
                 ),
                 const SizedBox(height: 12.0),
                 buildCustomTextField(
                   controller: rentalPageController.usageEndController,
                   labelText: 'enter_end_date'.tr,
                   validator: rentalPageController.validateUsageEndDate,
+                  validateMode: AutovalidateMode.onUserInteraction,
                 ),
               ],
             ),
@@ -174,6 +178,7 @@ class PeriodSelector extends StatelessWidget {
     required String? Function(String?)? validator,
     void Function(String)? onValidChanged,
     bool enabled = true,
+    AutovalidateMode? validateMode,
   }) {
     controller.value.addListener(() {
       if (hadError.value) periodFormKey.currentState!.validate();
@@ -189,6 +194,7 @@ class PeriodSelector extends StatelessWidget {
         enabledBorder: const OutlineInputBorder(),
         focusedBorder: const OutlineInputBorder(),
         errorBorder: const OutlineInputBorder(),
+        focusedErrorBorder: const OutlineInputBorder(),
         suffixIcon: !enabled ? const Icon(Icons.check) : null,
       ),
       onTap: () async {
@@ -200,6 +206,7 @@ class PeriodSelector extends StatelessWidget {
 
         onValidChanged(controller.value.text);
       },
+      autovalidateMode: validateMode,
       validator: (String? s) {
         String? errorMsg =  validator!(s);
         if (errorMsg != null) {

@@ -27,6 +27,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final RxInt tabIndex = 0.obs;
   late TabController tabController;
 
+  final Rxn<RentalPeriod> rentalPeriod = Rxn<RentalPeriod>();
   final RxList<MaterialModel> shoppingCart = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;
   final RxList<MaterialModel> filteredSets = <MaterialModel>[].obs;
@@ -35,14 +36,10 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   final Rxn<MaterialTypeModel> selectedFilter = Rxn<MaterialTypeModel>();
   final RxString searchTerm = ''.obs;
 
-  // following variables are used by the shopping cart page
-  // final GlobalKey<FormState> shoppingCartFormKey = GlobalKey<FormState>();
-
   final Rx<TextEditingController> rentalStartController = TextEditingController().obs;
   final Rx<TextEditingController> rentalEndController = TextEditingController().obs;
   final Rx<TextEditingController> usageStartController = TextEditingController().obs;
   final Rx<TextEditingController> usageEndController = TextEditingController().obs;
-  final Rxn<RentalPeriod> rentalPeriod = Rxn<RentalPeriod>();
 
   @override
   Future<void> onInit() async {
@@ -158,12 +155,12 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String? validateUsageStartDate(String? value) {
-    if(value!.isEmpty) {
+    if(value == null || value.isEmpty) {
       return 'date_is_mandatory'.tr;
     }
 
     DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-    DateTime usageStart = dateFormat.parse(usageStartController.value.text);
+    DateTime usageStart = dateFormat.parse(value);
     DateTime rentalStart = dateFormat.parse(rentalStartController.value.text);
 
     if (usageStart.isBefore(rentalStart)) {
@@ -173,15 +170,15 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String? validateUsageEndDate(String? value) {
-    if(value!.isEmpty) {
+    if(value == null || value.isEmpty) {
       return 'date_is_mandatory'.tr;
     }
 
     DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-    DateTime usageEnd = dateFormat.parse(usageStartController.value.text);
-    DateTime rentalEnd = dateFormat.parse(rentalStartController.value.text);
+    DateTime usageEnd = dateFormat.parse(value);
+    DateTime rentalEnd = dateFormat.parse(rentalEndController.value.text);
 
-    if (usageEnd.isBefore(rentalEnd)) {
+    if (rentalEnd.isBefore(usageEnd)) {
       return 'usage_end_must_be_before_rental_end'.tr;
     }
     return null;
