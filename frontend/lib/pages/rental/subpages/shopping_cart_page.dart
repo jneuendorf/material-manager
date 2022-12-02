@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
+import 'package:frontend/pages/rental/components/period_selector.dart';
 import 'package:frontend/pages/login/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/base_button.dart';
-
-import 'package:frontend/pages/rental/components/period_selector.dart';
+import 'package:frontend/common/util.dart';
 
 
 class ShoppingCartPage extends StatefulWidget {
@@ -25,7 +24,6 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
   final rentalPageController = Get.find<RentalPageController>();
 
   late bool loggedIn;
-  // final RxBool hadError = false.obs;
 
   @override
   void initState() {
@@ -85,8 +83,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                   Text('summary'.tr, style: Get.textTheme.headline6),
                   const Divider(),
                   const Spacer(),
-                  PeriodSelector(small: false),
-                  // buildPeriodDetails(),
+                  PeriodSelector(),
                   const Spacer(),
                   buildTotal(),
                 ],
@@ -100,8 +97,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       child: Column(
         children: [
           buildShoppingCartList(),
-          PeriodSelector(small: false),
-          // buildPeriodDetails(),
+          PeriodSelector(),
           buildTotal(),
         ],
       ),
@@ -155,7 +151,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
                 Text(rentalPageController.shoppingCart[index].materialType.name,
                   style: Get.textTheme.subtitle2,
                 ),
-                Text('${rentalPageController.shoppingCart[index].properties.first.value} ${rentalPageController.shoppingCart[index].properties.first.propertyType.unit}'),
+                Text(rentalPageController.getPropertyString(rentalPageController.shoppingCart[index])),
               ],
             ),
             Text('€${rentalPageController.shoppingCart[index].rentalFee.toStringAsFixed(2)}'),
@@ -205,6 +201,5 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       ],
     ),
   );
-
 
 }
