@@ -96,7 +96,6 @@ class CompletedOrdersScreen extends StatelessWidget {
     ),
     child: Container(
       margin: const EdgeInsets.all(10.0),
-      //height: 325,
       constraints: const BoxConstraints(
         maxHeight: 325,
       ),
@@ -168,9 +167,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                     SelectableText(lenderPageController.getUsagePeriod(item)),
                   ],
                 ),
-                const SizedBox(width: 500.0),
-
-                const SizedBox(width: 50.0),
+                const SizedBox(width: 500.0), // TODO fix for all screen sizes
               ],
             ),
           ),
@@ -186,29 +183,29 @@ class CompletedOrdersScreen extends StatelessWidget {
                     itemBuilder: (context, localIndex) {
                       String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
                       return ListTile(
-                      leading: imageUrl != null 
-                        ? Image.network(baseUrl + imageUrl) 
-                        : const Icon(Icons.image),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(lenderPageController.getItemName(item,localIndex)),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: SizedBox(
-                                width: 100,
-                                child: Text('completed'.tr)
+                        leading: imageUrl != null 
+                          ? Image.network(baseUrl + imageUrl) 
+                          : const Icon(Icons.image),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(lenderPageController.getItemName(item,localIndex)),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: SizedBox(
+                                  width: 100,
+                                  child: Text('completed'.tr)
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Text('${lenderPageController.getItemPrice(item,localIndex)} €'),
-                          ),
-                        ],
-                      ),
-                    );
+                            Expanded(
+                              child: Text('${lenderPageController.getItemPrice(item,localIndex)} €'),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   ): Container(),
                 ),
