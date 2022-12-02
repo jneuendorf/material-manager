@@ -186,23 +186,26 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
 
   /// Handle checkout button press.
   Future<void> onCheckoutTap() async {
-    if (rentalPeriod.value?.valid ?? true) return;
+    if (rentalPeriod.value == null || !rentalPeriod.value!.valid) {
+      Get.snackbar('usage_period'.tr, 'usage_period_not_valid'.tr);
+      return;
+    }
 
-      DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-      RentalModel rental = RentalModel(
-        materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
-        cost: totalPrice,
-        createdAt: DateTime.now(),
-        startDate: dateFormat.parse(rentalStartController.value.text),
-        endDate: dateFormat.parse(rentalEndController.value.text),
-        usageStartDate: dateFormat.parse(usageStartController.value.text),
-        usageEndDate: dateFormat.parse(usageEndController.value.text),
-      );
+    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+    RentalModel rental = RentalModel(
+      materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
+      cost: totalPrice,
+      createdAt: DateTime.now(),
+      startDate: dateFormat.parse(rentalStartController.value.text),
+      endDate: dateFormat.parse(rentalEndController.value.text),
+      usageStartDate: dateFormat.parse(usageStartController.value.text),
+      usageEndDate: dateFormat.parse(usageEndController.value.text),
+    );
 
-      final int? id = await rentalController.addRental(rental);
-      if (id != null) {
-        Get.toNamed(rentalCompletedRoute);
-      }
+    final int? id = await rentalController.addRental(rental);
+    if (id != null) {
+      Get.toNamed(rentalCompletedRoute);
+    }
   }
 
   String cleanPropertyValue(String value) {

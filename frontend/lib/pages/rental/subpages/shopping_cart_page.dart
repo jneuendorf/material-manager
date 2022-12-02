@@ -122,7 +122,7 @@ class _ShoppingCartPageState extends State<ShoppingCartPage> {
       loggedIn ? Padding(
         padding: const EdgeInsets.only(top: 32.0),
         child: BaseButton(
-          onPressed: (){},//rentalPageController.onCheckoutTap,
+          onPressed: rentalPageController.onCheckoutTap,
           text: 'checkout'.tr,
           color: Colors.black,
         ),

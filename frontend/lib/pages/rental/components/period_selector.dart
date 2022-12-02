@@ -45,9 +45,10 @@ class PeriodSelector extends StatelessWidget {
                     rentalPageController.rentalPeriod.value = RentalPeriod(
                       startDate: dateFormat.parse(s), 
                       endDate: dateFormat.parse(rentalPageController.rentalEndController.value.text),
-                      valid: rentalPageController.rentalPeriod.value?.valid 
-                        ?? rentalPageController.validateUsageStartDate(s) == null && 
-                          rentalPageController.validateUsageEndDate(rentalPageController.rentalEndController.value.text) == null,
+                      valid: rentalPageController.rentalPeriod.value == null 
+                        ? rentalPageController.validateUsageStartDate(s) == null && 
+                          rentalPageController.validateUsageEndDate(rentalPageController.rentalEndController.value.text) == null
+                        : rentalPageController.rentalPeriod.value!.valid,
                     );
                   }
                   rentalPageController.usageStartController.value.text = s;
@@ -59,16 +60,37 @@ class PeriodSelector extends StatelessWidget {
               child: buildCustomTextField(
                 controller: rentalPageController.rentalEndController,
                 labelText: 'enter_end_date'.tr,
-                validator: rentalPageController.validateDateTime,
+                validateMode: AutovalidateMode.onUserInteraction,
+                validator: (String? value) {
+                  String? msg = rentalPageController.validateDateTime(value);
+                  if (msg != null) {
+                    if (rentalPageController.rentalPeriod.value != null) {
+                      rentalPageController.rentalPeriod.value = RentalPeriod(
+                        startDate: rentalPageController.rentalPeriod.value!.startDate, 
+                        endDate: rentalPageController.rentalPeriod.value!.endDate,
+                        valid: false,
+                      );
+                    }
+                    return msg;
+                  }
+                  DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+                  DateTime startDate = dateFormat.parse(rentalPageController.rentalStartController.value.text);
+                  DateTime endDate = dateFormat.parse(value!);
+                  if (endDate.isBefore(startDate)) {
+                    return 'end_date_must_be_after_start_date'.tr;
+                  }
+                  return null;
+                },
                 enabled: small,
                 onValidChanged: (String s) {
                   if(rentalPageController.rentalStartController.value.text != '') {
                     rentalPageController.rentalPeriod.value = RentalPeriod(
                       startDate: dateFormat.parse(rentalPageController.rentalStartController.value.text),
                       endDate: dateFormat.parse(s),
-                      valid: rentalPageController.rentalPeriod.value?.valid 
-                        ?? rentalPageController.validateUsageEndDate(s) == null && 
-                          rentalPageController.validateUsageStartDate(rentalPageController.rentalStartController.value.text) == null,
+                      valid: rentalPageController.rentalPeriod.value == null 
+                        ? rentalPageController.validateUsageEndDate(s) == null && 
+                          rentalPageController.validateUsageStartDate(rentalPageController.rentalStartController.value.text) == null
+                        : rentalPageController.rentalPeriod.value!.valid,
                     );
                   }
                   rentalPageController.usageEndController.value.text = s;
@@ -88,9 +110,10 @@ class PeriodSelector extends StatelessWidget {
                   rentalPageController.rentalPeriod.value = RentalPeriod(
                     startDate: dateFormat.parse(s), 
                     endDate: dateFormat.parse(rentalPageController.rentalEndController.value.text),
-                    valid: rentalPageController.rentalPeriod.value?.valid 
-                      ?? rentalPageController.validateUsageStartDate(s) == null && 
-                        rentalPageController.validateUsageEndDate(rentalPageController.rentalEndController.value.text) == null,
+                    valid: rentalPageController.rentalPeriod.value == null 
+                        ? rentalPageController.validateUsageStartDate(s) == null && 
+                          rentalPageController.validateUsageEndDate(rentalPageController.rentalEndController.value.text) == null
+                        : rentalPageController.rentalPeriod.value!.valid,
                   );
                 }
                 rentalPageController.usageStartController.value.text = s;
@@ -100,16 +123,37 @@ class PeriodSelector extends StatelessWidget {
             buildCustomTextField(
               controller: rentalPageController.rentalEndController,
               labelText: 'enter_end_date'.tr,
-              validator: rentalPageController.validateDateTime,
+              validateMode: AutovalidateMode.onUserInteraction,
+              validator: (String? value) {
+                String? msg = rentalPageController.validateDateTime(value);
+                if (msg != null) {
+                  if (rentalPageController.rentalPeriod.value != null) {
+                    rentalPageController.rentalPeriod.value = RentalPeriod(
+                      startDate: rentalPageController.rentalPeriod.value!.startDate, 
+                      endDate: rentalPageController.rentalPeriod.value!.endDate,
+                      valid: false,
+                    );
+                  }
+                  return msg;
+                }
+                DateFormat dateFormat = DateFormat('dd.MM.yyyy');
+                DateTime startDate = dateFormat.parse(rentalPageController.rentalStartController.value.text);
+                DateTime endDate = dateFormat.parse(value!);
+                if (endDate.isBefore(startDate)) {
+                  return 'end_date_must_be_after_start_date'.tr;
+                }
+                return null;
+              },
               enabled: small,
               onValidChanged: (String s) {
                 if(rentalPageController.rentalStartController.value.text != '') {
                   rentalPageController.rentalPeriod.value = RentalPeriod(
                     startDate: dateFormat.parse(rentalPageController.rentalStartController.value.text), 
                     endDate: dateFormat.parse(s),
-                    valid: rentalPageController.rentalPeriod.value?.valid 
-                      ?? rentalPageController.validateUsageEndDate(s) == null && 
-                        rentalPageController.validateUsageStartDate(rentalPageController.rentalStartController.value.text) == null,
+                    valid: rentalPageController.rentalPeriod.value == null 
+                        ? rentalPageController.validateUsageEndDate(s) == null && 
+                          rentalPageController.validateUsageStartDate(rentalPageController.rentalStartController.value.text) == null
+                        : rentalPageController.rentalPeriod.value!.valid,
                   );
                 }
                 rentalPageController.usageEndController.value.text = s;
