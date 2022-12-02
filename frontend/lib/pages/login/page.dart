@@ -12,13 +12,15 @@ import 'package:frontend/common/buttons/base_button.dart';
 class LoginPage extends GetView<LoginController> {
   const LoginPage({Key? key}) : super(key: key);
 
+  final BoxConstraints constraints = const BoxConstraints(maxWidth: 500);
+
   @override
   Widget build(BuildContext context) => PageWrapper(
     child: Column(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         ConstrainedBox(
-          constraints: controller.constraints,
+          constraints: constraints,
           child: Form(
             key: controller.formKey,
             child: Column(
@@ -66,14 +68,15 @@ class LoginPage extends GetView<LoginController> {
                     border: const OutlineInputBorder(),
                     focusedBorder: const OutlineInputBorder(),
                     suffixIcon: IconButton(
+                      onPressed: controller.toggleHideChars,
                       tooltip: (controller.hideChars.value ? 'show_password': 'hide_password').tr,
+                      splashRadius: 18.0,
                       icon: Icon(
                         controller.hideChars.value
                             ? CupertinoIcons.eye_fill
                             : CupertinoIcons.eye_slash_fill,
                         color: Colors.black,
                       ),
-                      onPressed: controller.toggleHideChars,
                     ),
                   ),
                   obscureText: controller.hideChars.value,
@@ -100,11 +103,14 @@ class LoginPage extends GetView<LoginController> {
                         onChanged: controller.rememberMe,
                       )),
                     ),
-                    Text(
-                      'remember_me'.tr,
-                      style: TextStyle(
-                        fontSize: 22,
-                        color: Colors.grey.shade700,
+                    InkWell(
+                      onTap: () => controller.rememberMe.value = !controller.rememberMe.value,
+                      child: Text(
+                        'remember_me'.tr,
+                        style: TextStyle(
+                          fontSize: 22,
+                          color: Colors.grey.shade700,
+                        ),
                       ),
                     ),
                   ],
@@ -125,7 +131,7 @@ class LoginPage extends GetView<LoginController> {
 
         // SIGNUP BUTTON
         ConstrainedBox(
-          constraints: controller.constraints,
+          constraints: constraints,
           child: BaseButton(
             onPressed: () => Get.toNamed(signupRoute),
             text: 'signup'.tr,

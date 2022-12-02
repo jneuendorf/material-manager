@@ -24,6 +24,11 @@ try:
         first_name="root",
         last_name="root",
         membership_number="1337",
+        phone="+49 123 2397235",
+        street="Wurzelstraße",
+        house_number="1",
+        city="Berlin",
+        zip_code="13321",
         roles=[superuser_role],
     )
     super_user.update(is_active=True)

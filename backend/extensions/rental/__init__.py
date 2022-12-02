@@ -1,14 +1,20 @@
 from core.helpers.extension import Extension
 
-from . import models
+from . import models, resources
 
 rental = Extension(
     "rental",
     __name__,
+    static_url_path="/rental/static",
+    static_folder="static",
+    template_folder="templates",
     models=(
         models.Rental,
         models.RentalStatus,
         models.MaterialRentalMapping,
     ),
-    resources=(),
+    resources=(
+        resources.RentalConfirmationPdf,
+        resources.RentalConfirmationHtml,
+    ),
 )

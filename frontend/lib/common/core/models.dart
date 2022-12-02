@@ -10,6 +10,7 @@ class ImprintModel {
   int registrationNumber;
   String registryCourt;
   String vatNumber;
+  Uri disputeResolutionURI;
 
   ImprintModel({
     required this.clubName, 
@@ -20,6 +21,7 @@ class ImprintModel {
     required this.registrationNumber,
     required this.registryCourt,
     required this.vatNumber,
+    required this.disputeResolutionURI,
   });
 
   factory ImprintModel.fromJson(Map<String, dynamic> json) {
@@ -32,6 +34,14 @@ class ImprintModel {
       registrationNumber: json['registration_number'],
       registryCourt: json['registry_court'],
       vatNumber: json['vat_number'],
+      disputeResolutionURI: Uri.parse(json['dispute_resolution_uri']),
     );
   }
+}
+
+class NonFinalMapEntry<K,V> {
+  K key;
+  V value;
+
+  NonFinalMapEntry(this.key, this.value);
 }

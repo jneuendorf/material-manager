@@ -121,7 +121,6 @@ class PurchaseDetails {
   DateTime purchaseDate;
   String invoiceNumber;
   String merchant;
-  //DateTime productionDate;
   double purchasePrice;
   double suggestedRetailPrice;
 
@@ -130,7 +129,6 @@ class PurchaseDetails {
     required this.purchaseDate,
     required this.invoiceNumber,
     required this.merchant,
-    //required this.productionDate,
     required this.purchasePrice,
     required this.suggestedRetailPrice,
   });
@@ -140,7 +138,6 @@ class PurchaseDetails {
     purchaseDate = DateTime.parse(json['purchase_date']),
     invoiceNumber = json['invoice_number'],
     merchant = json['merchant'],
-    //productionDate = DateTime.parse(json['production_date']),
     purchasePrice = json['purchase_price'],
     suggestedRetailPrice = json['suggested_retail_price'];
 
