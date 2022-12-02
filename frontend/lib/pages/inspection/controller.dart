@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/inspection/model.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
@@ -10,6 +9,7 @@ import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/extensions/user/mock_data.dart';
+import 'package:frontend/common/util.dart';
 
 
 const inspectionRoute = '/inspection';
@@ -103,7 +103,7 @@ class InspectionPageController extends GetxController {
   }
 
   String getInspectionDate(int index){
-    String date = DateFormat('dd.MM.yyyy').format(
+    String date = dateFormat.format(
       inspectionController.inspections[index].date);
     
     return date;

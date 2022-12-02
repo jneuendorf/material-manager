@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/extensions/rental/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 const rentalRoute = '/rental';
@@ -144,7 +144,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     );
     if (pickedDate == null) return null;
 
-    return DateFormat('dd.MM.yyyy').format(pickedDate);
+    return dateFormat.format(pickedDate);
   }
 
   String? validateDateTime(String? value) {
@@ -159,7 +159,6 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       return 'date_is_mandatory'.tr;
     }
 
-    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
     DateTime usageStart = dateFormat.parse(value);
     DateTime rentalStart = dateFormat.parse(rentalStartController.value.text);
 
@@ -174,7 +173,6 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       return 'date_is_mandatory'.tr;
     }
 
-    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
     DateTime usageEnd = dateFormat.parse(value);
     DateTime rentalEnd = dateFormat.parse(rentalEndController.value.text);
 
@@ -191,7 +189,6 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
       return;
     }
 
-    DateFormat dateFormat = DateFormat('dd.MM.yyyy');
     RentalModel rental = RentalModel(
       materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
       cost: totalPrice,

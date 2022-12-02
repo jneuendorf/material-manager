@@ -6,6 +6,7 @@ import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
+import 'package:frontend/common/util.dart';
 
 
 class CompletedOrdersScreen extends StatelessWidget {
@@ -65,7 +66,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                     child: Text('€ ${lenderPageController.filteredRentals[index].cost.toStringAsFixed(2)}'),
                   ),
                   Expanded(
-                    child: Text(lenderPageController.formatDate(lenderPageController.filteredRentals[index].createdAt)),
+                    child: Text(formatDate(lenderPageController.filteredRentals[index].createdAt)),
                   ),
                   Expanded(
                     child: Center(
@@ -124,7 +125,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                     Text('${'order_date'.tr} : ',
                       style: const TextStyle(color: Colors.black45),
                     ),
-                    SelectableText( lenderPageController.formatDate(item.createdAt)),
+                    SelectableText(formatDate(item.createdAt)),
                   ],
                 ),
               ],

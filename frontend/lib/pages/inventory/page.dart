@@ -16,6 +16,7 @@ import 'package:frontend/common/components/base_footer.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
+import 'package:frontend/common/util.dart';
 
 
 class InventoryPage extends GetView<InventoryPageController> {
@@ -146,7 +147,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                     ),
                     Expanded(child: Text(controller.filteredMaterial[index].materialType.name)),
                     Expanded(child: Text(controller.filteredMaterial[index].condition.toString().split('.').last.tr)),
-                    Expanded(child: Text(controller.formatDate(controller.filteredMaterial[index].nextInspectionDate))),
+                    Expanded(child: Text(formatDate(controller.filteredMaterial[index].nextInspectionDate))),
                   ],
                 ),
                 children: [
@@ -221,7 +222,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                     'type'.tr,
                   ),
                   buildCustomTextField(
-                    controller.formatDate(item.installationDate),
+                    formatDate(item.installationDate),
                     'installation'.tr,
                   ),
                   buildCustomTextField(
@@ -237,7 +238,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   buildCustomTextField(
-                    controller.formatDate(item.nextInspectionDate),
+                    formatDate(item.nextInspectionDate),
                     'next_inspection'.tr,
                   ),
                   buildCustomTextField(

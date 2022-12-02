@@ -17,7 +17,6 @@ class PeriodSelector extends StatelessWidget {
 
   final rentalPageController = Get.find<RentalPageController>();
   final RxBool hadError = false.obs;
-  final DateFormat dateFormat = DateFormat('dd.MM.yyyy');
   final GlobalKey<FormState> periodFormKey = GlobalKey<FormState>();
 
   @override
@@ -73,7 +72,6 @@ class PeriodSelector extends StatelessWidget {
                     }
                     return msg;
                   }
-                  DateFormat dateFormat = DateFormat('dd.MM.yyyy');
                   DateTime startDate = dateFormat.parse(rentalPageController.rentalStartController.value.text);
                   DateTime endDate = dateFormat.parse(value!);
                   if (endDate.isBefore(startDate)) {
@@ -136,7 +134,6 @@ class PeriodSelector extends StatelessWidget {
                   }
                   return msg;
                 }
-                DateFormat dateFormat = DateFormat('dd.MM.yyyy');
                 DateTime startDate = dateFormat.parse(rentalPageController.rentalStartController.value.text);
                 DateTime endDate = dateFormat.parse(value!);
                 if (endDate.isBefore(startDate)) {

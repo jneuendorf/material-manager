@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
 
+import '../../common/util.dart';
+
 
 const inventoryRoute = '/inventory';
 
@@ -96,7 +98,4 @@ class InventoryPageController extends GetxController {
     runFilter();
   }
 
-  String formatDate(DateTime date) {
-    return DateFormat('dd.MM.yyyy').format(date);
-  }
 }
