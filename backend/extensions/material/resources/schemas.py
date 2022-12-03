@@ -15,7 +15,7 @@ class SerialNumberSchema(BaseSchema):
 
 class InventoryNumberSchema(BaseSchema):
     class Meta:
-        model = models.SerialNumber
+        model = models.InventoryNumber
         fields = ("id", "inventory_number")
 
 
@@ -55,7 +55,7 @@ class PurchaseDetailsSchema(BaseSchema):
 
 class ImageSchema(Schema):
     base64 = fields.Str()
-    name = fields.Str()
+    filename = fields.Str()
     mime_type = fields.Str(required=False)
 
 

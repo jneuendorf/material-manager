@@ -102,7 +102,7 @@ class Materials(ModelListResource):
                     "instructions",
                     "next_inspection_date",
                     "rental_fee",
-                ]
+                ],
             ),
         }
     )
@@ -125,14 +125,21 @@ class Materials(ModelListResource):
         - material type
         - images
         """
+
         if len(serial_numbers) != len(inventory_numbers):
-            abort(
+            return abort(
                 400,
                 "number of serial numbers does not match number of inventory numbers",
             )
 
-        material_type.save()
-        purchase_details.save()
+        material_type = material_type.ensure_saved(exclude=["id"])
+        purchase_details = purchase_details.ensure_saved(exclude=["id"])
+        if material_type.id is None or purchase_details.id is None:
+            return abort(
+                500,
+                "error while trying to persist material type or purchase details",
+            )
+
         image_files = [
             File.from_base64(
                 related_extension="material",
