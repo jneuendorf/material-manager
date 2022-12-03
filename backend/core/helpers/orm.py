@@ -1,18 +1,21 @@
 from collections.abc import Collection
 from dataclasses import dataclass
-from typing import Generic, Optional, Type, TypeVar, Union
+from typing import Generic, Optional, Type, TypeVar, Union, cast
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
 from sqlalchemy.engine import Result
 from sqlalchemy.exc import (
+    DatabaseError,
     IntegrityError,
     MultipleResultsFound,
     NoResultFound,
     PendingRollbackError,
+    SQLAlchemyError,
 )
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql import Select
+from sqlalchemy.sql.schema import Column, Table
 
 from .decorators import raises
 
@@ -35,6 +38,7 @@ class CrudModel(Model):
     https://flask-diamond.readthedocs.io/en/stable/_modules/flask_diamond/mixins/crud/
     """
 
+    __table__: Table
     pk = "id"
     _query: "Optional[Query]" = None
     # https://docs.sqlalchemy.org/en/14/orm/declarative_tables.html#declarative-table-configuration
@@ -147,6 +151,27 @@ class CrudModel(Model):
         db.session.add(self)
         db.session.commit()
 
+    def ensure_saved(self, exclude: Collection[str] = ()) -> "CrudModel":
+        """Makes sure the instance exists in the database"""
+        try:
+            self.save()
+            return self
+        except (DatabaseError, SQLAlchemyError):
+            attrs = {
+                col.name: getattr(self, col.name)
+                for col in cast(
+                    Collection[Column],
+                    self.__table__.columns,
+                )
+                if col.name not in exclude
+            }
+            cls = type(self)
+            cls.get_query().rollback()
+            instance = cls.get_or_none(**attrs)
+            if instance is None:
+                raise
+            return instance
+
     def delete(self) -> None:
         # Avoid cyclic imports
         from core.signals import model_deleted
@@ -182,5 +207,9 @@ class Query(Generic[M]):
         try:
             return session.execute(statement)
         except PendingRollbackError:
-            session.rollback()
+            self.rollback()
             raise
+
+    def rollback(self):
+        session: scoped_session = self.db.session
+        session.rollback()
