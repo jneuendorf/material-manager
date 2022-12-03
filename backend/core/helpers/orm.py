@@ -151,7 +151,7 @@ class CrudModel(Model):
         db.session.add(self)
         db.session.commit()
 
-    def ensure_saved(self, exclude: Collection[str] = ()) -> "CrudModel":
+    def ensure_saved(self, exclude: Collection[str] = ("id",)) -> "CrudModel":
         """Makes sure the instance exists in the database"""
         try:
             self.save()

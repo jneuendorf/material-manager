@@ -132,8 +132,10 @@ class Materials(ModelListResource):
                 "number of serial numbers does not match number of inventory numbers",
             )
 
-        material_type = material_type.ensure_saved(exclude=["id"])
-        purchase_details = purchase_details.ensure_saved(exclude=["id"])
+        for prop in properties:
+            prop.ensure_saved()
+        material_type = material_type.ensure_saved()
+        purchase_details = purchase_details.ensure_saved()
         if material_type.id is None or purchase_details.id is None:
             return abort(
                 500,

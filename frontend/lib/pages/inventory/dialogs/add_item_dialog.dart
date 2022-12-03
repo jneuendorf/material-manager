@@ -105,7 +105,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     selectedType.listen((MaterialTypeModel? type ) async {
       if (type == null) {
         properties.clear();
-        return; 
+        return;
       }
 
       final propertyTypes = await inventoryPageController.materialController.getPropertyTypesByMaterialTypeName(type.name);
@@ -321,6 +321,12 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                                   border: const OutlineInputBorder(),
                                                   labelText: 'value'.tr,
                                                 ),
+                                                validator: (String? value) {
+                                                  if (value == null || value.isEmpty) {
+                                                    return 'property_value_is_mandatory'.tr;
+                                                  }
+                                                  return null;
+                                                },
                                               ),
                                             ),
                                           ),
@@ -689,7 +695,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
     if (statusCode == null) {
       loading.value = false;
     } else {
-      // since potentially new material, new types and new properties could have been added, 
+      // since potentially new material, new types and new properties could have been added,
       // we can just call the init function to refresh the data
       inventoryPageController.materialController.onInit();
       inventoryPageController.onInit();

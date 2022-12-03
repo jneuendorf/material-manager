@@ -212,10 +212,8 @@ class MaterialController extends GetxController {
           'next_inspection_date': isoDateFormatter.format(nextInspectionDate),
           'instructions': instructions,
           'properties': properties.map((Property p) => {
-            'id': p.id,
             'value': p.value,
             'property_type': {
-              'id': p.propertyType.id,
               'name': p.propertyType.name,
               'description': p.propertyType.description,
               'unit': p.propertyType.unit,

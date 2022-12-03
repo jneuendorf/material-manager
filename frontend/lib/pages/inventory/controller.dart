@@ -46,7 +46,7 @@ class InventoryPageController extends GetxController {
       /// Checks if the [selectedTypeFilter] equals [materialType] of the [item].
       bool materialTypeFilterCondition() {
         if (selectedTypeFilter.value == null) return true;
-        
+
         return item.materialType.id == selectedTypeFilter.value!.id;
       }
 
@@ -96,7 +96,7 @@ class InventoryPageController extends GetxController {
     runFilter();
   }
 
-  String formatDate(DateTime date) {
-    return DateFormat('dd.MM.yyyy').format(date);
+  String formatDate(DateTime? date) {
+    return date != null ? DateFormat('dd.MM.yyyy').format(date) : '';
   }
 }

@@ -11,7 +11,7 @@ class MaterialModel {
   List<InventoryNumber> inventoryNumbers;
   DateTime maxOperatingDate;
   int maxDaysUsed;
-  DateTime installationDate;
+  DateTime? installationDate;
   String instructions;
   DateTime nextInspectionDate;
   double rentalFee;
@@ -47,7 +47,7 @@ class MaterialModel {
     inventoryNumbers = List<InventoryNumber>.from(json['inventory_numbers'].map((x) => InventoryNumber.fromJson(x))),
     maxOperatingDate = DateTime.parse(json['max_operating_date']),
     maxDaysUsed = json['max_days_used'],
-    installationDate = DateTime.parse(json['installation_date']),
+    installationDate = json['installation_date'] != null ? DateTime.parse(json['installation_date']) : null,
     instructions = json['instructions'],
     nextInspectionDate = DateTime.parse(json['next_inspection_date']),
     rentalFee = json['rental_fee'],
