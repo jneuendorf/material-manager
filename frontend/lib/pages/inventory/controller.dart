@@ -95,8 +95,4 @@ class InventoryPageController extends GetxController {
 
     runFilter();
   }
-
-  String formatDate(DateTime? date) {
-    return date != null ? DateFormat('dd.MM.yyyy').format(date) : '';
-  }
 }

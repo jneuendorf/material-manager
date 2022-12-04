@@ -68,8 +68,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
     TextEditingController(),
   ];
 
-  final DateFormat dateFormat = DateFormat('dd.MM.yyyy');
-
   @override
   void initState() {
     super.initState();

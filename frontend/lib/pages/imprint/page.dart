@@ -95,7 +95,7 @@ class ImprintPage extends StatelessWidget {
                     ),
                     Padding(
                       padding: const EdgeInsets.only(top: 40.0, bottom: 5.0),
-                      child: Text('vat_number'.tr, 
+                      child: Text('vat_number'.tr,
                         style: const TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                       ),
                     ),

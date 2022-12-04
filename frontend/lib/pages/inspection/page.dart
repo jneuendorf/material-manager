@@ -5,13 +5,13 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
+import 'package:frontend/common/util.dart';
 
 
 class InspectionPage extends GetView<InspectionPageController> {
@@ -100,7 +100,7 @@ class InspectionPage extends GetView<InspectionPageController> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text('${'next_inspection'.tr} :', style: const TextStyle(color: Colors.grey),),
-                        Text(DateFormat('dd.MM.yyyy').format(material.nextInspectionDate))
+                        Text(dateFormat.format(material.nextInspectionDate))
                       ],
                     ),
                   ],
