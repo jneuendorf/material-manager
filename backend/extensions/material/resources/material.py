@@ -1,5 +1,5 @@
 from datetime import date
-from typing import Optional, TypedDict
+from typing import Optional
 
 from flask import abort
 from flask_apispec import use_kwargs
@@ -7,10 +7,10 @@ from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
 from core.helpers.resource import ModelListResource, ModelResource
+from extensions.common.decorators import FileSchema, with_files
 from extensions.common.models import File
 from extensions.material import models
 from extensions.material.resources.schemas import (
-    ImageSchema,
     InventoryNumberSchema,
     MaterialSchema,
     SerialNumberSchema,
@@ -65,12 +65,6 @@ class Material(ModelResource):
         return self.serialize(material)  # noqa
 
 
-class ImageDict(TypedDict):
-    base64: str
-    filename: str
-    mime_type: str
-
-
 class Materials(ModelListResource):
     url = "/materials"
     Schema = MaterialSchema
@@ -90,7 +84,7 @@ class Materials(ModelListResource):
                 fields.Nested(InventoryNumberSchema(exclude=["id"])),
             ),
             "images": fields.List(
-                fields.Nested(ImageSchema()),
+                fields.Nested(FileSchema()),
             ),
             **MaterialSchema.to_dict(
                 include=[
@@ -106,13 +100,14 @@ class Materials(ModelListResource):
             ),
         }
     )
+    @with_files("images", related_extension="material")
     def post(
         self,
         material_type: models.MaterialType,
         serial_numbers: list[list[models.SerialNumber]],
         inventory_numbers: list[models.InventoryNumber],
         purchase_details: models.PurchaseDetails,
-        images: list[ImageDict],
+        images: list[File],
         max_operating_date: date,
         max_days_used: int,
         instructions: str,
@@ -142,15 +137,6 @@ class Materials(ModelListResource):
                 "error while trying to persist material type or purchase details",
             )
 
-        image_files = [
-            File.from_base64(
-                related_extension="material",
-                base64=image["base64"],
-                filename=f"{purchase_details.id}-{image['filename']}",
-                mime_type=image["mime_type"],
-            )
-            for image in images
-        ]
         try:
             for serial_nums, inventory_num in zip(serial_numbers, inventory_numbers):
                 material = models.Material.create(
@@ -166,7 +152,7 @@ class Materials(ModelListResource):
                         purchase_details=purchase_details,
                         serial_numbers=list(serial_nums),
                         inventory_numbers=[inventory_num],
-                        images=image_files,
+                        images=images,
                         properties=properties,
                     ),
                 )

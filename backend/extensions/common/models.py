@@ -45,23 +45,23 @@ class File(Model):  # type: ignore
     )
 
     @classmethod
-    def from_base64(
+    def create_from_base64(
         cls,
         related_extension: str,
+        path: str,
         base64: str,
-        filename: str,
         mime_type: str = "",
+        description: str = "",
+        is_thumbnail: bool = False,
     ) -> "File":
-        file = cls(
+        file = cls.create(
             related_extension=related_extension,
-            path=filename,
-            mime_type=mime_type if mime_type else mimetypes.guess_type(filename),
+            path=path,
+            mime_type=mime_type if mime_type else mimetypes.guess_type(path),
+            description=description,
+            is_thumbnail=is_thumbnail,
         )
-        path = file.resolved_path
-        if path.exists():
-            raise ValueError(f"File already exists at {path}")
-        file.save()
-        path.write_bytes(b64decode(base64))
+        file.resolved_path.write_bytes(b64decode(base64))
         return file
 
     def download(

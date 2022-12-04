@@ -1,6 +1,6 @@
 from collections.abc import Collection
 from dataclasses import dataclass
-from typing import Generic, Optional, Type, TypeVar, Union, cast
+from typing import Any, Generic, Optional, Type, TypeVar, Union, cast
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
@@ -139,6 +139,16 @@ class CrudModel(Model):
     def first_n(cls, n: int, **kwargs) -> "list[CrudModel]":
         return cls.get_query().filter(_limit=n, **kwargs).scalars().all()
 
+    @property
+    def attrs(self) -> dict[str, Any]:
+        return {
+            col.name: getattr(self, col.name)
+            for col in cast(
+                Collection[Column],
+                self.__table__.columns,
+            )
+        }
+
     def update(self, **kwargs):
         for field, value in kwargs.items():
             setattr(self, field, value)
@@ -158,12 +168,7 @@ class CrudModel(Model):
             return self
         except (DatabaseError, SQLAlchemyError):
             attrs = {
-                col.name: getattr(self, col.name)
-                for col in cast(
-                    Collection[Column],
-                    self.__table__.columns,
-                )
-                if col.name not in exclude
+                key: value for key, value in self.attrs.items() if key not in exclude
             }
             cls = type(self)
             cls.get_query().rollback()
