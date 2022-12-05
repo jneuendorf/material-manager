@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from flask import abort, make_response, render_template, url_for
+from flask import abort, current_app, make_response, render_template, url_for
 from flask_apispec import use_kwargs
 from flask_jwt_extended import current_user
 from flask_weasyprint import HTML, render_pdf
@@ -12,8 +12,15 @@ from extensions.user.models import User
 
 from . import models
 
+# from extensions.material.resources.schemas import MaterialSchema
+# from marshmallow import fields
+
 
 class RentalSchema(BaseSchema):
+    # This helps to get the materials attribute,
+    # but when we add this, we have to fix post and put functions.
+    # I have tried but I could not debug  errors.
+    #   materials = fields.List(fields.Nested(MaterialSchema()))
     class Meta:
         model_converter = ModelConverter
         model = models.Rental
@@ -103,8 +110,6 @@ class RentalConfirmationHtml(BaseResource):
     url = "/rental/<int:rental_id>/confirmation.html"
 
     def get(self, rental_id: int):
-        from flask import current_app
-
         if not current_app.debug:
             abort(500, "debug only")
 
