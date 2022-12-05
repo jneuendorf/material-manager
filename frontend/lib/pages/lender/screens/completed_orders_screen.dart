@@ -142,7 +142,7 @@ class CompletedOrdersScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'order_number'.tr} : ', 
+                    Text('${'order_number'.tr} : ',
                       style: const TextStyle(color: Colors.black45),
                     ),
                     SelectableText(item.id.toString())
@@ -150,7 +150,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text('${'rental_period'.tr} : ', 
+                    Text('${'rental_period'.tr} : ',
                       style: const TextStyle(color: Colors.black45),
                     ),
                     SelectableText(lenderPageController.getRentalPeriod(item)),
@@ -166,13 +166,12 @@ class CompletedOrdersScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'usage_period'.tr} : ', 
+                    Text('${'usage_period'.tr} : ',
                       style: const TextStyle(color: Colors.black45),
                     ),
                     SelectableText(lenderPageController.getUsagePeriod(item)),
                   ],
                 ),
-                const SizedBox(width: 500.0), // TODO fix for all screen sizes
               ],
             ),
           ),
@@ -188,8 +187,8 @@ class CompletedOrdersScreen extends StatelessWidget {
                     itemBuilder: (context, localIndex) {
                       String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
                       return ListTile(
-                        leading: imageUrl != null 
-                          ? Image.network(baseUrl + imageUrl) 
+                        leading: imageUrl != null
+                          ? Image.network(baseUrl + imageUrl)
                           : const Icon(Icons.image),
                         title: Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,

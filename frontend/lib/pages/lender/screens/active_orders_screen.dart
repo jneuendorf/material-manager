@@ -43,7 +43,7 @@ class ActiveOrderScreen extends StatelessWidget {
       Expanded(
         child: Obx(() {
             final List<GlobalKey<CollapsableExpansionTileState>> keys = List.generate(
-              lenderPageController.filteredRentals.length, 
+              lenderPageController.filteredRentals.length,
               (index) => GlobalKey<CollapsableExpansionTileState>(),
             );
             return ListView.separated(
@@ -67,7 +67,7 @@ class ActiveOrderScreen extends StatelessWidget {
                 },
                 title: buildTileTitle(lenderPageController.filteredRentals[index].obs),
                 children: [
-                  buildExpansionCard(lenderPageController.filteredRentals[index]),
+                  buildExpansionCard(lenderPageController.filteredRentals[index], context),
                 ],
               ),
           );
@@ -80,7 +80,7 @@ class ActiveOrderScreen extends StatelessWidget {
     children: [
       Expanded(flex: 19, child: Text(item.value.id.toString())),
       Expanded(flex: 20, child: Text('€ ${item.value.cost.toStringAsFixed(2)}')),
-      Expanded(flex: 20, child: Text(formatDate(item.value.createdAt), 
+      Expanded(flex: 20, child: Text(formatDate(item.value.createdAt),
         overflow: TextOverflow.ellipsis
       )),
       Flexible(
@@ -99,8 +99,7 @@ class ActiveOrderScreen extends StatelessWidget {
       ),
     ],
   );
-
-  Widget buildExpansionCard(RentalModel item) => Card(
+  Widget buildExpansionCard(RentalModel item, BuildContext context) => Card(
     elevation: 5.0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),
@@ -108,10 +107,11 @@ class ActiveOrderScreen extends StatelessWidget {
     child: Container(
       margin: const EdgeInsets.all(10.0),
       //height: 325,
-      constraints: const BoxConstraints(
-        maxHeight: 325,
+      constraints: BoxConstraints(
+        maxHeight: isLargeScreen(context) ? 325 : 400,
       ),
-      child: Column(
+      // LargeScreen
+      child: isLargeScreen(context) ? Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -133,10 +133,10 @@ class ActiveOrderScreen extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text('${'order_date'.tr} : ',
-                      style:  const TextStyle(color: Colors.black45),
+                    Text('${'rental_period'.tr} : ',
+                      style: const TextStyle(color: Colors.black45),
                     ),
-                    SelectableText(formatDate(item.createdAt)),
+                    SelectableText(lenderPageController.getRentalPeriod(item)),
                   ],
                 ),
               ],
@@ -149,7 +149,7 @@ class ActiveOrderScreen extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Text('${'order_number'.tr} : ', 
+                    Text('${'order_number'.tr} : ',
                       style: const TextStyle(color: Colors.black45),
                     ),
                     SelectableText(item.id.toString())
@@ -157,12 +157,12 @@ class ActiveOrderScreen extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    Text('${'rental_period'.tr} : ', 
+                    Text('${'usage_period'.tr} : ',
                       style: const TextStyle(color: Colors.black45),
                     ),
-                    SelectableText(lenderPageController.getRentalPeriod(item)),
+                    SelectableText(lenderPageController.getUsagePeriod(item)),
                   ],
-                )
+                ),
               ],
             ),
           ),
@@ -170,10 +170,10 @@ class ActiveOrderScreen extends StatelessWidget {
             padding: const EdgeInsets.all(6.0),
             child: Row(
               children: [
-                Text('${'usage_period'.tr} : ', 
-                  style: const TextStyle(color: Colors.black45),
+                Text('${'order_date'.tr} : ',
+                  style:  const TextStyle(color: Colors.black45),
                 ),
-                SelectableText(lenderPageController.getUsagePeriod(item)),
+                SelectableText(formatDate(item.createdAt)),
               ],
             ),
           ),
@@ -182,66 +182,7 @@ class ActiveOrderScreen extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: item.materialIds.isNotEmpty ? ListView.separated(
-                    shrinkWrap: true,
-                    separatorBuilder: (context, index) => const Divider(),
-                    itemCount: item.materialIds.length,
-                    itemBuilder: (context, localIndex) {
-                      String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
-                      return ListTile(
-                        leading: imageUrl != null 
-                          ? Image.network(baseUrl + imageUrl) 
-                          : const Icon(Icons.image),
-                        title: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Expanded(
-                              child: Text(lenderPageController.getItemName(item,localIndex)),
-                            ),
-                            Expanded(
-                              child: Center(
-                                child: SizedBox(
-                                  width: 100,
-                                  child: Obx(() => DropDownFilterButton(
-                                    options: lenderPageController.statusOptions.values.toList(),
-                                    selected: item.status!.name,
-                                    onSelected: (String value) {
-                                      // TODO: update rentalStatus of item
-                                    },
-                                  )),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: CupertinoButton(
-                                onPressed: () {
-                                  // TODO: go to inspection page for the selected item
-                                },
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    border: Border.all(
-                                      color: Colors.grey,
-                                      width: 1.0,
-                                    ),
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  ),
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(6.5),
-                                    child: Text('inspect'.tr, 
-                                      style: const TextStyle(color: Colors.black),
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ): Center(
+                  child: item.materialIds.isNotEmpty ? buildMaterialListView(item): Center(
                     child: Text('no_items_assigned_to_this_rental_entry'.tr),
                   ),
                 ),
@@ -276,7 +217,7 @@ class ActiveOrderScreen extends StatelessWidget {
                           ),
                           child: Padding(
                             padding: const EdgeInsets.all(6.5),
-                            child: Text('confirm'.tr, 
+                            child: Text('confirm'.tr,
                               style: const TextStyle(color: Colors.black),
                             ),
                           ),
@@ -289,7 +230,195 @@ class ActiveOrderScreen extends StatelessWidget {
             ),
           ),
         ],
+        //smallScreen
+      ) : Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: SelectableText(lenderPageController.getUserName(item)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(6.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Text('${'membership_number'.tr} : ',
+                      style:  const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(lenderPageController.getMembershipNum(item)),
+                  ],
+                ),
+
+                Row(
+                  children: [
+                    Text('${'order_number'.tr} : ',
+                      style: const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(item.id.toString())
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('${'order_date'.tr} : ',
+                      style:  const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(formatDate(item.createdAt)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('${'rental_period'.tr} : ',
+                      style: const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(lenderPageController.getRentalPeriod(item)),
+                  ],
+                ),
+                Row(
+                  children: [
+                    Text('${'usage_period'.tr} : ',
+                      style: const TextStyle(color: Colors.black45),
+                    ),
+                    SelectableText(lenderPageController.getUsagePeriod(item)),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: Column(
+              children: [
+                Flexible(
+                  //flex: 3,
+                  child: item.materialIds.isNotEmpty ? buildMaterialListView(item) : Center(
+                    child: Text('no_items_assigned_to_this_rental_entry'.tr),
+                  ),
+                ),
+                Expanded(
+                    //flex: 1,
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            const SizedBox(width: 30.0),
+                            Expanded(
+                              child: TextFormField(
+                                enabled: false,
+                                initialValue: '€ ${item.cost.toStringAsFixed(2)}',
+                                decoration: InputDecoration(
+                                  labelText: 'total'.tr,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 50.0),
+                          ],
+                        ),
+                        CupertinoButton(
+                            onPressed: () {},
+                            child: Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Colors.grey,
+                                  width: 1.0,
+                                ),
+                                borderRadius: BorderRadius.circular(10.0),
+                              ),
+                              child: Padding(
+                                padding: const EdgeInsets.all(6.5),
+                                child: Text('confirm'.tr,
+                                  style: const TextStyle(color: Colors.black),
+                                ),
+                              ),
+                            )
+                        ),
+                      ],
+                    )
+                )
+              ],
+            ),
+          ),
+        ],
       ),
     ),
+  );
+
+  Widget buildMaterialListView(RentalModel item) => ListView.separated(
+    shrinkWrap: true,
+    separatorBuilder: (context, index) => const Divider(),
+    itemCount: item.materialIds.length,
+    itemBuilder: (context, localIndex) {
+      String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
+      return ListTile(
+        leading: imageUrl != null
+            ? Image.network(baseUrl + imageUrl)
+            : const Icon(Icons.image),
+        title: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Text(lenderPageController.getItemName(item,localIndex)),
+            ),
+            Expanded(
+              child: Center(
+                child: SizedBox(
+                  width: 100,
+                  child: Obx(() => DropDownFilterButton(
+                    options: lenderPageController.statusOptions.values.toList(),
+                    selected: item.status!.name,
+                    onSelected: (String value) {
+                      // TODO: update rentalStatus of item
+                    },
+                  )),
+                ),
+              ),
+            ),
+            Expanded(
+              child: Theme(
+                data: ThemeData(
+
+                    outlinedButtonTheme: OutlinedButtonThemeData(
+                      style: OutlinedButton.styleFrom(foregroundColor: Colors.black)
+                    )
+                ) ,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                  child: OutlinedButton(
+                    onPressed: () {
+                      // TODO: go to inspection page for the selected item
+                    },
+                    child: Text('inspect'.tr,maxLines: 1),
+                  ),
+                ),
+              ),
+              // child: CupertinoButton(
+              //   onPressed: () {
+              //     // TODO: go to inspection page for the selected item
+              //   },
+              //   child: Container(
+              //     decoration: BoxDecoration(
+              //       border: Border.all(
+              //         color: Colors.grey,
+              //         width: 1.0,
+              //       ),
+              //       borderRadius: BorderRadius.circular(10.0),
+              //     ),
+              //     child: Padding(
+              //       padding: const EdgeInsets.all(6.5),
+              //       child: Text('inspect'.tr,
+              //         style: const TextStyle(color: Colors.black),
+              //       ),
+              //     ),
+              //   ),
+              // ),
+            ),
+            Expanded(
+              child: Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
+            ),
+          ],
+        ),
+      );
+    },
   );
 }
