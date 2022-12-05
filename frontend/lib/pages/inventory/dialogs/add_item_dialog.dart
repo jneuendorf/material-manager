@@ -300,12 +300,19 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                             child: Padding(
                                               padding: const EdgeInsets.only(right: 8.0),
                                               child: TextFormField(
-                                                onFieldSubmitted: (value) => properties[index].propertyType.name = value.trim(),
+                                                onChanged: (String value) => properties[index].propertyType.name = value.trim(),
                                                 controller: propertyNameController[index],
                                                 decoration: InputDecoration(
                                                   border: const OutlineInputBorder(),
                                                   labelText: 'name'.tr,
                                                 ),
+                                                autovalidateMode: AutovalidateMode.onUserInteraction,
+                                                validator: (String? value) {
+                                                  if (value == null || value.isEmpty) {
+                                                    return 'property_name_is_mandatory'.tr;
+                                                  }
+                                                  return null;
+                                                },
                                               ),
                                             ),
                                           ),
@@ -313,12 +320,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                             child: Padding(
                                               padding: const EdgeInsets.only(right: 8.0),
                                               child: TextFormField(
-                                                onFieldSubmitted: (value) => properties[index].value = value.trim(),
+                                                onChanged: (String value) => properties[index].value = value.trim(),
                                                 controller: propertyValueController[index],
                                                 decoration: InputDecoration(
                                                   border: const OutlineInputBorder(),
                                                   labelText: 'value'.tr,
                                                 ),
+                                                autovalidateMode: AutovalidateMode.onUserInteraction,
                                                 validator: (String? value) {
                                                   if (value == null || value.isEmpty) {
                                                     return 'property_value_is_mandatory'.tr;
@@ -330,7 +338,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           ),
                                           Expanded(
                                             child: TextFormField(
-                                              onFieldSubmitted: (value) => properties[index].propertyType.unit = value.trim(),
+                                              onChanged: (String value) => properties[index].propertyType.unit = value.trim(),
                                               controller: propertyUnitController[index],
                                               decoration: InputDecoration(
                                                 border: const OutlineInputBorder(),
@@ -669,6 +677,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
   /// Handles tap on the add button.
   Future<void> onAdd() async {
     if (!formKey.currentState!.validate()) return;
+
+    debugPrint('Prperties: $properties');
 
     loading.value = true;
 
