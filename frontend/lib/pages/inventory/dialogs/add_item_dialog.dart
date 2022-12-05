@@ -685,7 +685,11 @@ class _AddItemDialogState extends State<AddItemDialog> {
     final int? statusCode = await inventoryPageController.materialController.addMaterials(
       imageFiles: images,
       bulkValues: bulkValues,
-      materialType: selectedType.value!,
+      materialType: selectedType.value ?? MaterialTypeModel(
+        id: null, 
+        name: materialTypeController.text, 
+        description: '',
+      ),
       properties: properties,
       rentalFee: double.parse(rentalFeeController.text),
       maxOperatingDate: dateFormat.parse(maxOperatingDateController.text),
