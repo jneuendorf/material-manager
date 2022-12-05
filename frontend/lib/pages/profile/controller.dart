@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/model.dart';
@@ -43,10 +42,6 @@ class ProfilePageController extends GetxController {
     await rentalController.initCompleter.future;
 
     currentRentals.value = rentalController.rentals; // TODO should be the users rentals only
-  }
-
-  String formatDate(DateTime date) {
-    return DateFormat('dd.MM.yyyy').format(date);
   }
 
   Color getDataRowColor(Set<MaterialState> states) {

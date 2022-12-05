@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/extensions/material/model.dart';
+import 'package:frontend/common/util.dart';
 
 
 class ProductDetailsDialog extends StatelessWidget {
@@ -84,7 +85,7 @@ class ProductDetailsDialog extends StatelessWidget {
                             fontSize: 15.0,
                           ),
                         ),
-                        Text(inventoryPageController.formatDate(item.maxOperatingDate),
+                        Text(formatDate(item.maxOperatingDate),
                           style: const TextStyle(fontSize: 15.0)
                         ),
                         ]
@@ -182,7 +183,7 @@ class ProductDetailsDialog extends StatelessWidget {
                               fontSize: 15.0,
                             ),
                           ),
-                          Text(inventoryPageController.formatDate(item.purchaseDetails.purchaseDate),
+                          Text(formatDate(item.purchaseDetails.purchaseDate),
                             style: const TextStyle(fontSize: 15.0)
                           ),
                         ]

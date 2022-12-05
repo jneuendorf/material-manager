@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 import 'package:data_table_2/data_table_2.dart';
 
 import 'package:frontend/extensions/rental/model.dart';
@@ -143,7 +142,7 @@ class _UserOrderListState extends State<UserOrderList> {
   );
 
   String formatDate(DateTime date) {
-    return DateFormat('dd.MM.yyyy').format(date);
+    return dateFormat.format(date);
   }
 
   Color getDataRowColor(Set<MaterialState> states) {

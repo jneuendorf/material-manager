@@ -6,6 +6,7 @@ import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
+import 'package:frontend/common/util.dart';
 
 
 class CompletedOrdersScreen extends StatelessWidget {
@@ -69,7 +70,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 20,
-                    child: Text(lenderPageController.formatDate(lenderPageController.filteredRentals[index].createdAt)),
+                    child: Text(formatDate(lenderPageController.filteredRentals[index].createdAt)),
                   ),
                   Expanded(
                     flex: 20,
@@ -100,7 +101,6 @@ class CompletedOrdersScreen extends StatelessWidget {
     ),
     child: Container(
       margin: const EdgeInsets.all(10.0),
-      //height: 325,
       constraints: const BoxConstraints(
         maxHeight: 325,
       ),
@@ -129,7 +129,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                     Text('${'order_date'.tr} : ',
                       style: const TextStyle(color: Colors.black45),
                     ),
-                    SelectableText( lenderPageController.formatDate(item.createdAt)),
+                    SelectableText(formatDate(item.createdAt)),
                   ],
                 ),
               ],
@@ -172,9 +172,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                     SelectableText(lenderPageController.getUsagePeriod(item)),
                   ],
                 ),
-                const SizedBox(width: 500.0),
-
-                const SizedBox(width: 50.0),
+                const SizedBox(width: 500.0), // TODO fix for all screen sizes
               ],
             ),
           ),
@@ -190,29 +188,29 @@ class CompletedOrdersScreen extends StatelessWidget {
                     itemBuilder: (context, localIndex) {
                       String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
                       return ListTile(
-                      leading: imageUrl != null 
-                        ? Image.network(baseUrl + imageUrl) 
-                        : const Icon(Icons.image),
-                      title: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Expanded(
-                            child: Text(lenderPageController.getItemName(item,localIndex)),
-                          ),
-                          Expanded(
-                            child: Center(
-                              child: SizedBox(
-                                width: 100,
-                                child: Text('completed'.tr)
+                        leading: imageUrl != null 
+                          ? Image.network(baseUrl + imageUrl) 
+                          : const Icon(Icons.image),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Expanded(
+                              child: Text(lenderPageController.getItemName(item,localIndex)),
+                            ),
+                            Expanded(
+                              child: Center(
+                                child: SizedBox(
+                                  width: 100,
+                                  child: Text('completed'.tr)
+                                ),
                               ),
                             ),
-                          ),
-                          Expanded(
-                            child: Text('${lenderPageController.getItemPrice(item,localIndex)} €'),
-                          ),
-                        ],
-                      ),
-                    );
+                            Expanded(
+                              child: Text('${lenderPageController.getItemPrice(item,localIndex)} €'),
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   ): Container(),
                 ),

@@ -8,6 +8,7 @@ import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
+import 'package:frontend/common/util.dart';
 
 
 class ActiveOrderScreen extends StatelessWidget {
@@ -79,9 +80,9 @@ class ActiveOrderScreen extends StatelessWidget {
     children: [
       Expanded(flex: 19, child: Text(item.value.id.toString())),
       Expanded(flex: 20, child: Text('€ ${item.value.cost.toStringAsFixed(2)}')),
-      Expanded(flex: 20, child: Text(lenderPageController.formatDate(item.value.createdAt), 
-        overflow: TextOverflow.ellipsis),
-      ),
+      Expanded(flex: 20, child: Text(formatDate(item.value.createdAt), 
+        overflow: TextOverflow.ellipsis
+      )),
       Flexible(
         flex: 20,
         child: Obx(() => DropDownFilterButton(
@@ -135,7 +136,7 @@ class ActiveOrderScreen extends StatelessWidget {
                     Text('${'order_date'.tr} : ',
                       style:  const TextStyle(color: Colors.black45),
                     ),
-                    SelectableText(lenderPageController.formatDate(item.createdAt)),
+                    SelectableText(formatDate(item.createdAt)),
                   ],
                 ),
               ],
