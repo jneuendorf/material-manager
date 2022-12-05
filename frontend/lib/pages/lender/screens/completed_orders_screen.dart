@@ -30,6 +30,7 @@ class CompletedOrdersScreen extends StatelessWidget {
           Expanded(child: Text('status'.tr,
             style: const TextStyle(fontWeight: FontWeight.bold),
           )),
+          const SizedBox(width: 50.0),
         ],
       ),
       const Divider(),
@@ -59,15 +60,19 @@ class CompletedOrdersScreen extends StatelessWidget {
               title: Row(
                 children: [
                   Expanded(
+                    flex: 19,
                     child: Text(lenderPageController.filteredRentals[index].id.toString()),
                   ),
                   Expanded(
+                    flex: 20,
                     child: Text('€ ${lenderPageController.filteredRentals[index].cost.toStringAsFixed(2)}'),
                   ),
                   Expanded(
+                    flex: 20,
                     child: Text(lenderPageController.formatDate(lenderPageController.filteredRentals[index].createdAt)),
                   ),
                   Expanded(
+                    flex: 20,
                     child: Center(
                       child: Row(
                         children: [

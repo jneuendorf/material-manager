@@ -20,8 +20,11 @@ class ActiveOrderScreen extends StatelessWidget {
     children: [
       Row(
         children: [
-          Expanded(child: Text('order_number'.tr,
-            style: const TextStyle(fontWeight: FontWeight.bold),
+          Expanded(child: Padding(
+            padding: const EdgeInsets.only(left: 0.0),
+            child: Text('order_number'.tr,
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           )),
           Expanded(child: Text('price'.tr,
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -32,6 +35,7 @@ class ActiveOrderScreen extends StatelessWidget {
           Expanded(child: Text('status'.tr,
             style: const TextStyle(fontWeight: FontWeight.bold),
           )),
+          const SizedBox(width: 50.0),
         ],
       ),
       const Divider(),
@@ -42,6 +46,7 @@ class ActiveOrderScreen extends StatelessWidget {
               (index) => GlobalKey<CollapsableExpansionTileState>(),
             );
             return ListView.separated(
+              padding: EdgeInsets.zero,
               itemCount: lenderPageController.filteredRentals.length,
               separatorBuilder: (BuildContext context, int index) => const Divider(),
               itemBuilder: (context, index) => CollapsableExpansionTile(
@@ -72,27 +77,24 @@ class ActiveOrderScreen extends StatelessWidget {
 
   Widget buildTileTitle(Rx<RentalModel> item) => Row(
     children: [
-      Expanded(child: Text(item.value.id.toString())),
-      Expanded(child: Text('€ ${item.value.cost.toStringAsFixed(2)}')),
-      Flexible(child: Text(lenderPageController.formatDate(item.value.createdAt), 
+      Expanded(flex: 19, child: Text(item.value.id.toString())),
+      Expanded(flex: 20, child: Text('€ ${item.value.cost.toStringAsFixed(2)}')),
+      Expanded(flex: 20, child: Text(lenderPageController.formatDate(item.value.createdAt), 
         overflow: TextOverflow.ellipsis),
       ),
-      Expanded(
-        child: Center(
-          child: ConstrainedBox(
-            constraints: const BoxConstraints(maxWidth: 100),
-            child: Obx(() => DropDownFilterButton(
-              options: [
-                'all'.tr,
-                ...lenderPageController.statusOptions.values
-              ],
-              selected: item.value.status!.name,
-              onSelected: (String value) {
-                // TODO: update rentalStatus
-              },
-            )),
-          ),
-        ),
+      Flexible(
+        flex: 20,
+        child: Obx(() => DropDownFilterButton(
+          options: [
+
+            'all'.tr,
+            ...lenderPageController.statusOptions.values
+          ],
+          selected: item.value.status!.name,
+          onSelected: (String value) {
+            // TODO: update rentalStatus
+          },
+        )),
       ),
     ],
   );
