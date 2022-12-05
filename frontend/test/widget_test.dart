@@ -43,7 +43,6 @@ void main() {
   });
 
   testWidgets('LoginPage Widget Test', (WidgetTester tester) async {
-    
     LoginPageBinding().dependencies();
 
     await tester.pumpWidget(const MediaQuery(
