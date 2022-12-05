@@ -12,18 +12,11 @@ from extensions.user.models import User
 
 from . import models
 
-# from marshmallow import fields
-
 
 class RentalSchema(BaseSchema):
     class Meta:
         model_converter = ModelConverter
         model = models.Rental
-
-    # fields = (
-    # "id",
-    # "user_id",
-    # "material_id",)
 
 
 class Rental(ModelResource):
@@ -31,13 +24,7 @@ class Rental(ModelResource):
     Schema = RentalSchema
 
     # Adds a new rental /rental
-    @use_kwargs(
-        RentalSchema.to_dict()
-        # {"id": fields.Int(required=True),
-        # "material_id": fields.Int(required=True),
-        # We do not have material_id in rental model !
-        # "": fields.Str(required=True),}
-    )
+    @use_kwargs(RentalSchema.to_dict())
     def post(self, **kwargs) -> dict:
         """Test with
         curl -X POST "http://localhost:5000/rental" \
@@ -51,8 +38,8 @@ class Rental(ModelResource):
     @use_kwargs(RentalSchema.to_dict())
     def put(self, rental_id, **kwargs):
         rental = models.Rental.get(id=rental_id)
-        rental_to_update = models.Rental.update(rental, **kwargs)
-        return self.serialize(rental_to_update)
+        models.Rental.update(rental, **kwargs)
+        return self.serialize(rental)
 
 
 # Fetches all rentals.
