@@ -357,65 +357,40 @@ class ActiveOrderScreen extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(
-              child: Text(lenderPageController.getItemName(item,localIndex)),
-            ),
+            Expanded(child: Text(lenderPageController.getItemName(item,localIndex))),
             Expanded(
               child: Center(
-                child: SizedBox(
-                  width: 100,
-                  child: Obx(() => DropDownFilterButton(
-                    options: lenderPageController.statusOptions.values.toList(),
-                    selected: item.status!.name,
-                    onSelected: (String value) {
-                      // TODO: update rentalStatus of item
-                    },
-                  )),
-                ),
+                child: Obx(() => DropDownFilterButton(
+                  options: lenderPageController.statusOptions.values.toList(),
+                  selected: item.status!.name,
+                  onSelected: (String value) {
+                    // TODO: update rentalStatus of item
+                  },
+                )),
               ),
             ),
-            Expanded(
+            Flexible(
               child: Theme(
                 data: ThemeData(
-
                     outlinedButtonTheme: OutlinedButtonThemeData(
                       style: OutlinedButton.styleFrom(foregroundColor: Colors.black)
                     )
                 ) ,
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  child: OutlinedButton(
-                    onPressed: () {
-                      // TODO: go to inspection page for the selected item
-                    },
-                    child: Text('inspect'.tr,maxLines: 1),
+                  child: ConstrainedBox(
+                    constraints: const BoxConstraints(maxWidth: 100),
+                    child: OutlinedButton(
+                      onPressed: () {
+                        // TODO: go to inspection page for the selected item
+                      },
+                      child: Text('inspect'.tr,maxLines: 1),
+                    ),
                   ),
                 ),
               ),
-              // child: CupertinoButton(
-              //   onPressed: () {
-              //     // TODO: go to inspection page for the selected item
-              //   },
-              //   child: Container(
-              //     decoration: BoxDecoration(
-              //       border: Border.all(
-              //         color: Colors.grey,
-              //         width: 1.0,
-              //       ),
-              //       borderRadius: BorderRadius.circular(10.0),
-              //     ),
-              //     child: Padding(
-              //       padding: const EdgeInsets.all(6.5),
-              //       child: Text('inspect'.tr,
-              //         style: const TextStyle(color: Colors.black),
-              //       ),
-              //     ),
-              //   ),
-              // ),
             ),
-            Expanded(
-              child: Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
-            ),
+            Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
           ],
         ),
       );
