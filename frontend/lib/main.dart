@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:frontend/common/core/controller.dart';
 
 import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -56,6 +57,9 @@ Future<void> initialConfig() async {
   debugPrint('${dotenv.env}');
 
   await Get.putAsync(() async => await ApiService().init());
+
+  // init core controller
+  Get.put(CoreController());
 
   // init extension controllers
   Get.lazyPut<RentalController>(() => RentalController(), fenix: true);

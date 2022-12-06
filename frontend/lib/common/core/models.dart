@@ -39,6 +39,15 @@ class ImprintModel {
   }
 }
 
+class PrivacyPolicyModel {
+  // TODO implement
+  PrivacyPolicyModel();
+
+  factory PrivacyPolicyModel.fromJson(Map<String, dynamic> json) {
+    return PrivacyPolicyModel();
+  }
+}
+
 class NonFinalMapEntry<K,V> {
   K key;
   V value;
