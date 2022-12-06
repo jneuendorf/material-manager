@@ -253,6 +253,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                               if (value != 'file_selected'.tr && !value.isURL) {
                                                 return 'must_be_file_or_url'.tr;
                                               }
+                                              return null;
                                             },
                                           ),
                                         ),
@@ -260,9 +261,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           splashRadius: 18.0,
                                           onPressed: () async {
                                             instructions = await pickFile();
-                                            if (instructions == null) return;
-
-                                            instructionsController.text = 'file_selected'.tr;
+                                            if (instructions != null) {
+                                              instructionsController.text = 'file_selected'.tr;
+                                            }
                                           },
                                           icon: const Icon(Icons.folder),
                                         ),
@@ -722,7 +723,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       maxDaysUsed: int.parse(maxLifeExpectancyController.text),
       nextInspectionDate: dateFormat.parse(nextInspectionController.text),
       merchant: merchantController.text,
-      instructions: instructionsController.text,
+      instructions: instructions ?? instructionsController.text,
       purchaseDate: dateFormat.parse(purchaseDateController.text),
       purchasePrice: double.parse(purchasePriceController.text),
       suggestedRetailPrice: double.parse(suggestedRetailPriceController.text),
