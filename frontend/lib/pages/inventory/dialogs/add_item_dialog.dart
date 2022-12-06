@@ -39,7 +39,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[
     NonFinalMapEntry(null, <SerialNumber>[]),
   ].obs;
+  
   final RxList<XFile> images = <XFile>[].obs;
+  XFile? instructions;
 
   final TextEditingController materialTypeController = TextEditingController();
   final TextEditingController rentalFeeController = TextEditingController();
@@ -236,11 +238,35 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         return null;
                                       },
                                     ),
-                                    TextFormField(
-                                      controller: instructionsController,
-                                      decoration: InputDecoration(
-                                        labelText: 'instructions'.tr,
-                                      ),
+                                    Row(
+                                      children: [
+                                        Expanded(
+                                          child: TextFormField(
+                                            controller: instructionsController,
+                                            decoration: InputDecoration(
+                                              labelText: 'instructions'.tr,
+                                            ),
+                                            validator: (String? value) {
+                                              if (value == null || value.isEmpty) {
+                                                return null;
+                                              }
+                                              if (value != 'file_selected'.tr && !value.isURL) {
+                                                return 'must_be_file_or_url'.tr;
+                                              }
+                                            },
+                                          ),
+                                        ),
+                                        IconButton(
+                                          splashRadius: 18.0,
+                                          onPressed: () async {
+                                            instructions = await pickFile();
+                                            if (instructions == null) return;
+
+                                            instructionsController.text = 'file_selected'.tr;
+                                          },
+                                          icon: const Icon(Icons.folder),
+                                        ),
+                                      ],
                                     ),
                                   ],
                                 ),
