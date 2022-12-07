@@ -246,6 +246,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                             decoration: InputDecoration(
                                               labelText: 'instructions'.tr,
                                             ),
+                                            autovalidateMode: AutovalidateMode.onUserInteraction,
                                             validator: (String? value) {
                                               if (value == null || value.isEmpty) {
                                                 return null;
