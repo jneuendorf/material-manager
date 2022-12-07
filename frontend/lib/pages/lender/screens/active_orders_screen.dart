@@ -67,7 +67,7 @@ class ActiveOrderScreen extends StatelessWidget {
                 },
                 title: buildTileTitle(lenderPageController.filteredRentals[index].obs),
                 children: [
-                  buildExpansionCard(lenderPageController.filteredRentals[index], context),
+                  buildExpansionCard(lenderPageController.filteredRentals[index]),
                 ],
               ),
           );
@@ -87,31 +87,27 @@ class ActiveOrderScreen extends StatelessWidget {
         flex: 20,
         child: Obx(() => DropDownFilterButton(
           options: [
-
             'all'.tr,
             ...lenderPageController.statusOptions.values
           ],
           selected: item.value.status!.name,
-          onSelected: (String value) {
-            // TODO: update rentalStatus
-          },
+          onSelected: (String value) {}, // TODO update rentalStatus
         )),
       ),
     ],
   );
-  Widget buildExpansionCard(RentalModel item, BuildContext context) => Card(
+
+  Widget buildExpansionCard(RentalModel item) => Card(
     elevation: 5.0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),
     ),
     child: Container(
       margin: const EdgeInsets.all(10.0),
-      //height: 325,
       constraints: BoxConstraints(
-        maxHeight: isLargeScreen(context) ? 325 : 400,
+        maxHeight: isLargeScreen(Get.context!) ? 325 : 400,
       ),
-      // LargeScreen
-      child: isLargeScreen(context) ? Column(
+      child: isLargeScreen(Get.context!) ? Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -206,7 +202,7 @@ class ActiveOrderScreen extends StatelessWidget {
                         ],
                       ),
                       CupertinoButton(
-                        onPressed: () {},
+                        onPressed: () {}, // TODO implement confirm rental
                         child: Container(
                           decoration: BoxDecoration(
                             border: Border.all(
@@ -230,7 +226,6 @@ class ActiveOrderScreen extends StatelessWidget {
             ),
           ),
         ],
-        //smallScreen
       ) : Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -251,7 +246,6 @@ class ActiveOrderScreen extends StatelessWidget {
                     SelectableText(lenderPageController.getMembershipNum(item)),
                   ],
                 ),
-
                 Row(
                   children: [
                     Text('${'order_number'.tr} : ',
@@ -291,50 +285,48 @@ class ActiveOrderScreen extends StatelessWidget {
             child: Column(
               children: [
                 Flexible(
-                  //flex: 3,
                   child: item.materialIds.isNotEmpty ? buildMaterialListView(item) : Center(
                     child: Text('no_items_assigned_to_this_rental_entry'.tr),
                   ),
                 ),
                 Expanded(
-                    //flex: 1,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            const SizedBox(width: 30.0),
-                            Expanded(
-                              child: TextFormField(
-                                enabled: false,
-                                initialValue: '€ ${item.cost.toStringAsFixed(2)}',
-                                decoration: InputDecoration(
-                                  labelText: 'total'.tr,
-                                ),
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(width: 30.0),
+                          Expanded(
+                            child: TextFormField(
+                              enabled: false,
+                              initialValue: '€ ${item.cost.toStringAsFixed(2)}',
+                              decoration: InputDecoration(
+                                labelText: 'total'.tr,
                               ),
                             ),
-                            const SizedBox(width: 50.0),
-                          ],
+                          ),
+                          const SizedBox(width: 50.0),
+                        ],
+                      ),
+                      CupertinoButton(
+                        onPressed: () {},
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Colors.grey,
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(10.0),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(6.5),
+                            child: Text('confirm'.tr,
+                              style: const TextStyle(color: Colors.black),
+                            ),
+                          ),
                         ),
-                        CupertinoButton(
-                            onPressed: () {},
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Colors.grey,
-                                  width: 1.0,
-                                ),
-                                borderRadius: BorderRadius.circular(10.0),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(6.5),
-                                child: Text('confirm'.tr,
-                                  style: const TextStyle(color: Colors.black),
-                                ),
-                              ),
-                            )
-                        ),
-                      ],
-                    )
+                      ),
+                    ],
+                  ),
                 )
               ],
             ),
@@ -364,7 +356,7 @@ class ActiveOrderScreen extends StatelessWidget {
                   options: lenderPageController.statusOptions.values.toList(),
                   selected: item.status!.name,
                   onSelected: (String value) {
-                    // TODO: update rentalStatus of item
+                    // TODO update rentalStatus of item
                   },
                 )),
               ),
@@ -372,17 +364,17 @@ class ActiveOrderScreen extends StatelessWidget {
             Flexible(
               child: Theme(
                 data: ThemeData(
-                    outlinedButtonTheme: OutlinedButtonThemeData(
-                      style: OutlinedButton.styleFrom(foregroundColor: Colors.black)
-                    )
-                ) ,
+                  outlinedButtonTheme: OutlinedButtonThemeData(
+                    style: OutlinedButton.styleFrom(foregroundColor: Colors.black)
+                  ),
+                ),
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 8.0),
                   child: ConstrainedBox(
                     constraints: const BoxConstraints(maxWidth: 100),
                     child: OutlinedButton(
                       onPressed: () {
-                        // TODO: go to inspection page for the selected item
+                        // TODO go to inspection page for the selected item
                       },
                       child: Text('inspect'.tr,maxLines: 1),
                     ),
