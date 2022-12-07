@@ -67,7 +67,7 @@ class ActiveOrderScreen extends StatelessWidget {
                 },
                 title: buildTileTitle(lenderPageController.filteredRentals[index].obs),
                 children: [
-                  buildExpansionCard(lenderPageController.filteredRentals[index]),
+                  buildExpansionCard(lenderPageController.filteredRentals[index], context),
                 ],
               ),
           );
@@ -97,7 +97,7 @@ class ActiveOrderScreen extends StatelessWidget {
     ],
   );
 
-  Widget buildExpansionCard(RentalModel item) => Card(
+  Widget buildExpansionCard(RentalModel item, BuildContext context) => Card(
     elevation: 5.0,
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(10.0),
@@ -105,9 +105,9 @@ class ActiveOrderScreen extends StatelessWidget {
     child: Container(
       margin: const EdgeInsets.all(10.0),
       constraints: BoxConstraints(
-        maxHeight: isLargeScreen(Get.context!) ? 325 : 400,
+        maxHeight: isLargeScreen(context) ? 325 : 400,
       ),
-      child: isLargeScreen(Get.context!) ? Column(
+      child: isLargeScreen(context) ? Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
@@ -119,22 +119,8 @@ class ActiveOrderScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text('${'membership_number'.tr} : ',
-                      style:  const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getMembershipNum(item)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('${'rental_period'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getRentalPeriod(item)),
-                  ],
-                ),
+                buildSelectableTextRow('membership_number'.tr, lenderPageController.getMembershipNum(item)),
+                buildSelectableTextRow('rental_period'.tr, lenderPageController.getRentalPeriod(item)),
               ],
             ),
           ),
@@ -143,35 +129,14 @@ class ActiveOrderScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text('${'order_number'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(item.id.toString())
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('${'usage_period'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getUsagePeriod(item)),
-                  ],
-                ),
+                buildSelectableTextRow('order_number'.tr, item.id.toString()),
+                buildSelectableTextRow('usage_period'.tr, lenderPageController.getUsagePeriod(item)),
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(6.0),
-            child: Row(
-              children: [
-                Text('${'order_date'.tr} : ',
-                  style:  const TextStyle(color: Colors.black45),
-                ),
-                SelectableText(formatDate(item.createdAt)),
-              ],
-            ),
+            child: buildSelectableTextRow('order_date'.tr, formatDate(item.createdAt)),
           ),
           Expanded(
             child: Row(
@@ -217,11 +182,11 @@ class ActiveOrderScreen extends StatelessWidget {
                               style: const TextStyle(color: Colors.black),
                             ),
                           ),
-                        )
+                        ),
                       ),
                     ],
-                  )
-                )
+                  ),
+                ),
               ],
             ),
           ),
@@ -235,50 +200,18 @@ class ActiveOrderScreen extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(6.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Text('${'membership_number'.tr} : ',
-                      style:  const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getMembershipNum(item)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('${'order_number'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(item.id.toString())
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('${'order_date'.tr} : ',
-                      style:  const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(formatDate(item.createdAt)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('${'rental_period'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getRentalPeriod(item)),
-                  ],
-                ),
-                Row(
-                  children: [
-                    Text('${'usage_period'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getUsagePeriod(item)),
-                  ],
-                ),
-              ],
+            child: SizedBox(
+              height: 120.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  buildSelectableTextRow('membership_number'.tr, lenderPageController.getMembershipNum(item)),
+                  buildSelectableTextRow('order_number'.tr, item.id.toString()),
+                  buildSelectableTextRow('order_date'.tr, formatDate(item.createdAt)),
+                  buildSelectableTextRow('rental_period'.tr, lenderPageController.getRentalPeriod(item)),
+                  buildSelectableTextRow('usage_period'.tr, lenderPageController.getUsagePeriod(item)),
+                ],
+              ),
             ),
           ),
           Expanded(
@@ -327,7 +260,7 @@ class ActiveOrderScreen extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -387,5 +320,14 @@ class ActiveOrderScreen extends StatelessWidget {
         ),
       );
     },
+  );
+
+  Widget buildSelectableTextRow(String title, String value) => Row(
+    children: [
+      Text('$title : ',
+        style: const TextStyle(color: Colors.black45),
+      ),
+      SelectableText(value),
+    ],
   );
 }
