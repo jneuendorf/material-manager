@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
+import 'package:frontend/pages/lender/components/selectable_text_row.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
 import 'package:frontend/common/util.dart';
@@ -119,8 +120,14 @@ class ActiveOrderScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                buildSelectableTextRow('membership_number'.tr, lenderPageController.getMembershipNum(item)),
-                buildSelectableTextRow('rental_period'.tr, lenderPageController.getRentalPeriod(item)),
+                SelectableTextRow(
+                  title: 'membership_number'.tr, 
+                  value: lenderPageController.getMembershipNum(item),
+                ),
+                SelectableTextRow(
+                  title: 'rental_period'.tr, 
+                  value: lenderPageController.getRentalPeriod(item),
+                ),
               ],
             ),
           ),
@@ -129,14 +136,23 @@ class ActiveOrderScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                buildSelectableTextRow('order_number'.tr, item.id.toString()),
-                buildSelectableTextRow('usage_period'.tr, lenderPageController.getUsagePeriod(item)),
+                SelectableTextRow(
+                  title: 'order_number'.tr, 
+                  value: item.id.toString(),
+                ),
+                SelectableTextRow(
+                  title: 'usage_period'.tr, 
+                  value: lenderPageController.getUsagePeriod(item),
+                ),
               ],
             ),
           ),
           Padding(
             padding: const EdgeInsets.all(6.0),
-            child: buildSelectableTextRow('order_date'.tr, formatDate(item.createdAt)),
+            child: SelectableTextRow(
+              title: 'order_date'.tr, 
+              value: formatDate(item.createdAt),
+            ),
           ),
           Expanded(
             child: Row(
@@ -205,11 +221,26 @@ class ActiveOrderScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  buildSelectableTextRow('membership_number'.tr, lenderPageController.getMembershipNum(item)),
-                  buildSelectableTextRow('order_number'.tr, item.id.toString()),
-                  buildSelectableTextRow('order_date'.tr, formatDate(item.createdAt)),
-                  buildSelectableTextRow('rental_period'.tr, lenderPageController.getRentalPeriod(item)),
-                  buildSelectableTextRow('usage_period'.tr, lenderPageController.getUsagePeriod(item)),
+                  SelectableTextRow(
+                    title: 'membership_number'.tr, 
+                    value: lenderPageController.getMembershipNum(item),
+                  ),
+                  SelectableTextRow(
+                    title: 'order_number'.tr, 
+                    value: item.id.toString(),
+                  ),
+                  SelectableTextRow(
+                    title: 'order_date'.tr, 
+                    value: formatDate(item.createdAt),
+                  ),
+                  SelectableTextRow(
+                    title: 'rental_period'.tr, 
+                    value: lenderPageController.getRentalPeriod(item),
+                  ),
+                  SelectableTextRow(
+                    title: 'usage_period'.tr, 
+                    value: lenderPageController.getUsagePeriod(item),
+                  ),
                 ],
               ),
             ),
@@ -322,12 +353,4 @@ class ActiveOrderScreen extends StatelessWidget {
     },
   );
 
-  Widget buildSelectableTextRow(String title, String value) => Row(
-    children: [
-      Text('$title : ',
-        style: const TextStyle(color: Colors.black45),
-      ),
-      SelectableText(value),
-    ],
-  );
 }

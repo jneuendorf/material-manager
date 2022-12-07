@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
+import 'package:frontend/pages/lender/components/selectable_text_row.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
 import 'package:frontend/common/util.dart';
 
@@ -74,13 +75,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                   ),
                   Expanded(
                     flex: 20,
-                    child: Center(
-                      child: Row(
-                        children: [
-                          Text('completed'.tr)
-                        ],
-                      ),
-                    ),
+                    child: Text('completed'.tr),
                   ),
                 ],
               ),
@@ -116,21 +111,13 @@ class CompletedOrdersScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text('${'membership_number'.tr} : ',
-                      style:  const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getMembershipNum(item)),
-                  ],
+                SelectableTextRow(
+                  title: 'membership_number'.tr, 
+                  value: lenderPageController.getMembershipNum(item),
                 ),
-                Row(
-                  children: [
-                    Text('${'order_date'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(formatDate(item.createdAt)),
-                  ],
+                SelectableTextRow(
+                  title: 'order_date'.tr, 
+                  value: formatDate(item.createdAt),
                 ),
               ],
             ),
@@ -140,22 +127,14 @@ class CompletedOrdersScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text('${'order_number'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(item.id.toString())
-                  ],
+                SelectableTextRow(
+                  title: 'order_number'.tr, 
+                  value: item.id.toString(),
                 ),
-                Row(
-                  children: [
-                    Text('${'rental_period'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getRentalPeriod(item)),
-                  ],
-                )
+                SelectableTextRow(
+                  title: 'rental_period'.tr, 
+                  value: lenderPageController.getRentalPeriod(item),
+                ),
               ],
             ),
           ),
@@ -164,13 +143,9 @@ class CompletedOrdersScreen extends StatelessWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Row(
-                  children: [
-                    Text('${'usage_period'.tr} : ',
-                      style: const TextStyle(color: Colors.black45),
-                    ),
-                    SelectableText(lenderPageController.getUsagePeriod(item)),
-                  ],
+                SelectableTextRow(
+                  title: 'usage_period'.tr, 
+                  value: lenderPageController.getUsagePeriod(item),
                 ),
               ],
             ),
@@ -211,30 +186,30 @@ class CompletedOrdersScreen extends StatelessWidget {
                         ),
                       );
                     },
-                  ): Container(),
+                  ) : Container(),
                 ),
                 Expanded(
-                    flex: 1,
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            const SizedBox(width: 30.0),
-                            Expanded(
-                              child: TextFormField(
-                                enabled: false,
-                                initialValue: '${item.cost.toStringAsFixed(2)} €',
-                                decoration: InputDecoration(
-                                  labelText: 'sum'.tr,
-                                ),
+                  flex: 1,
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          const SizedBox(width: 30.0),
+                          Expanded(
+                            child: TextFormField(
+                              enabled: false,
+                              initialValue: '${item.cost.toStringAsFixed(2)} €',
+                              decoration: InputDecoration(
+                                labelText: 'sum'.tr,
                               ),
                             ),
-                            const SizedBox(width: 50.0),
-                          ],
-                        ),
-                      ],
-                    )
-                )
+                          ),
+                          const SizedBox(width: 50.0),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
