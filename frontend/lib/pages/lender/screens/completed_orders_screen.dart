@@ -200,7 +200,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                               enabled: false,
                               initialValue: '${item.cost.toStringAsFixed(2)} €',
                               decoration: InputDecoration(
-                                labelText: 'sum'.tr,
+                                labelText: 'total'.tr,
                               ),
                             ),
                           ),
