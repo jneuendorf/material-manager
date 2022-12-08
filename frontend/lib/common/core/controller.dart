@@ -42,11 +42,11 @@ class CoreController extends GetxController {
   }
 
   Future<void> _initImprint() async {
-    imprint.value = await getImprintMock();
+    imprint.value = await getImprintMock(); // TODO change to actual request
   }
 
   Future<void> _initPrivacyPolicy() async {
-    privacyPolicy.value = await getPrivacyPolicy();
+    privacyPolicy.value = await getPrivacyPolicyMock();// TODO change to actual request
   }
 
   /// Fetches the imprint from backend.
@@ -58,6 +58,14 @@ class CoreController extends GetxController {
     }
 
     return mockImprint;
+  }
+
+  Future<PrivacyPolicyModel> getPrivacyPolicyMock() async {
+    if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
+      await Future.delayed(const Duration(milliseconds: 500));
+    }
+
+    return mockPrivacyPolicy;
   }
 
   /// Fetches the imprint from the backend.
