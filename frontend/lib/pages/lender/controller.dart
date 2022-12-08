@@ -41,6 +41,8 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     });
 
     await rentalController.initCompleter.future;
+    await userController.initCompleter.future;
+    await materialController.initCompleter.future;
 
     filteredRentals.value = rentalController.rentals;
 
@@ -56,14 +58,14 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String getUserName(RentalModel item) {
-    String userName = '${userController.users.firstWhere(
-            (UserModel user) => user.id == item.id).firstName} '
-        '${userController.users.firstWhere(
-            (UserModel user) => user.id == item.id).lastName}';
-    return userName;
+    UserModel user = userController.users.firstWhere(
+      (UserModel user) => user.id == item.id);
+    
+    return '${user.firstName} ${user.lastName}';
   }
 
   String getMembershipNum(RentalModel item) {
+
     String membershipNum = userController.users.firstWhere((UserModel user) =>
       user.id == item.id).membershipNumber.toString();
     return membershipNum;
