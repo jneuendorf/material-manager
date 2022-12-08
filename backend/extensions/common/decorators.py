@@ -1,3 +1,4 @@
+from base64 import b64decode
 from functools import wraps
 from hashlib import sha1
 from pathlib import Path
@@ -36,10 +37,9 @@ def with_files(
 
             files: list[File] = []
             for file_dict in file_dicts:
+                data = b64decode(file_dict["base64"])
                 path = str(
-                    Path(file_dict["filename"]).with_stem(
-                        sha1(file_dict["base64"]).hexdigest()
-                    )
+                    Path(file_dict["filename"]).with_stem(sha1(data).hexdigest())
                 )
                 file: Optional[File] = File.get_or_none(
                     related_extension=related_extension,
@@ -50,7 +50,7 @@ def with_files(
                         File.create_from_base64(
                             related_extension,
                             path,
-                            base64=file_dict["base64"],
+                            data,
                             mime_type=file_dict.get("mime_type", ""),
                             description=file_dict["filename"],
                         )

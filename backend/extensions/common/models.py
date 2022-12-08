@@ -1,5 +1,4 @@
 import mimetypes
-from base64 import b64decode
 from pathlib import Path
 from typing import Optional, Type
 
@@ -49,7 +48,7 @@ class File(Model):  # type: ignore
         cls,
         related_extension: str,
         path: str,
-        base64: str,
+        data: bytes,
         mime_type: str = "",
         description: str = "",
         is_thumbnail: bool = False,
@@ -61,7 +60,7 @@ class File(Model):  # type: ignore
             description=description,
             is_thumbnail=is_thumbnail,
         )
-        file.resolved_path.write_bytes(b64decode(base64))
+        file.resolved_path.write_bytes(data)
         return file
 
     def download(

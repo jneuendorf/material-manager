@@ -1,6 +1,6 @@
 from collections.abc import Collection
 from dataclasses import dataclass
-from typing import Any, Generic, Optional, Type, TypeVar, Union, cast
+from typing import Any, Generic, Optional, Type, TypeVar, Union
 
 from flask_sqlalchemy import SQLAlchemy
 from flask_sqlalchemy.model import Model
@@ -15,7 +15,7 @@ from sqlalchemy.exc import (
 )
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.sql import Select
-from sqlalchemy.sql.schema import Column, Table
+from sqlalchemy.sql.schema import Table
 
 from .decorators import raises
 
@@ -24,6 +24,11 @@ def related_equal(
     a: "Union[CrudModel, Collection[CrudModel]]",
     b: "Union[CrudModel, Collection[CrudModel]]",
 ) -> bool:
+    """Compares model instances that have relationships to a certain model, e.g. for
+    >>> ModelA.filter(id=1, _related=dict(rel=[x]))
+    this function checks if
+    >>> ModelA.get(id=1).x.id == x.id
+    """
     if isinstance(a, CrudModel) and isinstance(b, CrudModel):
         a = [a]
         b = [b]
@@ -61,7 +66,7 @@ class CrudModel(Model):
     @raises(ValueError, MultipleResultsFound, IntegrityError, PendingRollbackError)
     def create(cls, *, _related=None, **kwargs):
         try:
-            cls.get(**kwargs)
+            print(cls.get(_related=_related, **kwargs))
             raise ValueError(f"{cls.__name__}(**{kwargs}) already exists")
         # This could be left out but makes it clear what errors can occur.
         except (IntegrityError, MultipleResultsFound):
@@ -100,8 +105,11 @@ class CrudModel(Model):
 
     @classmethod
     @raises(PendingRollbackError)
-    def get_or_none(cls, **kwargs) -> "Optional[CrudModel]":
-        return cls.get_query().filter(**kwargs).scalar_one_or_none()
+    def get_or_none(cls, *, _related=None, **kwargs) -> "Optional[CrudModel]":
+        try:
+            return cls.get(_related=_related, **kwargs)
+        except NoResultFound:
+            return None
 
     @classmethod
     @raises(MultipleResultsFound, IntegrityError, PendingRollbackError)
@@ -139,22 +147,37 @@ class CrudModel(Model):
     def first_n(cls, n: int, **kwargs) -> "list[CrudModel]":
         return cls.get_query().filter(_limit=n, **kwargs).scalars().all()
 
+    @classmethod
+    def _scalars_and_related(
+        cls,
+        kwargs: dict[str, Any],
+    ) -> "tuple[dict[str, Any], dict[str, Union[CrudModel, list[CrudModel]]]]":
+        scalars: dict[str, Any] = {}
+        relations: dict[str, Union[CrudModel, list[CrudModel]]] = {}
+        for key, value in kwargs.items():
+            # Non-relational columns usually initialize to something empty like `None`
+            # while relationships usually initialize to an `InstrumentedList`
+            if isinstance(value, (list, CrudModel)):
+                if isinstance(value, list):
+                    assert all(
+                        isinstance(elem, CrudModel) for elem in value
+                    ), "List query keyword argument contains non-models"
+                relations[key] = value
+            else:
+                scalars[key] = value
+        return scalars, relations
+
     @property
     def attrs(self) -> dict[str, Any]:
-        return {
-            col.name: getattr(self, col.name)
-            for col in cast(
-                Collection[Column],
-                self.__table__.columns,
-            )
-        }
+        attrs = dict(self.__dict__)
+        attrs.pop("_sa_instance_state")
+        return attrs
 
     def update(self, **kwargs):
         for field, value in kwargs.items():
             setattr(self, field, value)
-        if self.save():
-            # TODO: send update signal
-            ...
+        self.save()
+        # TODO: send update signal
 
     def save(self) -> None:
         db = self.__fsa__
@@ -162,19 +185,27 @@ class CrudModel(Model):
         db.session.commit()
 
     def ensure_saved(self, exclude: Collection[str] = ("id",)) -> "CrudModel":
-        """Makes sure the instance exists in the database"""
+        """Makes sure this or an equal instance exists in the database"""
         try:
             self.save()
             return self
-        except (DatabaseError, SQLAlchemyError):
+        except (DatabaseError, SQLAlchemyError) as e:
             attrs = {
                 key: value for key, value in self.attrs.items() if key not in exclude
             }
             cls = type(self)
+            # We need to rollback because the save above has failed
+            # and the transaction is still pending.
             cls.get_query().rollback()
-            instance = cls.get_or_none(**attrs)
+            scalars, related = cls._scalars_and_related(attrs)
+            if related:
+                raise TypeError("Handling relationships is not supported")
+
+            instance = cls.get_or_none(_related=related, **scalars)
             if instance is None:
-                raise
+                raise ValueError(
+                    f"Both save and get failed for {({**related, **scalars})}"
+                ) from e
             return instance
 
     def delete(self) -> None:

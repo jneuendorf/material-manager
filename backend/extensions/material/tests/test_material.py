@@ -118,37 +118,7 @@ def test_creating_materials_ensures_no_duplicate_serial_numbers(client, app):
 
 
 def test_bulk_create_materials(client, app) -> None:
-    material_type = client.post(
-        "/material_type",
-        json={
-            "name": "shoe",
-            "description": "shoe description",
-        },
-    ).json
-    materials_data = [
-        {
-            "name": "material name",
-            "max_operating_date": "2023-01-01",
-            "max_days_used": 365,
-            "installation_date": "2021-01-01",
-            "instructions": "Some instructions...",
-            "next_inspection_date": "2022-01-01",
-            "rental_fee": 12.34,
-            "condition": Condition.OK.name,
-            "days_used": 5,
-            "material_type": material_type,
-            "serial_numbers": [
-                {
-                    "serial_number": f"xyz-{i}-{j}",
-                    "production_date": "2020-01-01",
-                    "manufacturer": "Stubai",
-                }
-                for i in range(3)
-            ],
-        }
-        for j in range(4)
-    ]
-    purchase_details_data = {
+    purchase_details = {
         "purchase_date": "2020-02-02",
         "invoice_number": "9723rnsdfn23",
         "merchant": "flying dutchman",
@@ -156,13 +126,65 @@ def test_bulk_create_materials(client, app) -> None:
         "suggested_retail_price": 42,
     }
 
+    num_materials = 2
+    # https://gist.github.com/ondrek/7413434
+    base64_image = "iVBORw0KGgoAAAANSUhEUgAAAAgAAAAIAQMAAAD+wSzIAAAABlBMVEX///+/v7+jQ3Y5AAAADklEQVQI12P4AIX8EAgALgAD/aNpbtEAAAAASUVORK5CYII="  # noqa
+
     created_materials = client.post(
         "/materials",
         json={
-            "materials": materials_data,
-            "purchase_details": purchase_details_data,
+            "serial_numbers": [
+                [
+                    {
+                        "serial_number": f"s-{i_mat}-{i_sn}",
+                        "production_date": "2020-01-01",
+                        "manufacturer": f"manufacturer_{i_mat}",
+                    }
+                    for i_sn in range(2)
+                ]
+                for i_mat in range(num_materials)
+            ],
+            "inventory_numbers": [
+                {
+                    "inventory_number": f"i-{i_mat}",
+                }
+                for i_mat in range(num_materials)
+            ],
+            "images": [
+                {
+                    "base64": base64_image,
+                    "filename": "mini chess.png",
+                    "mime_type": "image/png",
+                }
+            ],
+            "material_type": {
+                "name": "some new material type",
+            },
+            "purchase_details": purchase_details,
+            "properties": [
+                {
+                    "property_type": {
+                        "name": "length",
+                        "unit": "cm",
+                    },
+                    "value": "10",
+                },
+                {
+                    "property_type": {
+                        "name": "color",
+                        "unit": "",
+                    },
+                    "value": "blue",
+                },
+            ],
+            "max_operating_date": "2030-01-01",
+            "max_days_used": "200",
+            "instructions": "https://en.wikipedia.org/wiki/PDF",
+            "next_inspection_date": "2022-01-01",
+            "rental_fee": 12.34,
         },
     ).json
+
     assert "materials" in created_materials
     with app.app_context():
         for material_id in created_materials["materials"]:
@@ -170,5 +192,65 @@ def test_bulk_create_materials(client, app) -> None:
             assert material is not None
             assert (
                 material.purchase_details.invoice_number
-                == purchase_details_data["invoice_number"]
+                == purchase_details["invoice_number"]
             )
+
+    # Create materials with existing properties
+    created_materials = client.post(
+        "/materials",
+        json={
+            "serial_numbers": [
+                [
+                    {
+                        "serial_number": "s-0-9999",
+                        "production_date": "2020-01-01",
+                        "manufacturer": "manufacturer_0",
+                    }
+                ]
+            ],
+            "inventory_numbers": [
+                {
+                    "inventory_number": "i-9999",
+                }
+            ],
+            "images": [
+                {
+                    "base64": base64_image,
+                    "filename": "mini chess.png",
+                    "mime_type": "image/png",
+                }
+            ],
+            "material_type": {
+                "name": "helmet",
+            },
+            "purchase_details": purchase_details,
+            "properties": [
+                {
+                    "property_type": {
+                        "name": "length",
+                        "unit": "cm",
+                    },
+                    "value": "10",
+                },
+                {
+                    "property_type": {
+                        "name": "some new property type",
+                        "unit": "sheep",
+                    },
+                    "value": "4",
+                },
+            ],
+            "max_operating_date": "2030-01-01",
+            "max_days_used": "200",
+            "instructions": "https://en.wikipedia.org/wiki/PDF",
+            "next_inspection_date": "2022-01-01",
+            "rental_fee": 1337,
+        },
+    ).json
+
+    # TEAR DOWN
+    with app.app_context():
+        for material_id in created_materials["materials"]:
+            material = Material.get_or_none(id=material_id)
+            for image in material.images:
+                image.delete()

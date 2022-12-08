@@ -13,6 +13,7 @@ from extensions.material import models
 from extensions.material.resources.schemas import (
     InventoryNumberSchema,
     MaterialSchema,
+    PlainPropertySchema,
     SerialNumberSchema,
 )
 
@@ -86,11 +87,15 @@ class Materials(ModelListResource):
             "images": fields.List(
                 fields.Nested(FileSchema()),
             ),
+            # Manual handling because resolving nested and cyclic relationships is very
+            # complicated and error-prone
+            "properties": fields.List(
+                fields.Nested(PlainPropertySchema()),
+            ),
             **MaterialSchema.to_dict(
                 include=[
                     "material_type",
                     "purchase_details",
-                    "properties",
                     "max_operating_date",
                     "max_days_used",
                     "instructions",
@@ -113,7 +118,7 @@ class Materials(ModelListResource):
         instructions: str,
         next_inspection_date: date,
         rental_fee: float,
-        properties: list[models.Property],
+        properties: list[dict],
     ):
         """Saves a batch of materials that share some identical data. I.e.
         - purchase details
@@ -127,8 +132,17 @@ class Materials(ModelListResource):
                 "number of serial numbers does not match number of inventory numbers",
             )
 
-        for prop in properties:
-            prop.ensure_saved()
+        property_instances = [
+            models.Property.get_or_create(
+                value=prop["value"],
+                _related=dict(
+                    property_type=models.PropertyType.get_or_create(
+                        **prop["property_type"]
+                    ),
+                ),
+            )
+            for prop in properties
+        ]
         material_type = material_type.ensure_saved()
         purchase_details = purchase_details.ensure_saved()
         if material_type.id is None or purchase_details.id is None:
@@ -137,11 +151,11 @@ class Materials(ModelListResource):
                 "error while trying to persist material type or purchase details",
             )
 
+        material_ids = []
         try:
             for serial_nums, inventory_num in zip(serial_numbers, inventory_numbers):
                 material = models.Material.create(
                     name="",
-                    installation_date=None,
                     max_operating_date=max_operating_date,
                     max_days_used=max_days_used,
                     instructions=instructions,
@@ -153,12 +167,15 @@ class Materials(ModelListResource):
                         serial_numbers=list(serial_nums),
                         inventory_numbers=[inventory_num],
                         images=images,
-                        properties=properties,
+                        properties=property_instances,
                     ),
                 )
                 print(material)
+                material_ids.append(material.id)
         except Exception as e:
             print(e)
             return abort(500, "unknown error")
 
-        return {"success": True}
+        return {
+            "materials": material_ids,
+        }

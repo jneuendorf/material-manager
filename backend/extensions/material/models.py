@@ -14,7 +14,7 @@ Model: Type[CrudModel] = db.Model
 class MaterialType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(length=32), unique=True)
-    description = db.Column(db.String(length=80))
+    description = db.Column(db.String(length=80), default="")
     sets = db.relationship(
         "MaterialSet",
         secondary="material_type_set_mapping",
@@ -31,16 +31,8 @@ class MaterialType(Model):  # type: ignore
 class PropertyType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(length=32), unique=True)
-    description = db.Column(db.String(length=80))
+    description = db.Column(db.String(length=80), default="")
     unit = db.Column(db.String(length=12))
-
-    __table_args__ = (
-        UniqueConstraint(
-            "name",
-            "unit",
-            name="name_unit_uc",
-        ),
-    )
 
 
 class Property(Model):  # type: ignore
