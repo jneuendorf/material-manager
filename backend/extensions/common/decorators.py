@@ -49,8 +49,8 @@ def with_files(
                     files.append(
                         File.create_from_base64(
                             related_extension,
-                            path,
                             data,
+                            path,
                             mime_type=file_dict.get("mime_type", ""),
                             description=file_dict["filename"],
                         )

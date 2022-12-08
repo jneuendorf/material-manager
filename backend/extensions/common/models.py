@@ -1,4 +1,5 @@
 import mimetypes
+from hashlib import sha1
 from pathlib import Path
 from typing import Optional, Type
 
@@ -47,12 +48,20 @@ class File(Model):  # type: ignore
     def create_from_base64(
         cls,
         related_extension: str,
-        path: str,
         data: bytes,
+        path: Optional[str] = None,
         mime_type: str = "",
         description: str = "",
         is_thumbnail: bool = False,
     ) -> "File":
+        if path is None:
+            extension = mimetypes.guess_extension(mime_type)
+            if extension is None:
+                raise ValueError(
+                    "Could not determine file path because it is not given "
+                    "nor is the MIME type"
+                )
+            path = str(sha1(data).hexdigest() + extension)
         file = cls.create(
             related_extension=related_extension,
             path=path,
