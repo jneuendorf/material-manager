@@ -104,7 +104,7 @@ class ExpansionTileBody extends StatelessWidget {
                           const SizedBox(width: 50.0),
                         ],
                       ),
-                      if (!completed) CupertinoButton(
+                      if (!completed)  CupertinoButton(
                         onPressed: () {}, // TODO implement confirm rental
                         child: Container(
                           decoration: BoxDecoration(
@@ -121,7 +121,7 @@ class ExpansionTileBody extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ),
+                      )
                     ],
                   ),
                 ),
@@ -193,7 +193,7 @@ class ExpansionTileBody extends StatelessWidget {
                           const SizedBox(width: 50.0),
                         ],
                       ),
-                      CupertinoButton(
+                      if (!completed) CupertinoButton(
                         onPressed: () {},
                         child: Container(
                           decoration: BoxDecoration(
@@ -237,7 +237,7 @@ class ExpansionTileBody extends StatelessWidget {
           children: [
             Expanded(child: Text(lenderPageController.getItemName(item,localIndex))),
             Expanded(
-              child: Center(
+              child: !completed ? Center(
                 child: Obx(() => DropDownFilterButton(
                   options: lenderPageController.statusOptions.values.toList(),
                   selected: item.status!.name,
@@ -245,7 +245,7 @@ class ExpansionTileBody extends StatelessWidget {
                     // TODO update rentalStatus of item
                   },
                 )),
-              ),
+              ) : const SizedBox(),
             ),
             !completed ? Flexible(
               child: Theme(
@@ -267,12 +267,10 @@ class ExpansionTileBody extends StatelessWidget {
                   ),
                 ),
               ),
-            ) : Expanded(
-              child: Center(
-                child: SizedBox(
-                    width: 100,
-                    child: Text('completed'.tr)
-                ),
+            ) : Center(
+              child: SizedBox(
+                  width: 100,
+                  child: Text('completed'.tr)
               ),
             ),
             Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
