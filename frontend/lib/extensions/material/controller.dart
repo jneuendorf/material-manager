@@ -177,9 +177,6 @@ class MaterialController extends GetxController {
           }
         ).toList()
       ).toList();
-      // var images = await Future.wait(imageFiles.map(
-      //   (XFile f) async => base64.encode(await f.readAsBytes())
-      // ).toList());
       List images = await Future.wait(imageFiles.map(
         (XFile f) async => {
           'base64': base64.encode(await f.readAsBytes()),
@@ -215,19 +212,9 @@ class MaterialController extends GetxController {
             'value': p.value,
             'property_type': {
               'name': p.propertyType.name,
-              'description': p.propertyType.description,
               'unit': p.propertyType.unit,
             },
           }).toList(),
-          // 'materials': bulkValues.map((NonFinalMapEntry<String?, List<SerialNumber>> values) => {
-          //   'inventory_number': values.key,
-          //   'serial_numbers': values.value.map(
-          //     (SerialNumber num) => num.serialNumber,
-          //   ).toList(),
-          //   'production_dates': values.value.map(
-          //     (SerialNumber num) => num.productionDate,
-          //   ).toList(),
-          // }).toList(),
         },
       );
 

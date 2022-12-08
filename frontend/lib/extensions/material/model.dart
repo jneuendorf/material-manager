@@ -162,7 +162,7 @@ class PropertyType {
   PropertyType.fromJson(Map<String, dynamic> json):
     id = json['id'],
     name = json['name'],
-    description = json['description'],
+    description = json['description'] ?? '',
     unit = json['unit'];
 
   // No id or description
