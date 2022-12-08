@@ -121,11 +121,11 @@ class ActiveOrderScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SelectableTextRow(
-                  title: 'membership_number'.tr, 
+                  title: 'membership_number'.tr,
                   value: lenderPageController.getMembershipNum(item),
                 ),
                 SelectableTextRow(
-                  title: 'rental_period'.tr, 
+                  title: 'rental_period'.tr,
                   value: lenderPageController.getRentalPeriod(item),
                 ),
               ],
@@ -137,11 +137,11 @@ class ActiveOrderScreen extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 SelectableTextRow(
-                  title: 'order_number'.tr, 
+                  title: 'order_number'.tr,
                   value: item.id.toString(),
                 ),
                 SelectableTextRow(
-                  title: 'usage_period'.tr, 
+                  title: 'usage_period'.tr,
                   value: lenderPageController.getUsagePeriod(item),
                 ),
               ],
@@ -150,7 +150,7 @@ class ActiveOrderScreen extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(6.0),
             child: SelectableTextRow(
-              title: 'order_date'.tr, 
+              title: 'order_date'.tr,
               value: formatDate(item.createdAt),
             ),
           ),
@@ -222,23 +222,23 @@ class ActiveOrderScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   SelectableTextRow(
-                    title: 'membership_number'.tr, 
+                    title: 'membership_number'.tr,
                     value: lenderPageController.getMembershipNum(item),
                   ),
                   SelectableTextRow(
-                    title: 'order_number'.tr, 
+                    title: 'order_number'.tr,
                     value: item.id.toString(),
                   ),
                   SelectableTextRow(
-                    title: 'order_date'.tr, 
+                    title: 'order_date'.tr,
                     value: formatDate(item.createdAt),
                   ),
                   SelectableTextRow(
-                    title: 'rental_period'.tr, 
+                    title: 'rental_period'.tr,
                     value: lenderPageController.getRentalPeriod(item),
                   ),
                   SelectableTextRow(
-                    title: 'usage_period'.tr, 
+                    title: 'usage_period'.tr,
                     value: lenderPageController.getUsagePeriod(item),
                   ),
                 ],
@@ -352,5 +352,4 @@ class ActiveOrderScreen extends StatelessWidget {
       );
     },
   );
-
 }
