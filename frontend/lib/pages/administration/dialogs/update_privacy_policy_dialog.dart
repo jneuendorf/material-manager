@@ -5,7 +5,6 @@ import 'package:get/get.dart';
 
 import 'package:frontend/common/core/models.dart';
 import 'package:frontend/common/util.dart';
-import 'package:frontend/common/buttons/text_icon_button.dart';
 
 
 class UpdatePrivacyPolicyDialog extends StatefulWidget {
@@ -36,8 +35,8 @@ class _UpdatePrivacyPolicyDialogState extends State<UpdatePrivacyPolicyDialog> {
   void initState() {
     super.initState();
 
-    companyController.text = widget.privacypolicy.company;
-    phoneController.text = widget.privacypolicy.phoneNumber;
+    companyController.text = widget.privacypolicy.company ?? '';
+    phoneController.text = widget.privacypolicy.phoneNumber ?? '';
     emailController.text = widget.privacypolicy.email;
     firstNameController.text = widget.privacypolicy.firstName;
     lastNameController.text = widget.privacypolicy.lastName;
@@ -45,11 +44,10 @@ class _UpdatePrivacyPolicyDialogState extends State<UpdatePrivacyPolicyDialog> {
     houseNumberController.text = widget.privacypolicy.address.houseNumber;
     cityController.text = widget.privacypolicy.address.city;
     zipController.text = widget.privacypolicy.address.zip;
-
   }
 
   @override
-  Widget build(BuildContext context) => Dialog( 
+  Widget build(BuildContext context) => Dialog(
     insetPadding: const EdgeInsets.symmetric(horizontal: 20.0),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(12.0),
@@ -202,7 +200,7 @@ class _UpdatePrivacyPolicyDialogState extends State<UpdatePrivacyPolicyDialog> {
                 ],
               ),
               const SizedBox(height: 8.0),
-               Row(
+              Row(
                 children: [
                   Expanded(
                     child: TextFormField(

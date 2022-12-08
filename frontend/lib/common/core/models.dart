@@ -40,23 +40,21 @@ class ImprintModel {
 }
 
 class PrivacyPolicyModel {
-  String company;
+  String? company;
   String firstName;
   String lastName;
   Address address;
-  String phoneNumber;
+  String? phoneNumber;
   String email;
 
-  PrivacyPolicyModel(
-    {
-      required this.company,
-      required this.firstName,
-      required this.lastName,
-      required this.address,
-      required this.phoneNumber,
-      required this.email,
-    }
-  );
+  PrivacyPolicyModel({
+    required this.company,
+    required this.firstName,
+    required this.lastName,
+    required this.address,
+    required this.phoneNumber,
+    required this.email,
+  });
 
   factory PrivacyPolicyModel.fromJson(Map<String, dynamic> json) {
     return PrivacyPolicyModel(
