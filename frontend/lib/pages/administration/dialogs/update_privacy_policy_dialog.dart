@@ -18,9 +18,6 @@ class UpdatePrivacyPolicyDialog extends StatefulWidget {
 }
 
 class _UpdatePrivacyPolicyDialogState extends State<UpdatePrivacyPolicyDialog> {
-  final RxList<String> boardMembers = <String>[].obs;
-
-  final List<TextEditingController> boardMemberControllers = <TextEditingController>[];
 
   final TextEditingController companyController = TextEditingController();
   final TextEditingController phoneController = TextEditingController();

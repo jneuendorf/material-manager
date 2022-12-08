@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/components/base_footer.dart';
+import 'package:frontend/common/core/controller.dart';
 
 
 const privacyPolicyRoute = '/privacyPolicy';
@@ -11,11 +12,19 @@ const privacyPolicyRoute = '/privacyPolicy';
 class PrivacyPolicyPage extends StatelessWidget {
   const PrivacyPolicyPage({super.key});
 
+   static final coreController = Get.find<CoreController>();
+
   @override
   Widget build(BuildContext context) => PageWrapper(
     showFooter: false,
     child: SingleChildScrollView(
-      child: Column(
+      child: FutureBuilder(
+        future: coreController.initCompleter.future,
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.connectionState != ConnectionState.done) {
+            return const Center(child: CircularProgressIndicator());
+          }
+        return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -145,16 +154,22 @@ class PrivacyPolicyPage extends StatelessWidget {
               style: const TextStyle(fontSize: 15.0),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(bottom: 10.0),
-            child: Text('Freie Universität Berlin Department of Mathematics and Computer Science Institute for Computer Science\nOliver Wiese \nFabeckstraße 15, Raum 001 \n14195 Berlin',
-              style: TextStyle(fontSize: 15.0),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Text('${coreController.privacyPolicy.value!.company}\n${coreController.privacyPolicy.value!.firstName} ${coreController.privacyPolicy.value!.lastName} \n${coreController.privacyPolicy.value!.address.street} ${coreController.privacyPolicy.value!.address.houseNumber} \n${coreController.privacyPolicy.value!.address.zip} ${coreController.privacyPolicy.value!.address.city}',
+              style: const TextStyle(fontSize: 15.0),
             ),
           ),
-          const Padding(
-            padding: EdgeInsets.only(bottom: 10.0),
-            child: Text('E-Mail: oliver.wiese@fu-berlin.de', 
-              style: TextStyle(fontSize: 15.0),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Text('${'email'.tr}: ${coreController.privacyPolicy.value!.email}', 
+              style: const TextStyle(fontSize: 15.0),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10.0),
+            child: Text('${'phone'.tr}: ${coreController.privacyPolicy.value!.phoneNumber}', 
+              style: const TextStyle(fontSize: 15.0),
             ),
           ),
           Padding(
@@ -297,6 +312,8 @@ class PrivacyPolicyPage extends StatelessWidget {
           ),
           const BaseFooter(),
         ],
+      );
+      }
       ),
     ),
   );
