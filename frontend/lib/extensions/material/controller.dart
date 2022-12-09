@@ -190,7 +190,8 @@ class MaterialController extends GetxController {
       if (instructions is XFile) {
         instructions = {
           'base64': base64.encode(await instructions.readAsBytes()),
-          // doesn´t have a mime type nor a filename on web
+          'mime_type': instructions.mimeType,
+          'filename': instructions.name,
         };
       }
       final response = await apiService.mainClient.post('/materials',

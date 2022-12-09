@@ -11,6 +11,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:intl/intl.dart' as intl;
+import 'package:mime/mime.dart';
 
 
 /// Checks if the screen is larger than 600.
@@ -80,7 +81,9 @@ Future<XFile?> pickFile() async {
 
   final bytes = result.files.first.bytes;
 
-  return XFile.fromData(bytes!);
+  final String? mime = lookupMimeType('', headerBytes: bytes);
+
+  return XFile.fromData(bytes!, mimeType: mime, name: result.files.first.name);
 }
 
 intl.DateFormat dateFormat = intl.DateFormat('dd.MM.yyyy');
