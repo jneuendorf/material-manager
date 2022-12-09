@@ -249,7 +249,7 @@ class LocaleString extends Translations {
       'company' : 'Company',
       'edit_privacy_policy' : 'Edit Privacy Policy',
       'first_name_is_mandatory' : 'First Name is mandatory',
-      'last_name_is_mandatory' : 'Last Name is mandatory'
+      'last_name_is_mandatory' : 'Last Name is mandatory',
       //
       'no_comments': 'No comments',
     },
@@ -495,7 +495,7 @@ class LocaleString extends Translations {
       'company' : 'Firma',
       'edit_privacy_policy' : 'Datenschutzerklärung bearbeiten',
       'first_name_is_mandatory' : 'Vorname ist verpflichtend',
-      'last_name_is_mandatory' : 'Nachname ist verpflichtend'
+      'last_name_is_mandatory' : 'Nachname ist verpflichtend',
       //
       'no_comments': 'Keine Kommentare',
     }

@@ -315,7 +315,6 @@ class PrivacyPolicyPage extends StatelessWidget {
             ],
           );
         },
->>>>>>> frontend/lib/pages/privacy_policy/page.dart
       ),
     ),
   );
