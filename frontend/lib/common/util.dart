@@ -15,17 +15,17 @@ import 'package:intl/intl.dart' as intl;
 /// Checks if the screen is larger than 600.
 bool isLargeScreen(BuildContext context) => MediaQuery.of(context).size.width > 600;
 
-/// Returs the rendered size of the given [text]. 
+/// Returns the rendered size of the given [text].
 Size getTextSize({
-  required String text, 
-  TextStyle? style, 
+  required String text,
+  TextStyle? style,
   int? maxLines,
   double maxWidth = double.infinity,
   double textScaleFactor = 1.0,
 }) {
     final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: text, style: style), 
-        maxLines: maxLines, 
+        text: TextSpan(text: text, style: style),
+        maxLines: maxLines,
         textDirection: TextDirection.ltr,
         textScaleFactor: textScaleFactor,
     )..layout(minWidth: 0, maxWidth: maxWidth);
@@ -38,7 +38,7 @@ void downloadWeb(String name, String url) => html.AnchorElement(
     ..setAttribute('download', name)
     ..click();
 
-/// Saves the given [bytes] as a file with the given [name] 
+/// Saves the given [bytes] as a file with the given [name]
 /// in the downloads directory.
 /// Returns whether successful.
 /// Be carefule not to overwrite existing files by choosing a likely
@@ -55,7 +55,7 @@ Future<bool> downloadBytes(String name, List<int> bytes, {String mimeType = ''})
       if (!await Permission.storage.request().isGranted) return false;
 
       Directory documentDir = await getApplicationDocumentsDirectory();
-      
+
       final file = File(p.join(documentDir.path, name));
       await file.writeAsBytes(bytes);
       debugPrint('File saved to: ${file.path}');
