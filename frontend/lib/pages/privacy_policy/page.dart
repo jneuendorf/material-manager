@@ -111,7 +111,7 @@ class PrivacyPolicyPage extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 5.0),
-            child: Text('pricavy'.tr,
+            child: Text('privacy'.tr,
               style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0),
             ),
           ),
@@ -123,13 +123,13 @@ class PrivacyPolicyPage extends StatelessWidget {
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
-            child: Text('pricavy_text2'.tr,
+            child: Text('privacy_text2'.tr,
               style: const TextStyle(fontSize: 15.0),
             ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10.0),
-            child: Text('pricavy_text3'.tr,
+            child: Text('privacy_text3'.tr,
               style: const TextStyle(fontSize: 15.0),
             ),
           ),
