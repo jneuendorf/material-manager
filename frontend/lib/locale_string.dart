@@ -251,7 +251,7 @@ class LocaleString extends Translations {
       'company' : 'Company',
       'edit_privacy_policy' : 'Edit Privacy Policy',
       'first_name_is_mandatory' : 'First Name is mandatory',
-      'last_name_is_mandatory' : 'Last Name is mandatory'
+      'last_name_is_mandatory' : 'Last Name is mandatory',
       //
       'file_selected': 'File selected',
       'must_be_file_or_url': 'Must be a file or URL',
@@ -501,7 +501,7 @@ class LocaleString extends Translations {
       'company' : 'Firma',
       'edit_privacy_policy' : 'Datenschutzerklärung bearbeiten',
       'first_name_is_mandatory' : 'Vorname ist verpflichtend',
-      'last_name_is_mandatory' : 'Nachname ist verpflichtend'
+      'last_name_is_mandatory' : 'Nachname ist verpflichtend',
       //
       'file_selected': 'Datei ausgewählt',
       'must_be_file_or_url': 'Muss Datei oder URL sein',
