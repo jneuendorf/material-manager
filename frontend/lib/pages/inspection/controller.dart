@@ -45,6 +45,7 @@ class InspectionPageController extends GetxController {
     await Future.wait([
       inspectionController.initCompleter.future,
       materialController.initCompleter.future,
+      userController.initCompleter.future,
     ]);
 
     //filteredInspection.value = inspectionController.inspections;

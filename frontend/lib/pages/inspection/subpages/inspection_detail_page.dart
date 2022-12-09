@@ -27,10 +27,16 @@ class _InspectionDetailPageState extends State<InspectionDetailPage> {
   final Rxn<InspectionModel> selectedInspection = Rxn<InspectionModel>();
 
   Future<void> asyncInit() async {
+    if (inspectionPageController.selectedMaterial.value?.id == null) {
+      debugPrint('No material selected!');
+      return;
+    }
+
     comments.value = (await inspectionPageController.inspectionController.getAllComments(inspectionPageController.selectedMaterial.value!.id!)) ?? [];
-    debugPrint('Comments: $comments');
+    
+    if (comments.isEmpty) return; 
+    
     selectedInspection.value = await inspectionPageController.inspectionController.getInspection(comments.first.inspectionId);
-    debugPrint('I-Date: ${selectedInspection.value!.date}');
   }
 
   @override

@@ -150,7 +150,7 @@ class LocaleString extends Translations {
       'serial_number': 'SerialNo.',
       'no_image_found': 'No Image Found',
       'extras': 'Extras',
-      'export_inventory_to_csv': 'Export inventory to CSV',
+      'export_inventory_to_csv': 'Export Inventory to CSV',
       'export': 'Export',
       'edit': 'Edit',
       'general': 'General',
