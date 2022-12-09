@@ -160,7 +160,7 @@ class MaterialController extends GetxController {
     required int maxDaysUsed,
     required DateTime nextInspectionDate,
     required String merchant,
-    required String instructions,
+    required dynamic instructions, // url as String or file as XFile
     required DateTime purchaseDate,
     required double purchasePrice,
     required double suggestedRetailPrice,
@@ -184,6 +184,13 @@ class MaterialController extends GetxController {
           'filename': f.name,
         }
       ).toList());
+      if (instructions is XFile) {
+        instructions = {
+          'base64': base64.encode(await instructions.readAsBytes()),
+          'mime_type': instructions.mimeType,
+          'filename': instructions.name,
+        };
+      }
       final response = await apiService.mainClient.post('/materials',
         data: {
           'material_type': {
