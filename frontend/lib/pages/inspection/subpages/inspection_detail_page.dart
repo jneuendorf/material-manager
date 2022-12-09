@@ -132,7 +132,7 @@ class _InspectionDetailPageState extends State<InspectionDetailPage> {
                                     Text('${'inspection'.tr} : ',
                                       style:  const TextStyle(color: Colors.black45, fontSize: 16),
                                     ),
-                                    const Text('SightInspection',//selectedInspection.value!.type.name,
+                                    const Text('Inspection', // TODO  inspection type
                                       style:  TextStyle(fontSize: 16),
                                     ),
                                   ],
@@ -160,7 +160,8 @@ class _InspectionDetailPageState extends State<InspectionDetailPage> {
                               ],
                             ),
                             Expanded(
-                              child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) && comments[index].imagePath != null
+                              child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) && 
+                                comments[index].imagePath != null
                                   ? Image.network(comments[index].imagePath!)
                                   : Container(),
                             )

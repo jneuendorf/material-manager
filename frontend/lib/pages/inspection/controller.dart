@@ -48,8 +48,6 @@ class InspectionPageController extends GetxController {
       userController.initCompleter.future,
     ]);
 
-    //filteredInspection.value = inspectionController.inspections;
-
     filteredMaterial.value = materialController.materials.where(
       (MaterialModel item) => item.nextInspectionDate.difference(DateTime.now()) <= const Duration(days: 7) ||
         item.condition == ConditionModel.broken
