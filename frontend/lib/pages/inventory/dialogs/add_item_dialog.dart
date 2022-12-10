@@ -11,6 +11,7 @@ import 'package:cross_file/cross_file.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
+import 'package:frontend/common/components/image_picker_widget.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
 import 'package:frontend/common/core/models.dart';
 import 'package:frontend/common/util.dart';
@@ -263,7 +264,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           onPressed: () async {
                                             instructions = await pickFile();
                                             if (instructions != null) {
-                                              instructionsController.text = 'file_selected'.tr;
+                                              instructionsController.text = instructions!.name;
                                             }
                                           },
                                           icon: const Icon(Icons.folder),
@@ -378,7 +379,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                             padding: EdgeInsets.zero,
                                             tooltip: 'remove_property'.tr,
                                             splashRadius: 18.0,
-                                            icon: const Icon(CupertinoIcons.minus_circle_fill,color: Colors.red),
+                                            icon: const Icon(CupertinoIcons.minus_circle_fill,
+                                              color: Colors.red,
+                                            ),
                                             onPressed: () {
                                               properties.removeAt(index);
                                               propertyUnitController.removeAt(index);
@@ -655,29 +658,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                 ),
                               ),
                             ),
-                          Container(
-                              width: 150,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.0),
-                                border: Border.all(color: Get.theme.colorScheme.onSecondary),
-                              ),
-                              child: Center(
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    const Icon(Icons.image),
-                                    Text('add_image'.tr),
-                                    FloatingActionButton(
-                                      onPressed: () async => images.addAll(
-                                        (await pickImages()) ?? []),
-                                      backgroundColor: Get.theme.colorScheme.onSecondary,
-                                      foregroundColor: Colors.white,
-                                      elevation: 10,
-                                      child: const Icon(Icons.add),
-                                    ),
-                                  ],
-                                ),
-                              ),
+                            ImagePickerWidget(
+                              onPicked: (List<XFile> files) => images.addAll(files),
                             ),
                         ],
                       )),
@@ -706,8 +688,6 @@ class _AddItemDialogState extends State<AddItemDialog> {
   Future<void> onAdd() async {
     if (!formKey.currentState!.validate()) return;
 
-    debugPrint('Prperties: $properties');
-
     loading.value = true;
 
     final int? statusCode = await inventoryPageController.materialController.addMaterials(
@@ -715,7 +695,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       bulkValues: bulkValues,
       materialType: selectedType.value ?? MaterialTypeModel(
         id: null, 
-        name: materialTypeController.text, 
+        name: materialTypeController.text,
         description: '',
       ),
       properties: properties,
@@ -774,7 +754,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
       }
 
       entry.value.removeWhere(
-        (element) => element.productionDate == DateTime(4000) && element.serialNumber.isEmpty);
+        (element) => element.productionDate == DateTime(4000) && 
+          element.serialNumber.isEmpty);
 
       if (entry.value.length < serialParts.length) {
         for (int i = entry.value.length; i < serialParts.length; i++) {
