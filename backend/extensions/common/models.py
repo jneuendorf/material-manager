@@ -62,14 +62,17 @@ class File(Model):  # type: ignore
                     "nor is the MIME type"
                 )
             path = str(sha1(data).hexdigest() + extension)
-        file = cls.create(
+        file: File = cls.create(
             related_extension=related_extension,
             path=path,
             mime_type=mime_type if mime_type else mimetypes.guess_type(path),
             description=description,
             is_thumbnail=is_thumbnail,
         )
-        file.resolved_path.write_bytes(data)
+        resolved_path = file.resolved_path
+        # Avoid FileNotFoundError, see https://stackoverflow.com/a/2401655/6928824
+        resolved_path.parent.mkdir(parents=True, exist_ok=True)
+        resolved_path.write_bytes(data)
         return file
 
     def download(
