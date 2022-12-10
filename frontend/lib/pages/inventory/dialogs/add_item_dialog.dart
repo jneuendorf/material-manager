@@ -263,7 +263,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           onPressed: () async {
                                             instructions = await pickFile();
                                             if (instructions != null) {
-                                              instructionsController.text = 'file_selected'.tr;
+                                              instructionsController.text = instructions!.name;
                                             }
                                           },
                                           icon: const Icon(Icons.folder),
