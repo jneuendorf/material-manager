@@ -189,9 +189,6 @@ material_images: dict[str, File] = {
     #         path="ribbon.jpg",
     #         mime_type="image/jpeg",
     #         description="blue ribbon",
-    #         # _related=dict(
-    #         #     object=material,
-    #         # ),
     #     ).download(
     #         url="https://drive.google.com/file/d/11fQQz9vC2j4f9vooQSU55BaoAxHdGRI3/view?usp=sharing",  # noqa
     #         resize=(800, 600),

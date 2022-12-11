@@ -87,6 +87,7 @@ class File(Model):  # type: ignore
         """
 
         path = self.resolved_path
+        path.parent.mkdir(parents=True, exist_ok=True)
         if force or not path.exists():
             from gdown import download
 
