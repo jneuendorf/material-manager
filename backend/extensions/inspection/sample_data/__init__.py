@@ -37,13 +37,11 @@ comment1 = Comment.get_or_create(
     _related=dict(
         inspection=inspection,
         material=material,
-        photo=(
-            File.create_from_base64(
-                related_extension="inspection",
-                data=(Path(__file__).parent / "broken-carabiner.jpg").read_bytes(),
-                description="broken carabiner",
-                mime_type="image/jpeg",
-            )
+        photo=File.get_or_create_from_base64(
+            related_extension="inspection",
+            data=(Path(__file__).parent / "broken-carabiner.jpg").read_bytes(),
+            description="broken carabiner",
+            mime_type="image/jpeg",
         ),
     ),
 )

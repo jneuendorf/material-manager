@@ -45,7 +45,7 @@ class File(Model):  # type: ignore
     )
 
     @classmethod
-    def create_from_base64(
+    def get_or_create_from_base64(
         cls,
         related_extension: str,
         data: bytes,
@@ -62,7 +62,7 @@ class File(Model):  # type: ignore
                     "nor is the MIME type"
                 )
             path = str(sha1(data).hexdigest() + extension)
-        file: File = cls.create(
+        file: File = cls.get_or_create(
             related_extension=related_extension,
             path=path,
             mime_type=mime_type if mime_type else mimetypes.guess_type(path),

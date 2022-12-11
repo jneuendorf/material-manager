@@ -47,7 +47,7 @@ def with_files(
                 )
                 if file is None:
                     files.append(
-                        File.create_from_base64(
+                        File.get_or_create_from_base64(
                             related_extension,
                             data,
                             path,
