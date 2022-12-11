@@ -101,6 +101,7 @@
                 <th>Preis</th>
                 <th>Zustand bei Rückgabe</th>
                 <th>Rückgabe erfolgt</th>
+                <th> Anleitung </th>
             </tr>
             </thead>
             <tbody>
@@ -111,6 +112,8 @@
                         <td>{{ "{:,.2f}".format(material.rental_fee|round(2, 'ceil')) }}&nbsp;&euro;</td>
                         <td></td>
                         <td><div class="ml-2 square"></div></td>
+                        <td><img id="picture" src="data:image/jpeg;base64,{{ material.generate_qrcode() }}"></td>
+
                     </tr>
                 {% endfor %}
                 {% if rental.deposit %}
@@ -120,6 +123,7 @@
                         <td>
                             {{ "{:,.2f}".format(rental.deposit|round(2, 'ceil')) }}&nbsp;&euro;
                         </td>
+                        <td></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -133,6 +137,7 @@
                         </td>
                         <td></td>
                         <td></td>
+                        <td></td>
                     </tr>
                 {% endif %}
                 <tr>
@@ -143,6 +148,7 @@
                             {{ "{:,.2f}".format(total_price|round(2, 'ceil')) }}&nbsp;&euro;
                         </strong>
                     </td>
+                    <td></td>
                     <td></td>
                     <td></td>
                 </tr>
@@ -179,8 +185,8 @@
         </div>
     </section>
 
-    <br>
-    <section>
+<div style="display: flex">
+    <section style= "margin-right: 50px">
         <h4 class="border">Bei Rückgabe auszufüllen:</h4>
         <p>
             <div class="square inline"></div>
@@ -200,18 +206,18 @@
         </div>
     </section>
 
-    <br>
     <section>
         <h4 class="border">Vom Verleih auszufüllen:</h4>
         <div class="row">
             <div class="col mt-3">
-                Rückgabe erfolgte am __________________ .
-                <br> <br>
                 <div class="square inline"></div>
                 Material vollständig zurück
+                <br> <br><br>
+                Rückgabe erfolgte am __________________ .
             </div>
         </div>
     </section>
+</div>
 </div>
 </body>
 </html>

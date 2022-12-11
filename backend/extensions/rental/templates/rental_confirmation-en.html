@@ -101,6 +101,7 @@
                 <th>Price</th>
                 <th>Condition on Return</th>
                 <th>Returned</th>
+                <th>Instruction</th>
             </tr>
             </thead>
             <tbody>
@@ -111,6 +112,7 @@
                         <td>{{ "{:,.2f}".format(material.rental_fee|round(2, 'ceil')) }}&nbsp;&euro;</td>
                         <td></td>
                         <td><div class="ml-2 square"></div></td>
+                        <td><img id="picture" src="data:image/jpeg;base64,{{ material.generate_qrcode() }}"></td>
                     </tr>
                 {% endfor %}
                 {% if rental.deposit %}
@@ -178,8 +180,8 @@
         </div>
     </section>
 
-    <br>
-    <section>
+<div style="display: flex">
+        <section style= "margin-right: 100px">
         <h4 class="border">To be filled on return:</h4>
         <p>
             <div class="square inline"></div>
@@ -199,18 +201,18 @@
         </div>
     </section>
 
-    <br>
     <section>
         <h4 class="border">To be filled by the rental</h4>
         <div class="row">
             <div class="col mt-3">
-                Return on the __________________ .
-                <br> <br>
                 <div class="square inline"></div>
                 equipment returned completely
+                <br> <br><br>
+                Return on the __________________ .  
             </div>
         </div>
     </section>
+</div>
 </div>
 </body>
 </html>
