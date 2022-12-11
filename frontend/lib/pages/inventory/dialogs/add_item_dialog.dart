@@ -40,7 +40,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[
     NonFinalMapEntry(null, <SerialNumber>[]),
   ].obs;
-  
+
   final RxList<XFile> images = <XFile>[].obs;
   XFile? instructions;
 
@@ -259,16 +259,16 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                             },
                                           ),
                                         ),
-                                        IconButton(
-                                          splashRadius: 18.0,
-                                          onPressed: () async {
-                                            instructions = await pickFile();
-                                            if (instructions != null) {
-                                              instructionsController.text = instructions!.name;
-                                            }
-                                          },
-                                          icon: const Icon(Icons.folder),
-                                        ),
+                                        // IconButton(
+                                        //   splashRadius: 18.0,
+                                        //   onPressed: () async {
+                                        //     instructions = await pickFile();
+                                        //     if (instructions != null) {
+                                        //       instructionsController.text = instructions!.name;
+                                        //     }
+                                        //   },
+                                        //   icon: const Icon(Icons.folder),
+                                        // ),
                                       ],
                                     ),
                                   ],
@@ -694,7 +694,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       imageFiles: images,
       bulkValues: bulkValues,
       materialType: selectedType.value ?? MaterialTypeModel(
-        id: null, 
+        id: null,
         name: materialTypeController.text,
         description: '',
       ),
@@ -754,7 +754,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       }
 
       entry.value.removeWhere(
-        (element) => element.productionDate == DateTime(4000) && 
+        (element) => element.productionDate == DateTime(4000) &&
           element.serialNumber.isEmpty);
 
       if (entry.value.length < serialParts.length) {
