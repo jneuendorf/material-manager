@@ -54,7 +54,7 @@ class Imprint(ModelResource):
         else:
             return self.serialize(imprint[len(imprint) - 1])
 
-    @use_kwargs(ImprintSchema.to_dict(exclude=["id"]))
+    @use_kwargs(ImprintSchema.to_dict())
     def put(self, **kwargs):
         imprint = models.Imprint.all()
         if imprint == []:

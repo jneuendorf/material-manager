@@ -32,7 +32,7 @@ class PrivacyPolicy(ModelResource):
         else:
             return self.serialize(privacy_policy[len(privacy_policy) - 1])
 
-    @use_kwargs(PrivacyPolicySchema.to_dict(exclude=["id"]))
+    @use_kwargs(PrivacyPolicySchema.to_dict())
     def put(self, **kwargs):
         privacy_policy = models.PrivacyPolicy.all()
         if privacy_policy == []:
