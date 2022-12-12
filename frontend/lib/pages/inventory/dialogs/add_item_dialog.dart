@@ -252,23 +252,29 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                               if (value == null || value.isEmpty) {
                                                 return null;
                                               }
-                                              if (value != 'file_selected'.tr && !value.isURL) {
+                                              if (instructions == null && !value.isURL) {
                                                 return 'must_be_file_or_url'.tr;
                                               }
                                               return null;
                                             },
+                                            onChanged: (String value ) {
+                                              if (instructions != null) {
+                                                instructions = null;
+                                                instructionsController.text = '';
+                                              }
+                                            },
                                           ),
                                         ),
-                                        // IconButton(
-                                        //   splashRadius: 18.0,
-                                        //   onPressed: () async {
-                                        //     instructions = await pickFile();
-                                        //     if (instructions != null) {
-                                        //       instructionsController.text = instructions!.name;
-                                        //     }
-                                        //   },
-                                        //   icon: const Icon(Icons.folder),
-                                        // ),
+                                        IconButton(
+                                          splashRadius: 18.0,
+                                          onPressed: () async {
+                                            instructions = await pickFile();
+                                            if (instructions != null) {
+                                              instructionsController.text = instructions!.name;
+                                            }
+                                          },
+                                          icon: const Icon(Icons.folder),
+                                        ),
                                       ],
                                     ),
                                   ],
