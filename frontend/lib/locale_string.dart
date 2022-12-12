@@ -326,7 +326,7 @@ class LocaleString extends Translations {
       'property_value_is_mandatory': 'Wert ist verplichtend',
       'property_name_is_mandatory': 'Name ist verplichtend',
       'shopping_cart_is_empty': 'Warenkorb ist leer!',
-      'active_orders': 'Active Bestellungen',
+      'active_orders': 'Aktive Bestellungen',
       'completed_orders': 'Abgeschlossene Bestellungen',
       'order_number': 'Bestellnr.',
       'price': 'Preis',

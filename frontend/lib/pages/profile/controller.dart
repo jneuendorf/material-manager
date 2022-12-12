@@ -29,6 +29,8 @@ class ProfilePageController extends GetxController {
   final Rxn<UserModel> currentUser = Rxn<UserModel>();
   final RxList<RentalModel> currentRentals = <RentalModel>[].obs;
 
+  final RxString selectedLanguage = Get.locale?.languageCode.obs ?? 'en'.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
