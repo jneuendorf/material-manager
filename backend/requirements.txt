@@ -20,6 +20,3 @@ Pillow~=9.3
 python-dotenv~=0.21
 SQLAlchemy~=1.4
 webargs~=8.2
-
-# needed for sample images
-gdown~=4.6
