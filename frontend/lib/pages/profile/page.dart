@@ -24,12 +24,7 @@ class ProfilePage extends GetView<ProfilePageController> {
             value: controller.selectedLanguage.value,
             icon: const Icon(Icons.arrow_drop_down),
             borderRadius: BorderRadius.circular(8.0),
-            onChanged: (String? value) {
-              if (value != null) {
-                Get.updateLocale(Locale(value));
-                controller.selectedLanguage.value = value;
-              }
-            },
+            onChanged: controller.onLanguageChanged,
             items: ['de', 'en'].map<DropdownMenuItem<String>>((String value) {
               return DropdownMenuItem<String>(
                 value: value,
