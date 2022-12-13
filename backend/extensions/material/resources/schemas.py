@@ -77,7 +77,7 @@ class MaterialSchema(BaseSchema):
         #  Check why the metaclass doesn't work
         model_converter = ModelConverter
         model = models.Material
-        dump_only = ("id", "image_urls")
+        dump_only = ("image_urls",)
 
     def get_image_urls(self, obj: models.Material):
         return [url_join(STATIC_URL_PATH, image.path) for image in obj.images]

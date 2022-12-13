@@ -1,4 +1,6 @@
+from datetime import date
 from pathlib import Path
+from typing import Optional
 
 from flask import abort, current_app, make_response, render_template, url_for
 from flask_apispec import use_kwargs
@@ -8,20 +10,20 @@ from marshmallow import fields
 
 from core.helpers.resource import BaseResource, ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema, ModelConverter
+from extensions.material.models import Material
 from extensions.material.resources.schemas import MaterialSchema
 from extensions.user.decorators import login_required
 from extensions.user.models import User
+from extensions.user.resources import UserSchema
 
 from . import models
 
 
 class RentalSchema(BaseSchema):
-    # This helps to get the materials attribute,
-    # but when we add this, we have to fix post and put functions.
-    # I have tried but I could not debug  errors.
-    #   materials = fields.List(fields.Nested(MaterialSchema()))
-
-    materials = fields.List(fields.Nested(MaterialSchema()))
+    lender = fields.Nested(UserSchema(only=["id"]))
+    customer = fields.Nested(UserSchema(only=["id"]))
+    return_to = fields.Nested(UserSchema(only=["id"]))
+    materials = fields.List(fields.Nested(MaterialSchema(only=["id"])))
 
     class Meta:
         model_converter = ModelConverter
@@ -33,15 +35,64 @@ class Rental(ModelResource):
     Schema = RentalSchema
 
     # Adds a new rental /rental
-    @use_kwargs(RentalSchema.to_dict())
-    def post(self, **kwargs) -> dict:
+    @use_kwargs(
+        {
+            **RentalSchema.to_dict(
+                include=[
+                    "customer",
+                    "lender",
+                    "materials",
+                    "cost",
+                    "discount",
+                    "deposit",
+                    "start_date",
+                    "end_date",
+                    "usage_start_date",
+                    "usage_end_date",
+                ],
+            ),
+        }
+    )
+    def post(
+        self,
+        customer: User,
+        lender: User,
+        materials: list[Material],
+        cost: float,
+        discount: float,
+        deposit: float,
+        start_date: date,
+        end_date: date,
+        usage_start_date: Optional[date] = None,
+        usage_end_date: Optional[date] = None,
+    ) -> dict:
         """Test with
         curl -X POST "http://localhost:5000/rental" \
         -H 'Content-Type: application/json' \
         -d '{}'
         """
-        rental = models.Rental.create(**kwargs)
-        return self.serialize(rental)
+        # query = Material.get_query()
+        # material_instances = query.execute(
+        #     query.db.select(Material, Material.id.in_(materials)),
+        # )
+        # print(material_instances)
+        rental = models.Rental.create(
+            _related=dict(
+                customer=customer,
+                lender=lender,
+                materials=materials,
+            ),
+            cost=cost,
+            discount=discount,
+            deposit=deposit,
+            start_date=start_date,
+            end_date=end_date,
+            usage_start_date=usage_start_date,
+            usage_end_date=usage_end_date,
+        )
+        return {
+            "id": rental.id,
+        }
 
     # update a rental by using rental_id
     @use_kwargs(RentalSchema.to_dict())
