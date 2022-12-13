@@ -42,17 +42,45 @@ void main() async {
 }
 
 Future<void> initialConfig() async {
+  Map<String, String> envDevFile = {};
+  Map<String, String> envFile = {};
+
+  await dotenv.load(fileName: 'env/dev.env');
+  envDevFile = Map<String, String>.of(dotenv.env);
   try {
-    debugPrint('try loading env/dev.env + env/.env...');
-    await dotenv.load(fileName: 'env/dev.env');
     await dotenv.load(
       fileName: 'env/.env',
-      // Make a shallow copy of the dev env because dotenv.env is cleared when dotenv.load is called
-      mergeWith: Map<String, String>.of(dotenv.env),
+      // mergeWith: envDevFile,
     );
+    envFile = Map<String, String>.of(dotenv.env);
   } catch (e) {
-    await dotenv.load(fileName: 'env/dev.env');
+    debugPrint('$e');
   }
+
+  await dotenv.load(
+      fileName: 'env/empty.env',
+      mergeWith: Map<String, String>.of({...envDevFile, ...envFile}),
+  );
+  debugPrint('loaded dotenv1111:');
+  debugPrint('${dotenv.env}');
+
+  // try {
+  //   debugPrint('try loading env/dev.env + env/.env...');
+  //   await dotenv.load(fileName: 'env/.env');
+  //   debugPrint('.env: ${dotenv.env}');
+  //   Map<String, String> devDotenv = dotenv.env;
+  //   await dotenv.load(fileName: 'env/dev.env');
+  //   debugPrint('dev env: ${dotenv.env}');
+  //   await dotenv.load(
+  //     fileName: 'env/.env',
+  //     // Make a shallow copy of the dev env because dotenv.env is cleared when dotenv.load is called
+  //     mergeWith: Map<String, String>.of(dotenv.env),
+  //   );
+  //   debugPrint('env: ${dotenv.env}');
+  // } catch (e) {
+  //   debugPrint('$e');
+  //   await dotenv.load(fileName: 'env/dev.env');
+  // }
   debugPrint('loaded dotenv:');
   debugPrint('${dotenv.env}');
 
