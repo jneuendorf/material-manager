@@ -1,4 +1,7 @@
-.PHONY: run_prod
+.PHONY: run_docker clean_docker
 
-run_prod:
+run_docker:
 	docker-compose --file docker-compose.yml up --detach --build
+
+clean_docker:
+	docker-compose down --remove-orphans

@@ -2,10 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/extensions/material/model.dart';
-
+import 'package:frontend/common/util.dart';
 
 class ProductDetailsDialog extends StatelessWidget {
   final MaterialModel item;
@@ -84,7 +85,7 @@ class ProductDetailsDialog extends StatelessWidget {
                             fontSize: 15.0,
                           ),
                         ),
-                        Text(inventoryPageController.formatDate(item.maxOperatingDate),
+                        Text(formatDate(item.maxOperatingDate),
                           style: const TextStyle(fontSize: 15.0)
                         ),
                         ]
@@ -110,8 +111,15 @@ class ProductDetailsDialog extends StatelessWidget {
                             fontSize: 15.0,
                           ),
                         ),
-                        Text(item.instructions,
-                          style: const TextStyle(fontSize: 15.0)
+                        InkWell(
+                          onTap: ()  async {
+                            if (!await launchUrl(Uri.parse(item.instructions))) {
+                              Get.snackbar('error'.tr, 'could_not_launch_url'.tr);
+                            }
+                          },
+                          child: Text(item.instructions,
+                            style: TextStyle(fontSize: 15.0,color: Get.theme.colorScheme.onSecondary,)
+                          ),
                         ),
                         ]
                       ),
@@ -182,7 +190,7 @@ class ProductDetailsDialog extends StatelessWidget {
                               fontSize: 15.0,
                             ),
                           ),
-                          Text(inventoryPageController.formatDate(item.purchaseDetails.purchaseDate),
+                          Text(formatDate(item.purchaseDetails.purchaseDate),
                             style: const TextStyle(fontSize: 15.0)
                           ),
                         ]

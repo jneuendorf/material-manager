@@ -13,9 +13,9 @@ class MaterialPreview extends StatelessWidget {
 
   MaterialPreview({Key? key, required this.item}) : super(key: key);
 
-  final RxBool hover = false.obs;
-
   final rentalPageController = Get.find<RentalPageController>();
+
+  final RxBool hover = false.obs;
 
   @override
   Widget build(BuildContext context) => Padding(
@@ -47,7 +47,7 @@ class MaterialPreview extends StatelessWidget {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          Text('${item.materialType.name}, ${getPropertyString(item)}'),
+                          Text('${item.materialType.name}, ${rentalPageController.getPropertyString(item)}'),
                           Text('${item.rentalFee.toStringAsFixed(2)} €'),
                         ],
                       ),
@@ -67,7 +67,13 @@ class MaterialPreview extends StatelessWidget {
                     vertical: isLargeScreen(context) ? 10.0 : 6.0,
                   ),
                 ),
-                onPressed: () => rentalPageController.shoppingCart.add(item),
+                onPressed: () {
+                  if (rentalPageController.rentalPeriod.value != null) {
+                    rentalPageController.shoppingCart.add(item);
+                  } else {
+                    Get.snackbar('error'.tr, 'missing_rental_period'.tr);
+                  }
+                },
                 child: Obx(() => rentalPageController.shoppingCart.contains(item)
                     ? const Icon(Icons.check)
                     : Icon(Icons.add_shopping_cart,
@@ -82,21 +88,4 @@ class MaterialPreview extends StatelessWidget {
       ),
     ),
   );
-
-  String cleanPropertyValue(String value) {
-    double? val = double.tryParse(value);
-
-    // if not a double, return as is
-    if (val == null) return value;
-
-    return val.toStringAsFixed(2);
-  }
-
-  String getPropertyString(MaterialModel item) {
-    if (item.properties.isEmpty) return '';
-
-    String value = cleanPropertyValue(item.properties.first.value);
-
-    return '$value ${item.properties.first.propertyType.unit}';
-  }
 }

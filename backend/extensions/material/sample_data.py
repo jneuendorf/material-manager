@@ -137,6 +137,68 @@ for i in range(NUM_PURCHASE_DETAILS):
         )
     )
 
+# Create material images
+material_images: dict[str, File] = {
+    "carabiner": (
+        File.get_or_create(
+            related_extension="material",
+            path="carabiner.jpg",
+            mime_type="image/jpeg",
+            description="silver carabiner",
+        ).download(
+            url="https://drive.google.com/file/d/160psfXfn0xv-4WjkSbDuaNiJMqe4EAGg/view?usp=share_link",  # noqa
+            resize=(800, 600),
+        )
+    ),
+    "express_sling": (
+        File.get_or_create(
+            related_extension="material",
+            path="express_sling.jpg",
+            mime_type="image/jpeg",
+            description="black/silver express sling",
+        ).download(
+            url="https://drive.google.com/file/d/1j4gkg4tqGD3BTyLBL6OVY-CoUA2tOVtl/view?usp=sharing",  # noqa
+            resize=(800, 600),
+        )
+    ),
+    "harness": (
+        File.get_or_create(
+            related_extension="material",
+            path="harness.jpg",
+            mime_type="image/jpeg",
+            description="red/black harness",
+        ).download(
+            url="https://drive.google.com/file/d/1K_MQ3KSqdIFa-MgyciwYMV--DEjzOhxe/view?usp=sharing",  # noqa
+            resize=(800, 600),
+        )
+    ),
+    "rope": (
+        File.get_or_create(
+            related_extension="material",
+            path="rope.jpg",
+            mime_type="image/jpeg",
+            description="lime green rope",
+        ).download(
+            url="https://drive.google.com/file/d/1yKwMOxKo6jcjoftc4XdRzPb8R8t2ScN2/view?usp=sharing",  # noqa
+            resize=(800, 600),
+        )
+    ),
+    # "ribbon": (
+    #     File.get_or_create(
+    #         related_extension="material",
+    #         path="ribbon.jpg",
+    #         mime_type="image/jpeg",
+    #         description="blue ribbon",
+    #     ).download(
+    #         url="https://drive.google.com/file/d/11fQQz9vC2j4f9vooQSU55BaoAxHdGRI3/view?usp=sharing",  # noqa
+    #         resize=(800, 600),
+    #     )
+    # ),
+}
+
+
+# Create materials
+
 
 def create_serial_and_inventory_number(
     index: int,
@@ -155,7 +217,6 @@ def create_serial_and_inventory_number(
     )
 
 
-# Create materials
 for i in range(NUM_MATERIALS):
     # create mostly ok condition, some repair, rarely broken for Material.condition
     if i % 50 == 0:
@@ -207,71 +268,10 @@ for i in range(NUM_MATERIALS):
                 )
                 for property_type in material_type.property_types
             ],
+            images=(
+                [material_images[material_type.name]]
+                if material_type.name in material_images
+                else []
+            ),
         ),
     )
-
-    image: File
-    if i == 0:
-        image = File.get_or_create(
-            path="carabiner.jpg",
-            mime_type="image/jpeg",
-            description="silver carabiner",
-            _related=dict(
-                object=material,
-            ),
-        )
-        image.download(
-            url="https://drive.google.com/file/d/160psfXfn0xv-4WjkSbDuaNiJMqe4EAGg/view?usp=share_link",  # noqa
-        )
-
-    if i == 1:
-        image = File.get_or_create(
-            path="express_sling.jpg",
-            mime_type="image/jpeg",
-            description="black/silver express sling",
-            _related=dict(
-                object=material,
-            ),
-        )
-        image.download(
-            url="https://drive.google.com/file/d/1j4gkg4tqGD3BTyLBL6OVY-CoUA2tOVtl/view?usp=sharing",  # noqa
-        )
-
-    if i == 2:
-        image = File.get_or_create(
-            path="harness.jpg",
-            mime_type="image/jpeg",
-            description="red/black harness",
-            _related=dict(
-                object=material,
-            ),
-        )
-        image.download(
-            url="https://drive.google.com/file/d/1K_MQ3KSqdIFa-MgyciwYMV--DEjzOhxe/view?usp=sharing",  # noqa
-        )
-
-    if i == 3:
-        image = File.get_or_create(
-            path="rope.jpg",
-            mime_type="image/jpeg",
-            description="lime green rope",
-            _related=dict(
-                object=material,
-            ),
-        )
-        image.download(
-            url="https://drive.google.com/file/d/1yKwMOxKo6jcjoftc4XdRzPb8R8t2ScN2/view?usp=sharing",  # noqa
-        )
-
-    if i == 4:
-        image = File.get_or_create(
-            path="ribbon.jpg",
-            mime_type="image/jpeg",
-            description="blue ribbon",
-            _related=dict(
-                object=material,
-            ),
-        )
-        image.download(
-            url="https://drive.google.com/file/d/11fQQz9vC2j4f9vooQSU55BaoAxHdGRI3/view?usp=sharing",  # noqa
-        )

@@ -9,22 +9,25 @@ import 'package:path_provider/path_provider.dart';
 import 'package:universal_html/html.dart' as html;
 import 'package:permission_handler/permission_handler.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:file_picker/file_picker.dart';
+import 'package:intl/intl.dart' as intl;
+import 'package:mime/mime.dart';
 
 
 /// Checks if the screen is larger than 600.
 bool isLargeScreen(BuildContext context) => MediaQuery.of(context).size.width > 600;
 
-/// Returs the rendered size of the given [text]. 
+/// Returns the rendered size of the given [text].
 Size getTextSize({
-  required String text, 
-  TextStyle? style, 
+  required String text,
+  TextStyle? style,
   int? maxLines,
   double maxWidth = double.infinity,
   double textScaleFactor = 1.0,
 }) {
     final TextPainter textPainter = TextPainter(
-        text: TextSpan(text: text, style: style), 
-        maxLines: maxLines, 
+        text: TextSpan(text: text, style: style),
+        maxLines: maxLines,
         textDirection: TextDirection.ltr,
         textScaleFactor: textScaleFactor,
     )..layout(minWidth: 0, maxWidth: maxWidth);
@@ -37,7 +40,7 @@ void downloadWeb(String name, String url) => html.AnchorElement(
     ..setAttribute('download', name)
     ..click();
 
-/// Saves the given [bytes] as a file with the given [name] 
+/// Saves the given [bytes] as a file with the given [name]
 /// in the downloads directory.
 /// Returns whether successful.
 /// Be carefule not to overwrite existing files by choosing a likely
@@ -54,7 +57,7 @@ Future<bool> downloadBytes(String name, List<int> bytes, {String mimeType = ''})
       if (!await Permission.storage.request().isGranted) return false;
 
       Directory documentDir = await getApplicationDocumentsDirectory();
-      
+
       final file = File(p.join(documentDir.path, name));
       await file.writeAsBytes(bytes);
       debugPrint('File saved to: ${file.path}');
@@ -66,6 +69,26 @@ Future<bool> downloadBytes(String name, List<int> bytes, {String mimeType = ''})
   return true;
 }
 
-/// Shows a file picker dialog and returns the selected files.
+/// Shows a file picker dialog and returns the selected images.
 /// Returns null if the user cancels the dialog.
 Future<List<XFile>?> pickImages() async => await ImagePicker().pickMultiImage();
+
+/// Shows a file picker dialog and returns the selected file.
+Future<XFile?> pickFile() async {
+  final FilePickerResult? result = await FilePicker.platform.pickFiles();
+
+  if (result == null) return null;
+
+  final bytes = result.files.first.bytes;
+
+  final String? mime = lookupMimeType('', headerBytes: bytes);
+
+  return XFile.fromData(bytes!, mimeType: mime, name: result.files.first.name);
+}
+
+intl.DateFormat dateFormat = intl.DateFormat('dd.MM.yyyy');
+
+/// Returns the given [date] as a string in the format dd.MM.yyyy.
+String formatDate(DateTime? date) {
+  return date != null ? dateFormat.format(date) : '';
+}

@@ -53,6 +53,8 @@ dependencies:
   cross_file: ^0.3.3+2
   image_picker: ^0.8.6
   url_launcher: ^6.1.7
+  file_picker: ^5.2.3
+  mime: ^1.0.3
 
 dev_dependencies:
   flutter_test:

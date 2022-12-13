@@ -151,7 +151,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
       ? InkWell(
         onTap: () => Get.toNamed(rentalRoute),
         borderRadius: BorderRadius.circular(25.0),
-        child: Image.asset('assets/images/dav_logo_small.png'),
+        child: Image.asset('assets/images/logo_small.png'),
       )
       : loggedIn
         ? widget.showBackButton

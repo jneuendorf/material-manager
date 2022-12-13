@@ -1,15 +1,5 @@
 from collections.abc import Callable
-from typing import (
-    Any,
-    Collection,
-    Dict,
-    Generic,
-    Mapping,
-    Optional,
-    Type,
-    TypeVar,
-    Union,
-)
+from typing import Any, Collection, Generic, Mapping, Optional, Type, TypeVar, Union
 
 from flask_marshmallow.sqla import SQLAlchemyAutoSchema
 from marshmallow import fields
@@ -120,8 +110,11 @@ class BaseSchema(SQLAlchemyAutoSchema, Generic[M], metaclass=BaseSchemaMeta):
 
     @classmethod
     def to_dict(
-        cls, exclude=(), **field_options: Dict[str, Any]
-    ) -> Dict[str, fields.Field]:
+        cls,
+        exclude: Collection[str] = (),
+        include: Collection[str] = (),
+        **field_options: dict[str, Any],
+    ) -> dict[str, fields.Field]:
         """Returns the schema's fields as dictionary that can be used
         with `@use_kwargs`. The returned dictionary is new copy each call,
         so it can be mutated if needed.
@@ -151,8 +144,9 @@ class BaseSchema(SQLAlchemyAutoSchema, Generic[M], metaclass=BaseSchemaMeta):
             return field
 
         declared_fields = cls.get_fields()
+        regarded_field_names = set(include or declared_fields.keys()) - set(exclude)
         return {
             field_name: apply_field_options(field, field_options.get(field_name, {}))
             for field_name, field in declared_fields.items()
-            if field is not None and field_name not in exclude
+            if field is not None and field_name in regarded_field_names
         }

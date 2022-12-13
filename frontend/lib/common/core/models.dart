@@ -39,6 +39,35 @@ class ImprintModel {
   }
 }
 
+class PrivacyPolicyModel {
+  String? company;
+  String firstName;
+  String lastName;
+  Address address;
+  String? phoneNumber;
+  String email;
+
+  PrivacyPolicyModel({
+    required this.company,
+    required this.firstName,
+    required this.lastName,
+    required this.address,
+    required this.phoneNumber,
+    required this.email,
+  });
+
+  factory PrivacyPolicyModel.fromJson(Map<String, dynamic> json) {
+    return PrivacyPolicyModel(
+      company: json['company'],
+      firstName: json['first_name'],
+      lastName: json['last_name'],
+      address: Address.fromJson(json['address']),
+      phoneNumber: json['phone_number'],
+      email: json['email'],
+    );
+  }
+}
+
 class NonFinalMapEntry<K,V> {
   K key;
   V value;

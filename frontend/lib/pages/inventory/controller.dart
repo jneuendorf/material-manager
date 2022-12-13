@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
@@ -46,7 +45,7 @@ class InventoryPageController extends GetxController {
       /// Checks if the [selectedTypeFilter] equals [materialType] of the [item].
       bool materialTypeFilterCondition() {
         if (selectedTypeFilter.value == null) return true;
-        
+
         return item.materialType.id == selectedTypeFilter.value!.id;
       }
 
@@ -94,9 +93,5 @@ class InventoryPageController extends GetxController {
     }
 
     runFilter();
-  }
-
-  String formatDate(DateTime date) {
-    return DateFormat('dd.MM.yyyy').format(date);
   }
 }

@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -19,6 +18,21 @@ class ProfilePage extends GetView<ProfilePageController> {
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        Align(
+          alignment: Alignment.centerRight,
+          child: Obx(() => DropdownButton<String>(
+            value: controller.selectedLanguage.value,
+            icon: const Icon(Icons.arrow_drop_down),
+            borderRadius: BorderRadius.circular(8.0),
+            onChanged: controller.onLanguageChanged,
+            items: ['de', 'en'].map<DropdownMenuItem<String>>((String value) {
+              return DropdownMenuItem<String>(
+                value: value,
+                child: Text(value),
+              );
+            }).toList(),
+          )),
+        ),
         Obx(() => UserDetailsWidget(
           user: controller.currentUser.value ?? mockUsers.first,
           showLogoutButton: true,

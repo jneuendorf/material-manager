@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:frontend/pages/rental/controller.dart';
 import 'package:frontend/pages/rental/screens/sets_screen.dart';
 import 'package:frontend/pages/rental/screens/single_material_screen.dart';
+import 'package:frontend/pages/rental/components/period_selector.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 
 
@@ -44,6 +45,12 @@ class RentalPage extends GetView<RentalPageController> {
                 ),
               ),
               const SizedBox(width: 16.0),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 8.0),
+                  child: PeriodSelector(small: true),
+                ),
+              ),
               buildCartButton(context),
             ],
           ),
@@ -63,7 +70,13 @@ class RentalPage extends GetView<RentalPageController> {
   );
 
   Widget buildCartButton(context) => InkWell(
-    onTap: () => Get.toNamed(rentalShoppingCartRoute),
+    onTap: () {
+      if (controller.rentalPeriod.value != null){
+        Get.toNamed(rentalShoppingCartRoute);
+      } else {
+        Get.snackbar('error'.tr, 'missing_rental_period'.tr);
+      }
+    },
     borderRadius: BorderRadius.circular(5.0),
     child: Container(
       width: 150,
@@ -77,7 +90,7 @@ class RentalPage extends GetView<RentalPageController> {
         children: [
           const Icon(Icons.shopping_cart),
           const SizedBox(width: 4.0),
-          Expanded(child: Text('${controller.shoppingCart.length} ${'items'.tr}', 
+          Expanded(child: Text('${controller.shoppingCart.length} ${'items'.tr}',
             maxLines: 1,
           )),
           Text('${controller.totalPrice.toStringAsFixed(2)} €'),
