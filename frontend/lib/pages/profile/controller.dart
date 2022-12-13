@@ -46,6 +46,17 @@ class ProfilePageController extends GetxController {
     currentRentals.value = rentalController.rentals; // TODO should be the users rentals only
   }
 
+  /// Handles the language change.
+  Future<void> onLanguageChanged(String? value) async {
+    if (value == null) return;
+
+    selectedLanguage.value = value;
+
+    await Get.updateLocale(Locale(value));
+
+    await storage.write(key: 'locale', value: value);
+  }
+
   Color getDataRowColor(Set<MaterialState> states) {
     const Set<MaterialState> interactiveStates = <MaterialState>{
       MaterialState.pressed,
