@@ -5,6 +5,8 @@ from . import models, resources
 inspection = Extension(
     "inspection",
     __name__,
+    static_url_path="/inspection/static",
+    static_folder="static",
     models=(
         models.Inspection,
         models.Comment,

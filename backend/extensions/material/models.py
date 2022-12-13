@@ -14,7 +14,7 @@ Model: Type[CrudModel] = db.Model
 class MaterialType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(length=32), unique=True)
-    description = db.Column(db.String(length=80))
+    description = db.Column(db.String(length=80), default="")
     sets = db.relationship(
         "MaterialSet",
         secondary="material_type_set_mapping",
@@ -31,16 +31,8 @@ class MaterialType(Model):  # type: ignore
 class PropertyType(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(length=32), unique=True)
-    description = db.Column(db.String(length=80))
+    description = db.Column(db.String(length=80), default="")
     unit = db.Column(db.String(length=12))
-
-    __table_args__ = (
-        UniqueConstraint(
-            "name",
-            "unit",
-            name="name_unit_uc",
-        ),
-    )
 
 
 class Property(Model):  # type: ignore
@@ -79,6 +71,7 @@ class PurchaseDetails(Model):  # type: ignore
     merchant = db.Column(db.String(length=80))
     purchase_price = db.Column(db.Float)
     suggested_retail_price = db.Column(db.Float, nullable=True)
+
     __table_args__ = (
         UniqueConstraint(
             "merchant",
@@ -97,7 +90,7 @@ class Condition(enum.Enum):
 class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(length=80), nullable=False)
-    installation_date = db.Column(db.Date, nullable=False)  # Inbetriebnahme
+    installation_date = db.Column(db.Date, nullable=True)  # Inbetriebnahme
     max_operating_date = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
     max_days_used = db.Column(
         db.Integer,
@@ -123,7 +116,11 @@ class Material(Model):  # type: ignore
     serial_numbers = db.relationship("SerialNumber", backref="material")
     # one to many (FK on child)
     inventory_numbers = db.relationship("InventoryNumber", backref="material")
-    images = File.reverse_generic_relationship("Material")
+    # many to many
+    images = db.relationship(
+        "File",
+        secondary="material_image_mapping",
+    )
     # many to many
     properties = db.relationship(
         "Property",
@@ -140,6 +137,12 @@ class Material(Model):  # type: ignore
             raise ValueError("A material must have at least 1 associated serial number")
         super().save()
 
+
+MaterialImageMapping: Table = db.Table(
+    "material_image_mapping",
+    db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
+    db.Column("file_id", db.ForeignKey(File.id), primary_key=True),
+)
 
 MaterialPropertyMapping: Table = db.Table(
     "material_property_mapping",
@@ -172,9 +175,20 @@ class SerialNumber(Model):  # type: ignore
 
 class MaterialSet(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
-    images = File.reverse_generic_relationship("MaterialSet")
+    # many to many
+    images = db.relationship(
+        "File",
+        secondary="material_set_image_mapping",
+    )
+    # images = File.reverse_generic_relationship("MaterialSet")
     name = db.Column(db.String(length=32))
 
+
+MaterialSetImageMapping: Table = db.Table(
+    "material_set_image_mapping",
+    db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
+    db.Column("file_id", db.ForeignKey(File.id), primary_key=True),
+)
 
 MaterialTypeSetMapping: Table = db.Table(
     "material_type_set_mapping",
