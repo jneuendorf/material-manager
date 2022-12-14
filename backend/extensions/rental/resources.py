@@ -93,7 +93,7 @@ class Rental(ModelResource):
     @use_kwargs(RentalSchema.to_dict(exclude=["id", "created_at"]))
     def put(self, rental_id, **kwargs):
         if not kwargs["materials"]:
-            abort(400, "materials are not nullable")
+            abort(400, "A rental requires related materials")
         rental = models.Rental.get(id=rental_id)
         rental.update(**kwargs)
         return self.serialize(rental)
