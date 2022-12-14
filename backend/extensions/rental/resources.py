@@ -92,6 +92,8 @@ class Rental(ModelResource):
     # update a rental by using rental_id
     @use_kwargs(RentalSchema.to_dict(exclude=["id", "created_at"]))
     def put(self, rental_id, **kwargs):
+        if not kwargs["materials"]:
+            abort(400, "materials are not nullable")
         rental = models.Rental.get(id=rental_id)
         rental.update(**kwargs)
         return self.serialize(rental)
