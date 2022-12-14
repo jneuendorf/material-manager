@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:get/get.dart';
 
 import 'package:frontend/extensions/inspection/model.dart';
@@ -8,8 +6,6 @@ import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
-import 'package:frontend/extensions/user/mock_data.dart';
-import 'package:frontend/common/util.dart';
 
 
 const inspectionRoute = '/inspection';
@@ -32,7 +28,7 @@ class InspectionPageController extends GetxController {
 
   final RxMap<InspectionType, String> typeFilterOptions = <InspectionType, String>{}.obs;
 
-  final RxList<MaterialModel> selectedMaterials = <MaterialModel>[].obs;
+  final Rxn<MaterialModel> selectedMaterial = Rxn<MaterialModel>();
 
   final Rxn<InspectionType> selectedInspectionType = Rxn<InspectionType>();
   final RxString searchTerm = ''.obs;
@@ -49,9 +45,8 @@ class InspectionPageController extends GetxController {
     await Future.wait([
       inspectionController.initCompleter.future,
       materialController.initCompleter.future,
+      userController.initCompleter.future,
     ]);
-
-    filteredInspection.value = inspectionController.inspections;
 
     filteredMaterial.value = materialController.materials.where(
       (MaterialModel item) => item.nextInspectionDate.difference(DateTime.now()) <= const Duration(days: 7) ||
@@ -82,31 +77,13 @@ class InspectionPageController extends GetxController {
 
   /// Handles the selection of the provided [material].
   void onMaterialSelected(MaterialModel material) {
-    selectedMaterials.add(material);
+    selectedMaterial.value = material;
 
     Get.toNamed(inspectionDetailRoute);
   }
 
-  String getInspectorName(int index) {
-
-    UserModel user = userController.users.firstWhere(
-      (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId,
-      orElse: () {
-        assert(Platform.environment.containsKey('FLUTTER_TEST'));
-
-        return mockUsers.firstWhere(
-          (UserModel user) => user.id! == inspectionController.inspections[index].inspectorId,
-        );
-      });
-    
-    return '${user.firstName} ${user.lastName}';
-  }
-
-  String getInspectionDate(int index){
-    String date = dateFormat.format(
-      inspectionController.inspections[index].date);
-    
-    return date;
+  String getInspectorName(int inspectorId) {
+    return '${userController.users.firstWhere((UserModel user) => user.id == inspectorId).firstName} ${userController.users.firstWhere((UserModel user) => user.id == inspectorId).lastName}';
   }
 }
 
