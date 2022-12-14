@@ -144,8 +144,8 @@ class Material(Model):  # type: ignore
                 border=1,
             )
             #    data = self.instructions here to get URL
-            data = "https://youtu.be/QL8KL9hvSMs"
-            qr.add_data(data)
+            instructions_url = "https://youtu.be/QL8KL9hvSMs"
+            qr.add_data(instructions_url)
             qr.make(fit=True)
             img = qr.make_image()
             # Get the in-memory info using below code line.

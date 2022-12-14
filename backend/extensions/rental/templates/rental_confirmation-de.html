@@ -39,6 +39,13 @@
             position: relative;
             top: 3px;
         }
+        .end {
+            display: flex;
+        }
+        .cl2{
+            margin-right: 100px;
+        }
+
     </style>
 </head>
 <body>
@@ -113,7 +120,7 @@
                         <td></td>
                         <td><div class="ml-2 square"></div></td>
                         <td>
-                            <img id="picture" src="data:image/jpeg;base64,{{ material.generate_qrcode()[0] }}">
+                            <img id="picture" src="data:image/jpeg;base64,{{ material.generate_qrcode()}}">
                             <a href="{{ material.instructions }}">
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
                                     <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
@@ -193,8 +200,8 @@
         </div>
     </section>
 
-<div style="display: flex">
-    <section style= "margin-right: 50px">
+<div class="end">
+    <section  class="cl2">
         <h4 class="border">Bei Rückgabe auszufüllen:</h4>
         <p>
             <div class="square inline"></div>
