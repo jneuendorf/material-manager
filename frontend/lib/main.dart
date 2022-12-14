@@ -39,7 +39,7 @@ import 'package:frontend/pages/privacy_policy/page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await initialConfig();
 
   Locale locale = await getInitialLocale();
@@ -63,17 +63,18 @@ Future<void> initialConfig() async {
   Get.lazyPut<InspectionController>(() => InspectionController(), fenix: true);
 }
 
-/// Loads the config from the .env file.
+/// Loads the config from the env/*.env files.
 Future<void> loadConfig() async {
   try {
-    debugPrint('try loading env/dev.env + env/.env...');
-    await dotenv.load(fileName: 'env/dev.env');
+    await dotenv.load(fileName: 'env/.env');
     await dotenv.load(
-      fileName: 'env/.env',
-      // Make a shallow copy of the dev env because dotenv.env is cleared when dotenv.load is called
-      mergeWith: Map<String, String>.of(dotenv.env),
+      fileName: 'env/dev.env',
+      mergeWith: Map<String, String>.of(dotenv.env),  // Precedence over dev.env
     );
   } catch (e) {
+    debugPrint('.env + dev.env failed:');
+    debugPrint('$e');
+    debugPrint('using dev.env only');
     await dotenv.load(fileName: 'env/dev.env');
   }
   debugPrint('loaded dotenv:');
