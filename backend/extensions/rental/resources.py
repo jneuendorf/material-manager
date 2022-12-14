@@ -71,11 +71,6 @@ class Rental(ModelResource):
         -H 'Content-Type: application/json' \
         -d '{}'
         """
-        # query = Material.get_query()
-        # material_instances = query.execute(
-        #     query.db.select(Material, Material.id.in_(materials)),
-        # )
-        # print(material_instances)
         rental = models.Rental.create(
             _related=dict(
                 customer=customer,
