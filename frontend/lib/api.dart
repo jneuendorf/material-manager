@@ -17,9 +17,7 @@ const storage = FlutterSecureStorage();
 // TODO: Or `const bool prod = const bool.fromEnvironment('dart.vm.product');`?
 //  See https://stackoverflow.com/questions/49707028/
 
-String baseUrl = const bool.hasEnvironment('API_URL')
-    ? const String.fromEnvironment('API_URL')
-    : '${dotenv.env['API_URL']}';
+String baseUrl = dotenv.env['API_URL'] ?? '';
 
 Map<int, String> defaultErrors = {
   400: 'bad_request'.tr,
@@ -46,7 +44,6 @@ class ApiService extends GetxService {
 
   Future<ApiService> init() async {
     debugPrint('ApiService init');
-    debugPrint('baseUrl ${mainClient.options.baseUrl}');
 
     final String? accessToken = await getAccessToken();
     if (accessToken != null) {

@@ -7,9 +7,8 @@ COPY . .
 RUN flutter pub get
 
 ARG API_URL
-ENV API_URL=${API_URL}
+RUN grep "API_URL=${API_URL}" env/.env || grep "API_URL=${API_URL}" env/dev.env
 
 ENTRYPOINT []
-RUN echo "flutter build web --dart-define API_URL=${API_URL}"
 # --tree-shake-icons is not yet available for web
-CMD flutter build web --dart-define API_URL=${API_URL}
+CMD flutter build web

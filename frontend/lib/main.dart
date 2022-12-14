@@ -63,49 +63,20 @@ Future<void> initialConfig() async {
   Get.lazyPut<InspectionController>(() => InspectionController(), fenix: true);
 }
 
-/// Loads the config from the .env file.
+/// Loads the config from the env/*.env files.
 Future<void> loadConfig() async {
-  Map<String, String> envDevFile = {};
-  Map<String, String> envFile = {};
-
-  await dotenv.load(fileName: 'env/dev.env');
-  envDevFile = Map<String, String>.of(dotenv.env);
   try {
+    await dotenv.load(fileName: 'env/.env');
     await dotenv.load(
-      fileName: 'env/.env',
-      // mergeWith: envDevFile,
+      fileName: 'env/dev.env',
+      mergeWith: Map<String, String>.of(dotenv.env),
     );
-    envFile = Map<String, String>.of(dotenv.env);
   } catch (e) {
+    debugPrint('.env + dev.env failed:');
     debugPrint('$e');
+    debugPrint('using dev.env only');
+    await dotenv.load(fileName: 'env/dev.env');
   }
-
-  await dotenv.load(
-      fileName: 'env/empty.env',
-      mergeWith: Map<String, String>.of({...envDevFile, ...envFile}),
-  );
-  debugPrint('loaded dotenv1111:');
-  debugPrint('${dotenv.env}');
-  debugPrint('platform env');
-  debugPrint('${Platform.environment}');
-
-  // try {
-  //   debugPrint('try loading env/dev.env + env/.env...');
-  //   await dotenv.load(fileName: 'env/.env');
-  //   debugPrint('.env: ${dotenv.env}');
-  //   Map<String, String> devDotenv = dotenv.env;
-  //   await dotenv.load(fileName: 'env/dev.env');
-  //   debugPrint('dev env: ${dotenv.env}');
-  //   await dotenv.load(
-  //     fileName: 'env/.env',
-  //     // Make a shallow copy of the dev env because dotenv.env is cleared when dotenv.load is called
-  //     mergeWith: Map<String, String>.of(dotenv.env),
-  //   );
-  //   debugPrint('env: ${dotenv.env}');
-  // } catch (e) {
-  //   debugPrint('$e');
-  //   await dotenv.load(fileName: 'env/dev.env');
-  // }
   debugPrint('loaded dotenv:');
   debugPrint('${dotenv.env}');
 }

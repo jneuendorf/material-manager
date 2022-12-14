@@ -35,6 +35,7 @@ services:
     build:
       context: ./frontend
       args:
+        # Must match nginx.conf proxy block's location
         API_URL: /api
     volumes:
       - frontend-build:/usr/src/frontend/build
