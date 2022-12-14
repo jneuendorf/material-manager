@@ -90,10 +90,10 @@ class Rental(ModelResource):
         }
 
     # update a rental by using rental_id
-    @use_kwargs(RentalSchema.to_dict())
+    @use_kwargs(RentalSchema.to_dict(exclude=["id", "created_at"]))
     def put(self, rental_id, **kwargs):
         rental = models.Rental.get(id=rental_id)
-        models.Rental.update(rental, **kwargs)
+        rental.update(**kwargs)
         return self.serialize(rental)
 
     def get(self, rental_id: int):
