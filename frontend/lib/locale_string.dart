@@ -151,7 +151,7 @@ class LocaleString extends Translations {
       'serial_number': 'SerialNo.',
       'no_image_found': 'No Image Found',
       'extras': 'Extras',
-      'export_inventory_to_csv': 'Export inventory to CSV',
+      'export_inventory_to_csv': 'Export Inventory to CSV',
       'export': 'Export',
       'edit': 'Edit',
       'general': 'General',
@@ -252,6 +252,7 @@ class LocaleString extends Translations {
       'first_name_is_mandatory' : 'First Name is mandatory',
       'last_name_is_mandatory' : 'Last Name is mandatory',
       //
+      'no_comments': 'No comments',
       'must_be_file_or_url': 'Must be a file or URL',
     },
     'de_DE': {
@@ -500,6 +501,7 @@ class LocaleString extends Translations {
       'first_name_is_mandatory' : 'Vorname ist verpflichtend',
       'last_name_is_mandatory' : 'Nachname ist verpflichtend',
       //
+      'no_comments': 'Keine Kommentare',
       'must_be_file_or_url': 'Muss Datei oder URL sein',
     }
   };
