@@ -156,7 +156,7 @@ class Material(Model):  # type: ignore
             encoded_img_data = base64.b64encode(temp_location.getvalue())
         except Exception as e:
             print(e)
-        return (encoded_img_data.decode("utf-8"), data)
+        return encoded_img_data.decode("utf-8")
 
     def save(self) -> None:
         if not self.serial_numbers:
