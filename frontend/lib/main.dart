@@ -69,7 +69,7 @@ Future<void> loadConfig() async {
     await dotenv.load(fileName: 'env/.env');
     await dotenv.load(
       fileName: 'env/dev.env',
-      mergeWith: Map<String, String>.of(dotenv.env),
+      mergeWith: Map<String, String>.of(dotenv.env),  // Precedence over dev.env
     );
   } catch (e) {
     debugPrint('.env + dev.env failed:');
