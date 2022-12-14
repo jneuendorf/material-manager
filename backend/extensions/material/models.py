@@ -141,7 +141,7 @@ class Material(Model):  # type: ignore
                 version=1,
                 error_correction=qrcode.constants.ERROR_CORRECT_L,
                 box_size=2,
-                border=2,
+                border=1,
             )
             #    data = self.instructions here to get URL
             data = "https://youtu.be/QL8KL9hvSMs"
@@ -156,7 +156,7 @@ class Material(Model):  # type: ignore
             encoded_img_data = base64.b64encode(temp_location.getvalue())
         except Exception as e:
             print(e)
-        return encoded_img_data.decode("utf-8")
+        return (encoded_img_data.decode("utf-8"), data)
 
     def save(self) -> None:
         if not self.serial_numbers:
