@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Optional
 
 from flask import abort
@@ -6,8 +7,15 @@ from marshmallow import fields
 from sqlalchemy.exc import IntegrityError
 
 from core.helpers.resource import ModelListResource, ModelResource
+from extensions.common.decorators import FileSchema, with_files
+from extensions.common.models import File
 from extensions.material import models
-from extensions.material.resources.schemas import MaterialSchema, PurchaseDetailsSchema
+from extensions.material.resources.schemas import (
+    InventoryNumberSchema,
+    MaterialSchema,
+    PlainPropertySchema,
+    SerialNumberSchema,
+)
 
 
 class Material(ModelResource):
@@ -68,23 +76,106 @@ class Materials(ModelListResource):
 
     @use_kwargs(
         {
-            "materials": fields.List(
-                fields.Nested(MaterialSchema(exclude=["id", "purchase_details"]))
+            "serial_numbers": fields.List(
+                fields.List(
+                    fields.Nested(SerialNumberSchema()),
+                ),
             ),
-            "purchase_details": fields.Nested(PurchaseDetailsSchema()),
+            "inventory_numbers": fields.List(
+                fields.Nested(InventoryNumberSchema(exclude=["id"])),
+            ),
+            "images": fields.List(
+                fields.Nested(FileSchema()),
+            ),
+            # Manual handling because resolving nested and cyclic relationships is very
+            # complicated and error-prone
+            "properties": fields.List(
+                fields.Nested(PlainPropertySchema()),
+            ),
+            **MaterialSchema.to_dict(
+                include=[
+                    "material_type",
+                    "purchase_details",
+                    "max_operating_date",
+                    "max_days_used",
+                    "instructions",
+                    "next_inspection_date",
+                    "rental_fee",
+                ],
+            ),
         }
     )
+    @with_files("images", related_extension="material")
     def post(
         self,
-        materials: list[models.Material],
+        material_type: models.MaterialType,
+        serial_numbers: list[list[models.SerialNumber]],
+        inventory_numbers: list[models.InventoryNumber],
         purchase_details: models.PurchaseDetails,
+        images: list[File],
+        max_operating_date: date,
+        max_days_used: int,
+        instructions: str,
+        next_inspection_date: date,
+        rental_fee: float,
+        properties: list[dict],
     ):
-        """Saves a purchase: Many materials + purchase details"""
-        purchase_details.save()
-        for material in materials:
-            material.purchase_details = purchase_details
-            material.save()
-        # TODO: What data does the FE need here?
+        """Saves a batch of materials that share some identical data. I.e.
+        - purchase details
+        - material type
+        - images
+        """
+
+        if len(serial_numbers) != len(inventory_numbers):
+            return abort(
+                400,
+                "number of serial numbers does not match number of inventory numbers",
+            )
+
+        property_instances = [
+            models.Property.get_or_create(
+                value=prop["value"],
+                _related=dict(
+                    property_type=models.PropertyType.get_or_create(
+                        **prop["property_type"]
+                    ),
+                ),
+            )
+            for prop in properties
+        ]
+        material_type = material_type.ensure_saved()
+        purchase_details = purchase_details.ensure_saved()
+        if material_type.id is None or purchase_details.id is None:
+            return abort(
+                500,
+                "error while trying to persist material type or purchase details",
+            )
+
+        material_ids = []
+        try:
+            for serial_nums, inventory_num in zip(serial_numbers, inventory_numbers):
+                material = models.Material.create(
+                    name="",
+                    max_operating_date=max_operating_date,
+                    max_days_used=max_days_used,
+                    instructions=instructions,
+                    next_inspection_date=next_inspection_date,
+                    rental_fee=rental_fee,
+                    _related=dict(
+                        material_type=material_type,
+                        purchase_details=purchase_details,
+                        serial_numbers=list(serial_nums),
+                        inventory_numbers=[inventory_num],
+                        images=images,
+                        properties=property_instances,
+                    ),
+                )
+                print(material)
+                material_ids.append(material.id)
+        except Exception as e:
+            print(e)
+            return abort(500, "unknown error")
+
         return {
-            "materials": [material.id for material in materials],
+            "materials": material_ids,
         }

@@ -24,12 +24,10 @@ def url_join(*parts: str) -> str:
     return re.sub(r"/+", "/", "/".join(parts))
 
 
-def get_extension(instance: CrudModel) -> "Optional[Extension]":
-    model_cls = type(instance)
+def get_extension(extension_name: str) -> "Optional[Extension]":
     for name, extension in current_app.extensions.items():
-        for extension_model_cls in getattr(extension, "models", []):
-            if extension_model_cls is model_cls:
-                return extension
+        if name == extension_name:
+            return extension
     return None
 
 

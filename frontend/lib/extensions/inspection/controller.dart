@@ -16,7 +16,7 @@ class InspectionController extends GetxController {
 
   final Completer initCompleter = Completer();
 
-  final RxList<InspectionModel> inspections = <InspectionModel>[].obs;
+  // final RxList<InspectionModel> inspections = <InspectionModel>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -26,7 +26,7 @@ class InspectionController extends GetxController {
 
     initCompleter.future;
 
-    inspections.value = await getAllInspectionMocks();
+    // inspections.value = await getAllInspectionMocks();
 
     initCompleter.complete();
   }
@@ -41,15 +41,29 @@ class InspectionController extends GetxController {
     return mockInspections + mockInspections;
   }
 
-  /// Fetches all inspections from backend.
-  Future<List<InspectionModel>?> getAllInspections() async {
+  /// Fetches the inspection corresponding to [id] from backend.
+  Future<InspectionModel?> getInspection(int id) async {
     try {
-      final response = await apiService.mainClient.get('/inspections');
+      final response = await apiService.mainClient.get('/inspection/$id');
 
       if (response.statusCode != 200) debugPrint('Error getting inspections');
 
-      return response.data.map<InspectionModel>(
-          (dynamic item) => InspectionModel.fromJson(item)
+      return InspectionModel.fromJson(response.data);
+    } on DioError catch(e) {
+      apiService.defaultCatch(e);
+    }
+    return null;
+  }
+
+  /// Fetches all comments to the corresponding [materialId] from backend.
+  Future<List<Comment>?> getAllComments(int materialId) async {
+    try {
+      final response = await apiService.mainClient.get('/comments/$materialId');
+
+      if (response.statusCode != 200) debugPrint('Error getting comments');
+
+      return response.data.map<Comment>(
+          (dynamic item) => Comment.fromJson(item)
       ).toList();
     } on DioError catch(e) {
       apiService.defaultCatch(e);
@@ -65,14 +79,14 @@ class InspectionController extends GetxController {
       final response = await apiService.mainClient.post('/inspection',
         data: {
           'inspector_id': inspection.inspectorId,
-          'material_id': inspection.materialId,
+          // 'material_id': inspection.materialId,
           'date': inspection.date,
-          'type': inspection.type.name,
+          // 'type': inspection.type.name,
           'comment': {
-            'id': inspection.comment.id,
-            'date': inspection.comment.date,
-            'text': inspection.comment.text,
-            'image_path': inspection.comment.imagePath,
+            // 'id': inspection.comment.id,
+            // //'date': inspection.comment.date,
+            // 'text': inspection.comment.text,
+            // 'image_path': inspection.comment.imagePath,
           },
         },
       );
@@ -93,7 +107,7 @@ class InspectionController extends GetxController {
     try {
       final response = await apiService.mainClient.post('/inspection/comment',
         data: {
-          'date': comment.date,
+          //'date': comment.date,
           'text': comment.text,
           'image_path': comment.imagePath,
         },
@@ -115,14 +129,14 @@ class InspectionController extends GetxController {
       final response = await apiService.mainClient.put('/inspection/${inspection.id}',
         data: {
           'inspector_id': inspection.inspectorId,
-          'material_id': inspection.materialId,
+          // 'material_id': inspection.materialId,
           'date': inspection.date,
-          'type': inspection.type.name,
+          // 'type': inspection.type.name,
           'comment': {
-            'id': inspection.comment.id,
-            'date': inspection.comment.date,
-            'text': inspection.comment.text,
-            'image_path': inspection.comment.imagePath,
+            // 'id': inspection.comment.id,
+            // //'date': inspection.comment.date,
+            // 'text': inspection.comment.text,
+            // 'image_path': inspection.comment.imagePath,
           },
         },
       );
@@ -142,7 +156,7 @@ class InspectionController extends GetxController {
     try {
       final response = await apiService.mainClient.put('/inspection/comment/${comment.id}',
         data: {
-          'date': comment.date,
+          //'date': comment.date,
           'text': comment.text,
           'image_path': comment.imagePath,
         },

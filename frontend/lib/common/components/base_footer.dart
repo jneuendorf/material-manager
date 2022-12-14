@@ -23,12 +23,6 @@ class BaseFooter extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               HoverTextButton(
-                text: 'Deutscher Alpenverein',
-                color: Get.theme.colorScheme.secondary,
-                hoverColor: Get.theme.primaryColor,
-                onTap: () {},
-              ),
-              HoverTextButton(
                 text: 'imprint'.tr,
                 color: Get.theme.colorScheme.secondary,
                 hoverColor: Get.theme.primaryColor,
@@ -43,9 +37,7 @@ class BaseFooter extends StatelessWidget {
             ],
           ),
         ),
-        Text(MediaQuery.of(context).size.width < 450
-          ? 'Copyright 2022'
-          : 'Copyright 2022 Deutscher Alpenverein',
+        Text('Copyright 2022',
           style: TextStyle(
             color: Get.theme.colorScheme.secondary,
           ),
@@ -56,12 +48,6 @@ class BaseFooter extends StatelessWidget {
             children: [
               HoverTextButton(
                 text: 'links'.tr,
-                color: Get.theme.colorScheme.secondary,
-                hoverColor: Get.theme.primaryColor,
-                onTap: () {},
-              ),
-              HoverTextButton(
-                text: 'other'.tr,
                 color: Get.theme.colorScheme.secondary,
                 hoverColor: Get.theme.primaryColor,
                 onTap: () {},

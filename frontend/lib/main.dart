@@ -1,10 +1,13 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/core/controller.dart';
 
 import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:frontend/api.dart';
+import 'package:frontend/common/core/controller.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
 import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/rental/controller.dart';
@@ -36,12 +39,32 @@ import 'package:frontend/pages/privacy_policy/page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  
   await initialConfig();
 
-  runApp(const MaterialManagerApp());
+  Locale locale = await getInitialLocale();
+
+  runApp(MaterialManagerApp(initialLocale: locale));
 }
 
 Future<void> initialConfig() async {
+  await loadConfig();
+
+  // init api service
+  await Get.putAsync(() async => await ApiService().init());
+
+  // init core controller
+  Get.put(CoreController());
+
+  // init extension controllers
+  Get.lazyPut<RentalController>(() => RentalController(), fenix: true);
+  Get.lazyPut<MaterialController>(() => MaterialController(), fenix: true);
+  Get.lazyPut<UserController>(() => UserController(), fenix: true);
+  Get.lazyPut<InspectionController>(() => InspectionController(), fenix: true);
+}
+
+/// Loads the config from the .env file.
+Future<void> loadConfig() async {
   try {
     debugPrint('try loading env/dev.env + env/.env...');
     await dotenv.load(fileName: 'env/dev.env');
@@ -55,21 +78,26 @@ Future<void> initialConfig() async {
   }
   debugPrint('loaded dotenv:');
   debugPrint('${dotenv.env}');
+}
 
-  await Get.putAsync(() async => await ApiService().init());
+Future<Locale> getInitialLocale() async {
+  // checks if running a test and return null since
+  // [FlutterSecureStorage] cant be accessed in tests.
+  if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+    return const Locale('en');
+  }
 
-  // init core controller
-  Get.put(CoreController());
+  String? languageCode = await storage.read(key: 'locale');
 
-  // init extension controllers
-  Get.lazyPut<RentalController>(() => RentalController(), fenix: true);
-  Get.lazyPut<MaterialController>(() => MaterialController(), fenix: true);
-  Get.lazyPut<UserController>(() => UserController(), fenix: true);
-  Get.lazyPut<InspectionController>(() => InspectionController(), fenix: true);
+  languageCode ??= 'en';
+
+  return Locale(languageCode);
 }
 
 class MaterialManagerApp extends StatelessWidget {
-  const MaterialManagerApp({super.key});
+  final Locale initialLocale;
+
+  const MaterialManagerApp({super.key, required this.initialLocale});
 
   @override
   Widget build(BuildContext context) => GetMaterialApp(
@@ -134,7 +162,7 @@ class MaterialManagerApp extends StatelessWidget {
       GetPage(name: privacyPolicyRoute, page: () => const PrivacyPolicyPage()),
       GetPage(name: imprintRoute, page: () => const ImprintPage()),
     ],
-    locale: const Locale('en', 'US'),
+    locale: initialLocale,
     translations: LocaleString(),
     fallbackLocale: const Locale('de', 'DE'),
   );

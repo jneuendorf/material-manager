@@ -7,15 +7,44 @@ import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/inspection/controller.dart';
+import 'package:frontend/extensions/inspection/model.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
 import 'package:frontend/common/util.dart';
 
 
-class InspectionDetailPage extends StatelessWidget {
+class InspectionDetailPage extends StatefulWidget {
   const InspectionDetailPage({super.key});
 
-  static final inspectionPageController = Get.find<InspectionPageController>();
+  @override
+  State<InspectionDetailPage> createState() => _InspectionDetailPageState();
+}
+
+class _InspectionDetailPageState extends State<InspectionDetailPage> {
+  final inspectionPageController = Get.find<InspectionPageController>();
+
+  final RxList<Comment> comments = <Comment>[].obs;
+  final Rxn<InspectionModel> selectedInspection = Rxn<InspectionModel>();
+
+  Future<void> asyncInit() async {
+    if (inspectionPageController.selectedMaterial.value?.id == null) {
+      debugPrint('No material selected!');
+      return;
+    }
+
+    comments.value = (await inspectionPageController.inspectionController.getAllComments(inspectionPageController.selectedMaterial.value!.id!)) ?? [];
+    
+    if (comments.isEmpty) return; 
+    
+    selectedInspection.value = await inspectionPageController.inspectionController.getInspection(comments.first.inspectionId);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    asyncInit();
+  }
 
   @override
   Widget build(BuildContext context) => PageWrapper(
@@ -35,15 +64,15 @@ class InspectionDetailPage extends StatelessWidget {
                       Text('${'type'.tr} : ',
                         style:  const TextStyle(color: Colors.black45,fontSize: 16),
                       ),
-                      if (inspectionPageController.selectedMaterials.isNotEmpty) Text(
-                        inspectionPageController.selectedMaterials.first.materialType.name,
+                      if (inspectionPageController.selectedMaterial.value != null) Text(
+                        inspectionPageController.selectedMaterial.value!.materialType.name,
                           style: const TextStyle(fontSize: 16)
                       ),
                     ],
                   ),
                   const SizedBox(height: 16.0),
-                  if (inspectionPageController.selectedMaterials.isNotEmpty) Obx(() {
-                    if (inspectionPageController.selectedMaterials.first.imageUrls.isNotEmpty) {
+                  if (inspectionPageController.selectedMaterial.value != null) Obx(() {
+                    if (inspectionPageController.selectedMaterial.value!.imageUrls.isNotEmpty) {
                       return Container(
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
@@ -51,8 +80,8 @@ class InspectionDetailPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10.0)
                         ),
                         child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                            ? inspectionPageController.selectedMaterials.first.imageUrls.isNotEmpty 
-                              ? Image.network(baseUrl + inspectionPageController.selectedMaterials.first.imageUrls.first)
+                            ? inspectionPageController.selectedMaterial.value!.imageUrls.isNotEmpty 
+                              ? Image.network(baseUrl + inspectionPageController.selectedMaterial.value!.imageUrls.first)
                               : const Icon(Icons.image)
                             : null,
                       );
@@ -74,9 +103,11 @@ class InspectionDetailPage extends StatelessWidget {
         ),
         Expanded(
           flex: 4,
-          child: Obx(() => ListView.separated(
-            separatorBuilder:  (BuildContext context, int index) => const Divider(),
-            itemCount: inspectionPageController.inspectionController.inspections.length,
+          child: Obx(() => comments.isEmpty || selectedInspection.value == null ? Center(
+            child: Text('no_comments'.tr),
+          ) : ListView.separated(
+            separatorBuilder: (BuildContext context, int index) => const Divider(),
+            itemCount: comments.length,
             itemBuilder: (context, index) => ConstrainedBox(
               constraints: const BoxConstraints(
                 maxWidth: 400,
@@ -99,10 +130,10 @@ class InspectionDetailPage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text('${'inspection'.tr} : ',
-                                      style:  const TextStyle(color: Colors.black45,fontSize: 16),
+                                      style:  const TextStyle(color: Colors.black45, fontSize: 16),
                                     ),
-                                    Text(inspectionPageController.inspectionController.inspections[index].type.name,
-                                      style:  const TextStyle(fontSize: 16),
+                                    const Text('Inspection', // TODO  inspection type
+                                      style:  TextStyle(fontSize: 16),
                                     ),
                                   ],
                                 ),
@@ -111,7 +142,7 @@ class InspectionDetailPage extends StatelessWidget {
                                     Text('${'inspection_date'.tr} : ',
                                       style:  const TextStyle(color: Colors.black45,fontSize: 16),
                                     ),
-                                    Text(inspectionPageController.getInspectionDate(index),
+                                    Text(formatDate(selectedInspection.value!.date),
                                       style:  const TextStyle(fontSize: 16),
                                     ),
                                   ],
@@ -119,9 +150,9 @@ class InspectionDetailPage extends StatelessWidget {
                                 Row(
                                   children: [
                                     Text('${'inspector'.tr} : ',
-                                      style:  const TextStyle(color: Colors.black45,fontSize: 16),
+                                      style:  const TextStyle(color: Colors.black45, fontSize: 16),
                                     ),
-                                    Text(inspectionPageController.getInspectorName(index),
+                                    Text(inspectionPageController.getInspectorName(selectedInspection.value!.inspectorId),
                                         style:  const TextStyle(fontSize: 16),
                                     ),
                                   ],
@@ -129,8 +160,9 @@ class InspectionDetailPage extends StatelessWidget {
                               ],
                             ),
                             Expanded(
-                              child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
-                                  ? Image.network(inspectionPageController.inspectionController.inspections[index].comment.imagePath!)
+                              child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) && 
+                                comments[index].imagePath != null
+                                  ? Image.network(comments[index].imagePath!)
                                   : Container(),
                             )
                           ],
@@ -140,7 +172,7 @@ class InspectionDetailPage extends StatelessWidget {
                         enabled: false,
                         minLines: 4,
                         maxLines: 4,
-                        initialValue: inspectionPageController.inspectionController.inspections[index].comment.text ,
+                        initialValue: comments[index].text,
                         decoration: InputDecoration(
                           border: const OutlineInputBorder(),
                           labelText: 'comment'.tr,

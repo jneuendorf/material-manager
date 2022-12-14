@@ -31,31 +31,31 @@ class PrivacyPolicyPage extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.only(bottom: 30.0),
-                child: Text('privacy_policy'.tr, 
+                child: Text('privacy_policy'.tr,
                   style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 35.0),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text('1_privacy_at_a_glance'.tr, 
+                child: Text('1_privacy_at_a_glance'.tr,
                   style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 30.0),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text('general_information'.tr, 
+                child: Text('general_information'.tr,
                   style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
-                child: Text('general_information_text'.tr, 
+                child: Text('general_information_text'.tr,
                   style: const TextStyle(fontSize: 15.0),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 5.0),
-                child: Text('data_collection_on_this_site'.tr, 
+                child: Text('data_collection_on_this_site'.tr,
                   style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0),
                 ),
               ),
@@ -121,7 +121,7 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 5.0),
-                child: Text('pricavy'.tr,
+                child: Text('privacy'.tr,
                   style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0),
                 ),
               ),
@@ -133,13 +133,13 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text('pricavy_text2'.tr,
+                child: Text('privacy_text2'.tr,
                   style: const TextStyle(fontSize: 15.0),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text('pricavy_text3'.tr,
+                child: Text('privacy_text3'.tr,
                   style: const TextStyle(fontSize: 15.0),
                 ),
               ),
@@ -163,13 +163,13 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text('${'email'.tr}: ${coreController.privacyPolicy.value!.email}', 
+                child: Text('${'email'.tr}: ${coreController.privacyPolicy.value!.email}',
                   style: const TextStyle(fontSize: 15.0),
                 ),
               ),
               if (coreController.privacyPolicy.value!.phoneNumber != null) Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text('${'phone'.tr}: ${coreController.privacyPolicy.value!.phoneNumber}', 
+                child: Text('${'phone'.tr}: ${coreController.privacyPolicy.value!.phoneNumber}',
                   style: const TextStyle(fontSize: 15.0),
                 ),
               ),
@@ -181,13 +181,13 @@ class PrivacyPolicyPage extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.only(top: 15.0,bottom: 5.0),
-                child: Text('storage_duaration'.tr,
+                child: Text('storage_duration'.tr,
                   style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 23.0),
                 ),
               ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 10.0),
-                child: Text('storage_duaration_text'.tr,
+                child: Text('storage_duration_text'.tr,
                   style: const TextStyle(fontSize: 15.0),
                 ),
               ),
