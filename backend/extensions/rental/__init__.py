@@ -10,7 +10,6 @@ rental = Extension(
     template_folder="templates",
     models=(
         models.Rental,
-        # models.RentalStatus,
         models.MaterialRentalMapping,
     ),
     resources=(
