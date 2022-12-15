@@ -1,3 +1,4 @@
+from flask import abort
 from flask_apispec import use_kwargs
 
 from core.helpers.resource import ModelResource
@@ -17,24 +18,16 @@ class PrivacyPolicy(ModelResource):
     def get(self):
         privacy_policy = models.PrivacyPolicy.all()
         if privacy_policy == []:
-            privacy_policy = models.PrivacyPolicy.create(
-                company="(company name)",
-                first_name="(first name)",
-                last_name="(last name)",
-                street="(street name)",
-                house_number="(house number)",
-                city="(city name)",
-                zip_code="(zip code)",
-                phone="(phone number)",
-                email="(email address)",
-            )
-            return self.serialize(privacy_policy)
-        else:
-            return self.serialize(privacy_policy[len(privacy_policy) - 1])
+            abort(404, "No privacy_policy data available")
+        if len(privacy_policy) > 1:
+            abort(403, "Multiple privacy_policy found where one was expected")
+        return self.serialize(privacy_policy[0])
 
     @use_kwargs(PrivacyPolicySchema.to_dict())
     def put(self, **kwargs):
         privacy_policy = models.PrivacyPolicy.all()
+        if len(privacy_policy) > 1:
+            abort(403, "Multiple privacy_policy found where one was expected")
         if privacy_policy == []:
             privacy_policy = models.PrivacyPolicy.create(
                 company="(company name)",

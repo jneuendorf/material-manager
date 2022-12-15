@@ -1,3 +1,4 @@
+from flask import abort
 from flask_apispec import use_kwargs
 from marshmallow import fields
 
@@ -27,38 +28,17 @@ class Imprint(ModelResource):
     def get(self):
         imprint = models.Imprint.all()
         if imprint == []:
-
-            member0 = models.BoardMember.get_or_create(
-                member_first_name="(first name)", member_last_name="(last name)"
-            )
-            member1 = models.BoardMember.get_or_create(
-                member_first_name="(first name)",
-                member_last_name="(last name)",
-                position="(position)",
-            )
-            imprint = models.Imprint.create(
-                club_name="(club name)",
-                street="(street name)",
-                house_number="(house number)",
-                city="(city name)",
-                zip_code="(zip code)",
-                phone="(phone number)",
-                email="(email address)",
-                registration_number=123456789,
-                registry_court="(registry court name)",
-                vat_number="(vat number)",
-                dispute_resolution_uri="(dispute resolution uri)",
-                _related=dict(board_members=[member0, member1]),
-            )
-            return self.serialize(imprint)
-        else:
-            return self.serialize(imprint[len(imprint) - 1])
+            abort(404, "No imprint data available")
+        if len(imprint) > 1:
+            abort(403, "Multiple imprints found where one was expected")
+        return self.serialize(imprint[0])
 
     @use_kwargs(ImprintSchema.to_dict())
     def put(self, **kwargs):
         imprint = models.Imprint.all()
+        if len(imprint) > 1:
+            abort(403, "Multiple imprints found where one was expected")
         if imprint == []:
-
             member0 = models.BoardMember.get_or_create(
                 member_first_name="(first name)",
                 member_last_name="(last name)",
