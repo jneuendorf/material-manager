@@ -1,6 +1,9 @@
+import base64
 import enum
+from io import BytesIO
 from typing import Type
 
+import qrcode
 from sqlalchemy import Table
 from sqlalchemy.schema import UniqueConstraint
 
@@ -131,6 +134,26 @@ class Material(Model):  # type: ignore
     @property
     def description(self):
         return f"{self.name} ({', '.join(str(prop) for prop in self.properties)})"
+
+    @property
+    def instructions_qr_code(self) -> str:
+        """Generates a QR code containing the instructions URL as base64."""
+
+        qr = qrcode.QRCode(
+            version=1,
+            error_correction=qrcode.constants.ERROR_CORRECT_L,
+            box_size=2,
+            border=1,
+        )
+        qr.add_data(self.instructions)
+        qr.make(fit=True)
+        img = qr.make_image()
+        # Get the in-memory info using below code line.
+        temp_location = BytesIO()
+        # First save image as in-memory.
+        img.save(temp_location, "JPEG")
+        # Then encode the saved image file.
+        return base64.b64encode(temp_location.getvalue()).decode("utf-8")
 
     def save(self) -> None:
         if not self.serial_numbers:

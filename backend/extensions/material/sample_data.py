@@ -245,7 +245,7 @@ for i in range(NUM_MATERIALS):
     installation_date = date(2022, 1, 1) + timedelta(days=i)
     material_type: MaterialType = next(material_types)
     material = Material.get_or_create(
-        name=f"material {i}",
+        name=f"material {i + 1}",
         installation_date=installation_date,
         max_operating_date=installation_date + timedelta(weeks=(-1) ** i * 2),
         max_days_used=i % 5 + 1,
