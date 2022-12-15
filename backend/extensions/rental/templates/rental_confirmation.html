@@ -1,17 +1,12 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="{{ lang }}">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Rental Confirmation</title>
+    <title>{{ _("Rental Confirmation") }}</title>
     <style>{{ bootstrap }}</style>
     <style>
-        {#@media print {
-            @page {
-                size: A4 portrait;
-            }
-        }#}
         * {
             line-height: 1.5;
         }
@@ -29,21 +24,15 @@
             margin-bottom: 24px;
         }
         .square {
+            display: inline-block;
             border: 1px solid gray;
             height: 18px;
             width: 18px;
         }
         .square.inline {
-            display: inline-block;
             margin-right: 5px;
             position: relative;
             top: 3px;
-        }
-        .end {
-            display: flex;
-        }
-        .cl2{
-            margin-right: 100px;
         }
     </style>
 </head>
@@ -52,9 +41,9 @@
     <section id="customer">
         <div class="row flex mb-3">
             <div class="col">
-                <h2>Rental Confirmation for "JDAV Sektion Berlin"</h2>
+                <h2>{{ _("Rental confirmation for") }} {{ issuer }}</h2>
             </div>
-            <img id="head-logo" src="{{ logo_url }}" alt="" srcset="">
+            <img id="head-logo" src="{{ logo_url }}" alt="Logo">
         </div>
         <address>
             <div class="row mb-5">
@@ -62,15 +51,15 @@
                 <div class="col-12">{{ rental.customer.first_name }} {{ rental.customer.last_name }}</div>
                 <div class="col-12">{{ rental.customer.street }} {{ rental.customer.house_number }}</div>
                 <div class="col-12 mb-2">{{ rental.customer.zip_code }} {{ rental.customer.city }}</div>
-                <div class="col-12">Membership No.: {{ rental.customer.membership_number }}</div>
+                <div class="col-12">{{ _("Membership number") }}: {{ rental.customer.membership_number }}</div>
                 <div class="col-12">
-                    E-Mail: <a href="mailto:{{ rental.customer.email }}">
-                    {{ rental.customer.email }}
-                </a>
+                    {{ _("E-mail") }}: <a href="mailto:{{ rental.customer.email }}">
+                        {{ rental.customer.email }}
+                    </a>
                 </div>
                 {% if rental.customer.phone %}
                     <div class="col-12">
-                        Tel.: <a href="tel:{{ rental.customer.phone }}">
+                        {{ _("Phone") }}: <a href="tel:{{ rental.customer.phone }}">
                         {{ rental.customer.phone }}
                     </a>
                     </div>
@@ -81,33 +70,33 @@
 
     <section id="rental">
         <div class="float-right">{{ rental.created_at.strftime('%d.%m.%Y') }}</div>
-        <h4 class="mb-4">Rental No.: 1234567890</h4>
+        <h4 class="mb-4">{{ _("Invoice number") }}: {{ rental.created_at.strftime('%Y') }}-{{ rental.id }}</h4>
 
         <div class="row">
-            <div class="col-3">Reserved from:</div>
+            <div class="col-3">{{ _("Rental period") }}:</div>
             <div class="col">
                 {{ rental.start_date.strftime('%d.%m.%Y') }}
-                to
+                &ndash;
                 {{ rental.end_date.strftime('%d.%m.%Y') }}
             </div>
         </div>
         <div class="row">
-            <div class="col-3">Planned return:</div>
+            <div class="col-3">{{ _("Planned return") }}:</div>
             <div class="col-9">{{ rental.end_date.strftime('%d.%m.%Y') }}</div>
         </div>
     </section>
 
     <section id="material" class="pb-4">
-        <h3>Rented equipment</h3>
+        <h3>{{ _("Rented equipment") }}</h3>
         <table class="table">
             <thead>
             <tr>
                 <th></th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Condition on Return</th>
-                <th>Returned</th>
-                <th>Instructions</th>
+                <th>{{ _("Description") }}</th>
+                <th>{{ _("Price") }}</th>
+                <th>{{ _("Condition on return") }}</th>
+                <th>{{ _("Returned") }}</th>
+                <th>{{ _("Instructions") }}</th>
             </tr>
             </thead>
             <tbody>
@@ -117,25 +106,33 @@
                         <td>{{ material.description }}</td>
                         <td>{{ "{:,.2f}".format(material.rental_fee|round(2, 'ceil')) }}&nbsp;&euro;</td>
                         <td></td>
-                        <td><div class="ml-2 square"></div></td>
+                        <td class="text-center">
+                            <div class="square"></div>
+                        </td>
                         <td>
-                            <img id="picture" src="data:image/jpeg;base64,{{ material.generate_qrcode()}}">
-                            <a href="{{material.instructions}}">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
-                                    <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"/>
-                                    <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"/>
-                                </svg>
-                            </a>
+                            {% if material.instructions %}
+                                <img
+                                    alt="{{ material.instructions }}"
+                                    src="data:image/jpeg;base64,{{ material.instructions_qr_code }}"
+                                >
+                                <a href="{{ material.instructions }}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-up-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="M8.636 3.5a.5.5 0 0 0-.5-.5H1.5A1.5 1.5 0 0 0 0 4.5v10A1.5 1.5 0 0 0 1.5 16h10a1.5 1.5 0 0 0 1.5-1.5V7.864a.5.5 0 0 0-1 0V14.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5v-10a.5.5 0 0 1 .5-.5h6.636a.5.5 0 0 0 .5-.5z"></path>
+                                        <path fill-rule="evenodd" d="M16 .5a.5.5 0 0 0-.5-.5h-5a.5.5 0 0 0 0 1h3.793L6.146 9.146a.5.5 0 1 0 .708.708L15 1.707V5.5a.5.5 0 0 0 1 0v-5z"></path>
+                                    </svg>
+                                </a>
+                            {% endif %}
                         </td>
                     </tr>
                 {% endfor %}
                 {% if rental.deposit %}
                     <tr>
                         <td></td>
-                        <td>Bail</td>
+                        <td>{{ _("Deposit") }}</td>
                         <td>
                             {{ "{:,.2f}".format(rental.deposit|round(2, 'ceil')) }}&nbsp;&euro;
                         </td>
+                        <td></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -143,10 +140,11 @@
                 {% if rental.discount %}
                     <tr>
                         <td></td>
-                        <td>Sale</td>
+                        <td>{{ _("Discount") }}</td>
                         <td>
                             {{ "{:,.2f}".format(rental.discount|round(2, 'ceil')) }}&nbsp;&euro;
                         </td>
+                        <td></td>
                         <td></td>
                         <td></td>
                     </tr>
@@ -161,6 +159,7 @@
                     </td>
                     <td></td>
                     <td></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>
@@ -168,65 +167,70 @@
 
     <section id="signature">
         <p>
-            Received on __________________ .
+            {{ _("Received on")}} __________________ .
         </p>
         <p>
-            I accept the
+            {{ _("I accept the") }}
             {% if rental_regulations_url is defined %}
                 <a href="{{ rental_regulations_url }}">
-                    terms and conditions
-                </a>
+                    {{ _("terms and conditions") }}
+                </a>.
             {% else %}
-                terms and conditions
+                {{ _("terms and conditions") }}.
             {% endif %}
         </p>
         <br><br>
         <div class="row">
             <div class="col-2">
                 __________________<br>
-                Date
+                {{ _("Date") }}
             </div>
             <div class="col-1"></div>
             <div class="col">
                 ____________________ <br>
-                Signature
+                {{ _("Signature") }}
             </div>
         </div>
     </section>
 
-<div class="end">
-        <section  class="cl2">
-        <h4 class="border">To be filled on return:</h4>
-        <p>
-            <div class="square inline"></div>
-            I controlled the equipment, and made notice of any damages.
-        </p>
-        <br> <br>
+    <section class="pt-3">
         <div class="row">
-            <div class="col-2">
-                __________________<br>
-                Date
+            <div class="col-auto">
+                <h4 class="border">{{ _("Fill in on return") }}:</h4>
+                <div>
+                    <div class="square inline"></div>
+                    {{ _("I controlled the equipment and made notice of any damages") }}.
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col-auto">
+                        __________________ <br>
+                        {{ _("Date") }}
+                    </div>
+                    <div class="col-1"></div>
+                    <div class="col">
+                        ____________________ <br>
+                        {{ _("Signature") }}
+                    </div>
+                </div>
             </div>
             <div class="col-1"></div>
             <div class="col">
-                ____________________ <br>
-                Signature
+                <h4 class="border">{{ _("To be filled by the issuer") }}:</h4>
+                <div>
+                    <div class="square inline"></div>
+                    {{ _("Equipment returned completely") }}
+                </div>
+                <br>
+                <div class="row">
+                    <div class="col">
+                        {{ _("Returned on") }} __________________
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <section>
-        <h4 class="border">To be filled by the rental</h4>
-        <div class="row">
-            <div class="col mt-3">
-                <div class="square inline"></div>
-                equipment returned completely
-                <br> <br><br>
-                Return on the __________________ .  
-            </div>
-        </div>
-    </section>
-</div>
 </div>
 </body>
 </html>

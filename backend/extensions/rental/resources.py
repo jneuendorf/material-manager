@@ -116,6 +116,45 @@ class Rentals(ModelListResource):
         return self.serialize(rentals)
 
 
+TRANSLATIONS = {
+    "Rental Confirmation": "Leihschein",
+    "Rental confirmation for": "Leihschein für",
+    "Membership number": "Mitgliedsnummer",
+    "E-mail": "E-Mail",
+    "Phone": "Tel.",
+    "Invoice number": "Rechungsnummer",
+    "Rental period": "Ausleihzeitraum",
+    "Planned return": "Geplante Rückgabe",
+    "Rented equipment": "Ausgeliehenes Material",
+    "Description": "Beschreibung",
+    "Price": "Preis",
+    "Condition on return": "Zustand bei Rückgabe",
+    "Returned": "Rückgabe erfolgt",
+    "Instructions": "Anleitung",
+    "Deposit": "Kaution",
+    "Discount": "Rabatt",
+    "Received on": "Empfangen am",
+    "I accept the": "Ich akzeptiere die Bedingungen in der",
+    "terms and conditions": "Ausleihordnung",
+    "Date": "Datum",
+    "Signature": "Unterschrift",
+    "Fill in on return": "Bei Rückgabe auszufüllen",
+    "I controlled the equipment and made notice of any damages": "Ich habe eine Sichtkontrolle durchgeführt, Mängel oben notiert und gemeldet",  # noqa
+    "To be filled by the issuer": "Vom Verleih auszufüllen",
+    "Equipment returned completely": "Material vollständig zurück",
+    "Returned on": "Rückgabe am",
+}
+
+
+def translator(lang: str):
+    if lang == "en":
+        return lambda s: s
+    elif lang == "de":
+        return lambda s: TRANSLATIONS.get(s, s)
+    else:
+        raise ValueError(f"invalid language {lang}")
+
+
 def render_rental_confirmation(
     rental: models.Rental,
     total_price: float,
@@ -123,11 +162,17 @@ def render_rental_confirmation(
     lang: str,
 ):
     return render_template(
-        f"rental_confirmation-{lang}.html",  # noqa
-        # Avoid as many internal requests as possible
+        f"rental_confirmation.html",  # noqa
+        lang=lang,
+        # TODO: jinja2.ext.i18n
+        _=translator(lang),
         # TODO: Shrink styles
-        bootstrap=(Path(__file__).parent / "static" / "bootstrap.min.css").read_text(),
+        bootstrap=(
+            Path(__file__).parent / "static/bootstrap.min.css"
+        ).read_text(),  # Avoid as many internal requests as possible
         logo_url=logo_url,
+        # TODO: take this from some other model
+        issuer="JDAV Sektion Berlin",
         rental=rental,
         total_price=total_price,
     )
