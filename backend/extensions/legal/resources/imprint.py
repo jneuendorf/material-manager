@@ -26,22 +26,27 @@ class Imprint(ModelResource):
     Schema = ImprintSchema
 
     def get(self):
-        imprint = models.Imprint.all()
-        if not imprint:
+        imprints = models.Imprint.all()
+        if not imprints:
             return abort(404, "No imprint data available")
-        if len(imprint) > 1:
+        if len(imprints) > 1:
             return abort(403, "Multiple imprints found where one was expected")
-        return self.serialize(imprint[0])
+        return self.serialize(imprints[0])
 
     @use_kwargs(ImprintSchema.to_dict())
-    def put(self, **kwargs):
+    def put(self, board_members: list[models.BoardMember], **kwargs):
         imprints: list[models.Imprint] = models.Imprint.all()
         if len(imprints) > 1:
             return abort(403, "Multiple imprints found where one was expected")
 
         imprint: models.Imprint
         if not imprints:
-            imprint = models.Imprint.create(**kwargs)
+            imprint = models.Imprint.create(
+                _related=dict(
+                    board_members=board_members,
+                ),
+                **kwargs,
+            )
         else:
             imprint = imprints[0]
             imprint.update(**kwargs)

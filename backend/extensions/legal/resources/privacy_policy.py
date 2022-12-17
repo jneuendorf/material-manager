@@ -16,19 +16,20 @@ class PrivacyPolicy(ModelResource):
     Schema = PrivacyPolicySchema
 
     def get(self):
-        privacy_policy = models.PrivacyPolicy.all()
-        if privacy_policy == []:
-            abort(404, "No privacy_policy data available")
-        if len(privacy_policy) > 1:
-            abort(403, "Multiple privacy_policy found where one was expected")
-        return self.serialize(privacy_policy[0])
+        privacy_policies = models.PrivacyPolicy.all()
+        if not privacy_policies:
+            return abort(404, "No privacy_policy data available")
+        if len(privacy_policies) > 1:
+            return abort(403, "Multiple privacy_policy found where one was expected")
+        return self.serialize(privacy_policies[0])
 
     @use_kwargs(PrivacyPolicySchema.to_dict())
     def put(self, **kwargs):
-        privacy_policy = models.PrivacyPolicy.all()
-        if len(privacy_policy) > 1:
-            abort(403, "Multiple privacy_policy found where one was expected")
-        if privacy_policy == []:
+        privacy_policies = models.PrivacyPolicy.all()
+        if len(privacy_policies) > 1:
+            return abort(403, "Multiple privacy_policy found where one was expected")
+
+        if not privacy_policies:
             privacy_policy = models.PrivacyPolicy.create(
                 company="(company name)",
                 first_name="(first name)",
@@ -41,6 +42,6 @@ class PrivacyPolicy(ModelResource):
                 email="(email address)",
             )
         else:
-            privacy_policy = privacy_policy[len(privacy_policy) - 1]
+            privacy_policy = privacy_policies[0]
         privacy_policy.update(**kwargs)
         return self.serialize(privacy_policy)
