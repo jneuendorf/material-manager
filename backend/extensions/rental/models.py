@@ -57,7 +57,7 @@ class Rental(Model):  # type: ignore
     cost = db.Column(db.Float, nullable=False)
     discount = db.Column(db.Float, default=0)
     deposit = db.Column(db.Float, default=0)  # Kaution
-    created_at = db.Column(db.DateTime, default=lambda: datetime.now())
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now(), nullable=False)
     start_date = db.Column(db.Date, nullable=False)
     end_date = db.Column(db.Date, nullable=False)
     usage_start_date = db.Column(db.Date, nullable=True)

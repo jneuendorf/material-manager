@@ -29,6 +29,8 @@ class ProfilePageController extends GetxController {
   final Rxn<UserModel> currentUser = Rxn<UserModel>();
   final RxList<RentalModel> currentRentals = <RentalModel>[].obs;
 
+  final RxString selectedLanguage = Get.locale?.languageCode.obs ?? 'en'.obs;
+
   @override
   Future<void> onInit() async {
     super.onInit();
@@ -42,6 +44,17 @@ class ProfilePageController extends GetxController {
     await rentalController.initCompleter.future;
 
     currentRentals.value = rentalController.rentals; // TODO should be the users rentals only
+  }
+
+  /// Handles the language change.
+  Future<void> onLanguageChanged(String? value) async {
+    if (value == null) return;
+
+    selectedLanguage.value = value;
+
+    await Get.updateLocale(Locale(value));
+
+    await storage.write(key: 'locale', value: value);
   }
 
   Color getDataRowColor(Set<MaterialState> states) {

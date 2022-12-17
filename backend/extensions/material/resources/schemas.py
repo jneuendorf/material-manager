@@ -1,3 +1,4 @@
+from marshmallow import Schema as PlainSchema
 from marshmallow import fields
 
 from core.helpers.extension import url_join
@@ -15,7 +16,7 @@ class SerialNumberSchema(BaseSchema):
 
 class InventoryNumberSchema(BaseSchema):
     class Meta:
-        model = models.SerialNumber
+        model = models.InventoryNumber
         fields = ("id", "inventory_number")
 
 
@@ -23,12 +24,18 @@ class MaterialTypeSchema(BaseSchema):
     class Meta:
         model = models.MaterialType
         fields = ("id", "name", "description")
+        # load_only = ("id",)
 
 
 class PropertyTypeSchema(BaseSchema):
     class Meta:
         model = models.PropertyType
-        fields = ("id", "name", "description", "unit")
+        fields = ("id", "name", "unit")
+
+
+class PlainPropertyTypeSchema(PlainSchema):
+    name = fields.Str(required=True)
+    unit = fields.Str()
 
 
 class PropertySchema(BaseSchema):
@@ -37,6 +44,11 @@ class PropertySchema(BaseSchema):
     class Meta:
         model = models.Property
         fields = ("id", "property_type", "value")
+
+
+class PlainPropertySchema(PlainSchema):
+    property_type = fields.Nested(PlainPropertyTypeSchema())
+    value = fields.Str()
 
 
 class PurchaseDetailsSchema(BaseSchema):
@@ -65,7 +77,7 @@ class MaterialSchema(BaseSchema):
         #  Check why the metaclass doesn't work
         model_converter = ModelConverter
         model = models.Material
-        dump_only = ("id", "image_urls")
+        dump_only = ("image_urls",)
 
     def get_image_urls(self, obj: models.Material):
         return [url_join(STATIC_URL_PATH, image.path) for image in obj.images]

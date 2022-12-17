@@ -29,7 +29,7 @@ class LoginPage extends GetView<LoginController> {
                 TextFormField(
                   controller: controller.emailController,
                   cursorColor: Colors.black,
-                  keyboardType: TextInputType.number,
+                  keyboardType: TextInputType.emailAddress,
                   decoration: InputDecoration(
                     labelText: 'email'.tr,
                     labelStyle: const TextStyle(color: Colors.black54),

@@ -9,7 +9,8 @@ WORKDIR /usr/src/backend
 COPY . .
 
 RUN pip install --src /usr/pip/src/ --no-cache-dir -r requirements.txt
-RUN make sample_data
+# Not `make sample_data` because no venv
+RUN flask create-sample-data user material inspection rental
 
 EXPOSE 8000
 CMD ["./start-gunicorn.sh"]

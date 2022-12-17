@@ -34,6 +34,23 @@ try:
     super_user.update(is_active=True)
 except raised_from(User.create_from_password):
     pass
+try:
+    oliver: User = User.create_from_password(
+        email="oliver.wiese@fu-berlin.de",
+        password="Mylar3-2pear-Alienate-latex-6jeff-6careless-Fanout-Eli",
+        first_name="Oliver",
+        last_name="Wiese",
+        membership_number="FU-01",
+        phone="+49 30 838 75291",
+        street="Schwendenerstraße",
+        house_number="1",
+        city="Berlin",
+        zip_code="14195",
+        roles=[superuser_role],
+    )
+    oliver.update(is_active=True)
+except raised_from(User.create_from_password):
+    pass
 
 try:
     noop_user: User = User.create_from_password(
