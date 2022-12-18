@@ -59,14 +59,14 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
 
   String getUserName(RentalModel item) {
     UserModel user = userController.users.firstWhere(
-      (UserModel user) => user.id == item.id);
+      (UserModel user) => user.id == item.customerId);
     
     return '${user.firstName} ${user.lastName}';
   }
 
   String getMembershipNum(RentalModel item) {
     String membershipNum = userController.users.firstWhere((UserModel user) =>
-      user.id == item.id).membershipNumber.toString();
+      user.id == item.customerId).membershipNumber.toString();
     return membershipNum;
   }
 

@@ -32,9 +32,12 @@ class RentalModel {
 
   factory RentalModel.fromJson(Map<String, dynamic> json) => RentalModel(
     id: json['id'],
-    customerId: json['customer_id'],
-    lenderId: json['lender_id'],
-    returnToId: json['return_to_id'],
+    customerId: json['customer'] != null ? json['customer']['id'] : null,
+    // customerId: json['customer'] ?? ['id'],
+    lenderId: json['lender'] != null ? json['lender']['id'] : null,
+    // lenderId: json['lender']['id'],
+    returnToId: json['return_to'] != null ? json['return_to']['id'] : null,
+    // returnToId: json['return_to'] ?? ['id'],
     materialIds: List<int>.from(json['materials'].map((x) => x['id'])),
     cost: json['cost'],
     deposit: json['deposit'],
