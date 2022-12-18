@@ -265,16 +265,17 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                             },
                                           ),
                                         ),
-                                        IconButton(
-                                          splashRadius: 18.0,
-                                          onPressed: () async {
-                                            instructions = await pickFile();
-                                            if (instructions != null) {
-                                              instructionsController.text = instructions!.name;
-                                            }
-                                          },
-                                          icon: const Icon(Icons.folder),
-                                        ),
+                                        // uncommented due to missing backend functionality
+                                        // IconButton(
+                                        //   splashRadius: 18.0,
+                                        //   onPressed: () async {
+                                        //     instructions = await pickFile();
+                                        //     if (instructions != null) {
+                                        //       instructionsController.text = instructions!.name;
+                                        //     }
+                                        //   },
+                                        //   icon: const Icon(Icons.folder),
+                                        // ),
                                       ],
                                     ),
                                   ],
