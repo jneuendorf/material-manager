@@ -122,7 +122,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                     ).toList();
 
                     for (var key in otherKeys) {
-                      if (key.currentState!.tileIsExpanded.value) {
+                      if (key.currentState != null && key.currentState!.tileIsExpanded.value) {
                         key.currentState!.collapse();
                       }
                     }
@@ -188,7 +188,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) &&
                           item.imageUrls.isNotEmpty
                         ? DecorationImage(
-                          image: NetworkImage(item.imageUrls.first),
+                          image: NetworkImage(baseUrl + item.imageUrls.first),
                         )
                         : null,
                     ),
