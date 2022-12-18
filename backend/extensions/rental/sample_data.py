@@ -5,6 +5,7 @@ from extensions.material.models import Material
 from extensions.rental.models import Rental, RentalStatus
 
 NUM_RENTAL = 50
+NUM_USERS = 4
 
 material_list = Material.all()
 assert material_list, "Cannot create rentals because there are no materials"
@@ -21,7 +22,7 @@ for i in range(1, NUM_RENTAL + 1):
         rental_status = RentalStatus.AVAILABLE
 
     Rental.get_or_create(
-        customer_id=i,
+        customer_id=(i % NUM_USERS) + 1,
         lender_id=i,
         rental_status=rental_status,
         cost=i % 100 + (i % 100) * 0.01,
