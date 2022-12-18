@@ -15,7 +15,11 @@ class ExpansionTileBody extends StatelessWidget {
   final RentalModel item;
   final bool completed;
 
-  const ExpansionTileBody({super.key, required this.item, this.completed = false});
+  const ExpansionTileBody({
+    super.key, 
+    required this.item, 
+    this.completed = false,
+  });
 
   static final lenderPageController = Get.find<LenderPageController>();
 
@@ -81,9 +85,11 @@ class ExpansionTileBody extends StatelessWidget {
               children: [
                 Expanded(
                   flex: 3,
-                  child: item.materialIds.isNotEmpty ? buildMaterialListView(item, completed: completed): Center(
-                    child: Text('no_items_assigned_to_this_rental_entry'.tr),
-                  ),
+                  child: item.materialIds.isNotEmpty
+                    ? buildMaterialListView(item.obs, completed: completed)
+                    : Center(
+                      child: Text('no_items_assigned_to_this_rental_entry'.tr),
+                    ),
                 ),
                 Expanded(
                   flex: 1,
@@ -171,9 +177,11 @@ class ExpansionTileBody extends StatelessWidget {
             child: Column(
               children: [
                 Flexible(
-                  child: item.materialIds.isNotEmpty ? buildMaterialListView(item, completed: completed) : Center(
-                    child: Text('no_items_assigned_to_this_rental_entry'.tr),
-                  ),
+                  child: item.materialIds.isNotEmpty 
+                    ? buildMaterialListView(item.obs, completed: completed) 
+                    : Center(
+                      child: Text('no_items_assigned_to_this_rental_entry'.tr),
+                    ),
                 ),
                 Expanded(
                   child: Column(
@@ -222,12 +230,12 @@ class ExpansionTileBody extends StatelessWidget {
     ),
   );
 
-  Widget buildMaterialListView(RentalModel item, {bool completed = false}) => ListView.separated(
+  Widget buildMaterialListView(Rx<RentalModel> item, {bool completed = false}) => ListView.separated(
     shrinkWrap: true,
     separatorBuilder: (context, index) => const Divider(),
-    itemCount: item.materialIds.length,
+    itemCount: item.value.materialIds.length,
     itemBuilder: (context, localIndex) {
-      String? imageUrl = lenderPageController.getMaterialPicture(item,localIndex);
+      String? imageUrl = lenderPageController.getMaterialPicture(item.value,localIndex);
       return ListTile(
         leading: imageUrl != null
             ? Image.network(baseUrl + imageUrl)
@@ -235,12 +243,12 @@ class ExpansionTileBody extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text(lenderPageController.getItemName(item,localIndex))),
+            Expanded(child: Text(lenderPageController.getItemName(item.value,localIndex))),
             Expanded(
               child: !completed ? Center(
                 child: Obx(() => DropDownFilterButton(
-                  options: lenderPageController.statusOptions.values.toList(),
-                  selected: item.status!.name,
+                  options: RentalStatus.values.map((status) => status.name).toList(),
+                  selected: item.value.status!.name,
                   onSelected: (String value) {
                     // TODO update rentalStatus of item
                   },
@@ -273,7 +281,7 @@ class ExpansionTileBody extends StatelessWidget {
                   child: Text('completed'.tr)
               ),
             ),
-            Text('€ ${lenderPageController.getItemPrice(item,localIndex)}'),
+            Text('€ ${lenderPageController.getItemPrice(item.value,localIndex)}'),
           ],
         ),
       );

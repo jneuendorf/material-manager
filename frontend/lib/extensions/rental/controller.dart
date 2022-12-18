@@ -34,19 +34,14 @@ class RentalController extends GetxController {
 
     await Future.wait([
       _initRentals(),
-      // _initStatuses(),
     ]);
 
     initCompleter.complete();
   }
 
   Future<void> _initRentals() async {
-    rentals.value = (await getAllRentals()) ?? [];//getAllRentalMocks();
+    rentals.value = (await getAllRentals()) ?? [];
   }
-
-  // Future<void> _initStatuses() async {
-  //   statuses.value = await getAllStatusMocks();
-  // }
 
   /// Fetches all rentals from backend.
   /// Currently only mock data is used.
@@ -58,21 +53,6 @@ class RentalController extends GetxController {
 
     return mockRentals + mockRentals;
   }
-
-  /// Fetches all rental statuses from backend.
-  /// Currently only mock data is used.
-  /// A delay of 500 milliseconds is used to simulate a network request.
-  // Future<List<RentalStatus>> getAllStatusMocks()  async {
-  //   if (!isTest()) {
-  //     await Future.delayed(const Duration(milliseconds: 500));
-  //   }
-
-  //   return [
-  //     mockAvailibleRentalStatus,
-  //     mockRentedRentalStatus,
-  //     mockReturnedRentalStatus,
-  //   ];
-  // }
 
   /// Fetches all rentals from backend.
   Future<List<RentalModel>?> getAllRentals() async {
@@ -89,22 +69,6 @@ class RentalController extends GetxController {
     }
     return null;
   }
-
-  /// Fetches all rental statuses from backend.
-  // Future<List<RentalStatus>?> getAllStatuses() async {
-  //   try {
-  //     final response = await apiService.mainClient.get('/rental_statuses');
-
-  //     if (response.statusCode != 200) debugPrint('Error getting rental statuses');
-
-  //     return response.data.map<RentalStatus>(
-  //       (dynamic item) => RentalStatus.fromJson(item)
-  //     ).toList();
-  //   } on DioError catch(e) {
-  //     apiService.defaultCatch(e);
-  //   }
-  //   return null;
-  // }
 
   /// Adds a new rental to the backend.
   /// Returns the id of the newly created rental

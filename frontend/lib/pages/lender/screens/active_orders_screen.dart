@@ -87,7 +87,7 @@ class ActiveOrderScreen extends StatelessWidget {
         child: Obx(() => DropDownFilterButton(
           options: [
             'all'.tr,
-            ...lenderPageController.statusOptions.values
+            ...RentalStatus.values.map((status) => status.name)
           ],
           selected: item.value.status!.name,
           onSelected: (String value) {}, // TODO update rentalStatus

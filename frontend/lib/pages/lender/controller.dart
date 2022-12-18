@@ -29,7 +29,6 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   late TabController tabbBarController;
 
   final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
-  final RxMap<RentalStatus, String> statusOptions = <RentalStatus, String>{}.obs;
 
   @override
   Future<void> onInit() async {
@@ -45,10 +44,6 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     await materialController.initCompleter.future;
 
     filteredRentals.value = rentalController.rentals;
-
-    for (RentalStatus item in rentalController.statuses) {
-      statusOptions[item] = item.name;
-    }
   }
 
   @override

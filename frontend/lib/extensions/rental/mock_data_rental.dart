@@ -1,22 +1,6 @@
 import 'package:frontend/extensions/rental/model.dart';
 
 
-// final RentalStatus mockRentedRentalStatus = RentalStatus(
-//   id: 1, 
-//   name: 'rented',
-// );
-
-// final RentalStatus mockAvailibleRentalStatus = RentalStatus(
-//   id: 2, 
-//   name: 'availible',
-// );
-
-// final RentalStatus mockReturnedRentalStatus = RentalStatus(
-//   id: 3, 
-//   name: 'returned',
-// );
-
-
 final List<RentalModel> mockRentals = [
   RentalModel(
     id: 1, 
