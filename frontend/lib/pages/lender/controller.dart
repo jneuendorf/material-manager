@@ -65,7 +65,6 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String getMembershipNum(RentalModel item) {
-
     String membershipNum = userController.users.firstWhere((UserModel user) =>
       user.id == item.id).membershipNumber.toString();
     return membershipNum;
@@ -82,9 +81,13 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String? getMaterialPicture(RentalModel item, int materialIndex) {
-    String path = materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).imageUrls.first;
-    return path;
+    List<String> imageUrls = materialController.materials.firstWhere(
+      (MaterialModel material) => material.id == item.materialIds[materialIndex]
+    ).imageUrls;
+
+    if (imageUrls.isEmpty) return null;
+
+    return imageUrls.first;
   }
 
   String getItemName(RentalModel item, int materialIndex) {

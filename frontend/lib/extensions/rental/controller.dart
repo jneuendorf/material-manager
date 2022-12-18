@@ -29,19 +29,19 @@ class RentalController extends GetxController {
 
     await Future.wait([
       _initRentals(),
-      _initStatuses(),
+      // _initStatuses(),
     ]);
 
     initCompleter.complete();
   }
 
   Future<void> _initRentals() async {
-    rentals.value = await getAllRentalMocks();
+    rentals.value = (await getAllRentals()) ?? [];//getAllRentalMocks();
   }
 
-  Future<void> _initStatuses() async {
-    statuses.value = await getAllStatusMocks();
-  }
+  // Future<void> _initStatuses() async {
+  //   statuses.value = await getAllStatusMocks();
+  // }
 
   /// Fetches all rentals from backend.
   /// Currently only mock data is used.
@@ -57,17 +57,17 @@ class RentalController extends GetxController {
   /// Fetches all rental statuses from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<RentalStatus>> getAllStatusMocks()  async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
-      await Future.delayed(const Duration(milliseconds: 500));
-    }
+  // Future<List<RentalStatus>> getAllStatusMocks()  async {
+  //   if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+  //     await Future.delayed(const Duration(milliseconds: 500));
+  //   }
 
-    return [
-      mockAvailibleRentalStatus,
-      mockRentedRentalStatus,
-      mockReturnedRentalStatus,
-    ];
-  }
+  //   return [
+  //     mockAvailibleRentalStatus,
+  //     mockRentedRentalStatus,
+  //     mockReturnedRentalStatus,
+  //   ];
+  // }
 
   /// Fetches all rentals from backend.
   Future<List<RentalModel>?> getAllRentals() async {
@@ -86,20 +86,20 @@ class RentalController extends GetxController {
   }
 
   /// Fetches all rental statuses from backend.
-  Future<List<RentalStatus>?> getAllStatuses() async {
-    try {
-      final response = await apiService.mainClient.get('/rental_statuses');
+  // Future<List<RentalStatus>?> getAllStatuses() async {
+  //   try {
+  //     final response = await apiService.mainClient.get('/rental_statuses');
 
-      if (response.statusCode != 200) debugPrint('Error getting rental statuses');
+  //     if (response.statusCode != 200) debugPrint('Error getting rental statuses');
 
-      return response.data.map<RentalStatus>(
-        (dynamic item) => RentalStatus.fromJson(item)
-      ).toList();
-    } on DioError catch(e) {
-      apiService.defaultCatch(e);
-    }
-    return null;
-  }
+  //     return response.data.map<RentalStatus>(
+  //       (dynamic item) => RentalStatus.fromJson(item)
+  //     ).toList();
+  //   } on DioError catch(e) {
+  //     apiService.defaultCatch(e);
+  //   }
+  //   return null;
+  // }
 
   /// Adds a new rental to the backend.
   /// Returns the id of the newly created rental
@@ -118,12 +118,13 @@ class RentalController extends GetxController {
           'created_at': rental.createdAt.toIso8601String(),
           'start_date': rental.startDate.toIso8601String(),
           'end_date': rental.endDate.toIso8601String(),
-          'usage_start_date': rental.usageStartDate.toIso8601String(),
-          'usage_end_date': rental.usageEndDate.toIso8601String(),
-          if (rental.status != null) 'status': {
-            'id': rental.status!.id,
-            'name': rental.status!.name,
-          },
+          'usage_start_date': rental.usageStartDate?.toIso8601String(),
+          'usage_end_date': rental.usageEndDate?.toIso8601String(),
+          // if (rental.status != null) 'rental_status': {
+
+          //   // 'id': rental.status!.id,
+          //   // 'name': rental.status!.name,
+          // },
         },
       );
 
@@ -148,8 +149,8 @@ class RentalController extends GetxController {
           'created_at': rental.createdAt.toIso8601String(),
           'start_date': rental.startDate.toIso8601String(),
           'end_date': rental.endDate.toIso8601String(),
-          'usage_start_date': rental.usageStartDate.toIso8601String(),
-          'usage_end_date': rental.usageEndDate.toIso8601String(),
+          'usage_start_date': rental.usageStartDate?.toIso8601String(),
+          'usage_end_date': rental.usageEndDate?.toIso8601String(),
         },
       );
 

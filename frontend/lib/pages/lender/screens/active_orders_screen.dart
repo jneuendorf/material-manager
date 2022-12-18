@@ -58,7 +58,7 @@ class ActiveOrderScreen extends StatelessWidget {
                   ).toList();
 
                   for (var key in otherKeys) {
-                    if (key.currentState!.tileIsExpanded.value) {
+                    if (key.currentState != null && key.currentState!.tileIsExpanded.value) {
                       key.currentState!.collapse();
                     }
                   }
@@ -95,6 +95,5 @@ class ActiveOrderScreen extends StatelessWidget {
       ),
     ],
   );
-
 
 }
