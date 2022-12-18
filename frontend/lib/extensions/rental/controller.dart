@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -9,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/extensions/rental/mock_data_rental.dart';
+import 'package:frontend/common/util.dart';
 
 
 class RentalController extends GetxController {
@@ -27,7 +27,7 @@ class RentalController extends GetxController {
 
     initCompleter.future;
 
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isTest()) {
       initCompleter.complete();
       return;
     }
@@ -52,7 +52,7 @@ class RentalController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<RentalModel>> getAllRentalMocks()  async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
@@ -63,7 +63,7 @@ class RentalController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   // Future<List<RentalStatus>> getAllStatusMocks()  async {
-  //   if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+  //   if (!isTest()) {
   //     await Future.delayed(const Duration(milliseconds: 500));
   //   }
 

@@ -1,7 +1,4 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -83,7 +80,7 @@ class InspectionPage extends GetView<InspectionPageController> {
                   children: [
                     SizedBox(
                       width: 50,
-                      child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
+                      child: !isTest()
                           ? material. imageUrls.isNotEmpty
                             ? Image.network(baseUrl + material.imageUrls.first)
                             : const Icon(Icons.image)

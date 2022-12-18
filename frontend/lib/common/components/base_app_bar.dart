@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -44,7 +41,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
   void initState() {
     super.initState();
 
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isTest()) {
       currentRoute = '/'.obs;
     } else {
       currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;

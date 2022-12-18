@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -10,6 +7,7 @@ import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/extensions/rental/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 const profileRoute = '/profile';
@@ -37,7 +35,7 @@ class ProfilePageController extends GetxController {
 
     int? uid = apiService.tokenInfo?['sub'] ?? 1;
 
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) return;
+    if (isTest()) return;
 
     currentUser.value = await userController.getUser(uid!);
 

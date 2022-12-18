@@ -14,6 +14,9 @@ import 'package:intl/intl.dart' as intl;
 import 'package:mime/mime.dart';
 
 
+/// Checks if the app is running in a test environment.
+bool isTest() => !kIsWeb && Platform.environment.containsKey('FLUTTER_TEST');
+
 /// Checks if the screen is larger than 600.
 bool isLargeScreen(BuildContext context) => MediaQuery.of(context).size.width > 600;
 

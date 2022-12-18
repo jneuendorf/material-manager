@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -10,6 +9,7 @@ import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/mock_data.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/pages/login/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 class UserController extends GetxController {
@@ -29,7 +29,7 @@ class UserController extends GetxController {
 
     initCompleter.future;
 
-    if (!kIsWeb &&  Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isTest()) {
       initCompleter.complete();
       return;
     }
@@ -60,7 +60,7 @@ class UserController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<UserModel>> getAllUserMocks()  async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
@@ -71,7 +71,7 @@ class UserController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<Role>> getAllRoleMocks() async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
@@ -87,7 +87,7 @@ class UserController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<Permission>> getAllPermissionMocks() async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 

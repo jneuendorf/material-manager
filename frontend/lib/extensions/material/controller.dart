@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -13,6 +12,7 @@ import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/mock_data.dart';
 import 'package:frontend/common/core/models.dart';
+import 'package:frontend/common/util.dart';
 
 
 final DateFormat isoDateFormatter = DateFormat('yyyy-MM-dd');
@@ -35,7 +35,7 @@ class MaterialController extends GetxController {
 
     initCompleter.future;
 
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isTest()) {
       initCompleter.complete();
       return;
     }
@@ -65,7 +65,7 @@ class MaterialController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<MaterialModel>> getAllMaterialMocks() async {
-    if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
     debugPrint('Called getAllMaterialMocks');
@@ -74,7 +74,7 @@ class MaterialController extends GetxController {
   }
 
   Future<List<Property>> getAllMaterialPropertyMocks() async {
-    if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
     debugPrint('Called getAllMaterialPropertyMocks');
@@ -88,7 +88,7 @@ class MaterialController extends GetxController {
   /// /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<MaterialTypeModel>> getAllMaterialTypeMocks() async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 

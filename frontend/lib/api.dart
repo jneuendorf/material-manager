@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 
 import 'package:dio/dio.dart';
@@ -9,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:frontend/pages/login/controller.dart';
+import 'package:frontend/common/util.dart';
 
 
 const atStorageKey = 'access_token';
@@ -175,9 +174,8 @@ class ApiService extends GetxService {
   Future<String?> getAccessToken() async {
     // checks if running a test and return null since
     // [FlutterSecureStorage] cant be accessed in tests.
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
-      return null;
-    }
+    if (isTest()) return null;
+
     try {
       var token = await storage.read(key: atStorageKey);
       debugPrint('retrieved access token');
@@ -191,9 +189,8 @@ class ApiService extends GetxService {
   Future<String?> getRefreshToken() async {
     // checks if running a test and return null since
     // [FlutterSecureStorage] cant be accessed in tests.
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
-      return null;
-    }
+    if (isTest()) return null;
+
     try {
       var token = await storage.read(key: rtStorageKey);
       debugPrint('retrieved refresh token');
