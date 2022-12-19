@@ -20,7 +20,7 @@ class RentalStatus(enum.Enum):
 class Rental(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     # many to one (FK here)
-    customer_id = db.Column(db.ForeignKey("user.id"))
+    customer_id = db.Column(db.ForeignKey("user.id"), nullable=False)
     customer = db.relationship(
         "User",
         # foreign_keys=[db.Column("rental.customer_id")],
@@ -29,7 +29,7 @@ class Rental(Model):  # type: ignore
         uselist=False,
     )
     # many to one (FK here)
-    lender_id = db.Column(db.ForeignKey("user.id"))
+    lender_id = db.Column(db.ForeignKey("user.id"), nullable=False)
     lender = db.relationship(
         "User",
         backref="lender_rentals",
@@ -37,7 +37,7 @@ class Rental(Model):  # type: ignore
         uselist=False,
     )
     # many to one (FK here)
-    return_to_id = db.Column(db.ForeignKey("user.id"))
+    return_to_id = db.Column(db.ForeignKey("user.id"), nullable=True)
     return_to = db.relationship(
         "User",
         backref="receiver_rentals",
