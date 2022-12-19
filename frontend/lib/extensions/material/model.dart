@@ -9,7 +9,7 @@ class MaterialModel {
   List<String> imageUrls;
   List<SerialNumber> serialNumbers;
   List<InventoryNumber> inventoryNumbers;
-  DateTime maxOperatingDate;
+  double maxOperatingYears;
   int maxDaysUsed;
   DateTime? installationDate;
   String instructions;
@@ -27,7 +27,7 @@ class MaterialModel {
     required this.imageUrls,
     required this.serialNumbers,
     required this.inventoryNumbers,
-    required this.maxOperatingDate,
+    required this.maxOperatingYears,
     required this.maxDaysUsed,
     required this.installationDate,
     required this.instructions,
@@ -45,7 +45,7 @@ class MaterialModel {
     imageUrls = json['image_urls'] != null ? List<String>.from(json['image_urls']) : [],
     serialNumbers = List<SerialNumber>.from(json['serial_numbers'].map((x) => SerialNumber.fromJson(x))),
     inventoryNumbers = List<InventoryNumber>.from(json['inventory_numbers'].map((x) => InventoryNumber.fromJson(x))),
-    maxOperatingDate = DateTime.parse(json['max_operating_date']),
+    maxOperatingYears = json['max_operating_years'],
     maxDaysUsed = json['max_days_used'],
     installationDate = json['installation_date'] != null ? DateTime.parse(json['installation_date']) : null,
     instructions = json['instructions'],
@@ -58,7 +58,7 @@ class MaterialModel {
     materialType = MaterialTypeModel.fromJson(json['material_type']);
 
   List<dynamic> toCsvRow() => [
-    id, imageUrls.toString(), serialNumbers.toString(), inventoryNumbers, maxOperatingDate, maxDaysUsed, installationDate, instructions, nextInspectionDate,
+    id, imageUrls.toString(), serialNumbers.toString(), inventoryNumbers, maxOperatingYears, maxDaysUsed, installationDate, instructions, nextInspectionDate,
     rentalFee, condition.name.tr, daysUsed, purchaseDetails.toString(), properties.toString(), materialType.toString()
   ];
 }
@@ -67,7 +67,7 @@ extension CSVList on List<MaterialModel> {
   String toCSV() {
     return csvEncoder.convert([
       [
-        'ID', 'images'.tr, 'serial_numbers'.tr, 'inventory_number'.tr, 'max_operating_date'.tr, 'max_days_used'.tr, 'installation'.tr, 'instructions'.tr,
+        'ID', 'images'.tr, 'serial_numbers'.tr, 'inventory_number'.tr, 'max_operating_years'.tr, 'max_days_used'.tr, 'installation'.tr, 'instructions'.tr,
         'next_inspection'.tr, 'rental_fee'.tr, 'condition'.tr, 'days_used'.tr, 'Purchase Details', 'properties'.tr, 'type'.tr],
       for (final materialModel in this)
         materialModel.toCsvRow()

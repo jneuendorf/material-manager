@@ -94,7 +94,7 @@ class Material(Model):  # type: ignore
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(length=80), nullable=False)
     installation_date = db.Column(db.Date, nullable=True)  # Inbetriebnahme
-    max_operating_date = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
+    max_operating_years = db.Column(db.Float, nullable=True)  # Lebensdauer ("MHD")
     max_days_used = db.Column(
         db.Integer,
         nullable=False,

@@ -79,13 +79,13 @@ class ProductDetailsDialog extends StatelessWidget {
                       ),
                       Row(
                         children: [
-                        Text('${'max_operating_date'.tr} : ',
+                        Text('${'max_operating_years'.tr} : ',
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 15.0,
                           ),
                         ),
-                        Text(formatDate(item.maxOperatingDate),
+                        Text('${item.maxOperatingYears}',
                           style: const TextStyle(fontSize: 15.0)
                         ),
                         ]

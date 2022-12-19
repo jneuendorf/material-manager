@@ -247,7 +247,7 @@ for i in range(NUM_MATERIALS):
     material = Material.get_or_create(
         name=f"material {i + 1}",
         installation_date=installation_date,
-        max_operating_date=installation_date + timedelta(weeks=(-1) ** i * 2),
+        max_operating_years=i * 0.25,
         max_days_used=i % 5 + 1,
         instructions="some instructions...",
         next_inspection_date=installation_date + timedelta(weeks=(-1) ** i),

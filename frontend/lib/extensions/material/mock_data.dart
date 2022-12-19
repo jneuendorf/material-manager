@@ -82,7 +82,7 @@ final List<MaterialModel> mockMaterial = [
     inventoryNumbers: [
       InventoryNumber(id: 1, inventoryNumber: '235vh2354-2'),
     ],
-    maxOperatingDate: DateTime(2030, 1, 1),
+    maxOperatingYears: 1,
     maxDaysUsed: 100,
     installationDate: DateTime(2021, 1, 1),
     instructions: 'Use with care',
@@ -106,7 +106,7 @@ final List<MaterialModel> mockMaterial = [
     inventoryNumbers: [
       InventoryNumber(id: 2, inventoryNumber: '235vh2354-3'),
     ],
-    maxOperatingDate: DateTime(2030, 1, 1),
+    maxOperatingYears: 1.2,
     maxDaysUsed: 10,
     installationDate: DateTime(2021, 1, 1),
     instructions: 'Use with care',
@@ -129,7 +129,7 @@ final List<MaterialModel> mockMaterial = [
     inventoryNumbers: [
       InventoryNumber(id: 2, inventoryNumber: '235vh2354-3'),
     ],
-    maxOperatingDate: DateTime(2020, 1, 1),
+    maxOperatingYears: 2,
     maxDaysUsed: 100,
     installationDate: DateTime(2019, 1, 1),
     instructions: 'Use with care',
@@ -152,7 +152,7 @@ final List<MaterialModel> mockMaterial = [
     inventoryNumbers: [
       InventoryNumber(id: 4, inventoryNumber: 'q35vh2fc4-2'),
     ],
-    maxOperatingDate: DateTime(2030, 1, 1),
+    maxOperatingYears: 0.5,
     maxDaysUsed: 100,
     installationDate: DateTime(2021, 1, 1),
     instructions: 'Use with care',
