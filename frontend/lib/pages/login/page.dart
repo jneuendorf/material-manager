@@ -28,8 +28,9 @@ class LoginPage extends GetView<LoginController> {
                 // EMAIL
                 TextFormField(
                   controller: controller.emailController,
-                  cursorColor: Colors.black,
                   keyboardType: TextInputType.emailAddress,
+                  textCapitalization: TextCapitalization.none,
+                  cursorColor: Colors.black,
                   decoration: InputDecoration(
                     labelText: 'email'.tr,
                     labelStyle: const TextStyle(color: Colors.black54),
@@ -57,6 +58,7 @@ class LoginPage extends GetView<LoginController> {
                 // PASSWORD
                 Obx(() => TextFormField(
                   controller: controller.passwordController,
+                  textCapitalization: TextCapitalization.none,
                   cursorColor: Colors.black,
                   decoration: InputDecoration(
                     focusColor: Colors.white,
