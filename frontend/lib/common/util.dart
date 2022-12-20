@@ -89,7 +89,8 @@ Future<XFile?> pickFile() async {
   return XFile.fromData(bytes!, mimeType: mime, name: result.files.first.name);
 }
 
-intl.DateFormat dateFormat = intl.DateFormat('dd.MM.yyyy');
+final intl.DateFormat dateFormat = intl.DateFormat('dd.MM.yyyy');
+final intl.DateFormat isoDateFormat = intl.DateFormat('yyyy-MM-dd');
 
 /// Returns the given [date] as a string in the format dd.MM.yyyy.
 String formatDate(DateTime? date) {

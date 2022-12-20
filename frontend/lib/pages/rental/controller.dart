@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
@@ -21,6 +22,7 @@ class RentalPageBinding implements Bindings {
 }
 
 class RentalPageController extends GetxController with GetSingleTickerProviderStateMixin {
+  final apiService = Get.find<ApiService>();
   final materialController = Get.find<MaterialController>();
   final rentalController = Get.find<RentalController>();
 
@@ -190,6 +192,7 @@ class RentalPageController extends GetxController with GetSingleTickerProviderSt
     }
 
     RentalModel rental = RentalModel(
+      customerId: apiService.tokenInfo!['sub'],
       materialIds: shoppingCart.map((MaterialModel item) => item.id!).toList(),
       cost: totalPrice,
       createdAt: DateTime.now(),

@@ -20,11 +20,8 @@ class ActiveOrderScreen extends StatelessWidget {
     children: [
       Row(
         children: [
-          Expanded(child: Padding(
-            padding: const EdgeInsets.only(left: 0.0),
-            child: Text('order_number'.tr,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+          Expanded(child: Text('order_number'.tr,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           )),
           Expanded(child: Text('price'.tr,
             style: const TextStyle(fontWeight: FontWeight.bold),

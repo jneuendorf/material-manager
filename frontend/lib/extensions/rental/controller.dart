@@ -70,30 +70,27 @@ class RentalController extends GetxController {
     return null;
   }
 
-  /// Adds a new rental to the backend.
+  /// Adds the provided [rental] to the backend.
   /// Returns the id of the newly created rental
   /// or null if an error occured.
-  /// The [customerId] will automaically be added to [rental].
-  /// The [ApiService]´s [tokenInfo] must not be null.
   Future<int?> addRental(RentalModel rental) async {
-    assert(apiService.tokenInfo != null);
 
     try {
       final response = await apiService.mainClient.post('/rental',
         data: {
-          'customer_id': apiService.tokenInfo!['sub'],
-          'material_ids': rental.materialIds,
+          'customer': {
+            'id': rental.customerId!,
+          },
+          'materials': rental.materialIds.map((int id) => {'id': id}).toList(),
           'cost': rental.cost,
+          'deposit': rental.deposit ?? 0,
           'created_at': rental.createdAt.toIso8601String(),
-          'start_date': rental.startDate.toIso8601String(),
-          'end_date': rental.endDate.toIso8601String(),
-          'usage_start_date': rental.usageStartDate?.toIso8601String(),
-          'usage_end_date': rental.usageEndDate?.toIso8601String(),
-          // if (rental.status != null) 'rental_status': {
-
-          //   // 'id': rental.status!.id,
-          //   // 'name': rental.status!.name,
-          // },
+          'start_date': isoDateFormat.format(rental.startDate),
+          'end_date': isoDateFormat.format(rental.endDate),
+          'usage_start_date': isoDateFormat.format(
+            rental.usageStartDate ?? rental.startDate),
+          'usage_end_date': isoDateFormat.format(
+            rental.usageEndDate ?? rental.endDate),
         },
       );
 
@@ -106,20 +103,31 @@ class RentalController extends GetxController {
     return null;
   }
 
-  /// Updates a rental in the backend.
+  /// Updates the provided [rental] in the backend.
   /// Returns true if the rental was updated successfully.
   Future<bool> updateRental(RentalModel rental) async {
     try {
       final response = await apiService.mainClient.put('/rental/${rental.id}',
         data: {
-          'customer_id': rental.customerId,
-          'material_ids': rental.materialIds,
+          'customer': {
+            'id': rental.customerId!,
+          },
+          if (rental.lenderId != null) 'lender': {
+            'id': rental.lenderId!,
+          },
+          if (rental.returnToId != null) 'return_to': {
+            'id': rental.returnToId!,
+          },
+          'materials': rental.materialIds.map((int id) => {'id': id}).toList(),
           'cost': rental.cost,
           'created_at': rental.createdAt.toIso8601String(),
-          'start_date': rental.startDate.toIso8601String(),
-          'end_date': rental.endDate.toIso8601String(),
-          'usage_start_date': rental.usageStartDate?.toIso8601String(),
-          'usage_end_date': rental.usageEndDate?.toIso8601String(),
+          'start_date': isoDateFormat.format(rental.startDate),
+          'end_date': isoDateFormat.format(rental.endDate),
+          'usage_start_date': isoDateFormat.format(
+            rental.usageStartDate ?? rental.startDate),
+          'usage_end_date': isoDateFormat.format(
+            rental.usageEndDate ?? rental.endDate),
+          if (rental.status != null) 'rental_status': rental.status!.name.toUpperCase(),
         },
       );
 

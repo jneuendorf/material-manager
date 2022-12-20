@@ -33,16 +33,12 @@ class RentalModel {
   factory RentalModel.fromJson(Map<String, dynamic> json) => RentalModel(
     id: json['id'],
     customerId: json['customer'] != null ? json['customer']['id'] : null,
-    // customerId: json['customer'] ?? ['id'],
     lenderId: json['lender'] != null ? json['lender']['id'] : null,
-    // lenderId: json['lender']['id'],
     returnToId: json['return_to'] != null ? json['return_to']['id'] : null,
-    // returnToId: json['return_to'] ?? ['id'],
     materialIds: List<int>.from(json['materials'].map((x) => x['id'])),
     cost: json['cost'],
     deposit: json['deposit'],
     status: RentalStatus.values.byName(json['rental_status'].toLowerCase()),
-    // status: RentalStatus.fromJson(json['rental_status']),
     createdAt: DateTime.parse(json['created_at']),
     startDate: DateTime.parse(json['start_date']),
     endDate: DateTime.parse(json['end_date']),
@@ -57,18 +53,3 @@ enum RentalStatus {
   unavailable,
   returned,
 }
-
-// class RentalStatus {
-//   final int id;
-//   String name;
-
-//   RentalStatus({
-//     required this.id,
-//     required this.name,
-//   });
-
-//   factory RentalStatus.fromJson(Map<String, dynamic> json) => RentalStatus(
-//     id: json['id'],
-//     name: json['name'],
-//   );
-// }
