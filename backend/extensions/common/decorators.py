@@ -21,6 +21,45 @@ class FileDict(TypedDict):
     mime_type: str
 
 
+def file_from_file_dict(file_dict: FileDict, related_extension: str) -> File:
+    data = b64decode(file_dict["base64"])
+    path = str(Path(file_dict["filename"]).with_stem(sha1(data).hexdigest()))
+    file: Optional[File] = File.get_or_none(
+        related_extension=related_extension,
+        path=path,
+    )
+    return file or File.get_or_create_from_base64(
+        related_extension,
+        data,
+        path,
+        mime_type=file_dict.get("mime_type", ""),
+        description=file_dict["filename"],
+    )
+
+
+def with_file(
+    param: str,
+    related_extension: str,
+):
+    def resource_decorator(func):
+        @wraps(func)
+        def wrapper(*args, **kwargs):
+            file_dict: FileDict = kwargs.pop(param)
+            if any(("base64" not in file_dict or "filename" not in file_dict)):
+                raise TypeError("Invalid file dict")
+            return func(
+                *args,
+                **{
+                    param: file_from_file_dict(file_dict, related_extension),
+                    **kwargs,
+                },
+            )
+
+        return wrapper
+
+    return resource_decorator
+
+
 def with_files(
     param: str,
     related_extension: str,
@@ -34,28 +73,16 @@ def with_files(
                 for file_dict in file_dicts
             ):
                 raise TypeError(f"Invalid file dict in {file_dicts}")
-
-            files: list[File] = []
-            for file_dict in file_dicts:
-                data = b64decode(file_dict["base64"])
-                path = str(
-                    Path(file_dict["filename"]).with_stem(sha1(data).hexdigest())
-                )
-                file: Optional[File] = File.get_or_none(
-                    related_extension=related_extension,
-                    path=path,
-                )
-                if file is None:
-                    files.append(
-                        File.get_or_create_from_base64(
-                            related_extension,
-                            data,
-                            path,
-                            mime_type=file_dict.get("mime_type", ""),
-                            description=file_dict["filename"],
-                        )
-                    )
-            return func(*args, **{param: files, **kwargs})
+            return func(
+                *args,
+                **{
+                    param: [
+                        file_from_file_dict(file_dict, related_extension)
+                        for file_dict in file_dicts
+                    ],
+                    **kwargs,
+                },
+            )
 
         return wrapper
 
