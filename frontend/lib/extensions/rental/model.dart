@@ -6,6 +6,7 @@ class RentalModel {
   final int? returnToId; // references User.id
   final List<int> materialIds; // references Material.id
   double cost;
+  double? discount;
   double? deposit;
   RentalStatus? status;
   DateTime createdAt;
@@ -21,6 +22,7 @@ class RentalModel {
     this.returnToId,
     required this.materialIds,
     required this.cost,
+    this.discount,
     this.deposit,
     this.status,
     required this.createdAt,
@@ -37,6 +39,7 @@ class RentalModel {
     returnToId: json['return_to'] != null ? json['return_to']['id'] : null,
     materialIds: List<int>.from(json['materials'].map((x) => x['id'])),
     cost: json['cost'],
+    discount: json['discount'],
     deposit: json['deposit'],
     status: RentalStatus.values.byName(json['rental_status'].toLowerCase()),
     createdAt: DateTime.parse(json['created_at']),

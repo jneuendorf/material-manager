@@ -25,6 +25,9 @@ for i in range(1, NUM_RENTAL + 1):
     else:
         rental_status = RentalStatus.AVAILABLE
 
+    lender = None
+    if i % 3 == 0:
+        lender = next(users)
     return_to = None
     if i % 7 == 0:
         return_to = next(users)
@@ -41,7 +44,7 @@ for i in range(1, NUM_RENTAL + 1):
         usage_end_date=None,
         _related=dict(
             customer=next(users),
-            lender=next(users),
+            lender=lender,
             return_to=return_to,
             materials=[next(materials), next(materials)],
         ),

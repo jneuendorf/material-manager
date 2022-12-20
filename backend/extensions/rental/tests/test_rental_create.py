@@ -37,7 +37,6 @@ def test_create_rental(client, app) -> None:
     rental = client.post(
         "/rental",
         json={
-            "lender": {"id": rental_user_id},
             "customer": {"id": rental_user_id},
             "materials": [
                 {
@@ -55,8 +54,8 @@ def test_create_rental(client, app) -> None:
     # Check DB data
     with app.app_context():
         rental_instance = Rental.get(id=rental["id"])
-        assert rental_instance.lender.id == rental_user_id
+        assert rental_instance.customer.id == rental_user_id
 
     # Check API data
     rental = client.get(f"/rental/{rental['id']}").json
-    assert rental["lender"]["id"] == rental_user_id
+    assert rental["customer"]["id"] == rental_user_id

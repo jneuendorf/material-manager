@@ -29,7 +29,7 @@ class Rental(Model):  # type: ignore
         uselist=False,
     )
     # many to one (FK here)
-    lender_id = db.Column(db.ForeignKey("user.id"), nullable=False)
+    lender_id = db.Column(db.ForeignKey("user.id"), nullable=True)
     lender = db.relationship(
         "User",
         backref="lender_rentals",
