@@ -120,6 +120,7 @@ class RentalController extends GetxController {
           },
           'materials': rental.materialIds.map((int id) => {'id': id}).toList(),
           'cost': rental.cost,
+          'deposit': rental.deposit ?? 0,
           'created_at': rental.createdAt.toIso8601String(),
           'start_date': isoDateFormat.format(rental.startDate),
           'end_date': isoDateFormat.format(rental.endDate),
