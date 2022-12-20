@@ -25,23 +25,16 @@ class PrivacyPolicy(ModelResource):
 
     @use_kwargs(PrivacyPolicySchema.to_dict())
     def put(self, **kwargs):
-        privacy_policies = models.PrivacyPolicy.all()
+        privacy_policies: list[models.PrivacyPolicy] = models.PrivacyPolicy.all()
         if len(privacy_policies) > 1:
             return abort(403, "Multiple privacy_policy found where one was expected")
 
+        privacy_policy: models.PrivacyPolicy
         if not privacy_policies:
             privacy_policy = models.PrivacyPolicy.create(
-                company="(company name)",
-                first_name="(first name)",
-                last_name="(last name)",
-                street="(street name)",
-                house_number="(house number)",
-                city="(city name)",
-                zip_code="(zip code)",
-                phone="(phone number)",
-                email="(email address)",
+                **kwargs,
             )
         else:
             privacy_policy = privacy_policies[0]
-        privacy_policy.update(**kwargs)
+            privacy_policy.update(**kwargs)
         return self.serialize(privacy_policy)
