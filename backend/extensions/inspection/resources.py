@@ -3,20 +3,17 @@ from marshmallow import fields
 
 from core.helpers.resource import ModelListResource, ModelResource
 from core.helpers.schema import BaseSchema, ModelConverter
+from extensions.common.decorators import FileSchema, with_file
 
 from . import models
+
+# from extensions.common.models import File
 
 
 class CommentSchema(BaseSchema):
     class Meta:
         model = models.Comment
-        fields = (
-            "id",
-            "inspection_id",
-            "material_id",
-            "comment",
-            # "photo",
-        )
+        fields = ("id", "inspection_id", "material_id", "comment", "image_id")
 
 
 class Comment(ModelResource):
@@ -27,9 +24,11 @@ class Comment(ModelResource):
         {
             "inspection_id": fields.Int(required=True),
             "material_id": fields.Int(required=True),
+            "image": fields.Nested(FileSchema()),
             "comment": fields.Str(required=True),
         }
     )
+    @with_file("image", related_extension="inspection")
     def post(self, **kwargs) -> dict:
         """Test with
         curl -X POST "http://localhost:5000/comment" \
