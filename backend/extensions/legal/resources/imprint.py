@@ -33,7 +33,7 @@ class Imprint(ModelResource):
             return abort(403, "Multiple imprints found where one was expected")
         return self.serialize(imprints[0])
 
-    @use_kwargs(ImprintSchema.to_dict())
+    @use_kwargs(ImprintSchema.to_dict(exclude=["id"]))
     def put(self, board_members: list[models.BoardMember], **kwargs):
         imprints: list[models.Imprint] = models.Imprint.all()
         if len(imprints) > 1:

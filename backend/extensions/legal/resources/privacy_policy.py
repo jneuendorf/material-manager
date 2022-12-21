@@ -23,7 +23,7 @@ class PrivacyPolicy(ModelResource):
             return abort(403, "Multiple privacy_policy found where one was expected")
         return self.serialize(privacy_policies[0])
 
-    @use_kwargs(PrivacyPolicySchema.to_dict())
+    @use_kwargs(PrivacyPolicySchema.to_dict(exclude=["id"]))
     def put(self, **kwargs):
         privacy_policies: list[models.PrivacyPolicy] = models.PrivacyPolicy.all()
         if len(privacy_policies) > 1:
