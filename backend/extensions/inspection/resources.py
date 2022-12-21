@@ -7,6 +7,8 @@ from extensions.common.decorators import FileSchema, with_file
 
 from . import models
 
+# from extensions.common.models import File
+
 
 class CommentSchema(BaseSchema):
     class Meta:
