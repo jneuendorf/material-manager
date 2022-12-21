@@ -45,8 +45,8 @@ def with_file(
         @wraps(func)
         def wrapper(*args, **kwargs):
             file_dict: FileDict = kwargs.pop(param)
-            if any(("base64" not in file_dict or "filename" not in file_dict)):
-                raise TypeError("Invalid file dict")
+            # if any(("base64" not in file_dict or "filename" not in file_dict)):
+            #     raise TypeError("Invalid file dict")
             return func(
                 *args,
                 **{
