@@ -56,8 +56,8 @@ class Comment(Model):  # type: ignore
     material_id = db.Column(db.ForeignKey("material.id"))
     material = db.relationship(resolve_material_model, backref="comments")
     # one to one
-    photo_id = db.Column(db.ForeignKey(File.id))
-    photo = db.relationship("File", uselist=False)
+    image_id = db.Column(db.ForeignKey(File.id))
+    image = db.relationship("File", uselist=False)
 
     __table_args__ = (
         UniqueConstraint("inspection_id", "material_id", name="inspection_material_uc"),
