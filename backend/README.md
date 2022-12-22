@@ -323,3 +323,6 @@ model_created.connect(receiver, sender=UserNotificationInfo)
 Of course, this is by far now an optimal solution as each receiver gets 1 e-mail
 per added material (no batching). Also, it is very inefficient because each user is
 queried separately.
+
+
+
