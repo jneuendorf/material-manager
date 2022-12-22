@@ -324,5 +324,170 @@ Of course, this is by far now an optimal solution as each receiver gets 1 e-mail
 per added material (no batching). Also, it is very inefficient because each user is
 queried separately.
 
+# extensions
+
+
+## inspection
+
+
+## material
+
+## rental
+
+## user
+
+#### `__init__.py`
+
+``` python
+from collections.abc import Iterable
+from typing import Any
+
+from flask import Flask
+from flask_apispec import FlaskApiSpec
+from flask_jwt_extended import JWTManager
+from flask_restful import Api
+
+from core.helpers.extension import Extension
+from core.signals import model_created
+
+from . import models, permissions, resources
+from .auth import init_auth
+
+
+class UserExtension(Extension):
+    models = (
+        models.User,
+        models.Role,
+        models.Permission,
+    )
+    resources = (
+        resources.User,
+        resources.Users,
+        resources.Signup,
+        resources.SignupVerification,
+        resources.Login,
+        resources.Refresh,
+        resources.Profile,
+    )
+    permissions = (
+        permissions.superuser,
+        permissions.user_read,
+        permissions.user_write,
+    )
+
+    def before_install(
+        self,
+        *,
+        app: Flask,
+        jwt: JWTManager,
+        api: Api,
+        api_docs: FlaskApiSpec,
+        **kwargs,
+    ):
+        init_auth(jwt)
+
+    def after_installed_all(
+        self,
+        app: Flask,
+        installed_extensions: "Iterable[Extension]",
+    ) -> None:
+        """Ensures permission instances in the database
+        (from permission-data dictionaries).
+        """
+        with app.app_context():
+            for extension in installed_extensions:
+                for permission_kwargs in extension.permissions:
+                    print(extension.name, "->", permission_kwargs["name"])
+                    models.Permission.get_or_create(**permission_kwargs)
+
+
+user = UserExtension("user", __name__)
+
+
+def receiver(sender, data):
+    print("user instance created:", sender, data)
+
+
+model_created.connect(
+    receiver,
+    sender=models.User,
+)
+```
+
+
+in the file ` auto.py` we define how passwords can be created.
+The authentication is done via JSON Web Tokens (JWT).
+This way, we're bound to cookies so that browsers (web applications)
+as well as native mobile apps can use the mechanisms for authentication.
+
+#### `auth.py`
+``` python
+from flask_jwt_extended import JWTManager
+from password_strength import PasswordPolicy
+
+from .models import User
+
+# Strong passwords start at 0.66.
+# See https://github.com/kolypto/py-password-strength#complexity
+password_policy = PasswordPolicy.from_names(
+    length=8,  # min length: 8
+    nonletters=2,  # need min. 2 non-letter characters (digits, specials, anything)
+    strength=0.4,
+)
+
+
+def init_auth(jwt: JWTManager):
+    @jwt.user_identity_loader
+    def user_identity_lookup(user: User):
+        return user.id
+
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        identity = jwt_data["sub"]
+        return User.get_or_none(id=identity)
+
+
+``` 
+
+
+The decorator `login_required` should be used for checking if a user is currently logged in
+because it's agnostic of the auth implementation.
+The function `permissions_required` Checks the session user's permissions against the given ones.
+### `decorators.py
+```python
+from functools import wraps
+
+from flask import abort, current_app
+from flask_jwt_extended import current_user, jwt_required
+
+from .models import User
+from .permissions import superuser
+
+login_required = jwt_required()
+
+def permissions_required(*required_permissions: str):
+
+    def decorator(fn):
+        @wraps(fn)
+        @jwt_required()
+        def wrapper(*args, **kwargs):
+            user: User = current_user
+            user_permissions = set(permission.name for permission in user.permissions)
+            if current_app.debug:
+                # TODO: use logging
+                print("Checking permissions...")
+                print("> required:", required_permissions)
+                print("> given:", user_permissions)
+            if (
+                superuser["name"] in user_permissions
+                or set(required_permissions) - user_permissions
+            ):
+                return abort(403, "Permission denied")
+            return fn(*args, **kwargs)
+
+        return wrapper
+
+    return decorator
+````
 
 
