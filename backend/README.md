@@ -453,7 +453,7 @@ def init_auth(jwt: JWTManager):
 The decorator `login_required` should be used for checking if a user is currently logged in
 because it's agnostic of the auth implementation.
 The function `permissions_required` Checks the session user's permissions against the given ones.
-### `decorators.py
+#### `decorators.py`
 ```python
 from functools import wraps
 
@@ -489,5 +489,357 @@ def permissions_required(*required_permissions: str):
 
     return decorator
 ````
+
+
+The `User` class defines all user data (name, email address, phone, address, password, ...).
+The `Role` und `Permission` classes show which roles we have and which permissions have every roles.
+We are mapping between users and their role with the function `UserRoleMApping`und between roles and permissions, which every role has, with the function `RolePermissionMapping``
+#### `models.py`
+```python
+
+import secrets
+from typing import Optional, Type
+
+from passlib.hash import argon2
+from sqlalchemy import Table
+
+from core.extensions import db
+from core.helpers.decorators import raised_from, raises
+from core.helpers.orm import CrudModel
+
+Model: Type[CrudModel] = db.Model
+
+
+class User(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(length=128), nullable=False, unique=True)
+    password_hash = db.Column(db.String(length=512), nullable=False)
+    first_name = db.Column(db.String(length=64), nullable=False)
+    last_name = db.Column(db.String(length=64), nullable=False)
+    membership_number = db.Column(db.String(length=16), nullable=False, default="")
+    phone = db.Column(db.String(length=32), nullable=False, default="")
+    street = db.Column(db.String(length=100), nullable=False, default="")
+    house_number = db.Column(
+        db.String(length=8),
+        nullable=False,
+        default="",
+    )  # allow 11A
+    city = db.Column(db.String(length=80), nullable=False, default="")
+    zip_code = db.Column(
+        db.String(length=8),
+        nullable=False,
+        default="",
+    )  # allow leading zeros
+    is_active = db.Column(db.Boolean(create_constraint=True), default=False)
+    token = db.Column(
+        db.String(length=44),
+        nullable=False,
+        default="",
+    )  # for 32 bytes as base64
+    # many-to-many
+    roles = db.relationship("Role", secondary="user_role_mapping", backref="users")
+
+    @classmethod
+    @raises(*raised_from(CrudModel.create))
+    def create_from_password(
+        cls,
+        email: str,
+        password: str,
+        first_name: str,
+        last_name: str,
+        membership_number: str = "",
+        phone: str = "",
+        street: str = "",
+        house_number: str = "",
+        city: str = "",
+        zip_code: str = "",
+        *,
+        roles: "Optional[list[Role]]" = None,
+    ) -> "User":
+        password_hash: str = argon2.hash(password)
+        token = secrets.token_urlsafe(nbytes=32)
+        related = dict(roles=roles) if roles else None
+        return cls.create(
+            email=email,
+            password_hash=password_hash,
+            first_name=first_name,
+            last_name=last_name,
+            membership_number=membership_number,
+            phone=phone,
+            street=street,
+            house_number=house_number,
+            city=city,
+            zip_code=zip_code,
+            is_active=False,
+            token=token,
+            _related=related,
+        )
+
+    def verify_password(self, password: str) -> bool:
+        return argon2.verify(password, self.password_hash)
+
+    @property
+    def permissions(self) -> "list[Permission]":
+        # TODO: use joins
+        #  https://docs.sqlalchemy.org/en/14/tutorial/orm_related_objects.html#using-relationships-in-queries
+        print(self.roles)
+        return [right for role in self.roles for right in role.permissions]
+
+
+class Role(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    description = db.Column(db.String)
+    permissions = db.relationship(
+        "Permission",
+        secondary="role_permission_mapping",
+        backref="roles",
+    )
+
+
+class Permission(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    description = db.Column(db.String)
+
+
+UserRoleMapping: Table = db.Table(
+    "user_role_mapping",
+    db.Column("user_id", db.ForeignKey(User.id), primary_key=True),
+    db.Column("role_id", db.ForeignKey(Role.id), primary_key=True),
+)
+
+RolePermissionMapping: Table = db.Table(
+    "role_permission_mapping",
+    db.Column("role_id", db.ForeignKey(Role.id), primary_key=True),
+    db.Column("permission_id", db.ForeignKey(Permission.id), primary_key=True),
+)
+```
+
+
+we define permissions specific to every extension.
+#### `permissions.py`
+```python
+
+
+
+superuser = dict(
+    name="superuser",
+    description="May to anything",
+)
+"""This is a special permission that always allows access
+when using the `permissions_required` decorator.
+"""
+
+user_read = dict(
+    name="user:read",
+    description="Allows reading any users data",
+)
+
+user_write = dict(
+    name="user:write",
+    description="Allows writing any users data",
+)
+```
+
+The `Signup`class describes the sign up process. After the user has entered their data and completed the registration process, it will check if the password is good enough and then create a verification link and then email this link and wait for the user to verify their email addressregistration process.
+The `login` class describes the login process using the email address and password.
+
+#### `resources.py`
+```python
+
+class UserSchema(BaseSchema):
+    class Meta:
+        model = UserModel
+        fields = ("id", "first_name", "last_name", "email", "membership_number")
+
+
+class User(ModelResource):
+    url = "/user/<int:user_id>"
+    Schema = UserSchema
+
+    def get(self, user_id: int) -> dict:
+        user = UserModel.get(id=user_id)
+        return self.schema.dump(user)
+
+
+class Signup(BaseResource):
+    url = "/signup"
+
+    @use_kwargs(
+        {
+            "email": fields.Str(
+                required=True,
+                validate=validate.Email(),  # type: ignore
+            ),
+            "password": fields.Str(required=True),
+            "first_name": fields.Str(required=True),
+            "last_name": fields.Str(required=True),
+            "membership_number": fields.Str(load_default=""),
+            "phone": fields.Str(load_default=""),
+            "street": fields.Str(load_default=""),
+            "house_number": fields.Str(load_default=""),
+            "city": fields.Str(load_default=""),
+            "zip_code": fields.Str(load_default=""),
+        }
+    )
+    def post(
+        self,
+        email: str,
+        password: str,
+        first_name: str,
+        last_name: str,
+        membership_number: str,
+        phone: str,
+        street: str,
+        house_number: str,
+        city: str,
+        zip_code: str,
+    ):
+        failed_tests = password_policy.test(password)
+        if failed_tests:
+            abort(401, "Password is too weak")
+
+        try:
+            # TODO: default role(s)
+            user = UserModel.create_from_password(
+                email,
+                password,
+                first_name,
+                last_name,
+                membership_number,
+                phone,
+                street,
+                house_number,
+                city,
+                zip_code,
+            )
+            verification_link = (
+                f'{flask_config["CORE_PUBLIC_API_URL"]}'
+                f"{SignupVerification.url}"
+                f"?user_id={user.id}&token={user.token}"
+            )
+            mail.send(
+                Message(
+                    subject="Verify your account",
+                    body=f"Click this link to verify your account: {verification_link}",
+                    html=f'<p>Click <a href="{verification_link}">here</a> to verify your account</p>',  # noqa
+                    recipients=[email],
+                )
+            )
+            return {
+                "message": "Signup successful. Verify your e-mail address to login.",
+            }
+        except (ValueError, IntegrityError):
+            return abort(403, "E-mail address already taken")
+
+
+class SignupVerification(BaseResource):
+    url = "/signup/verify"
+
+    @use_kwargs(
+        {
+            "user_id": fields.Int(required=True),
+            "token": fields.Str(required=True),
+        },
+        location="query",
+    )
+    def get(self, user_id: int, token: str):
+        user = UserModel.get_or_none(id=user_id, token=token)
+        if user:
+            user.update(
+                token="",  # invalidate token
+                is_active=True,
+            )
+            # TODO: How to not hard-code the login URL?
+            # TODO: Get FE domain from request header 'Origin'
+            return redirect(f'{flask_config["CORE_PUBLIC_FRONTEND_URL"]}/#/login')
+        else:
+            abort(401, "Verification failed")
+
+
+class Login(BaseResource):
+    url = "/login"
+
+    @use_kwargs({"email": fields.Str(), "password": fields.Str()})
+    def post(self, email: Optional[str] = None, password: Optional[str] = None):
+        """
+        curl -X POST 'http://localhost:5000/login' -H 'Content-Type: application/json' -d '{"email":"root@localhost.com","password":"asdf"}'
+        """  # noqa
+        user = UserModel.get_or_none(email=email, is_active=True)
+        if not user or not user.verify_password(password):
+            return abort(
+                401,
+                "Invalid credentials or your account has not been activated yet",
+            )
+
+        additional_claims = {
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
+        }
+
+        return dict(
+            access_token=create_access_token(
+                identity=user,
+                additional_claims=additional_claims,
+            ),
+            refresh_token=create_refresh_token(identity=user),
+        )
+
+
+class Refresh(BaseResource):
+    url = "/refresh"
+
+    @jwt_required(refresh=True)
+    def get(self):
+        """
+        curl -X GET 'http://localhost:5000/refresh' -H 'Authorization: Bearer <JWT>'
+        """
+        identity = get_jwt_identity()
+        user = UserModel.get_or_none(id=identity)
+
+        if not user:
+            return abort(
+                401,
+                "Account has not been found",
+            )
+
+        additional_claims = {
+            "permissions": {
+                permission.id: permission.name for permission in user.permissions
+            },
+        }
+
+        return dict(
+            access_token=create_access_token(
+                identity=current_user,
+                fresh=False,
+                additional_claims=additional_claims,
+            ),
+        )
+
+
+class Profile(ModelResource):
+    url = "/user/profile"
+    Schema = UserSchema
+
+    @login_required
+    def get(self) -> dict:
+        return self.schema.dump(current_user)
+
+
+class Users(ModelListResource):
+    url = "/users"
+    Schema = UserSchema
+
+    @permissions_required("user:read")
+    def get(self):
+        """
+        curl -X GET 'http://localhost:5000/users' -H 'Authorization: Bearer <JWT>'
+        """
+        users = UserModel.all()
+        return self.serialize(users)
+```
 
 
