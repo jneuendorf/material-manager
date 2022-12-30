@@ -114,6 +114,7 @@ enum ConditionModel {
   ok,
   broken,
   repair,
+  missing,
 }
 
 class PurchaseDetails {

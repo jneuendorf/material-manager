@@ -1,9 +1,9 @@
 
 class RentalModel {
   final int? id;
-  final int? customerId;  // references User.id
-  final int? lenderId;   // references User.id
-  final int? returnToId; // references User.id
+  int? customerId;  // references User.id
+  int? lenderId;   // references User.id
+  int? returnToId; // references User.id
   final List<int> materialIds; // references Material.id
   double cost;
   double? discount;

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/extensions/user/controller.dart';
@@ -21,6 +22,7 @@ class LenderPageBinding implements Bindings {
 }
 
 class LenderPageController extends GetxController with GetSingleTickerProviderStateMixin {
+  final apiService = Get.find<ApiService>();
   final rentalController = Get.find<RentalController>();
   final userController =  Get.find<UserController>();
   final materialController =  Get.find<MaterialController>();
@@ -28,7 +30,8 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   final RxInt tabBarIndex = 0.obs;
   late TabController tabbBarController;
 
-  final RxList<RentalModel> filteredRentals = <RentalModel>[].obs;
+  final RxList<RentalModel> activeRentals = <RentalModel>[].obs;
+  final RxList<RentalModel> completedRentals = <RentalModel>[].obs;
 
   @override
   Future<void> onInit() async {
@@ -43,7 +46,13 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     await userController.initCompleter.future;
     await materialController.initCompleter.future;
 
-    filteredRentals.value = rentalController.rentals;
+    activeRentals.value = rentalController.rentals.where(
+      (RentalModel rental) => rental.status != RentalStatus.returned
+    ).toList();
+
+    completedRentals.value = rentalController.rentals.where(
+      (RentalModel rental) => rental.status == RentalStatus.returned
+    ).toList();
   }
 
   @override
@@ -86,15 +95,72 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   String getItemName(RentalModel item, int materialIndex) {
-    String itemName = materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).materialType.name;
+    String itemName = materialController.materials.firstWhere(
+      (MaterialModel material) => material.id == item.materialIds[materialIndex]
+    ).materialType.name;
     return itemName;
   }
 
   String getItemPrice(RentalModel item, int materialIndex) {
-    String itemPrice = materialController.materials.firstWhere((MaterialModel material) =>
-    material.id == item.materialIds[materialIndex]).rentalFee.toStringAsFixed(2);
+    String itemPrice = materialController.materials.firstWhere(
+      (MaterialModel material) => material.id == item.materialIds[materialIndex]
+    ).rentalFee.toStringAsFixed(2);
     return itemPrice;
+  }
+
+  /// Handles change of the rental status.
+  Future<void> onRentalStatusChanged(String newStatus, Rx<RentalModel> rental) async {
+    RentalModel modifiedRental = RentalModel(
+      id: rental.value.id,
+      customerId: rental.value.customerId,
+      materialIds: rental.value.materialIds,
+      startDate: rental.value.startDate,
+      endDate: rental.value.endDate,
+      usageStartDate: rental.value.usageStartDate,
+      usageEndDate: rental.value.usageEndDate,
+      status: RentalStatus.values.byName(newStatus),
+      lenderId: rental.value.lenderId,
+      returnToId: rental.value.returnToId,
+      createdAt: rental.value.createdAt, 
+      cost: rental.value.cost,
+      deposit: rental.value.deposit,
+      discount: rental.value.discount,
+    );
+
+
+    if (modifiedRental.status == RentalStatus.lent) {
+      modifiedRental.lenderId = apiService.tokenInfo!['sub'];
+    } else if (modifiedRental.status == RentalStatus.returned) {
+      modifiedRental.returnToId = apiService.tokenInfo!['sub'];
+    }
+
+    final bool success = await rentalController.updateRental(modifiedRental);
+
+    if (success) {
+      int rentalIndex = rentalController.rentals.indexWhere((RentalModel item) => item.id == rental.value.id);
+      rentalController.rentals[rentalIndex] = modifiedRental;
+
+      rental.value = modifiedRental;
+    }
+  }
+
+  /// Handles change of the rented material´s condition.
+  Future<void> onMaterialConditionChanged(String newCondition, RentalModel rental, int materialIndex) async {
+    ConditionModel condition = ConditionModel.values.byName(newCondition);
+
+    // TODO add condition to each material
+
+    final bool success = await rentalController.updateRental(rental);
+
+    // TODO update material´s condition in the materialCondtroller
+  }
+
+  String getMaterialCondition(int materialId) {
+    ConditionModel condition = materialController.materials.firstWhere(
+      (MaterialModel material) => material.id == materialId
+    ).condition;
+
+    return condition.name;
   }
 
 }

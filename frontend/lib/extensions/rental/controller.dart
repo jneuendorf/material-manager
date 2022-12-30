@@ -74,7 +74,6 @@ class RentalController extends GetxController {
   /// Returns the id of the newly created rental
   /// or null if an error occured.
   Future<int?> addRental(RentalModel rental) async {
-
     try {
       final response = await apiService.mainClient.post('/rental',
         data: {
@@ -120,6 +119,7 @@ class RentalController extends GetxController {
           },
           'materials': rental.materialIds.map((int id) => {'id': id}).toList(),
           'cost': rental.cost,
+          'discount': rental.discount ?? 0,
           'deposit': rental.deposit ?? 0,
           'created_at': rental.createdAt.toIso8601String(),
           'start_date': isoDateFormat.format(rental.startDate),

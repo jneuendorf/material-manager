@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
+import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/lender/controller.dart';
 import 'package:frontend/pages/lender/components/selectable_text_row.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
@@ -234,8 +235,8 @@ class ExpansionTileBody extends StatelessWidget {
     shrinkWrap: true,
     separatorBuilder: (context, index) => const Divider(),
     itemCount: item.value.materialIds.length,
-    itemBuilder: (context, localIndex) {
-      String? imageUrl = lenderPageController.getMaterialPicture(item.value,localIndex);
+    itemBuilder: (context, index) {
+      String? imageUrl = lenderPageController.getMaterialPicture(item.value, index);
       return ListTile(
         leading: imageUrl != null
             ? Image.network(baseUrl + imageUrl)
@@ -243,15 +244,13 @@ class ExpansionTileBody extends StatelessWidget {
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Expanded(child: Text(lenderPageController.getItemName(item.value,localIndex))),
+            Expanded(child: Text(lenderPageController.getItemName(item.value, index))),
             Expanded(
               child: !completed ? Center(
                 child: Obx(() => DropDownFilterButton(
-                  options: RentalStatus.values.map((status) => status.name).toList(),
-                  selected: item.value.status!.name,
-                  onSelected: (String value) {
-                    // TODO update rentalStatus of item
-                  },
+                  options: ConditionModel.values.map((condition) => condition.name).toList(),
+                  selected: lenderPageController.getMaterialCondition(item.value.id!),
+                  onSelected: (String value) => lenderPageController.onMaterialConditionChanged(value, item.value, index),
                 )),
               ) : const SizedBox(),
             ),
@@ -281,7 +280,7 @@ class ExpansionTileBody extends StatelessWidget {
                   child: Text('completed'.tr)
               ),
             ),
-            Text('€ ${lenderPageController.getItemPrice(item.value,localIndex)}'),
+            Text('€ ${lenderPageController.getItemPrice(item.value, index)}'),
           ],
         ),
       );

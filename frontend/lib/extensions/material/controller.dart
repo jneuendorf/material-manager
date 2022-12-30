@@ -21,8 +21,6 @@ class MaterialController extends GetxController {
 
   final RxList<MaterialModel> materials = <MaterialModel>[].obs;
   final RxList<MaterialTypeModel> types = <MaterialTypeModel>[].obs;
-  final RxList<Property> properties = <Property>[].obs;
-
 
   @override
   Future<void> onInit() async {
@@ -40,7 +38,6 @@ class MaterialController extends GetxController {
     await Future.wait([
         _initMaterials(),
         _initTypes(),
-        _initProperties(),
       ]);
 
     initCompleter.complete();
@@ -52,10 +49,6 @@ class MaterialController extends GetxController {
 
   Future<void> _initTypes() async {
     types.value = (await getAllMaterialTypes()) ?? [];
-  }
-
-  Future<void> _initProperties() async {
-    properties.value = await getAllMaterialPropertyMocks();
   }
 
   /// Fetches all material from backend.
@@ -78,8 +71,6 @@ class MaterialController extends GetxController {
 
     return [mockLengthProperty,mockThicknessProperty, mockSizeProperty];
   }
-
-
 
   /// Fetches all material types from backend.
   /// /// Currently only mock data is used.
