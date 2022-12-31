@@ -8,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:cross_file/cross_file.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inventory/controller.dart';
 import 'package:frontend/common/components/base_future_dialog.dart';
@@ -18,7 +19,9 @@ import 'package:frontend/common/util.dart';
 
 
 class AddItemDialog extends StatefulWidget {
-  const AddItemDialog({super.key});
+  final MaterialModel? initialMaterial;
+
+  const AddItemDialog({super.key, this.initialMaterial});
 
   @override
   State<AddItemDialog> createState() => _AddItemDialogState();
@@ -26,6 +29,8 @@ class AddItemDialog extends StatefulWidget {
 
 class _AddItemDialogState extends State<AddItemDialog> {
   final inventoryPageController = Get.find<InventoryPageController>();
+
+  late final bool isEdit;
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
 
@@ -37,9 +42,8 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final Rxn<MaterialTypeModel> selectedType = Rxn<MaterialTypeModel>();
   final RxList<MaterialTypeModel> filteredTypes = <MaterialTypeModel>[].obs;
   final RxList<Property> properties = <Property>[].obs;
-  final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[
-    NonFinalMapEntry(null, <SerialNumber>[]),
-  ].obs;
+  final RxList<NonFinalMapEntry<String?, List<SerialNumber>>> bulkValues = <NonFinalMapEntry<String?, List<SerialNumber>>>[].obs;
+
 
   final RxList<XFile> images = <XFile>[].obs;
   XFile? instructions;
@@ -47,7 +51,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
   final TextEditingController materialTypeController = TextEditingController();
   final TextEditingController rentalFeeController = TextEditingController();
   final TextEditingController maxLifeExpectancyController = TextEditingController();
-  final TextEditingController maxOperatingDateController = TextEditingController();
+  final TextEditingController maxOperatingYearsController = TextEditingController();
   final TextEditingController instructionsController = TextEditingController();
   final TextEditingController nextInspectionController = TextEditingController();
   final TextEditingController purchaseDateController = TextEditingController();
@@ -61,27 +65,13 @@ class _AddItemDialogState extends State<AddItemDialog> {
   List<TextEditingController> propertyValueController = <TextEditingController>[];
   List<TextEditingController> propertyUnitController = <TextEditingController>[];
 
-  final List<TextEditingController> serialNumberControllers = <TextEditingController>[
-    TextEditingController(),
-  ];
-  final List<TextEditingController> productionDateControllers = <TextEditingController>[
-    TextEditingController(),
-  ];
-  final List<TextEditingController> inventoryNumberControllers = <TextEditingController>[
-    TextEditingController(),
-  ];
+  final List<TextEditingController> serialNumberControllers = <TextEditingController>[];
+  final List<TextEditingController> productionDateControllers = <TextEditingController>[];
+  final List<TextEditingController> inventoryNumberControllers = <TextEditingController>[];
 
   @override
   void initState() {
     super.initState();
-
-    bulkValues.listen((lst) {
-      if (serialNumberControllers.length < lst.length) {
-        serialNumberControllers.add(TextEditingController());
-        productionDateControllers.add(TextEditingController());
-        inventoryNumberControllers.add(TextEditingController());
-      }
-    });
 
     properties.listen((List<Property> lst) {
       if (propertyNameController.length < lst.length) {
@@ -113,10 +103,52 @@ class _AddItemDialogState extends State<AddItemDialog> {
       properties.value = propertyTypes?.map(
         (PropertyType e) => Property(
           id: e.id,
-          value: '',
           propertyType: e,
+          value: isEdit ? widget.initialMaterial!.properties.firstWhere(
+            (Property p ) => p.propertyType.id == e.id).value : '',
         ),
       ).toList() ?? [];
+    });
+
+    isEdit = widget.initialMaterial != null;
+
+    if (isEdit) {
+      debugPrint('Edit Mode');
+      materialTypeController.text = widget.initialMaterial!.materialType.name;
+      rentalFeeController.text = widget.initialMaterial!.rentalFee.toString();
+      maxLifeExpectancyController.text = widget.initialMaterial!.maxDaysUsed.toString();
+      maxOperatingYearsController.text = widget.initialMaterial!.maxOperatingYears.toString();
+      instructionsController.text = widget.initialMaterial!.instructions;
+      nextInspectionController.text = dateFormat.format(widget.initialMaterial!.nextInspectionDate);
+      purchaseDateController.text = dateFormat.format(widget.initialMaterial!.purchaseDetails.purchaseDate);
+      merchantController.text = widget.initialMaterial!.purchaseDetails.merchant;
+      purchasePriceController.text = widget.initialMaterial!.purchaseDetails.purchasePrice.toString();
+      invoiceNumberController.text = widget.initialMaterial!.purchaseDetails.invoiceNumber;
+      manufacturerController.text = widget.initialMaterial!.serialNumbers.first.manufacturer;
+      suggestedRetailPriceController.text = widget.initialMaterial!.purchaseDetails.suggestedRetailPrice.toString();
+      selectedType.value = widget.initialMaterial!.materialType;
+
+      bulkValues.add(NonFinalMapEntry(widget.initialMaterial!.inventoryNumbers.first.inventoryNumber, widget.initialMaterial!.serialNumbers));
+      serialNumberControllers.add(TextEditingController(text: getSerialNumberString(widget.initialMaterial!.serialNumbers)));
+      productionDateControllers.add(TextEditingController(text: getProductionDateString(widget.initialMaterial!.serialNumbers)));
+      inventoryNumberControllers.add(TextEditingController(text: widget.initialMaterial!.inventoryNumbers.first.inventoryNumber));
+
+      images.value = widget.initialMaterial!.imageUrls.map(
+        (String url) => XFile(baseUrl + url)
+      ).toList();
+    } else {
+      bulkValues.add(NonFinalMapEntry(null, <SerialNumber>[]));
+      serialNumberControllers.add(TextEditingController());
+      productionDateControllers.add(TextEditingController());
+      inventoryNumberControllers.add(TextEditingController());
+    }
+
+    bulkValues.listen((lst) {
+      if (serialNumberControllers.length < lst.length) {
+        serialNumberControllers.add(TextEditingController());
+        productionDateControllers.add(TextEditingController());
+        inventoryNumberControllers.add(TextEditingController());
+      }
     });
 
     filteredTypes.value = inventoryPageController.materialController.types;
@@ -140,7 +172,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
           Row(
             children: [
               Expanded(
-                child: Text('add_item'.tr,
+                child: Text(isEdit ? 'edit_item'.tr : 'add_item'.tr,
                   style: Get.textTheme.headline6,
                 ),
               ),
@@ -207,7 +239,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                         ),
                                         Expanded(
                                           child: TextFormField(
-                                            controller: maxOperatingDateController,
+                                            controller: maxOperatingYearsController,
                                             decoration: InputDecoration(
                                               labelText: 'max_operating_years'.tr,
                                             ),
@@ -546,7 +578,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                         separatorBuilder: (context, index) => const SizedBox(height: 8.0),
                         itemBuilder: (BuildContext context, int index) => Row(
                           children: [
-                            IconButton(
+                            if (!isEdit) IconButton(
                               onPressed: () {
                                 bulkValues.removeAt(index);
                                 serialNumberControllers.removeAt(index);
@@ -604,7 +636,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
                       )),
                     ),
                   ),
-                  Padding(
+                  if (!isEdit) Padding(
                     padding: const EdgeInsets.only(bottom: 8.0),
                     child: TextIconButton(
                       onTap: () => bulkValues.add(NonFinalMapEntry<String?, List<SerialNumber>>(null, [])),
@@ -668,9 +700,9 @@ class _AddItemDialogState extends State<AddItemDialog> {
                   Align(
                     alignment: Alignment.bottomRight,
                     child: CupertinoButton(
-                      onPressed: onAdd,
+                      onPressed: isEdit ? onEdit : onAdd,
                       color: Get.theme.primaryColor,
-                      child: Text('add'.tr,
+                      child: Text(isEdit ? 'edit'.tr: 'add'.tr,
                         style: const TextStyle(color: Colors.white),
                       ),
                     ),
@@ -700,7 +732,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       ),
       properties: properties,
       rentalFee: double.parse(rentalFeeController.text),
-      maxOperatingYears: double.parse(maxOperatingDateController.text),
+      maxOperatingYears: double.parse(maxOperatingYearsController.text),
       maxDaysUsed: int.parse(maxLifeExpectancyController.text),
       nextInspectionDate: dateFormat.parse(nextInspectionController.text),
       merchant: merchantController.text,
@@ -722,6 +754,15 @@ class _AddItemDialogState extends State<AddItemDialog> {
       // the futures must not be awaited because the state changes as soon as the initCompleter is completed
       Get.back();
     }
+  }
+
+  Future<void> onEdit() async {
+    if (!formKey.currentState!.validate()) return;
+
+    loading.value = true;
+
+    // final bool success = await inventoryPageController.materialController.updateMaterial(material);
+    // TODO implement updateMaterial call
   }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
@@ -831,6 +872,28 @@ class _AddItemDialogState extends State<AddItemDialog> {
     } on FormatException {
       return null;
     }
+  }
+
+  String getSerialNumberString(List<SerialNumber> serialNumbers) {
+    String serialNumberString = '';
+    for (int i = 0; i < serialNumbers.length; i++) {
+      serialNumberString += serialNumbers[i].serialNumber;
+      if (i < serialNumbers.length - 1) {
+        serialNumberString += ', ';
+      }
+    }
+    return serialNumberString;
+  }
+
+  String getProductionDateString(List<SerialNumber> serialNumbers) {
+    String productionDateString = '';
+    for (int i = 0; i < serialNumbers.length; i++) {
+      productionDateString += dateFormat.format(serialNumbers[i].productionDate);
+      if (i < serialNumbers.length - 1) {
+        productionDateString += ', ';
+      }
+    }
+    return productionDateString;
   }
 
 }

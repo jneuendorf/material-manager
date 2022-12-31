@@ -208,10 +208,21 @@ class InventoryPage extends GetView<InventoryPageController> {
                     'rental_fee'.tr,
                   ),
                   const SizedBox(height: 12.0),
-                  TextIconButton(
-                    onTap: () => Get.dialog(ProductDetailsDialog(item: item)),
-                    iconData: Icons.arrow_drop_down,
-                    text: 'product_details'.tr,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextIconButton(
+                        onTap: () => Get.dialog(ProductDetailsDialog(item: item)),
+                        iconData: Icons.arrow_drop_down,
+                        text: 'product_details'.tr,
+                      ),
+                      TextIconButton(
+                      onTap: () => Get.dialog(AddItemDialog(initialMaterial: item)),
+                      iconData: Icons.edit,
+                      text: 'edit_item'.tr,
+                      color: Get.theme.colorScheme.onSecondary,
+                    ),
+                    ],
                   ),
                 ],
               ),
