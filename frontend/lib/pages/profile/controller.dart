@@ -6,7 +6,6 @@ import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/rental/model.dart';
-import 'package:frontend/extensions/rental/controller.dart';
 import 'package:frontend/common/util.dart';
 
 
@@ -22,7 +21,6 @@ class ProfilePageBinding implements Bindings {
 class ProfilePageController extends GetxController {
   final ApiService apiService = Get.find<ApiService>();
   final userController = Get.find<UserController>();
-  final rentalController = Get.find<RentalController>();
 
   final Rxn<UserModel> currentUser = Rxn<UserModel>();
   final RxList<RentalModel> currentRentals = <RentalModel>[].obs;
@@ -38,10 +36,6 @@ class ProfilePageController extends GetxController {
     if (isTest()) return;
 
     currentUser.value = await userController.getUser(uid!);
-
-    await rentalController.initCompleter.future;
-
-    currentRentals.value = rentalController.rentals; // TODO should be the users rentals only
   }
 
   /// Handles the language change.

@@ -26,13 +26,21 @@ class UserOrderList extends StatefulWidget {
 class _UserOrderListState extends State<UserOrderList> {
   final rentalController = Get.find<RentalController>();
 
-  final RxList<RentalModel> userRentals = <RentalModel>[].obs;
+  final RxList<RentalModel> userActiveRentals = <RentalModel>[].obs;
+  final RxList<RentalModel> userCompletedRentals = <RentalModel>[].obs;
 
   Future<void> asyncInit() async {
     await rentalController.initCompleter.future;
 
-    userRentals.value = rentalController.rentals.where(
+    final List<RentalModel> userRentals = rentalController.rentals.where(
       (RentalModel rental) => rental.customerId == widget.user.id
+    ).toList();
+
+    userActiveRentals.value = userRentals.where(
+      (RentalModel rental) => rental.status != RentalStatus.returned
+    ).toList();
+    userCompletedRentals.value = userRentals.where(
+      (RentalModel rental) => rental.status == RentalStatus.returned
     ).toList();
   }
 
@@ -81,7 +89,7 @@ class _UserOrderListState extends State<UserOrderList> {
           label: Text('status'.tr),
         ),
       ],
-      rows: userRentals.map(
+      rows: userActiveRentals.map(
             (RentalModel rental) => DataRow(
           cells: [
             DataCell(Text(rental.id.toString())),
@@ -127,7 +135,7 @@ class _UserOrderListState extends State<UserOrderList> {
           label: Text('status'.tr),
         ),
       ],
-      rows: userRentals.map(
+      rows: userCompletedRentals.map(
             (RentalModel rental) => DataRow(
           cells: [
             DataCell(Text(rental.id.toString())),
