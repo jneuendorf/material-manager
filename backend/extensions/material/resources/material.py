@@ -65,6 +65,16 @@ class Material(ModelResource):
 
         return self.serialize(material)  # noqa
 
+    @use_kwargs(MaterialSchema.to_dict(exclude=["id", "name", "image_urls"]))
+    def put(self, material_id, **kwargs):
+        try:
+            material = models.Material.get(id=material_id)
+            material.update(**kwargs)
+        except IntegrityError as e:
+            print(e)
+            abort(403, "Duplicate serial number for the same manufacturer")
+        return self.serialize(material)
+
 
 class Materials(ModelListResource):
     url = "/materials"
