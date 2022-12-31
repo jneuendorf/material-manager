@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +120,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                     ).toList();
 
                     for (var key in otherKeys) {
-                      if (key.currentState!.tileIsExpanded.value) {
+                      if (key.currentState != null && key.currentState!.tileIsExpanded.value) {
                         key.currentState!.collapse();
                       }
                     }
@@ -138,7 +136,7 @@ class InventoryPage extends GetView<InventoryPageController> {
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
                       child: SizedBox(
                         width: 50,
-                        child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
+                        child: !isTest()
                           ? controller.filteredMaterial[index].imageUrls.isNotEmpty
                             ? Image.network(baseUrl + controller.filteredMaterial[index].imageUrls.first)
                             : const Icon(Icons.image)
@@ -185,10 +183,9 @@ class InventoryPage extends GetView<InventoryPageController> {
                     width: 100,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10.0),
-                      image: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) &&
-                          item.imageUrls.isNotEmpty
+                      image: !isTest() && item.imageUrls.isNotEmpty
                         ? DecorationImage(
-                          image: NetworkImage(item.imageUrls.first),
+                          image: NetworkImage(baseUrl + item.imageUrls.first),
                         )
                         : null,
                     ),

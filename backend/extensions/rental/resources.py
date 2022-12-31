@@ -40,7 +40,6 @@ class Rental(ModelResource):
             **RentalSchema.to_dict(
                 include=[
                     "customer",
-                    "lender",
                     "materials",
                     "cost",
                     "discount",
@@ -56,7 +55,6 @@ class Rental(ModelResource):
     def post(
         self,
         customer: User,
-        lender: User,
         materials: list[Material],
         cost: float,
         discount: float,
@@ -66,15 +64,9 @@ class Rental(ModelResource):
         usage_start_date: Optional[date] = None,
         usage_end_date: Optional[date] = None,
     ) -> dict:
-        """Test with
-        curl -X POST "http://localhost:5000/rental" \
-        -H 'Content-Type: application/json' \
-        -d '{}'
-        """
         rental = models.Rental.create(
             _related=dict(
                 customer=customer,
-                lender=lender,
                 materials=materials,
             ),
             cost=cost,
@@ -99,9 +91,6 @@ class Rental(ModelResource):
         return self.serialize(rental)
 
     def get(self, rental_id: int):
-        """Test with
-        curl -X GET "http://localhost:5000/rental/1"
-        """
         rental = models.Rental.get(id=rental_id)
         return self.serialize(rental)
 

@@ -37,21 +37,21 @@ class CompletedOrdersScreen extends StatelessWidget {
       Expanded(
         child: Obx(() {
           final List<GlobalKey<CollapsableExpansionTileState>> keys = List.generate(
-            lenderPageController.filteredRentals.length, (index) => GlobalKey<CollapsableExpansionTileState>(),
+            lenderPageController.completedRentals.length, (index) => GlobalKey<CollapsableExpansionTileState>(),
           );
           return ListView.separated(
-            itemCount: lenderPageController.filteredRentals.length,
+            itemCount: lenderPageController.completedRentals.length,
             separatorBuilder: (BuildContext context, int index) => const Divider(),
             itemBuilder: (BuildContext context, int index) => CollapsableExpansionTile(
               key: keys[index],
               onExpansionChanged: (bool expanded) {
                 if (expanded) {
                   List<GlobalKey<CollapsableExpansionTileState>> otherKeys = keys.where(
-                          (key) => key != keys[index]
+                    (key) => key != keys[index]
                   ).toList();
 
                   for (var key in otherKeys) {
-                    if (key.currentState!.tileIsExpanded.value) {
+                    if (key.currentState != null && key.currentState!.tileIsExpanded.value) {
                       key.currentState!.collapse();
                     }
                   }
@@ -61,15 +61,15 @@ class CompletedOrdersScreen extends StatelessWidget {
                 children: [
                   Expanded(
                     flex: 19,
-                    child: Text(lenderPageController.filteredRentals[index].id.toString()),
+                    child: Text(lenderPageController.completedRentals[index].id.toString()),
                   ),
                   Expanded(
                     flex: 20,
-                    child: Text('€ ${lenderPageController.filteredRentals[index].cost.toStringAsFixed(2)}'),
+                    child: Text('€ ${lenderPageController.completedRentals[index].cost.toStringAsFixed(2)}'),
                   ),
                   Expanded(
                     flex: 20,
-                    child: Text(formatDate(lenderPageController.filteredRentals[index].createdAt)),
+                    child: Text(formatDate(lenderPageController.completedRentals[index].createdAt)),
                   ),
                   Expanded(
                     flex: 20,
@@ -78,7 +78,7 @@ class CompletedOrdersScreen extends StatelessWidget {
                 ],
               ),
               children: [
-                ExpansionTileBody(item: lenderPageController.filteredRentals[index], completed: true)
+                ExpansionTileBody(item: lenderPageController.completedRentals[index], completed: true)
               ],
             ),
           );

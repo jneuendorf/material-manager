@@ -1,12 +1,10 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'package:frontend/api.dart';
+import 'package:frontend/common/util.dart';
 import 'package:frontend/common/core/controller.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
 import 'package:frontend/extensions/material/controller.dart';
@@ -84,7 +82,7 @@ Future<void> loadConfig() async {
 Future<Locale> getInitialLocale() async {
   // checks if running a test and return null since
   // [FlutterSecureStorage] cant be accessed in tests.
-  if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+  if (isTest()) {
     return const Locale('en');
   }
 

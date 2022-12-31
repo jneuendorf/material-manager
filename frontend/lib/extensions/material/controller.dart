@@ -1,21 +1,18 @@
 import 'dart:async';
 import 'dart:convert';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
 import 'package:get/get.dart';
 import 'package:dio/dio.dart' as dio;
 import 'package:cross_file/cross_file.dart';
-import 'package:intl/intl.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/mock_data.dart';
 import 'package:frontend/common/core/models.dart';
+import 'package:frontend/common/util.dart';
 
-
-final DateFormat isoDateFormatter = DateFormat('yyyy-MM-dd');
 
 class MaterialController extends GetxController {
   static final apiService = Get.find<ApiService>();
@@ -24,8 +21,6 @@ class MaterialController extends GetxController {
 
   final RxList<MaterialModel> materials = <MaterialModel>[].obs;
   final RxList<MaterialTypeModel> types = <MaterialTypeModel>[].obs;
-  final RxList<Property> properties = <Property>[].obs;
-
 
   @override
   Future<void> onInit() async {
@@ -35,7 +30,7 @@ class MaterialController extends GetxController {
 
     initCompleter.future;
 
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isTest()) {
       initCompleter.complete();
       return;
     }
@@ -43,7 +38,6 @@ class MaterialController extends GetxController {
     await Future.wait([
         _initMaterials(),
         _initTypes(),
-        _initProperties(),
       ]);
 
     initCompleter.complete();
@@ -57,15 +51,11 @@ class MaterialController extends GetxController {
     types.value = (await getAllMaterialTypes()) ?? [];
   }
 
-  Future<void> _initProperties() async {
-    properties.value = await getAllMaterialPropertyMocks();
-  }
-
   /// Fetches all material from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<MaterialModel>> getAllMaterialMocks() async {
-    if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
     debugPrint('Called getAllMaterialMocks');
@@ -74,7 +64,7 @@ class MaterialController extends GetxController {
   }
 
   Future<List<Property>> getAllMaterialPropertyMocks() async {
-    if (!kIsWeb &&  !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
     debugPrint('Called getAllMaterialPropertyMocks');
@@ -82,13 +72,11 @@ class MaterialController extends GetxController {
     return [mockLengthProperty,mockThicknessProperty, mockSizeProperty];
   }
 
-
-
   /// Fetches all material types from backend.
   /// /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<MaterialTypeModel>> getAllMaterialTypeMocks() async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
@@ -172,7 +160,7 @@ class MaterialController extends GetxController {
         (NonFinalMapEntry<String?, List<SerialNumber>> values) => values.value.map(
           (SerialNumber num) => {
             'serial_number':  num.serialNumber,
-            'production_date': isoDateFormatter.format(num.productionDate),
+            'production_date': isoDateFormat.format(num.productionDate),
             'manufacturer': manufacturer,
           }
         ).toList()
@@ -203,7 +191,7 @@ class MaterialController extends GetxController {
             'inventory_number':  values.key,
           }).toList(),
           'purchase_details': {
-            'purchase_date': isoDateFormatter.format(purchaseDate),
+            'purchase_date': isoDateFormat.format(purchaseDate),
             'invoice_number': invoiceNumber,
             'merchant': merchant,
             'purchase_price': purchasePrice,
@@ -213,7 +201,7 @@ class MaterialController extends GetxController {
           'rental_fee': rentalFee,
           'max_operating_years': maxOperatingYears,
           'max_days_used': maxDaysUsed,
-          'next_inspection_date': isoDateFormatter.format(nextInspectionDate),
+          'next_inspection_date': isoDateFormat.format(nextInspectionDate),
           'instructions': instructions,
           'properties': properties.map((Property p) => {
             'value': p.value,
@@ -284,30 +272,34 @@ class MaterialController extends GetxController {
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
             'serial_number': s.serialNumber,
             'manufacturer': s.manufacturer,
-            'production_date': s.productionDate,
+            'production_date': isoDateFormat.format(s.productionDate),
           }).toList(),
-          'inventory_number': material.inventoryNumbers,
+          'inventory_numbers': material.inventoryNumbers.map((InventoryNumber i) => {
+            'id': i.id,
+            'inventory_number': i.inventoryNumber,
+          }).toList(),
           'max_operating_years': material.maxOperatingYears,
           'max_days_used': material.maxDaysUsed,
-          'installation_date': material.installationDate,
+          if (material.installationDate != null) 'installation_date': isoDateFormat.format(material.installationDate!),
           'instructions': material.instructions,
-          'next_inspection_date': material.nextInspectionDate,
+          'next_inspection_date': isoDateFormat.format(material.nextInspectionDate),
           'rental_fee': material.rentalFee,
           'condition': material.condition.name,
           'usage': material.daysUsed,
           'purchase_details': {
             'id' : material.purchaseDetails.id,
-            'purchase_date': material.purchaseDetails.purchaseDate,
+            'purchase_date': isoDateFormat.format(material.purchaseDetails.purchaseDate),
             'invoice_number': material.purchaseDetails.invoiceNumber,
             'merchant': material.purchaseDetails.merchant,
-            // 'production_date': material.purchaseDetails.productionDate,
             'purchase_price': material.purchaseDetails.purchasePrice,
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
           'properties': material.properties.map((Property p) => {
-            'id': p.id,
-            'property_type': p.propertyType,
             'value': p.value,
+            'property_type': {
+              'name': p.propertyType.name,
+              'unit': p.propertyType.unit,
+            },
           }).toList(),
           'material_type': {
             'id': material.materialType.id,

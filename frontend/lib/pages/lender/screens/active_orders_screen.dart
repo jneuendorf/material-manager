@@ -20,11 +20,8 @@ class ActiveOrderScreen extends StatelessWidget {
     children: [
       Row(
         children: [
-          Expanded(child: Padding(
-            padding: const EdgeInsets.only(left: 0.0),
-            child: Text('order_number'.tr,
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
+          Expanded(child: Text('order_number'.tr,
+            style: const TextStyle(fontWeight: FontWeight.bold),
           )),
           Expanded(child: Text('price'.tr,
             style: const TextStyle(fontWeight: FontWeight.bold),
@@ -42,12 +39,12 @@ class ActiveOrderScreen extends StatelessWidget {
       Expanded(
         child: Obx(() {
           final List<GlobalKey<CollapsableExpansionTileState>> keys = List.generate(
-            lenderPageController.filteredRentals.length,
+            lenderPageController.activeRentals.length,
             (index) => GlobalKey<CollapsableExpansionTileState>(),
           );
           return ListView.separated(
             padding: EdgeInsets.zero,
-            itemCount: lenderPageController.filteredRentals.length,
+            itemCount: lenderPageController.activeRentals.length,
             separatorBuilder: (BuildContext context, int index) => const Divider(),
             itemBuilder: (context, index) => CollapsableExpansionTile(
               key: keys[index],
@@ -58,15 +55,15 @@ class ActiveOrderScreen extends StatelessWidget {
                   ).toList();
 
                   for (var key in otherKeys) {
-                    if (key.currentState!.tileIsExpanded.value) {
+                    if (key.currentState != null && key.currentState!.tileIsExpanded.value) {
                       key.currentState!.collapse();
                     }
                   }
                 }
               },
-              title: buildTileTitle(lenderPageController.filteredRentals[index].obs),
+              title: buildTileTitle(lenderPageController.activeRentals[index].obs),
               children: [
-                ExpansionTileBody(item: lenderPageController.filteredRentals[index]),
+                ExpansionTileBody(item: lenderPageController.activeRentals[index]),
               ],
             ),
           );
@@ -85,16 +82,12 @@ class ActiveOrderScreen extends StatelessWidget {
       Flexible(
         flex: 20,
         child: Obx(() => DropDownFilterButton(
-          options: [
-            'all'.tr,
-            ...lenderPageController.statusOptions.values
-          ],
+          options: RentalStatus.values.map((status) => status.name).toList(),
           selected: item.value.status!.name,
-          onSelected: (String value) {}, // TODO update rentalStatus
+          onSelected: (String value) => lenderPageController.onRentalStatusChanged(value, item),
         )),
       ),
     ],
   );
-
 
 }

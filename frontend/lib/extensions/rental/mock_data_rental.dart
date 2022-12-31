@@ -1,22 +1,6 @@
 import 'package:frontend/extensions/rental/model.dart';
 
 
-final RentalStatus mockRentedRentalStatus = RentalStatus(
-  id: 1, 
-  name: 'rented',
-);
-
-final RentalStatus mockAvailibleRentalStatus = RentalStatus(
-  id: 2, 
-  name: 'availible',
-);
-
-final RentalStatus mockReturnedRentalStatus = RentalStatus(
-  id: 3, 
-  name: 'returned',
-);
-
-
 final List<RentalModel> mockRentals = [
   RentalModel(
     id: 1, 
@@ -26,7 +10,7 @@ final List<RentalModel> mockRentals = [
     materialIds: [1, 2, 3], 
     cost: 20, 
     deposit: 5, 
-    status: mockRentedRentalStatus, 
+    status: RentalStatus.lent, 
     createdAt: DateTime(2022, 1, 1), 
     startDate: DateTime(2022, 2, 1), 
     endDate: DateTime(2022, 3, 1), 
@@ -41,7 +25,7 @@ final List<RentalModel> mockRentals = [
     materialIds: [1, 2, 3], 
     cost: 20, 
     deposit: 5, 
-    status: mockAvailibleRentalStatus, 
+    status: RentalStatus.available, 
     createdAt: DateTime(2022, 1, 1), 
     startDate: DateTime(2022, 2, 1), 
     endDate: DateTime(2022, 3, 1), 
@@ -56,7 +40,7 @@ final List<RentalModel> mockRentals = [
     materialIds: [1, 2, 3], 
     cost: 20, 
     deposit: 5, 
-    status: mockReturnedRentalStatus, 
+    status: RentalStatus.returned, 
     createdAt: DateTime(2022, 1, 1), 
     startDate: DateTime(2022, 2, 1), 
     endDate: DateTime(2022, 3, 1), 

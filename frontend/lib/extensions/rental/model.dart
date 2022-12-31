@@ -1,18 +1,19 @@
 
 class RentalModel {
   final int? id;
-  final int? customerId;  // references User.id
-  final int? lenderId;   // references User.id
-  final int? returnToId; // references User.id
+  int? customerId;  // references User.id
+  int? lenderId;   // references User.id
+  int? returnToId; // references User.id
   final List<int> materialIds; // references Material.id
   double cost;
+  double? discount;
   double? deposit;
   RentalStatus? status;
   DateTime createdAt;
   DateTime startDate;
   DateTime endDate;
-  DateTime usageStartDate;
-  DateTime usageEndDate;
+  DateTime? usageStartDate;
+  DateTime? usageEndDate;
 
   RentalModel({
     this.id,
@@ -21,6 +22,7 @@ class RentalModel {
     this.returnToId,
     required this.materialIds,
     required this.cost,
+    this.discount,
     this.deposit,
     this.status,
     required this.createdAt,
@@ -32,32 +34,25 @@ class RentalModel {
 
   factory RentalModel.fromJson(Map<String, dynamic> json) => RentalModel(
     id: json['id'],
-    customerId: json['customer_id'],
-    lenderId: json['lender_id'],
-    returnToId: json['return_to_id'],
-    materialIds: List<int>.from(json['material_ids'].map((x) => x)),
+    customerId: json['customer'] != null ? json['customer']['id'] : null,
+    lenderId: json['lender'] != null ? json['lender']['id'] : null,
+    returnToId: json['return_to'] != null ? json['return_to']['id'] : null,
+    materialIds: List<int>.from(json['materials'].map((x) => x['id'])),
     cost: json['cost'],
+    discount: json['discount'],
     deposit: json['deposit'],
-    status: RentalStatus.fromJson(json['status']),
+    status: RentalStatus.values.byName(json['rental_status'].toLowerCase()),
     createdAt: DateTime.parse(json['created_at']),
     startDate: DateTime.parse(json['start_date']),
     endDate: DateTime.parse(json['end_date']),
-    usageStartDate: DateTime.parse(json['usage_start_date']),
-    usageEndDate: DateTime.parse(json['usage_end_date']),
+    usageStartDate: DateTime.tryParse(json['usage_start_date'] ?? ''),
+    usageEndDate: DateTime.tryParse(json['usage_end_date'] ?? ''),
   );
 }
 
-class RentalStatus {
-  final int id;
-  String name;
-
-  RentalStatus({
-    required this.id,
-    required this.name,
-  });
-
-  factory RentalStatus.fromJson(Map<String, dynamic> json) => RentalStatus(
-    id: json['id'],
-    name: json['name'],
-  );
+enum RentalStatus {
+  lent,
+  available,
+  unavailable,
+  returned,
 }
