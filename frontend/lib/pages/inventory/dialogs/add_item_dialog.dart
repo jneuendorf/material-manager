@@ -209,14 +209,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
                                           child: TextFormField(
                                             controller: maxOperatingDateController,
                                             decoration: InputDecoration(
-                                              labelText: 'max_operating_date'.tr,
+                                              labelText: 'max_operating_years'.tr,
                                             ),
                                             validator: (String? value) {
                                               if (value == null || value.isEmpty) {
-                                                return 'max_operating_date_is_mandatory'.tr;
+                                                return 'max_operating_years_is_mandatory'.tr;
                                               }
-                                              if (tryParseDate(value) == null) {
-                                                return 'must_be_date_format'.tr;
+                                              if (double.tryParse(value) == null) {
+                                                return 'max_operating_years_must_be_a_number'.tr;
                                               }
                                               return null;
                                             },
@@ -700,7 +700,7 @@ class _AddItemDialogState extends State<AddItemDialog> {
       ),
       properties: properties,
       rentalFee: double.parse(rentalFeeController.text),
-      maxOperatingDate: dateFormat.parse(maxOperatingDateController.text),
+      maxOperatingYears: double.parse(maxOperatingDateController.text),
       maxDaysUsed: int.parse(maxLifeExpectancyController.text),
       nextInspectionDate: dateFormat.parse(nextInspectionController.text),
       merchant: merchantController.text,

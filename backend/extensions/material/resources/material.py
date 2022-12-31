@@ -96,7 +96,7 @@ class Materials(ModelListResource):
                 include=[
                     "material_type",
                     "purchase_details",
-                    "max_operating_date",
+                    "max_operating_years",
                     "max_days_used",
                     "instructions",
                     "next_inspection_date",
@@ -113,7 +113,7 @@ class Materials(ModelListResource):
         inventory_numbers: list[models.InventoryNumber],
         purchase_details: models.PurchaseDetails,
         images: list[File],
-        max_operating_date: date,
+        max_operating_years: float,
         max_days_used: int,
         instructions: str,
         next_inspection_date: date,
@@ -155,8 +155,9 @@ class Materials(ModelListResource):
         try:
             for serial_nums, inventory_num in zip(serial_numbers, inventory_numbers):
                 material = models.Material.create(
+                    # TODO
                     name="",
-                    max_operating_date=max_operating_date,
+                    max_operating_years=max_operating_years,
                     max_days_used=max_days_used,
                     instructions=instructions,
                     next_inspection_date=next_inspection_date,

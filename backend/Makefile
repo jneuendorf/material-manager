@@ -18,7 +18,7 @@ clear_db:
 	rm -rf instance/*.db
 
 sample_data: venv
-	. venv/bin/activate && flask create-sample-data user material inspection rental
+	. venv/bin/activate && flask create-sample-data user material inspection rental legal
 
 precommit: venv
 	. venv/bin/activate && pre-commit run --all-files
