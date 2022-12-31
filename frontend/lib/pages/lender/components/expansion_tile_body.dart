@@ -249,8 +249,8 @@ class ExpansionTileBody extends StatelessWidget {
               child: !completed ? Center(
                 child: Obx(() => DropDownFilterButton(
                   options: ConditionModel.values.map((condition) => condition.name).toList(),
-                  selected: lenderPageController.getMaterialCondition(item.value.id!),
-                  onSelected: (String value) => lenderPageController.onMaterialConditionChanged(value, item.value, index),
+                  selected: lenderPageController.getMaterialCondition(item.value.materialIds[index]),
+                  onSelected: (String value) => lenderPageController.onMaterialConditionChanged(value, item.value, item.value.materialIds[index]),
                 )),
               ) : const SizedBox(),
             ),

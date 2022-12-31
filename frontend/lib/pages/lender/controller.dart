@@ -137,7 +137,8 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
     final bool success = await rentalController.updateRental(modifiedRental);
 
     if (success) {
-      int rentalIndex = rentalController.rentals.indexWhere((RentalModel item) => item.id == rental.value.id);
+      int rentalIndex = rentalController.rentals.indexWhere(
+        (RentalModel item) => item.id == rental.value.id);
       rentalController.rentals[rentalIndex] = modifiedRental;
 
       rental.value = modifiedRental;
@@ -145,14 +146,21 @@ class LenderPageController extends GetxController with GetSingleTickerProviderSt
   }
 
   /// Handles change of the rented material´s condition.
-  Future<void> onMaterialConditionChanged(String newCondition, RentalModel rental, int materialIndex) async {
-    ConditionModel condition = ConditionModel.values.byName(newCondition);
+  Future<void> onMaterialConditionChanged(String newCondition, RentalModel rental, int materialId) async {
+    MaterialModel material = materialController.materials.firstWhere(
+      (MaterialModel material) => material.id == materialId);
 
-    // TODO add condition to each material
+    ConditionModel oldCondition = material.condition;
+    material.condition = ConditionModel.values.byName(newCondition);
 
-    final bool success = await rentalController.updateRental(rental);
-
-    // TODO update material´s condition in the materialCondtroller
+    final bool success = await materialController.updateMaterial(material);
+    if (success) {
+      int materialIndex = materialController.materials.indexWhere(
+        (MaterialModel item) => item.id == material.id);
+      materialController.materials[materialIndex] = material;
+    } else {
+      material.condition = oldCondition;
+    }
   }
 
   String getMaterialCondition(int materialId) {
