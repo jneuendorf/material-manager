@@ -216,59 +216,32 @@ class MaterialController extends GetxController {
       return response.statusCode;
     } on dio.DioError catch(e) {
       debugPrint('Error while trying to add material:');
-      debugPrint('$e');
-      apiService.defaultCatch(e);
-    }
-    return null;
-  }
-
-  /// Adds a new material type to the backend.
-  /// Returns the id of the newly created material type.
-  Future<int?> addMaterialType(MaterialTypeModel materialType) async {
-    try {
-      final response = await apiService.mainClient.post('/material_type',
-        data: {
-          'name': materialType.name,
-          'description': materialType.description,
-        },
-      );
-
-      if (response.statusCode != 201) debugPrint('Error adding material type');
-
-      return response.data['id'];
-    } on dio.DioError catch(e) {
-      apiService.defaultCatch(e);
-    }
-    return null;
-  }
-
-  /// Adds a new property to the backend.
-  /// Returns the id of the newly created property.
-  Future<int?> addProperty(Property property) async {
-    try {
-      final response = await apiService.mainClient.post('/material_property',
-        data: {
-          'property_type': property.propertyType,
-          'value': property.value,
-        },
-      );
-
-      if (response.statusCode != 201) debugPrint('Error adding property');
-
-      return response.data['id'];
-    } on dio.DioError catch(e) {
       apiService.defaultCatch(e);
     }
     return null;
   }
 
   /// Updates a material in the backend.
+  /// If [imageFiles] is not null, the images will be updated 
+  /// and [material]´s imageUrls will be ignored.
   /// Returns true if the material was updated successfully.
-  Future<bool> updateMaterial(MaterialModel material) async {
+  Future<bool> updateMaterial(MaterialModel material, {List<XFile>? imageFiles}) async {
     try {
+      List images = [];
+      if (imageFiles != null) {
+        images = await Future.wait(imageFiles.map(
+          (XFile f) async => {
+            'base64': base64.encode(await f.readAsBytes()),
+            'mime_type': f.mimeType,
+            'filename': f.name,
+          }
+        ).toList());
+      }
+
       final response = await apiService.mainClient.put('/material/${material.id}',
         data: {
-          'image_path': material.imageUrls,
+          if (imageFiles == null) 'image_urls': material.imageUrls 
+          else 'images': images,
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
             'serial_number': s.serialNumber,
             'manufacturer': s.manufacturer,
@@ -295,6 +268,7 @@ class MaterialController extends GetxController {
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
           'properties': material.properties.map((Property p) => {
+            'id': p.id,
             'value': p.value,
             'property_type': {
               'name': p.propertyType.name,
@@ -318,43 +292,83 @@ class MaterialController extends GetxController {
     return false;
   }
 
-  /// Updates a material type in the backend.
-  /// Returns true if the material type was updated successfully.
-  Future<bool> updateMaterialType(MaterialTypeModel materialType) async {
-    try {
-      final response = await apiService.mainClient.put('/material_type/${materialType.id}',
-        data: {
-          'name': materialType.name,
-          'description': materialType.description,
-        },
-      );
+  // /// Adds a new material type to the backend.
+  // /// Returns the id of the newly created material type.
+  // Future<int?> addMaterialType(MaterialTypeModel materialType) async {
+  //   try {
+  //     final response = await apiService.mainClient.post('/material_type',
+  //       data: {
+  //         'name': materialType.name,
+  //         'description': materialType.description,
+  //       },
+  //     );
 
-      if (response.statusCode != 200) debugPrint('Error updating material type');
+  //     if (response.statusCode != 201) debugPrint('Error adding material type');
 
-      return response.statusCode == 200;
-    } on dio.DioError catch(e) {
-      apiService.defaultCatch(e);
-    }
-    return false;
-  }
+  //     return response.data['id'];
+  //   } on dio.DioError catch(e) {
+  //     apiService.defaultCatch(e);
+  //   }
+  //   return null;
+  // }
 
-  /// Updates a property in the backend.
-  /// Returns true if the property was updated successfully.
-  Future<bool> updateProperty(Property property) async {
-    try {
-      final response = await apiService.mainClient.put('/material_property/${property.id}',
-        data: {
-          'property_type': property.propertyType,
-          'value': property.value,
-        },
-      );
+  // /// Adds a new property to the backend.
+  // /// Returns the id of the newly created property.
+  // Future<int?> addProperty(Property property) async {
+  //   try {
+  //     final response = await apiService.mainClient.post('/material_property',
+  //       data: {
+  //         'property_type': property.propertyType,
+  //         'value': property.value,
+  //       },
+  //     );
 
-      if (response.statusCode != 200) debugPrint('Error updating property');
+  //     if (response.statusCode != 201) debugPrint('Error adding property');
 
-      return response.statusCode == 200;
-    } on dio.DioError catch(e) {
-      apiService.defaultCatch(e);
-    }
-    return false;
-  }
+  //     return response.data['id'];
+  //   } on dio.DioError catch(e) {
+  //     apiService.defaultCatch(e);
+  //   }
+  //   return null;
+  // }
+
+  // /// Updates a material type in the backend.
+  // /// Returns true if the material type was updated successfully.
+  // Future<bool> updateMaterialType(MaterialTypeModel materialType) async {
+  //   try {
+  //     final response = await apiService.mainClient.put('/material_type/${materialType.id}',
+  //       data: {
+  //         'name': materialType.name,
+  //         'description': materialType.description,
+  //       },
+  //     );
+
+  //     if (response.statusCode != 200) debugPrint('Error updating material type');
+
+  //     return response.statusCode == 200;
+  //   } on dio.DioError catch(e) {
+  //     apiService.defaultCatch(e);
+  //   }
+  //   return false;
+  // }
+
+  // /// Updates a property in the backend.
+  // /// Returns true if the property was updated successfully.
+  // Future<bool> updateProperty(Property property) async {
+  //   try {
+  //     final response = await apiService.mainClient.put('/material_property/${property.id}',
+  //       data: {
+  //         'property_type': property.propertyType,
+  //         'value': property.value,
+  //       },
+  //     );
+
+  //     if (response.statusCode != 200) debugPrint('Error updating property');
+
+  //     return response.statusCode == 200;
+  //   } on dio.DioError catch(e) {
+  //     apiService.defaultCatch(e);
+  //   }
+  //   return false;
+  // }
 }

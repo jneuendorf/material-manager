@@ -172,42 +172,7 @@ class InventoryPage extends GetView<InventoryPageController> {
         padding: const EdgeInsets.all(8.0),
         child: Row(
           children: [
-            SizedBox(
-              width: 100,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    height: 100,
-                    width: 100,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10.0),
-                      image: !isTest() && item.imageUrls.isNotEmpty
-                        ? DecorationImage(
-                          image: NetworkImage(baseUrl + item.imageUrls.first),
-                        )
-                        : null,
-                    ),
-                    child: item.imageUrls.isEmpty
-                      ? const Icon(Icons.image)
-                      : Container(),
-                  ),
-                  Row(
-                    children: [
-                      const SizedBox(width: 15),
-                      const Text('1 von 4'), // TODO add image count
-                      IconButton(
-                        padding: EdgeInsets.zero,
-                        splashRadius: 18.0,
-                        icon: const Icon(Icons.arrow_right),
-                        onPressed: () {},
-                      )
-                    ],
-                  ),
-                ],
-              ),
-            ),
+            buildImagePreview(item.imageUrls),
             const SizedBox(width: 16.0),
             Expanded(
               child: Column(
@@ -243,10 +208,21 @@ class InventoryPage extends GetView<InventoryPageController> {
                     'rental_fee'.tr,
                   ),
                   const SizedBox(height: 12.0),
-                  TextIconButton(
-                    onTap: () => Get.dialog(ProductDetailsDialog(item: item)),
-                    iconData: Icons.arrow_drop_down,
-                    text: 'product_details'.tr,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      TextIconButton(
+                        onTap: () => Get.dialog(ProductDetailsDialog(item: item)),
+                        iconData: Icons.arrow_drop_down,
+                        text: 'product_details'.tr,
+                      ),
+                      TextIconButton(
+                      onTap: () => Get.dialog(AddItemDialog(initialMaterial: item)),
+                      iconData: Icons.edit,
+                      text: 'edit_item'.tr,
+                      color: Get.theme.colorScheme.onSecondary,
+                    ),
+                    ],
                   ),
                 ],
               ),
@@ -256,6 +232,49 @@ class InventoryPage extends GetView<InventoryPageController> {
       ),
     ),
   );
+
+  Widget buildImagePreview(List<String> imageUrls) {
+    final RxInt imageIndex = 0.obs;
+
+    return SizedBox(
+      width: 100,
+      child: imageUrls.isNotEmpty ? Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          Obx(() => Container(
+            height: 100,
+            width: 100,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10.0),
+              image: !isTest() ? DecorationImage(
+                image: NetworkImage(baseUrl + imageUrls[imageIndex.value]),
+              ) : null,
+            ),
+            child: imageUrls.isEmpty
+              ? const Icon(Icons.image)
+              : Container(),
+          )),
+          Row(
+            children: [
+              const SizedBox(width: 15),
+              Text('1 von ${imageUrls.length}'),
+              IconButton(
+                padding: EdgeInsets.zero,
+                splashRadius: 18.0,
+                icon: const Icon(Icons.arrow_right),
+                onPressed: () {
+                  if (imageIndex.value < imageUrls.length - 1) {
+                    imageIndex.value++;
+                  }
+                },
+              )
+            ],
+          ),
+        ],
+      ) : const Icon(Icons.image),
+    );
+  }
 
   TextFormField buildCustomTextField(String text, String label) => TextFormField(
     readOnly: true,

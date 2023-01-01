@@ -130,6 +130,7 @@ class LocaleString extends Translations {
       'properties': 'Properties',
       //
       'add_item': 'Add Item',
+      'edit_item': 'Edit Item',
       'product_details': 'Product Details',
       'profile': 'Profile',
       'email_is_mandatory': 'Email is mandatory',
@@ -379,6 +380,7 @@ class LocaleString extends Translations {
       'properties': 'Eigenschaften',
       //
       'add_item': 'Gegenstand hinzufügen',
+      'edit_item': 'Gegenstand bearbeiten',
       'product_details': 'Produktdetails',
       'profile': 'Profil',
       'email_is_mandatory': 'Email ist verpflichtend',
