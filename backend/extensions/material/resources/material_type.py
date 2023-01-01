@@ -34,6 +34,12 @@ class MaterialType(ModelResource):
         material_type = models.MaterialType.create(**kwargs)
         return self.serialize(material_type)
 
+    @use_kwargs(MaterialTypeSchema.to_dict(exclude=["id"]))
+    def put(self, property_type_id, **kwargs):
+        material_type = models.MaterialType.get(id=property_type_id)
+        material_type.update(**kwargs)
+        return self.serialize(material_type)
+
 
 class MaterialTypes(ModelListResource):
     url = "/material_types"
