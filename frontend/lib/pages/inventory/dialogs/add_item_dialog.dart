@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:cross_file/cross_file.dart';
+import 'package:mime/mime.dart';
+import 'package:path/path.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
@@ -134,7 +136,14 @@ class _AddItemDialogState extends State<AddItemDialog> {
       inventoryNumberControllers.add(TextEditingController(text: widget.initialMaterial!.inventoryNumbers.first.inventoryNumber));
 
       images.value = widget.initialMaterial!.imageUrls.map(
-        (String url) => XFile(baseUrl + url)
+        (String url) {
+          final String path = baseUrl + url;
+          
+          return XFile(path, 
+            mimeType: lookupMimeType(path), 
+            name: basename(url),
+          );
+        }
       ).toList();
     } else {
       bulkValues.add(NonFinalMapEntry(null, <SerialNumber>[]));
@@ -761,8 +770,41 @@ class _AddItemDialogState extends State<AddItemDialog> {
 
     loading.value = true;
 
-    // final bool success = await inventoryPageController.materialController.updateMaterial(material);
-    // TODO implement updateMaterial call
+    MaterialModel material = MaterialModel(
+      id: widget.initialMaterial!.id,
+      imageUrls: widget.initialMaterial!.imageUrls,
+      serialNumbers: bulkValues.first.value,
+      inventoryNumbers: [InventoryNumber(
+        id: widget.initialMaterial!.inventoryNumbers.first.id, 
+        inventoryNumber: bulkValues.first.key!,
+      )],
+      materialType: selectedType.value ?? MaterialTypeModel(
+        id: null,
+        name: materialTypeController.text,
+        description: '',
+      ),
+      properties: properties,
+      rentalFee: double.parse(rentalFeeController.text),
+      maxOperatingYears: double.parse(maxOperatingYearsController.text),
+      maxDaysUsed: int.parse(maxLifeExpectancyController.text),
+      nextInspectionDate: dateFormat.parse(nextInspectionController.text),
+      instructions: instructionsController.text,
+      purchaseDetails: PurchaseDetails(
+        id: widget.initialMaterial!.purchaseDetails.id,
+        purchaseDate: dateFormat.parse(purchaseDateController.text),
+        purchasePrice: double.parse(purchasePriceController.text),
+        suggestedRetailPrice: double.parse(suggestedRetailPriceController.text),
+        invoiceNumber: invoiceNumberController.text,
+        merchant: merchantController.text,
+      ),
+      installationDate: widget.initialMaterial!.installationDate,
+      condition: widget.initialMaterial!.condition,
+      daysUsed: widget.initialMaterial!.daysUsed,
+    );
+
+    final bool success = await inventoryPageController.materialController.updateMaterial(material, imageFiles: images);
+    
+    debugPrint('Success: $success');
   }
 
   String? validateSerialNumber(String value, NonFinalMapEntry<String?, List<SerialNumber>> entry) {
