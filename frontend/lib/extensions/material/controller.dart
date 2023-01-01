@@ -268,6 +268,7 @@ class MaterialController extends GetxController {
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
           'properties': material.properties.map((Property p) => {
+            'id': p.id,
             'value': p.value,
             'property_type': {
               'name': p.propertyType.name,
