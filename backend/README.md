@@ -329,10 +329,196 @@ queried separately.
 
 ## inspection
 
+we want to define the extension inspection in the file `__init__.py`
+
+#### `__init__.py`
+
+``` python
+from core.helpers.extension import Extension
+
+from . import models, resources
+
+inspection = Extension(
+    "inspection",
+    __name__,
+    static_url_path="/inspection/static",
+    static_folder="static",
+    models=(
+        models.Inspection,
+        models.Comment,
+    ),
+    resources=(
+        resources.Inspection,
+        resources.Comment,
+        resources.Comments,
+    ),
+)
+
+``` 
+
+In the file `models.py` we define the class `InspectionType` to show the different typs of inspection, the class `inspection`to connect between inspections and inspectors and the class `comment` that show, how we can comment as inspectors.
+
+#### `models.py`
+
+``` python
+import enum
+from typing import Type
+
+from sqlalchemy import UniqueConstraint
+
+from core.extensions import db
+from core.helpers.orm import CrudModel
+from extensions.common.models import File
+
+Model: Type[CrudModel] = db.Model
+
+
+class InspectionType(enum.Enum):
+    NORMAL = "NORMAL"  # Sichtprüfung
+    PSA = "PSA"
+
+
+def resolve_user_model():
+    """Resolve user model lazily. See:
+    https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#late-evaluation-of-relationship-arguments
+    """  # noqa
+    from extensions.user.models import User
+
+    return User
+
+
+def resolve_material_model():
+    """Resolve material model lazily. See:
+    https://docs.sqlalchemy.org/en/14/orm/basic_relationships.html#late-evaluation-of-relationship-arguments
+    """  # noqa
+    from extensions.material.models import Material
+
+    return Material
+
+
+class Inspection(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    date = db.Column(db.Date)
+    type = db.Column(
+        db.Enum(InspectionType, create_constraint=True),
+        nullable=False,
+        default=InspectionType.NORMAL,
+    )
+    # many to one (FK here)
+    inspector_id = db.Column(db.ForeignKey("user.id"))
+    inspector = db.relationship(resolve_user_model, backref="inspections")
+    # one to many (FK on child)
+    comments = db.relationship("Comment", backref="inspection")
+
+
+class Comment(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    comment = db.Column(db.Text)
+    inspection_id = db.Column(db.ForeignKey(Inspection.id))
+    # many to one (FK here)
+    material_id = db.Column(db.ForeignKey("material.id"))
+    material = db.relationship(resolve_material_model, backref="comments")
+    # one to one
+    photo_id = db.Column(db.ForeignKey(File.id))
+    photo = db.relationship("File", uselist=False)
+
+    __table_args__ = (
+        UniqueConstraint("inspection_id", "material_id", name="inspection_material_uc"),
+    )
+
+``` 
+
+We define in the file `resources.py` the comment extension and comment schema.
+
+#### `resources.py`
+
+``` python
+from flask_apispec import use_kwargs
+from marshmallow import fields
+
+from core.helpers.resource import ModelListResource, ModelResource
+from core.helpers.schema import BaseSchema, ModelConverter
+
+from . import models
+
+
+class CommentSchema(BaseSchema):
+    class Meta:
+        model = models.Comment
+        fields = (
+            "id",
+            "inspection_id",
+            "material_id",
+            "comment",
+            # "photo",
+        )
+
+
+class Comment(ModelResource):
+    url = "/comment"
+    Schema = CommentSchema
+
+    @use_kwargs(
+        {
+            "inspection_id": fields.Int(required=True),
+            "material_id": fields.Int(required=True),
+            "comment": fields.Str(required=True),
+        }
+    )
+    def post(self, **kwargs) -> dict:
+        """Test with
+        curl -X POST "http://localhost:5000/comment" \
+        -H 'Content-Type: application/json' \
+        -d '{"inspection_id":"0", "material_id":"0",
+        "comment":"Comment about the material status"}'
+        """
+        comment = models.Comment.create(**kwargs)
+        return self.serialize(comment)
+
+
+# I thought we should return all comments by material_id,
+# but Do we need Inspection attributes like date?
+class Comments(ModelListResource):
+    url = "/comments/<int:material_id>"
+    Schema = CommentSchema
+
+    def get(self, material_id):
+        comments = models.Comment.filter(material_id=material_id)
+        return self.serialize(comments)
+
+
+class InspectionSchema(BaseSchema):
+    class Meta:
+        # TODO: specifying model_converter should not be necessary
+        #  Check why the metaclass doesn't work
+        model_converter = ModelConverter
+        model = models.Inspection
+        fields = ("inspector_id", "date")
+
+
+class Inspection(ModelResource):
+    url = [
+        "/inspection",
+        "/inspection/<int:inspection_id>",
+    ]
+    Schema = InspectionSchema
+
+    def get(self, inspection_id: int):
+        inspection = models.Inspection.get(id=inspection_id)
+        return self.serialize(inspection)
+
+    @use_kwargs(
+        {"inspector_id": fields.Int(required=True), "date": fields.Date(required=True)}
+    )
+    def post(self, **kwargs) -> dict:
+        inspection = models.Inspection.create(**kwargs)
+        return self.serialize(inspection)
+
+``` 
 
 ## material
 
-in the class `__init__.py`we define the extention "material"
+in the class `__init__.py`we define the extension "material"
 #### `__init__.py`
 
 ``` python
@@ -367,6 +553,8 @@ material = Extension(
 
 ```
 
+In the file `models.py` we define the classes "MaterialType" and "PropertyType" to describe the materials and their properties. In the class " PurchaseDetails" we see every thing about rental prices.
+In the class "material" there is every thing about every material.
 #### `models.py`
 
 
@@ -525,59 +713,13 @@ MaterialPropertyMapping: Table = db.Table(
 )
 
 
-class InventoryNumber(Model):  # type: ignore
-    id = db.Column(db.Integer, primary_key=True)
-    inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
-    material_id = db.Column(db.ForeignKey(Material.id))
-
-
-class SerialNumber(Model):  # type: ignore
-    id = db.Column(db.Integer, primary_key=True)
-    serial_number = db.Column(db.String(length=32))
-    production_date = db.Column(db.Date)
-    manufacturer = db.Column(db.String(length=80))
-    material_id = db.Column(db.ForeignKey(Material.id))
-
-    __table_args__ = (
-        UniqueConstraint(
-            "manufacturer",
-            "serial_number",
-            name="manufacturer_serial_number_uc",
-        ),
-    )
-
-
-class MaterialSet(Model):  # type: ignore
-    id = db.Column(db.Integer, primary_key=True)
-    # many to many
-    images = db.relationship(
-        "File",
-        secondary="material_set_image_mapping",
-    )
-    # images = File.reverse_generic_relationship("MaterialSet")
-    name = db.Column(db.String(length=32))
-
-
-MaterialSetImageMapping: Table = db.Table(
-    "material_set_image_mapping",
-    db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
-    db.Column("file_id", db.ForeignKey(File.id), primary_key=True),
-)
-
-MaterialTypeSetMapping: Table = db.Table(
-    "material_type_set_mapping",
-    db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
-    db.Column("material_type_id", db.ForeignKey(MaterialType.id), primary_key=True),
-)
-
 ```
 
 
 ### resources
 #### `material_type.py`
 
-
-
+In the class "MaterialType" we define the extension "material_type" and we implement a method for both a `GET` and a `POST` request to be able to write and read.
 ``` python
 from flask_apispec import use_kwargs
 
@@ -624,233 +766,11 @@ class MaterialTypes(ModelListResource):
         material_types = models.MaterialType.all()
         return self.serialize(material_types)
 
-```
-#### `material.py`
 
-
-
-``` python
-from datetime import date
-from typing import Optional
-
-from flask import abort
-from flask_apispec import use_kwargs
-from marshmallow import fields
-from sqlalchemy.exc import IntegrityError
-
-from core.helpers.resource import ModelListResource, ModelResource
-from extensions.common.decorators import FileSchema, with_files
-from extensions.common.models import File
-from extensions.material import models
-from extensions.material.resources.schemas import (
-    InventoryNumberSchema,
-    MaterialSchema,
-    PlainPropertySchema,
-    SerialNumberSchema,
-)
-
-
-class Material(ModelResource):
-    url = [
-        "/material",
-        "/material/<int:material_id>",
-    ]
-    Schema = MaterialSchema
-
-    def get(self, material_id: int):
-        """Test with
-        curl -X GET "http://localhost:5000/material/1"
-        """
-        material = models.Material.get(id=material_id)
-        return self.serialize(material)
-
-    @use_kwargs(MaterialSchema.to_dict(exclude=["image_urls"]))
-    def post(
-        self,
-        *,
-        material_type: models.MaterialType,
-        serial_numbers: list[models.SerialNumber],
-        properties: Optional[list[models.Property]] = None,
-        # TODO: handle image uploads
-        images: Optional[list[models.File]] = None,
-        purchase_details: Optional[models.PurchaseDetails] = None,
-        **kwargs,
-    ) -> dict:
-        related = dict(
-            material_type=material_type,
-            serial_numbers=serial_numbers,
-        )
-        if properties:
-            related["properties"] = properties
-        if images:
-            related["images"] = images
-        if purchase_details:
-            related["purchase_details"] = purchase_details
-        try:
-            material = models.Material.create(
-                _related=related,
-                **kwargs,
-            )
-        except IntegrityError as e:
-            print(e)
-            abort(403, "Duplicate serial number for the same manufacturer")
-
-        return self.serialize(material)  # noqa
-
-
-class Materials(ModelListResource):
-    url = "/materials"
-    Schema = MaterialSchema
-
-    def get(self):
-        materials = models.Material.all()
-        return self.serialize(materials)
-
-    @use_kwargs(
-        {
-            "serial_numbers": fields.List(
-                fields.List(
-                    fields.Nested(SerialNumberSchema()),
-                ),
-            ),
-            "inventory_numbers": fields.List(
-                fields.Nested(InventoryNumberSchema(exclude=["id"])),
-            ),
-            "images": fields.List(
-                fields.Nested(FileSchema()),
-            ),
-            # Manual handling because resolving nested and cyclic relationships is very
-            # complicated and error-prone
-            "properties": fields.List(
-                fields.Nested(PlainPropertySchema()),
-            ),
-            **MaterialSchema.to_dict(
-                include=[
-                    "material_type",
-                    "purchase_details",
-                    "max_operating_date",
-                    "max_days_used",
-                    "instructions",
-                    "next_inspection_date",
-                    "rental_fee",
-                ],
-            ),
-        }
-    )
-    @with_files("images", related_extension="material")
-    def post(
-        self,
-        material_type: models.MaterialType,
-        serial_numbers: list[list[models.SerialNumber]],
-        inventory_numbers: list[models.InventoryNumber],
-        purchase_details: models.PurchaseDetails,
-        images: list[File],
-        max_operating_date: date,
-        max_days_used: int,
-        instructions: str,
-        next_inspection_date: date,
-        rental_fee: float,
-        properties: list[dict],
-    ):
-        """Saves a batch of materials that share some identical data. I.e.
-        - purchase details
-        - material type
-        - images
-        """
-
-        if len(serial_numbers) != len(inventory_numbers):
-            return abort(
-                400,
-                "number of serial numbers does not match number of inventory numbers",
-            )
-
-        property_instances = [
-            models.Property.get_or_create(
-                value=prop["value"],
-                _related=dict(
-                    property_type=models.PropertyType.get_or_create(
-                        **prop["property_type"]
-                    ),
-                ),
-            )
-            for prop in properties
-        ]
-        material_type = material_type.ensure_saved()
-        purchase_details = purchase_details.ensure_saved()
-        if material_type.id is None or purchase_details.id is None:
-            return abort(
-                500,
-                "error while trying to persist material type or purchase details",
-            )
-
-        material_ids = []
-        try:
-            for serial_nums, inventory_num in zip(serial_numbers, inventory_numbers):
-                material = models.Material.create(
-                    name="",
-                    max_operating_date=max_operating_date,
-                    max_days_used=max_days_used,
-                    instructions=instructions,
-                    next_inspection_date=next_inspection_date,
-                    rental_fee=rental_fee,
-                    _related=dict(
-                        material_type=material_type,
-                        purchase_details=purchase_details,
-                        serial_numbers=list(serial_nums),
-                        inventory_numbers=[inventory_num],
-                        images=images,
-                        properties=property_instances,
-                    ),
-                )
-                print(material)
-                material_ids.append(material.id)
-        except Exception as e:
-            print(e)
-            return abort(500, "unknown error")
-
-        return {
-            "materials": material_ids,
-        }
 
 ```
-#### `property.py`
 
-
-
-``` python
-from typing import cast
-
-from sqlalchemy.sql import Select
-
-from core.helpers.resource import ModelListResource
-from extensions.material.models import MaterialType, PropertyType
-from extensions.material.resources.schemas import PropertyTypeSchema
-
-
-class PropertyTypes(ModelListResource):
-    url = [
-        "/property_types/<string:material_type_name>",
-    ]
-    Schema = PropertyTypeSchema
-
-    def get(self, material_type_name: str):
-        query = MaterialType.get_query()
-        statement = cast(
-            Select,
-            query.select().where(MaterialType.name.ilike(f"%{material_type_name}%")),
-        )
-        result = query.execute(statement)
-        material_types: list[MaterialType] = result.scalars().all()
-        # Ensure distinct property types because found material types could have
-        # overlapping property types.
-        distinct_property_types: dict[int, PropertyType] = {
-            property_type.id: property_type
-            for material_type in material_types
-            for property_type in material_type.property_types
-        }
-        return self.serialize(list(distinct_property_types.values()))
-
-```
+In the file `schemas.py`we define the schema of the serial number, inventory number,materil typ, property type, plain property, 
 #### `schemas.py`
 ``` python
 from marshmallow import Schema as PlainSchema
@@ -1068,7 +988,7 @@ class RentalSchema(BaseSchema):
 
 To add a new rental, we musst define the class `Rental(ModelResource)`
 To fetch all rentals, wu have to define the class `Rentals(ModelListResource)`
-And we define the class `RentalConfirmationPdf(BaseResource)`with the extention to the rental conformation pdf.
+And we define the class `RentalConfirmationPdf(BaseResource)`with the extension to the rental conformation pdf.
 
 For our resource, we want to be able to read from and write to the database,
 thus we implement a method for both a `GET` and a `POST` request.
