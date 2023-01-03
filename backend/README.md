@@ -333,6 +333,323 @@ queried separately.
 ## material
 
 ## rental
+We want to write an extension "rental", that take the users to the rental site.
+we can create the extension "rental" like this in the `__init__.py` file:
+
+#### `__init__.py`
+
+
+
+``` python
+from core.helpers.extension import Extension
+
+from . import models, resources
+
+rental = Extension(
+    "rental",
+    __name__,
+    static_url_path="/rental/static",
+    static_folder="static",
+    template_folder="templates",
+    models=(
+        models.Rental,
+        # models.RentalStatus,
+        models.MaterialRentalMapping,
+    ),
+    resources=(
+        resources.Rental,
+        resources.Rentals,
+        resources.RentalConfirmationPdf,
+        resources.RentalConfirmationHtml,
+    ),
+)
+
+```
+
+In the following, we define our `models` and `resources`.
+We define the rental status in the class `RentalStatus`, in addition to that we define every member and every condition in the rental process.
+Note, how we create the foreign key referencing the `user` extension.
+
+#### `models.py`
+
+``` python
+
+class RentalStatus(enum.Enum):
+    LENT = "LENT"
+    AVAILABLE = "AVAILABLE"
+    UNAVAILABLE = "UNAVAILABLE"
+    RETURNED = "RETURNED"
+
+
+class Rental(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    # many to one (FK here)
+    customer_id = db.Column(db.ForeignKey("user.id"))
+    customer = db.relationship(
+        "User",
+        # foreign_keys=[db.Column("rental.customer_id")],
+        backref="customer_rentals",
+        primaryjoin="Rental.customer_id == User.id",
+        uselist=False,
+    )
+    # many to one (FK here)
+    lender_id = db.Column(db.ForeignKey("user.id"))
+    lender = db.relationship(
+        "User",
+        backref="lender_rentals",
+        primaryjoin="Rental.lender_id == User.id",
+        uselist=False,
+    )
+    # many to one (FK here)
+    return_to_id = db.Column(db.ForeignKey("user.id"))
+    return_to = db.relationship(
+        "User",
+        backref="receiver_rentals",
+        primaryjoin="Rental.return_to_id == User.id",
+        uselist=False,
+    )
+
+    materials = db.relationship(
+        "Material", secondary="material_rental_mapping", backref="rental"
+    )
+
+    rental_status = db.Column(
+        db.Enum(RentalStatus, create_constraint=True),
+        nullable=False,
+        default=RentalStatus.AVAILABLE,
+    )
+    cost = db.Column(db.Float, nullable=False)
+    discount = db.Column(db.Float, default=0)
+    deposit = db.Column(db.Float, default=0)  # Kaution
+    created_at = db.Column(db.DateTime, default=lambda: datetime.now())
+    start_date = db.Column(db.Date, nullable=False)
+    end_date = db.Column(db.Date, nullable=False)
+    usage_start_date = db.Column(db.Date, nullable=True)
+    usage_end_date = db.Column(db.Date, nullable=True)
+
+
+MaterialRentalMapping: Table = db.Table(
+    "material_rental_mapping",
+    db.Column("rental_id", db.ForeignKey(Rental.id), primary_key=True),
+    db.Column("material_id", db.ForeignKey("material.id"), primary_key=True),
+)
+
+```
+
+### Define resources
+
+For convenience the module `core.helpers` provides a `ModelResource` that
+specifies how a model gets serialized. In order to do so, we must define
+an inner class `RentalSchema` with an inner class `Meta` that specifies the serialization.
+Usually, that means specifying the model and some of its fields, for example
+
+#### `resources.py`
+
+``` python
+
+
+class RentalSchema(BaseSchema):
+    lender = fields.Nested(UserSchema(only=["id"]))
+    customer = fields.Nested(UserSchema(only=["id"]))
+    return_to = fields.Nested(UserSchema(only=["id"]))
+    materials = fields.List(fields.Nested(MaterialSchema(only=["id"])))
+
+    class Meta:
+        model_converter = ModelConverter
+        model = models.Rental
+```
+
+To add a new rental, we musst define the class `Rental(ModelResource)`
+To fetch all rentals, wu have to define the class `Rentals(ModelListResource)`
+And we define the class `RentalConfirmationPdf(BaseResource)`with the extention to the rental conformation pdf.
+
+For our resource, we want to be able to read from and write to the database,
+thus we implement a method for both a `GET` and a `POST` request.
+
+#### `resources.py`
+``` python
+class Rental(ModelResource):
+    url = ["/rental", "/rental/<int:rental_id>"]
+    Schema = RentalSchema
+
+    # Adds a new rental /rental
+    @use_kwargs(
+        {
+            **RentalSchema.to_dict(
+                include=[
+                    "customer",
+                    "lender",
+                    "materials",
+                    "cost",
+                    "discount",
+                    "deposit",
+                    "start_date",
+                    "end_date",
+                    "usage_start_date",
+                    "usage_end_date",
+                ],
+            ),
+        }
+    )
+    def post(
+        self,
+        customer: User,
+        lender: User,
+        materials: list[Material],
+        cost: float,
+        discount: float,
+        deposit: float,
+        start_date: date,
+        end_date: date,
+        usage_start_date: Optional[date] = None,
+        usage_end_date: Optional[date] = None,
+    ) -> dict:
+        """Test with
+        curl -X POST "http://localhost:5000/rental" \
+        -H 'Content-Type: application/json' \
+        -d '{}'
+        """
+        # query = Material.get_query()
+        # material_instances = query.execute(
+        #     query.db.select(Material, Material.id.in_(materials)),
+        # )
+        # print(material_instances)
+        rental = models.Rental.create(
+            _related=dict(
+                customer=customer,
+                lender=lender,
+                materials=materials,
+            ),
+            cost=cost,
+            discount=discount,
+            deposit=deposit,
+            start_date=start_date,
+            end_date=end_date,
+            usage_start_date=usage_start_date,
+            usage_end_date=usage_end_date,
+        )
+        return {
+            "id": rental.id,
+        }
+
+    # update a rental by using rental_id
+    @use_kwargs(RentalSchema.to_dict())
+    def put(self, rental_id, **kwargs):
+        rental = models.Rental.get(id=rental_id)
+        models.Rental.update(rental, **kwargs)
+        return self.serialize(rental)
+
+    def get(self, rental_id: int):
+        """Test with
+        curl -X GET "http://localhost:5000/rental/1"
+        """
+        rental = models.Rental.get(id=rental_id)
+        return self.serialize(rental)
+
+
+# Fetches all rentals.
+class Rentals(ModelListResource):
+    url = "/rentals"
+    Schema = RentalSchema
+
+    def get(self):
+        rentals = models.Rental.all()
+        return self.serialize(rentals)
+
+
+def render_rental_confirmation(
+    rental: models.Rental,
+    total_price: float,
+    logo_url: str,
+    lang: str,
+):
+    return render_template(
+        f"rental_confirmation-{lang}.html",  # noqa
+        # Avoid as many internal requests as possible
+        # TODO: Shrink styles
+        bootstrap=(Path(__file__).parent / "static" / "bootstrap.min.css").read_text(),
+        logo_url=logo_url,
+        rental=rental,
+        total_price=total_price,
+    )
+
+
+class RentalConfirmationPdf(BaseResource):
+    url = [
+        "/rental/<int:rental_id>/confirmation",
+        "/rental/<int:rental_id>/confirmation/<string:lang>",
+    ]
+
+    @login_required
+    def get(self, rental_id: int, lang: str = "de"):
+        user: User = current_user
+        rental: models.Rental = models.Rental.get(id=rental_id)
+        if rental.customer.id != user.id:
+            return abort(403, "Permission denied")
+
+        rental = models.Rental.get(id=rental_id)
+        return render_pdf(
+            HTML(
+                string=render_rental_confirmation(
+                    rental,
+                    logo_url=url_for("rental.static", filename="jdav-logo.jpg"),
+                    total_price=(
+                        sum(m.rental_fee for m in rental.materials)
+                        + rental.deposit
+                        - rental.discount
+                    ),
+                    lang=lang,
+                ),
+            ),
+        )
+
+
+class RentalConfirmationHtml(BaseResource):
+    url = "/rental/<int:rental_id>/confirmation.html"
+
+    def get(self, rental_id: int):
+        if not current_app.debug:
+            abort(500, "debug only")
+
+        rental = models.Rental.get(id=rental_id)
+        return make_response(
+            render_rental_confirmation(
+                rental=rental,
+                logo_url=url_for("rental.static", filename="jdav-logo.jpg"),
+                total_price=(
+                    sum(m.rental_fee for m in rental.materials)
+                    + rental.deposit
+                    - rental.discount
+                ),
+                lang="de",
+            ),
+        )
+
+```
+#### `signals.py`
+
+``` python
+from blinker import Namespace
+
+rental = Namespace()
+
+export = rental.signal("rental-export")
+request_sent = rental.signal("rental-request_sent")
+request_confirmed = rental.signal("rental-request_confirmed")
+invoice_email_sent = rental.signal("rental-invoice_email_sent")
+material_ready = rental.signal("rental-material_ready")
+material_ready_email_sent = rental.signal("rental-material_ready_email_sent")
+picked_up = rental.signal("rental-picked_up")
+returned = rental.signal("rental-returned")
+not_returned = rental.signal("rental-not_returned")
+inspection_material_ok = rental.signal("rental-inspection-material_ok")
+inspection_material_needs_inspection = rental.signal(
+    "rental-inspection-material_needs_inspection"
+)
+inspection_material_broken = rental.signal("rental-inspection-material_broken")
+
+
+``` 
 
 ## user
 
