@@ -332,6 +332,613 @@ queried separately.
 
 ## material
 
+in the class `__init__.py`we define the extention "material"
+#### `__init__.py`
+
+``` python
+from core.helpers.extension import Extension
+
+from . import models, resources
+from .config import STATIC_FOLDER, STATIC_URL_PATH
+
+material = Extension(
+    "material",
+    __name__,
+    static_url_path=STATIC_URL_PATH,
+    static_folder=STATIC_FOLDER,
+    models=(
+        models.MaterialType,
+        models.Material,
+        models.SerialNumber,
+        models.PurchaseDetails,
+        models.MaterialSet,
+        models.MaterialTypeSetMapping,
+        models.Property,
+        models.MaterialTypePropertyTypeMapping,
+    ),
+    resources=(
+        resources.Material,
+        resources.Materials,
+        resources.MaterialType,
+        resources.MaterialTypes,
+        resources.PropertyTypes,
+    ),
+)
+
+```
+
+#### `models.py`
+
+
+
+``` python
+import enum
+from typing import Type
+
+from sqlalchemy import Table
+from sqlalchemy.schema import UniqueConstraint
+
+from core.extensions import db
+from core.helpers.orm import CrudModel
+from extensions.common.models import File
+
+Model: Type[CrudModel] = db.Model
+
+
+class MaterialType(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(length=32), unique=True)
+    description = db.Column(db.String(length=80), default="")
+    sets = db.relationship(
+        "MaterialSet",
+        secondary="material_type_set_mapping",
+        backref="material_types",
+    )
+    # many to many
+    property_types = db.relationship(
+        "PropertyType",
+        secondary="material_type_property_type_mapping",
+        backref="material_types",
+    )
+
+
+class PropertyType(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(length=32), unique=True)
+    description = db.Column(db.String(length=80), default="")
+    unit = db.Column(db.String(length=12))
+
+
+class Property(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    # many to one (FK here)
+    property_type_id = db.Column(db.ForeignKey(PropertyType.id), nullable=False)
+    property_type = db.relationship("PropertyType", backref="properties")
+    value = db.Column(db.String(length=32))
+
+    __table_args__ = (
+        UniqueConstraint(
+            "property_type_id",
+            "value",
+            name="type_value_uc",
+        ),
+    )
+
+    def __str__(self) -> str:
+        unit = self.property_type.unit
+        return (
+            f"{self.property_type.name}: " f"{self.value}{' ' + unit if unit else ''}"
+        )
+
+
+MaterialTypePropertyTypeMapping: Table = db.Table(
+    "material_type_property_type_mapping",
+    db.Column("material_type_id", db.ForeignKey(MaterialType.id), primary_key=True),
+    db.Column("property_type_id", db.ForeignKey(PropertyType.id), primary_key=True),
+)
+
+
+class PurchaseDetails(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    purchase_date = db.Column(db.Date)
+    invoice_number = db.Column(db.String(length=32))
+    merchant = db.Column(db.String(length=80))
+    purchase_price = db.Column(db.Float)
+    suggested_retail_price = db.Column(db.Float, nullable=True)
+
+    __table_args__ = (
+        UniqueConstraint(
+            "merchant",
+            "invoice_number",
+            name="merchant_invoice_number_uc",
+        ),
+    )
+
+
+class Condition(enum.Enum):
+    OK = "OK"
+    REPAIR = "REPAIR"
+    BROKEN = "BROKEN"
+
+
+class Material(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(length=80), nullable=False)
+    installation_date = db.Column(db.Date, nullable=True)  # Inbetriebnahme
+    max_operating_date = db.Column(db.Date, nullable=True)  # Lebensdauer ("MHD")
+    max_days_used = db.Column(
+        db.Integer,
+        nullable=False,
+    )  # maximale Gebrauchsdauer, compare to 'days_used'
+    days_used = db.Column(db.Integer, nullable=False, default=0)
+    instructions = db.Column(db.Text, nullable=False, default="")
+    next_inspection_date = db.Column(db.Date, nullable=False)
+    rental_fee = db.Column(db.Float, nullable=False)
+    # We need `create_constraint=True` because SQLite doesn't support enums natively
+    condition = db.Column(
+        db.Enum(Condition, create_constraint=True),
+        nullable=False,
+        default=Condition.OK,
+    )
+    # many to one (FK here)
+    material_type_id = db.Column(db.ForeignKey(MaterialType.id), nullable=False)
+    material_type = db.relationship("MaterialType", backref="materials")
+    # many to one (FK here)
+    purchase_details_id = db.Column(db.ForeignKey(PurchaseDetails.id), nullable=True)
+    purchase_details = db.relationship("PurchaseDetails", backref="materials")
+    # one to many (FK on child)
+    serial_numbers = db.relationship("SerialNumber", backref="material")
+    # one to many (FK on child)
+    inventory_numbers = db.relationship("InventoryNumber", backref="material")
+    # many to many
+    images = db.relationship(
+        "File",
+        secondary="material_image_mapping",
+    )
+    # many to many
+    properties = db.relationship(
+        "Property",
+        secondary="material_property_mapping",
+        backref="materials",
+    )
+
+    @property
+    def description(self):
+        return f"{self.name} ({', '.join(str(prop) for prop in self.properties)})"
+
+    def save(self) -> None:
+        if not self.serial_numbers:
+            raise ValueError("A material must have at least 1 associated serial number")
+        super().save()
+
+
+MaterialImageMapping: Table = db.Table(
+    "material_image_mapping",
+    db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
+    db.Column("file_id", db.ForeignKey(File.id), primary_key=True),
+)
+
+MaterialPropertyMapping: Table = db.Table(
+    "material_property_mapping",
+    db.Column("material_id", db.ForeignKey(Material.id), primary_key=True),
+    db.Column("property_id", db.ForeignKey(Property.id), primary_key=True),
+)
+
+
+class InventoryNumber(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    inventory_number = db.Column(db.String(length=20), nullable=False, unique=True)
+    material_id = db.Column(db.ForeignKey(Material.id))
+
+
+class SerialNumber(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    serial_number = db.Column(db.String(length=32))
+    production_date = db.Column(db.Date)
+    manufacturer = db.Column(db.String(length=80))
+    material_id = db.Column(db.ForeignKey(Material.id))
+
+    __table_args__ = (
+        UniqueConstraint(
+            "manufacturer",
+            "serial_number",
+            name="manufacturer_serial_number_uc",
+        ),
+    )
+
+
+class MaterialSet(Model):  # type: ignore
+    id = db.Column(db.Integer, primary_key=True)
+    # many to many
+    images = db.relationship(
+        "File",
+        secondary="material_set_image_mapping",
+    )
+    # images = File.reverse_generic_relationship("MaterialSet")
+    name = db.Column(db.String(length=32))
+
+
+MaterialSetImageMapping: Table = db.Table(
+    "material_set_image_mapping",
+    db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
+    db.Column("file_id", db.ForeignKey(File.id), primary_key=True),
+)
+
+MaterialTypeSetMapping: Table = db.Table(
+    "material_type_set_mapping",
+    db.Column("material_set_id", db.ForeignKey(MaterialSet.id), primary_key=True),
+    db.Column("material_type_id", db.ForeignKey(MaterialType.id), primary_key=True),
+)
+
+```
+
+
+### resources
+#### `material_type.py`
+
+
+
+``` python
+from flask_apispec import use_kwargs
+
+from core.helpers.resource import ModelListResource, ModelResource
+from extensions.material import models
+from extensions.material.resources.schemas import MaterialTypeSchema
+
+
+class MaterialType(ModelResource):
+    url = [
+        "/material_type",
+        "/material_type/<int:property_type_id>",
+    ]
+    Schema = MaterialTypeSchema
+
+    def get(self, property_type_id: int):
+        """Test with
+        curl -X GET "http://localhost:5000/material_type/1"
+        """
+        material_type = models.MaterialType.get(id=property_type_id)
+        return self.serialize(material_type)
+
+    @use_kwargs(
+        MaterialTypeSchema.to_dict(
+            name=dict(required=True),
+            description=dict(required=True),
+        )
+    )
+    def post(self, **kwargs) -> dict:
+        """Test with
+        curl -X POST "http://localhost:5000/material_type" \
+        -H 'Content-Type: application/json' \
+        -d '{"name":"Seile", "description":"Seil zum Klettern"}'
+        """
+        material_type = models.MaterialType.create(**kwargs)
+        return self.serialize(material_type)
+
+
+class MaterialTypes(ModelListResource):
+    url = "/material_types"
+    Schema = MaterialTypeSchema
+
+    def get(self):
+        material_types = models.MaterialType.all()
+        return self.serialize(material_types)
+
+```
+#### `material.py`
+
+
+
+``` python
+from datetime import date
+from typing import Optional
+
+from flask import abort
+from flask_apispec import use_kwargs
+from marshmallow import fields
+from sqlalchemy.exc import IntegrityError
+
+from core.helpers.resource import ModelListResource, ModelResource
+from extensions.common.decorators import FileSchema, with_files
+from extensions.common.models import File
+from extensions.material import models
+from extensions.material.resources.schemas import (
+    InventoryNumberSchema,
+    MaterialSchema,
+    PlainPropertySchema,
+    SerialNumberSchema,
+)
+
+
+class Material(ModelResource):
+    url = [
+        "/material",
+        "/material/<int:material_id>",
+    ]
+    Schema = MaterialSchema
+
+    def get(self, material_id: int):
+        """Test with
+        curl -X GET "http://localhost:5000/material/1"
+        """
+        material = models.Material.get(id=material_id)
+        return self.serialize(material)
+
+    @use_kwargs(MaterialSchema.to_dict(exclude=["image_urls"]))
+    def post(
+        self,
+        *,
+        material_type: models.MaterialType,
+        serial_numbers: list[models.SerialNumber],
+        properties: Optional[list[models.Property]] = None,
+        # TODO: handle image uploads
+        images: Optional[list[models.File]] = None,
+        purchase_details: Optional[models.PurchaseDetails] = None,
+        **kwargs,
+    ) -> dict:
+        related = dict(
+            material_type=material_type,
+            serial_numbers=serial_numbers,
+        )
+        if properties:
+            related["properties"] = properties
+        if images:
+            related["images"] = images
+        if purchase_details:
+            related["purchase_details"] = purchase_details
+        try:
+            material = models.Material.create(
+                _related=related,
+                **kwargs,
+            )
+        except IntegrityError as e:
+            print(e)
+            abort(403, "Duplicate serial number for the same manufacturer")
+
+        return self.serialize(material)  # noqa
+
+
+class Materials(ModelListResource):
+    url = "/materials"
+    Schema = MaterialSchema
+
+    def get(self):
+        materials = models.Material.all()
+        return self.serialize(materials)
+
+    @use_kwargs(
+        {
+            "serial_numbers": fields.List(
+                fields.List(
+                    fields.Nested(SerialNumberSchema()),
+                ),
+            ),
+            "inventory_numbers": fields.List(
+                fields.Nested(InventoryNumberSchema(exclude=["id"])),
+            ),
+            "images": fields.List(
+                fields.Nested(FileSchema()),
+            ),
+            # Manual handling because resolving nested and cyclic relationships is very
+            # complicated and error-prone
+            "properties": fields.List(
+                fields.Nested(PlainPropertySchema()),
+            ),
+            **MaterialSchema.to_dict(
+                include=[
+                    "material_type",
+                    "purchase_details",
+                    "max_operating_date",
+                    "max_days_used",
+                    "instructions",
+                    "next_inspection_date",
+                    "rental_fee",
+                ],
+            ),
+        }
+    )
+    @with_files("images", related_extension="material")
+    def post(
+        self,
+        material_type: models.MaterialType,
+        serial_numbers: list[list[models.SerialNumber]],
+        inventory_numbers: list[models.InventoryNumber],
+        purchase_details: models.PurchaseDetails,
+        images: list[File],
+        max_operating_date: date,
+        max_days_used: int,
+        instructions: str,
+        next_inspection_date: date,
+        rental_fee: float,
+        properties: list[dict],
+    ):
+        """Saves a batch of materials that share some identical data. I.e.
+        - purchase details
+        - material type
+        - images
+        """
+
+        if len(serial_numbers) != len(inventory_numbers):
+            return abort(
+                400,
+                "number of serial numbers does not match number of inventory numbers",
+            )
+
+        property_instances = [
+            models.Property.get_or_create(
+                value=prop["value"],
+                _related=dict(
+                    property_type=models.PropertyType.get_or_create(
+                        **prop["property_type"]
+                    ),
+                ),
+            )
+            for prop in properties
+        ]
+        material_type = material_type.ensure_saved()
+        purchase_details = purchase_details.ensure_saved()
+        if material_type.id is None or purchase_details.id is None:
+            return abort(
+                500,
+                "error while trying to persist material type or purchase details",
+            )
+
+        material_ids = []
+        try:
+            for serial_nums, inventory_num in zip(serial_numbers, inventory_numbers):
+                material = models.Material.create(
+                    name="",
+                    max_operating_date=max_operating_date,
+                    max_days_used=max_days_used,
+                    instructions=instructions,
+                    next_inspection_date=next_inspection_date,
+                    rental_fee=rental_fee,
+                    _related=dict(
+                        material_type=material_type,
+                        purchase_details=purchase_details,
+                        serial_numbers=list(serial_nums),
+                        inventory_numbers=[inventory_num],
+                        images=images,
+                        properties=property_instances,
+                    ),
+                )
+                print(material)
+                material_ids.append(material.id)
+        except Exception as e:
+            print(e)
+            return abort(500, "unknown error")
+
+        return {
+            "materials": material_ids,
+        }
+
+```
+#### `property.py`
+
+
+
+``` python
+from typing import cast
+
+from sqlalchemy.sql import Select
+
+from core.helpers.resource import ModelListResource
+from extensions.material.models import MaterialType, PropertyType
+from extensions.material.resources.schemas import PropertyTypeSchema
+
+
+class PropertyTypes(ModelListResource):
+    url = [
+        "/property_types/<string:material_type_name>",
+    ]
+    Schema = PropertyTypeSchema
+
+    def get(self, material_type_name: str):
+        query = MaterialType.get_query()
+        statement = cast(
+            Select,
+            query.select().where(MaterialType.name.ilike(f"%{material_type_name}%")),
+        )
+        result = query.execute(statement)
+        material_types: list[MaterialType] = result.scalars().all()
+        # Ensure distinct property types because found material types could have
+        # overlapping property types.
+        distinct_property_types: dict[int, PropertyType] = {
+            property_type.id: property_type
+            for material_type in material_types
+            for property_type in material_type.property_types
+        }
+        return self.serialize(list(distinct_property_types.values()))
+
+```
+#### `schemas.py`
+``` python
+from marshmallow import Schema as PlainSchema
+from marshmallow import fields
+
+from core.helpers.extension import url_join
+from core.helpers.schema import BaseSchema, ModelConverter
+
+from .. import models
+from ..config import STATIC_URL_PATH
+
+
+class SerialNumberSchema(BaseSchema):
+    class Meta:
+        model = models.SerialNumber
+        fields = ("serial_number", "production_date", "manufacturer")
+
+
+class InventoryNumberSchema(BaseSchema):
+    class Meta:
+        model = models.InventoryNumber
+        fields = ("id", "inventory_number")
+
+
+class MaterialTypeSchema(BaseSchema):
+    class Meta:
+        model = models.MaterialType
+        fields = ("id", "name", "description")
+        # load_only = ("id",)
+
+
+class PropertyTypeSchema(BaseSchema):
+    class Meta:
+        model = models.PropertyType
+        fields = ("id", "name", "unit")
+
+
+class PlainPropertyTypeSchema(PlainSchema):
+    name = fields.Str(required=True)
+    unit = fields.Str()
+
+
+class PropertySchema(BaseSchema):
+    property_type = fields.Nested(PropertyTypeSchema())
+
+    class Meta:
+        model = models.Property
+        fields = ("id", "property_type", "value")
+
+
+class PlainPropertySchema(PlainSchema):
+    property_type = fields.Nested(PlainPropertyTypeSchema())
+    value = fields.Str()
+
+
+class PurchaseDetailsSchema(BaseSchema):
+    class Meta:
+        model = models.PurchaseDetails
+        fields = (
+            "id",
+            "purchase_date",
+            "invoice_number",
+            "merchant",
+            "purchase_price",
+            "suggested_retail_price",
+        )
+
+
+class MaterialSchema(BaseSchema):
+    material_type = fields.Nested(MaterialTypeSchema())
+    serial_numbers = fields.List(fields.Nested(SerialNumberSchema()))
+    inventory_numbers = fields.List(fields.Nested(InventoryNumberSchema()))
+    purchase_details = fields.Nested(PurchaseDetailsSchema())
+    image_urls = fields.Method("get_image_urls")
+    properties = fields.List(fields.Nested(PropertySchema()))
+
+    class Meta:
+        # TODO: specifying model_converter should not be necessary
+        #  Check why the metaclass doesn't work
+        model_converter = ModelConverter
+        model = models.Material
+        dump_only = ("image_urls",)
+
+    def get_image_urls(self, obj: models.Material):
+        return [url_join(STATIC_URL_PATH, image.path) for image in obj.images]
+
+```
+
 ## rental
 We want to write an extension "rental", that take the users to the rental site.
 we can create the extension "rental" like this in the `__init__.py` file:
