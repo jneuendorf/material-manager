@@ -26,8 +26,16 @@ thus we do not need to store it in an extra column.
 
 ## API
 
-`make run` and open http://localhost:5000/swagger-ui.
+`make run` and open http://localhost:5001/swagger-ui.
 
 
 
 ### Permissions
+
+#### Superuser:
+This is a special permission that always allows access
+when using the `permissions_required` decorator.
+#### User read
+Allows reading any users data
+#### User write
+Allows writing any users data
