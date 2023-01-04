@@ -12,7 +12,6 @@ This will start the flask app at http://localhost:5000.
 Flask environment variables can be set in `.env`.
 
 
-
 ## Creating Sample Data
 
 This data is useful for manual user testing.
