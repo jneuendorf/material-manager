@@ -1,10 +1,10 @@
 # Inspection extension
 
-What is it
+we want to define the extension inspection in the file [__init__.py](./__init__.py)
 
 ## Data model
 
-For details see [models.py](./models.py)
+In the file [models.py](./models.py) we define the class `InspectionType` to show the different typs of inspection, the class `inspection`to connect between inspections and inspectors and the class `comment` that show, how we can comment as inspectors.
 
 ## Resources
 ```python
