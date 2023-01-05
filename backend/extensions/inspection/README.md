@@ -1,6 +1,6 @@
 # Inspection extension
 
-we want to define the extension inspection in the file [__init__.py](./__init__.py)
+We want to define the extension inspection in the file [__init__.py](./__init__.py)
 
 ## Data model
 
