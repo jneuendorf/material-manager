@@ -80,7 +80,7 @@ permissions in the database because only this extension itself knows about the
 
 
 ### CrudModel
-Inspired by https://flask-diamond.readthedocs.io/en/stable/_modules/flask_diamond/mixins/crud/
+Inspired by [this mixing](https://flask-diamond.readthedocs.io/en/stable/_modules/flask_diamond/mixins/crud/)
 
 ### Resource
 
