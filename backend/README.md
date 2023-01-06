@@ -97,9 +97,9 @@ An example:
 
 ```python
 @permissions_required("user:read")
-    def get(self):
-        users = UserModel.all()
-        return self.serialize(users)
+def get(self):
+    users = UserModel.all()
+    return self.serialize(users)
 ```
 #### @login_required
 
