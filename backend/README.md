@@ -109,8 +109,8 @@ because it's agnostic of the auth implementation.
 An example:
 ```python
 @login_required
-    def get(self) -> dict:
-        return self.schema.dump(current_user)
+def get(self) -> dict:
+    return self.schema.dump(current_user)
 ```
 #### @raises
 
