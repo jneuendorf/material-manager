@@ -3,12 +3,17 @@ from core.helpers.decorators import raised_from
 from .models import Permission, Role, User
 from .permissions import superuser, user_read, user_write
 
+superuser_permission = Permission.get_or_create(**superuser)
 user_read_permission = Permission.get_or_create(**user_read)
 user_write_permission = Permission.get_or_create(**user_write)
 
 superuser_role = Role.get_or_create(
     _related=dict(
-        permissions=[user_read_permission, user_write_permission],
+        permissions=[
+            superuser_permission,
+            user_read_permission,
+            user_write_permission,
+        ],
     ),
     **superuser,
 )
