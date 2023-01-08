@@ -256,6 +256,7 @@ class LocaleString extends Translations {
       //
       'no_comments': 'No comments',
       'must_be_file_or_url': 'Must be a file or URL',
+      'no_permission': 'No permission',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -507,6 +508,7 @@ class LocaleString extends Translations {
       //
       'no_comments': 'Keine Kommentare',
       'must_be_file_or_url': 'Muss Datei oder URL sein',
+      'no_permission': 'Keine Berechtigung',
     }
   };
 }

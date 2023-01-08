@@ -7,13 +7,14 @@ import 'package:frontend/pages/administration/screens/account_screen.dart';
 import 'package:frontend/pages/administration/screens/role_screen.dart';
 import 'package:frontend/pages/administration/screens/extras_screen.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
+import 'package:frontend/common/components/no_permission_widget.dart';
 
 
 class AdministrationPage extends GetView<AdministrationPageController> {
   const AdministrationPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => PageWrapper(
+  Widget build(BuildContext context) => controller.apiService.isSuperUser ? PageWrapper(
     pageTitle: 'administration'.tr,
     child: Column(
       children: [
@@ -72,5 +73,5 @@ class AdministrationPage extends GetView<AdministrationPageController> {
         ),
       ],
     ),
-  );
+  ) : const NoPermissionWidget();
 }
