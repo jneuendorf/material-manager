@@ -1,4 +1,5 @@
 from datetime import date
+from typing import Optional
 
 from flask import abort
 from flask_apispec import use_kwargs
@@ -86,13 +87,16 @@ class Material(ModelResource):
             ),
             **MaterialSchema.to_dict(
                 include=[
-                    "material_type",
-                    "purchase_details",
+                    "installation_date",
                     "max_operating_years",
                     "max_days_used",
+                    "days_used",
                     "instructions",
                     "next_inspection_date",
                     "rental_fee",
+                    "condition",
+                    "material_type",
+                    "purchase_details",
                 ],
             ),
         }
@@ -100,18 +104,22 @@ class Material(ModelResource):
     def put(
         self,
         material_id: int,
-        material_type: models.MaterialType,
+        *,
         serial_numbers: list[list[models.SerialNumber]],
         inventory_numbers: list[models.InventoryNumber],
-        purchase_details: models.PurchaseDetails,
         image_urls: list[str],
         images: list[File],
-        max_operating_years: float,
+        properties: list[dict],
+        installation_date: date,
+        max_operating_years: Optional[float],
         max_days_used: int,
+        days_used: int,
         instructions: str,
         next_inspection_date: date,
         rental_fee: float,
-        properties: list[dict],
+        condition: models.Condition,
+        material_type: models.MaterialType,
+        purchase_details: Optional[models.PurchaseDetails],
     ):
         material = models.Material.get(id=material_id)
 
@@ -133,26 +141,35 @@ class Material(ModelResource):
             for prop in properties
         ]
         material_type = material_type.ensure_saved()
-        purchase_details = purchase_details.ensure_saved()
-        if material_type.id is None or purchase_details.id is None:
+        if purchase_details is not None:
+            purchase_details = purchase_details.ensure_saved()
+            if purchase_details.id is None:  # type: ignore
+                return abort(
+                    500,
+                    "error while trying to persist purchase details",
+                )
+
+        if material_type.id is None:
             return abort(
                 500,
-                "error while trying to persist material type or purchase details",
+                "error while trying to persist material type",
             )
         try:
 
             update_kwargs = dict(
+                serial_numbers=serial_numbers,
+                inventory_numbers=inventory_numbers,
+                properties=property_instances,
+                installation_date=installation_date,
                 max_operating_years=max_operating_years,
                 max_days_used=max_days_used,
+                days_used=days_used,
                 instructions=instructions,
                 next_inspection_date=next_inspection_date,
                 rental_fee=rental_fee,
+                condition=condition,
                 material_type=material_type,
                 purchase_details=purchase_details,
-                serial_numbers=serial_numbers,
-                inventory_numbers=inventory_numbers,
-                images=images,
-                properties=property_instances,
             )
             # image_urls is given, if no change has occurred
             # (this means the client may send images from GET unchanged).
