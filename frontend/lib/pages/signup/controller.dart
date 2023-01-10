@@ -111,6 +111,14 @@ class SignupController extends GetxController {
     if(value!.isEmpty) {
       return 'password_is_mandatory'.tr;
     }
+    if (value.length < 8) {
+      return 'at_least_8_chars'.tr;
+    }
+
+    var regExp = RegExp(r'^(?=.*[^A-Za-z]{2,}).*$', unicode: true);
+    if (!regExp.hasMatch(value)) {
+      return 'at_least_2_non_letter_chars'.tr;
+    }
     return null;
   }
 

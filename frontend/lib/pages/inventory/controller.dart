@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/extensions/material/controller.dart';
 
@@ -14,6 +15,7 @@ class InventoryPageBinding implements Bindings {
 }
 
 class InventoryPageController extends GetxController {
+    final apiService = Get.find<ApiService>();
     final materialController = Get.find<MaterialController>();
 
     final RxList<MaterialModel> filteredMaterial = <MaterialModel>[].obs;

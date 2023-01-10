@@ -1,5 +1,6 @@
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/model.dart';
 import 'package:frontend/extensions/inspection/controller.dart';
 import 'package:frontend/extensions/material/controller.dart';
@@ -19,6 +20,7 @@ class InspectionPageBinding implements Bindings {
 }
 
 class InspectionPageController extends GetxController {
+  final apiService = Get.find<ApiService>();
   final materialController = Get.find<MaterialController>();
   final inspectionController = Get.find<InspectionController>();
   final userController = Get.find<UserController>();

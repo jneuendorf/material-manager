@@ -130,6 +130,7 @@ class LocaleString extends Translations {
       'properties': 'Properties',
       //
       'add_item': 'Add Item',
+      'edit_item': 'Edit Item',
       'product_details': 'Product Details',
       'profile': 'Profile',
       'email_is_mandatory': 'Email is mandatory',
@@ -255,6 +256,9 @@ class LocaleString extends Translations {
       //
       'no_comments': 'No comments',
       'must_be_file_or_url': 'Must be a file or URL',
+      'at_least_8_chars': 'At least 8 characters',
+      'at_least_2_non_letter_chars': 'At least 2 non-letter characters',
+      'no_permission': 'No permission',
     },
     'de_DE': {
       'hello': 'Hallo',
@@ -379,6 +383,7 @@ class LocaleString extends Translations {
       'properties': 'Eigenschaften',
       //
       'add_item': 'Gegenstand hinzufügen',
+      'edit_item': 'Gegenstand bearbeiten',
       'product_details': 'Produktdetails',
       'profile': 'Profil',
       'email_is_mandatory': 'Email ist verpflichtend',
@@ -505,6 +510,9 @@ class LocaleString extends Translations {
       //
       'no_comments': 'Keine Kommentare',
       'must_be_file_or_url': 'Muss Datei oder URL sein',
+      'at_least_8_chars': 'Mindestens 8 Zeichen',
+      'at_least_2_non_letter_chars': 'Mindestens 2 Sonderzeichen',
+      'no_permission': 'Keine Berechtigung',
     }
   };
 }

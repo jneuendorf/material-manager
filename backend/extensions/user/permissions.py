@@ -3,7 +3,7 @@
 
 superuser = dict(
     name="superuser",
-    description="May to anything",
+    description="May do anything",
 )
 """This is a special permission that always allows access
 when using the `permissions_required` decorator.
