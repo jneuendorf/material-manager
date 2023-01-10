@@ -256,6 +256,8 @@ class LocaleString extends Translations {
       //
       'no_comments': 'No comments',
       'must_be_file_or_url': 'Must be a file or URL',
+      'at_least_8_chars': 'At least 8 characters',
+      'at_least_2_non_letter_chars': 'At least 2 non-letter characters',
       'no_permission': 'No permission',
     },
     'de_DE': {
@@ -508,6 +510,8 @@ class LocaleString extends Translations {
       //
       'no_comments': 'Keine Kommentare',
       'must_be_file_or_url': 'Muss Datei oder URL sein',
+      'at_least_8_chars': 'Mindestens 8 Zeichen',
+      'at_least_2_non_letter_chars': 'Mindestens 2 Sonderzeichen',
       'no_permission': 'Keine Berechtigung',
     }
   };
