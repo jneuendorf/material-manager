@@ -4,6 +4,7 @@ from typing import Optional
 from flask import abort
 from flask_apispec import use_kwargs
 from marshmallow import fields
+from sqlalchemy.exc import IntegrityError
 
 from core.helpers.resource import ModelListResource, ModelResource
 from extensions.common.decorators import FileSchema, with_files
@@ -31,38 +32,38 @@ class Material(ModelResource):
         material = models.Material.get(id=material_id)
         return self.serialize(material)
 
-    # @use_kwargs(MaterialSchema.to_dict(exclude=["image_urls"]))
-    # def post(
-    #     self,
-    #     *,
-    #     material_type: models.MaterialType,
-    #     serial_numbers: list[models.SerialNumber],
-    #     properties: Optional[list[models.Property]] = None,
-    #     # TODO: handle image uploads
-    #     images: Optional[list[models.File]] = None,
-    #     purchase_details: Optional[models.PurchaseDetails] = None,
-    #     **kwargs,
-    # ) -> dict:
-    #     related = dict(
-    #         material_type=material_type,
-    #         serial_numbers=serial_numbers,
-    #     )
-    #     if properties:
-    #         related["properties"] = properties
-    #     if images:
-    #         related["images"] = images
-    #     if purchase_details:
-    #         related["purchase_details"] = purchase_details
-    #     try:
-    #         material = models.Material.create(
-    #             _related=related,
-    #             **kwargs,
-    #         )
-    #     except IntegrityError as e:
-    #         print(e)
-    #         abort(403, "Duplicate serial number for the same manufacturer")
-    #
-    #     return self.serialize(material)  # noqa
+    @use_kwargs(MaterialSchema.to_dict(exclude=["image_urls"]))
+    def post(
+        self,
+        *,
+        material_type: models.MaterialType,
+        serial_numbers: list[models.SerialNumber],
+        properties: Optional[list[models.Property]] = None,
+        # TODO: handle image uploads
+        images: Optional[list[models.File]] = None,
+        purchase_details: Optional[models.PurchaseDetails] = None,
+        **kwargs,
+    ) -> dict:
+        related = dict(
+            material_type=material_type,
+            serial_numbers=serial_numbers,
+        )
+        if properties:
+            related["properties"] = properties
+        if images:
+            related["images"] = images
+        if purchase_details:
+            related["purchase_details"] = purchase_details
+        try:
+            material = models.Material.create(
+                _related=related,
+                **kwargs,
+            )
+        except IntegrityError as e:
+            print(e)
+            abort(403, "Duplicate serial number for the same manufacturer")
+
+        return self.serialize(material)  # noqa
 
     @use_kwargs(
         {
