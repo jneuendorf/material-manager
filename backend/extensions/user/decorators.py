@@ -27,8 +27,8 @@ def permissions_required(*required_permissions: str):
                 print("> required:", required_permissions)
                 print("> given:", user_permissions)
             if (
-                superuser["name"] in user_permissions
-                or set(required_permissions) - user_permissions
+                superuser["name"] not in user_permissions
+                and set(required_permissions) - user_permissions
             ):
                 return abort(403, "Permission denied")
             return fn(*args, **kwargs)

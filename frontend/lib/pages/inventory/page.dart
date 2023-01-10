@@ -12,6 +12,7 @@ import 'package:frontend/pages/inventory/dialogs/product_details_dialog.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
 import 'package:frontend/common/components/base_footer.dart';
 import 'package:frontend/common/components/collapsable_expansion_tile.dart';
+import 'package:frontend/common/components/no_permission_widget.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/buttons/text_icon_button.dart';
 import 'package:frontend/common/util.dart';
@@ -21,7 +22,7 @@ class InventoryPage extends GetView<InventoryPageController> {
   const InventoryPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => PageWrapper(
+  Widget build(BuildContext context) => controller.apiService.isSuperUser ? PageWrapper(
     pageTitle: 'inventory'.tr,
     showFooter: false,
     child: Column(
@@ -159,7 +160,7 @@ class InventoryPage extends GetView<InventoryPageController> {
         if (kIsWeb) const BaseFooter(),
       ],
     ),
-  );
+  ) : const NoPermissionWidget();
 
   Widget buildExpansionCard(MaterialModel item) => Card(
     elevation: 5.0,
