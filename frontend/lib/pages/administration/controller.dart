@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/api.dart';
 import 'package:frontend/extensions/user/controller.dart';
 import 'package:frontend/extensions/user/model.dart';
 import 'package:frontend/extensions/rental/model.dart';
@@ -19,6 +20,7 @@ class AdministrationPageBinding implements Bindings {
 }
 
 class AdministrationPageController extends GetxController with GetSingleTickerProviderStateMixin {
+  final apiService = Get.find<ApiService>();
   final userController = Get.find<UserController>();
   final materialController = Get.find<MaterialController>();
 

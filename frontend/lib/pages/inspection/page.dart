@@ -7,6 +7,7 @@ import 'package:frontend/api.dart';
 import 'package:frontend/extensions/material/model.dart';
 import 'package:frontend/pages/inspection/controller.dart';
 import 'package:frontend/common/components/page_wrapper.dart';
+import 'package:frontend/common/components/no_permission_widget.dart';
 import 'package:frontend/common/buttons/drop_down_filter_button.dart';
 import 'package:frontend/common/util.dart';
 
@@ -15,7 +16,7 @@ class InspectionPage extends GetView<InspectionPageController> {
   const InspectionPage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) => PageWrapper(
+  Widget build(BuildContext context) => controller.apiService.isSuperUser ? PageWrapper(
     pageTitle: 'inspection'.tr,
     child: Column(
       children:  [
@@ -120,5 +121,5 @@ class InspectionPage extends GetView<InspectionPageController> {
         ),
       ],
     ),
-  );
+  ) : const NoPermissionWidget();
 }

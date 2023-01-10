@@ -80,6 +80,10 @@ class ApiService extends GetxService {
     (JwtDecoder.getRemainingTime(refreshToken!) >= const Duration(minutes: 1) &&
     !JwtDecoder.isExpired(refreshToken!)));
 
+  bool get isSuperUser => tokenInfo != null &&
+    tokenInfo!['permissions'] != null &&
+    tokenInfo!['permissions'].containsValue('superuser');
+
   void defaultCatch(DioError e) {
     debugPrint('defaultCatch error: $e');
     var response = e.response;
