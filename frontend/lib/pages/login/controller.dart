@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
 import 'package:dio/dio.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 
 import 'package:frontend/api.dart';
 import 'package:frontend/pages/rental/controller.dart';
@@ -38,9 +39,11 @@ class LoginController extends GetxController {
       var accessToken = response.data['access_token'] as String;
       var refreshToken = response.data['refresh_token'] as String;
 
+      apiService.tokenInfo = JwtDecoder.decode(accessToken);
       apiService.accessToken = accessToken;
       apiService.refreshToken = refreshToken;
       apiService.saveCredentials = rememberMe.value;
+
 
       return {
         atStorageKey: accessToken,
