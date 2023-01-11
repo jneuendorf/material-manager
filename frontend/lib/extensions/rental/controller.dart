@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -9,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/rental/model.dart';
 import 'package:frontend/extensions/rental/mock_data_rental.dart';
+import 'package:frontend/common/util.dart';
 
 
 class RentalController extends GetxController {
@@ -22,51 +22,36 @@ class RentalController extends GetxController {
   @override
   Future<void> onInit() async {
     super.onInit();
-    
+
     debugPrint('RentalController init');
 
     initCompleter.future;
 
+    if (isTest()) {
+      initCompleter.complete();
+      return;
+    }
+
     await Future.wait([
       _initRentals(),
-      _initStatuses(),
     ]);
 
     initCompleter.complete();
   }
 
   Future<void> _initRentals() async {
-    rentals.value = await getAllRentalMocks();
-  }
-
-  Future<void> _initStatuses() async {
-    statuses.value = await getAllStatusMocks();
+    rentals.value = (await getAllRentals()) ?? [];
   }
 
   /// Fetches all rentals from backend.
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<RentalModel>> getAllRentalMocks()  async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 
     return mockRentals + mockRentals;
-  }
-
-  /// Fetches all rental statuses from backend.
-  /// Currently only mock data is used.
-  /// A delay of 500 milliseconds is used to simulate a network request.
-  Future<List<RentalStatus>> getAllStatusMocks()  async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
-      await Future.delayed(const Duration(milliseconds: 500));
-    }
-
-    return [
-      mockAvailibleRentalStatus,
-      mockRentedRentalStatus,
-      mockReturnedRentalStatus,
-    ];
   }
 
   /// Fetches all rentals from backend.
@@ -85,45 +70,26 @@ class RentalController extends GetxController {
     return null;
   }
 
-  /// Fetches all rental statuses from backend.
-  Future<List<RentalStatus>?> getAllStatuses() async {
-    try {
-      final response = await apiService.mainClient.get('/rental_statuses');
-
-      if (response.statusCode != 200) debugPrint('Error getting rental statuses');
-
-      return response.data.map<RentalStatus>(
-        (dynamic item) => RentalStatus.fromJson(item)
-      ).toList();
-    } on DioError catch(e) {
-      apiService.defaultCatch(e);
-    }
-    return null;
-  }
-
-  /// Adds a new rental to the backend.
+  /// Adds the provided [rental] to the backend.
   /// Returns the id of the newly created rental
   /// or null if an error occured.
-  /// The [customerId] will automaically be added to [rental].
-  /// The [ApiService]´s [tokenInfo] must not be null.
   Future<int?> addRental(RentalModel rental) async {
-    assert(apiService.tokenInfo != null);
-
     try {
       final response = await apiService.mainClient.post('/rental',
         data: {
-          'customer_id': apiService.tokenInfo!['sub'],
-          'material_ids': rental.materialIds,
-          'cost': rental.cost,
-          'created_at': rental.createdAt.toIso8601String(),
-          'start_date': rental.startDate.toIso8601String(),
-          'end_date': rental.endDate.toIso8601String(),
-          'usage_start_date': rental.usageStartDate.toIso8601String(),
-          'usage_end_date': rental.usageEndDate.toIso8601String(),
-          if (rental.status != null) 'status': {
-            'id': rental.status!.id,
-            'name': rental.status!.name,
+          'customer': {
+            'id': rental.customerId!,
           },
+          'materials': rental.materialIds.map((int id) => {'id': id}).toList(),
+          'cost': rental.cost,
+          'discount': rental.discount ?? 0,
+          'deposit': rental.deposit ?? 0,
+          'start_date': isoDateFormat.format(rental.startDate),
+          'end_date': isoDateFormat.format(rental.endDate),
+          'usage_start_date': isoDateFormat.format(
+            rental.usageStartDate ?? rental.startDate),
+          'usage_end_date': isoDateFormat.format(
+            rental.usageEndDate ?? rental.endDate),
         },
       );
 
@@ -136,20 +102,33 @@ class RentalController extends GetxController {
     return null;
   }
 
-  /// Updates a rental in the backend.
+  /// Updates the provided [rental] in the backend.
   /// Returns true if the rental was updated successfully.
   Future<bool> updateRental(RentalModel rental) async {
     try {
       final response = await apiService.mainClient.put('/rental/${rental.id}',
         data: {
-          'customer_id': rental.customerId,
-          'material_ids': rental.materialIds,
+          'customer': {
+            'id': rental.customerId!,
+          },
+          if (rental.lenderId != null) 'lender': {
+            'id': rental.lenderId!,
+          },
+          if (rental.returnToId != null) 'return_to': {
+            'id': rental.returnToId!,
+          },
+          'materials': rental.materialIds.map((int id) => {'id': id}).toList(),
           'cost': rental.cost,
+          'discount': rental.discount ?? 0,
+          'deposit': rental.deposit ?? 0,
           'created_at': rental.createdAt.toIso8601String(),
-          'start_date': rental.startDate.toIso8601String(),
-          'end_date': rental.endDate.toIso8601String(),
-          'usage_start_date': rental.usageStartDate.toIso8601String(),
-          'usage_end_date': rental.usageEndDate.toIso8601String(),
+          'start_date': isoDateFormat.format(rental.startDate),
+          'end_date': isoDateFormat.format(rental.endDate),
+          'usage_start_date': isoDateFormat.format(
+            rental.usageStartDate ?? rental.startDate),
+          'usage_end_date': isoDateFormat.format(
+            rental.usageEndDate ?? rental.endDate),
+          if (rental.status != null) 'rental_status': rental.status!.name.toUpperCase(),
         },
       );
 

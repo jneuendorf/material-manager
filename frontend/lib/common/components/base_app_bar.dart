@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -37,6 +34,8 @@ class BaseAppBar extends StatefulWidget with PreferredSizeWidget {
 }
 
 class _BaseAppBarState extends State<BaseAppBar> {
+  final ApiService apiService = Get.find<ApiService>();
+
   late final RxString currentRoute;
   late final bool loggedIn;
 
@@ -44,13 +43,14 @@ class _BaseAppBarState extends State<BaseAppBar> {
   void initState() {
     super.initState();
 
-    if (!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (isTest()) {
       currentRoute = '/'.obs;
     } else {
       currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
     }
+    
+    loggedIn = apiService.isAuthorized;
 
-    loggedIn = Get.find<ApiService>().isAuthorized;
     debugPrint('loggedIn: $loggedIn');
   }
 
@@ -76,7 +76,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
               fontWeight: FontWeight.w600,
             ),
           )),
-          Obx(() => Padding(
+          if (apiService.isSuperUser) Obx(() => Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
             child: HoverTextButton(
               onTap: () => Get.toNamed(inventoryRoute),
@@ -88,7 +88,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
               fontWeight: FontWeight.w600,
             ),
           )),
-          Obx(() => Padding(
+          if (apiService.isSuperUser) Obx(() => Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
             child: HoverTextButton(
               onTap: () => Get.toNamed(inspectionRoute),
@@ -100,7 +100,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
               fontWeight: FontWeight.w600,
             ),
           )),
-          Obx(() => Padding(
+          if (apiService.isSuperUser) Obx(() => Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
             child: HoverTextButton(
               onTap: () => Get.toNamed(lenderRoute),
@@ -112,7 +112,7 @@ class _BaseAppBarState extends State<BaseAppBar> {
               fontWeight: FontWeight.w600,
             ),
           )),
-          Obx(() => Padding(
+          if (apiService.isSuperUser) Obx(() => Padding(
             padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 8.0),
             child: HoverTextButton(
               onTap: () => Get.toNamed(administrationRoute),

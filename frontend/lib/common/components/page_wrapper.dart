@@ -1,11 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:frontend/common/util.dart';
 
 import 'package:get/get.dart';
 
+import 'package:frontend/common/util.dart';
 import 'package:frontend/common/components/base_app_bar.dart';
 import 'package:frontend/common/components/base_footer.dart';
 import 'package:frontend/pages/rental/controller.dart';
@@ -68,7 +66,7 @@ class PageWrapper extends StatelessWidget {
   Drawer buildDrawer() {
     RxString currentRoute = '/'.obs;
 
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       currentRoute = '/${Get.currentRoute.split('/')[1]}'.obs;
     }
 

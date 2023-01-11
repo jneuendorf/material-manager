@@ -3,12 +3,17 @@ from datetime import date, datetime, timedelta
 
 from extensions.material.models import Material
 from extensions.rental.models import Rental, RentalStatus
+from extensions.user.models import User
 
 NUM_RENTAL = 50
 
 material_list = Material.all()
 assert material_list, "Cannot create rentals because there are no materials"
+user_list = User.all()
+assert user_list, "Cannot create rentals because there are no users"
+
 materials = itertools.cycle(material_list)
+users = itertools.cycle(user_list)
 
 for i in range(1, NUM_RENTAL + 1):
     if i % 50 == 0:
@@ -20,9 +25,14 @@ for i in range(1, NUM_RENTAL + 1):
     else:
         rental_status = RentalStatus.AVAILABLE
 
+    lender = None
+    if i % 3 == 0:
+        lender = next(users)
+    return_to = None
+    if i % 7 == 0:
+        return_to = next(users)
+
     Rental.get_or_create(
-        customer_id=i,
-        lender_id=i,
         rental_status=rental_status,
         cost=i % 100 + (i % 100) * 0.01,
         discount=int(i % 100),
@@ -32,6 +42,10 @@ for i in range(1, NUM_RENTAL + 1):
         end_date=date(2022, 1, 1) + timedelta(days=i + 14),
         usage_start_date=None,
         usage_end_date=None,
-        return_to_id=i,
-        _related=dict(materials=[next(materials), next(materials)]),
+        _related=dict(
+            customer=next(users),
+            lender=lender,
+            return_to=return_to,
+            materials=[next(materials), next(materials)],
+        ),
     )

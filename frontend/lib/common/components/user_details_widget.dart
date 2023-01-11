@@ -68,7 +68,10 @@ class UserDetailsWidget extends StatelessWidget {
       const Spacer(),
       TextIconButton(
         onTap: () {
-          if (user == null) return;
+          if (user == null) {
+            debugPrint('User is null!');
+            return;
+          }
 
           if (user!.id == apiService.tokenInfo!['sub']) {
             Get.dialog(UpdateProfileDialog(user: user!));

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 
@@ -9,6 +8,7 @@ import 'package:get/get.dart';
 import 'package:frontend/api.dart';
 import 'package:frontend/extensions/inspection/model.dart';
 import 'package:frontend/extensions/inspection/mock_data.dart';
+import 'package:frontend/common/util.dart';
 
 
 class InspectionController extends GetxController {
@@ -34,7 +34,7 @@ class InspectionController extends GetxController {
   /// Currently only mock data is used.
   /// A delay of 500 milliseconds is used to simulate a network request.
   Future<List<InspectionModel>> getAllInspectionMocks()  async {
-    if (!kIsWeb && !Platform.environment.containsKey('FLUTTER_TEST')) {
+    if (!isTest()) {
       await Future.delayed(const Duration(milliseconds: 500));
     }
 

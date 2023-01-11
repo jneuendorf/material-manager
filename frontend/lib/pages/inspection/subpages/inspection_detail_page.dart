@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:get/get.dart';
@@ -77,9 +74,9 @@ class _InspectionDetailPageState extends State<InspectionDetailPage> {
                         padding: const EdgeInsets.all(8.0),
                         decoration: BoxDecoration(
                           border: Border.all(),
-                          borderRadius: BorderRadius.circular(10.0)
+                          borderRadius: BorderRadius.circular(10.0),
                         ),
-                        child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST'))
+                        child: !isTest()
                             ? inspectionPageController.selectedMaterial.value!.imageUrls.isNotEmpty 
                               ? Image.network(baseUrl + inspectionPageController.selectedMaterial.value!.imageUrls.first)
                               : const Icon(Icons.image)
@@ -153,15 +150,14 @@ class _InspectionDetailPageState extends State<InspectionDetailPage> {
                                       style:  const TextStyle(color: Colors.black45, fontSize: 16),
                                     ),
                                     Text(inspectionPageController.getInspectorName(selectedInspection.value!.inspectorId),
-                                        style:  const TextStyle(fontSize: 16),
+                                      style: const TextStyle(fontSize: 16),
                                     ),
                                   ],
                                 ),
                               ],
                             ),
                             Expanded(
-                              child: !(!kIsWeb && Platform.environment.containsKey('FLUTTER_TEST')) && 
-                                comments[index].imagePath != null
+                              child: !isTest() && comments[index].imagePath != null
                                   ? Image.network(comments[index].imagePath!)
                                   : Container(),
                             )
