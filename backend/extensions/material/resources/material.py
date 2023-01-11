@@ -73,11 +73,11 @@ class Material(ModelResource):
             "inventory_numbers": fields.List(
                 fields.Nested(InventoryNumberSchema(exclude=["id"])),
             ),
-            "image_urls": fields.List(
-                fields.Str(),
-                required=False,
-                dump_default=lambda: [],
-            ),
+            # "image_urls": fields.List(
+            #     fields.Str(),
+            #     required=False,
+            #     dump_default=lambda: [],
+            # ),
             "images": fields.List(
                 fields.Nested(FileSchema()),
                 required=False,
@@ -102,13 +102,14 @@ class Material(ModelResource):
             ),
         }
     )
+    @with_files("images", related_extension="material")
     def put(
         self,
         material_id: int,
         *,
         serial_numbers: list[list[models.SerialNumber]],
         inventory_numbers: list[models.InventoryNumber],
-        image_urls: list[str],
+        # image_urls: list[str],
         images: list[File],
         properties: list[dict],
         installation_date: date,
@@ -160,6 +161,7 @@ class Material(ModelResource):
             update_kwargs = dict(
                 serial_numbers=serial_numbers,
                 inventory_numbers=inventory_numbers,
+                images=images,
                 properties=property_instances,
                 installation_date=installation_date,
                 max_operating_years=max_operating_years,
@@ -172,11 +174,11 @@ class Material(ModelResource):
                 material_type=material_type,
                 purchase_details=purchase_details,
             )
-            # image_urls is given, if no change has occurred
-            # (this means the client may send images from GET unchanged).
-            # So we only update images, if it is not given.
-            if not image_urls:
-                update_kwargs["images"] = images
+            # # image_urls is given, if no change has occurred
+            # # (this means the client may send images from GET unchanged).
+            # # So we only update images, if it is not given.
+            # if not image_urls:
+            #     update_kwargs["images"] = images
             material.update(**update_kwargs)
         except Exception as e:
             print(e)

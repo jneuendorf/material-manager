@@ -222,7 +222,7 @@ class MaterialController extends GetxController {
   }
 
   /// Updates a material in the backend.
-  /// If [imageFiles] is not null, the images will be updated 
+  /// If [imageFiles] is not null, the images will be updated
   /// and [material]´s imageUrls will be ignored.
   /// Returns true if the material was updated successfully.
   Future<bool> updateMaterial(MaterialModel material, {List<XFile>? imageFiles}) async {
@@ -240,7 +240,7 @@ class MaterialController extends GetxController {
 
       final response = await apiService.mainClient.put('/material/${material.id}',
         data: {
-          if (imageFiles == null) 'image_urls': material.imageUrls 
+          if (imageFiles == null) 'image_urls': material.imageUrls
           else 'images': images,
           'serial_numbers': material.serialNumbers.map((SerialNumber s) => {
             'serial_number': s.serialNumber,
@@ -248,7 +248,7 @@ class MaterialController extends GetxController {
             'production_date': isoDateFormat.format(s.productionDate),
           }).toList(),
           'inventory_numbers': material.inventoryNumbers.map((InventoryNumber i) => {
-            'id': i.id,
+            // 'id': i.id,
             'inventory_number': i.inventoryNumber,
           }).toList(),
           'max_operating_years': material.maxOperatingYears,
@@ -258,7 +258,7 @@ class MaterialController extends GetxController {
           'next_inspection_date': isoDateFormat.format(material.nextInspectionDate),
           'rental_fee': material.rentalFee,
           'condition': material.condition.name,
-          'usage': material.daysUsed,
+          'days_used': material.daysUsed,
           'purchase_details': {
             'id' : material.purchaseDetails.id,
             'purchase_date': isoDateFormat.format(material.purchaseDetails.purchaseDate),
@@ -268,7 +268,7 @@ class MaterialController extends GetxController {
             'suggested_retail_price': material.purchaseDetails.suggestedRetailPrice,
           },
           'properties': material.properties.map((Property p) => {
-            'id': p.id,
+            // 'id': p.id,
             'value': p.value,
             'property_type': {
               'name': p.propertyType.name,

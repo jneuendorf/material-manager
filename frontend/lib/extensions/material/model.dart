@@ -51,7 +51,7 @@ class MaterialModel {
     instructions = json['instructions'],
     nextInspectionDate = DateTime.parse(json['next_inspection_date']),
     rentalFee = json['rental_fee'],
-    condition = ConditionModel.values.byName(json['condition'].toLowerCase()),
+    condition = ConditionModel.values.byName(json['condition']),
     daysUsed = json['days_used'],
     purchaseDetails = PurchaseDetails.fromJson(json['purchase_details']),
     properties = List<Property>.from(json['properties'].map((x) => Property.fromJson(x))),
@@ -111,10 +111,10 @@ class InventoryNumber {
 
 
 enum ConditionModel {
-  ok,
-  broken,
-  repair,
-  missing,
+  OK,
+  REPAIR,
+  BROKEN,
+  MISSING,
 }
 
 class PurchaseDetails {

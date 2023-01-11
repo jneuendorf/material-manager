@@ -52,7 +52,7 @@ class InspectionPageController extends GetxController {
 
     filteredMaterial.value = materialController.materials.where(
       (MaterialModel item) => item.nextInspectionDate.difference(DateTime.now()) <= const Duration(days: 7) ||
-        item.condition == ConditionModel.broken
+        item.condition == ConditionModel.BROKEN
     ).toList();
   }
 
