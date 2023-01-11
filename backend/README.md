@@ -8,9 +8,8 @@ cd backend
 make run
 ```
 
-This will start the flask app at http://localhost:5000.
+This will start the flask app at http://localhost:5001.
 Flask environment variables can be set in `.env`.
-
 
 
 ## Creating Sample Data
@@ -22,6 +21,20 @@ cd backend
 make sample_data
 ```
 
+## Deleting Sample Data
+
+```bash
+cd backend
+make clear_db
+```
+
+# Extensions 
+
+- [User](./extensions/user/README.md)
+- [Material](./extensions/material/README.md)
+- [Inspection](./extensions/inspection/README.md)
+- [Rental](./extensions/rental/README.md)
+- [Legal](./extensions/legal/README.md)
 
 
 ## Development helpers in `core.helpers`
@@ -67,15 +80,38 @@ permissions in the database because only this extension itself knows about the
 
 
 ### CrudModel
+Inspired by [this mixing](https://flask-diamond.readthedocs.io/en/stable/_modules/flask_diamond/mixins/crud/)
 
 ### Resource
 
 ### Permissions
 
 
-
 ### Decorators
 
+#### @permissions_required
+
+Checks the session user's permissions against the given ones.
+
+An example:
+
+```python
+@permissions_required("user:read")
+def get(self):
+    users = UserModel.all()
+    return self.serialize(users)
+```
+#### @login_required
+
+This decorator should be used for checking if a user is currently logged in
+because it's agnostic of the auth implementation.
+
+An example:
+```python
+@login_required
+def get(self) -> dict:
+    return self.schema.dump(current_user)
+```
 #### @raises
 
 Attaches a tuple of possible errors to a function/method.
@@ -323,3 +359,5 @@ model_created.connect(receiver, sender=UserNotificationInfo)
 Of course, this is by far now an optimal solution as each receiver gets 1 e-mail
 per added material (no batching). Also, it is very inefficient because each user is
 queried separately.
+
+#
