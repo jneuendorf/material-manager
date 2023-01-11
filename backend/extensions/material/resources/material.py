@@ -65,6 +65,124 @@ class Material(ModelResource):
 
         return self.serialize(material)  # noqa
 
+    @use_kwargs(
+        {
+            "serial_numbers": fields.List(
+                fields.Nested(SerialNumberSchema()),
+            ),
+            "inventory_numbers": fields.List(
+                fields.Nested(InventoryNumberSchema(exclude=["id"])),
+            ),
+            "image_urls": fields.List(
+                fields.Str(),
+                required=False,
+                dump_default=lambda: [],
+            ),
+            "images": fields.List(
+                fields.Nested(FileSchema()),
+                required=False,
+                dump_default=lambda: [],
+            ),
+            "properties": fields.List(
+                fields.Nested(PlainPropertySchema()),
+            ),
+            **MaterialSchema.to_dict(
+                include=[
+                    "installation_date",
+                    "max_operating_years",
+                    "max_days_used",
+                    "days_used",
+                    "instructions",
+                    "next_inspection_date",
+                    "rental_fee",
+                    "condition",
+                    "material_type",
+                    "purchase_details",
+                ],
+            ),
+        }
+    )
+    def put(
+        self,
+        material_id: int,
+        *,
+        serial_numbers: list[list[models.SerialNumber]],
+        inventory_numbers: list[models.InventoryNumber],
+        image_urls: list[str],
+        images: list[File],
+        properties: list[dict],
+        installation_date: date,
+        max_operating_years: Optional[float],
+        max_days_used: int,
+        days_used: int,
+        instructions: str,
+        next_inspection_date: date,
+        rental_fee: float,
+        condition: models.Condition,
+        material_type: models.MaterialType,
+        purchase_details: Optional[models.PurchaseDetails],
+    ):
+        material = models.Material.get(id=material_id)
+
+        if len(serial_numbers) != len(inventory_numbers):
+            return abort(
+                400,
+                "number of serial numbers does not match number of inventory numbers",
+            )
+
+        property_instances = [
+            models.Property.get_or_create(
+                value=prop["value"],
+                _related=dict(
+                    property_type=models.PropertyType.get_or_create(
+                        **prop["property_type"]
+                    ),
+                ),
+            )
+            for prop in properties
+        ]
+        material_type = material_type.ensure_saved()
+        if purchase_details is not None:
+            purchase_details = purchase_details.ensure_saved()
+            if purchase_details.id is None:  # type: ignore
+                return abort(
+                    500,
+                    "error while trying to persist purchase details",
+                )
+
+        if material_type.id is None:
+            return abort(
+                500,
+                "error while trying to persist material type",
+            )
+        try:
+
+            update_kwargs = dict(
+                serial_numbers=serial_numbers,
+                inventory_numbers=inventory_numbers,
+                properties=property_instances,
+                installation_date=installation_date,
+                max_operating_years=max_operating_years,
+                max_days_used=max_days_used,
+                days_used=days_used,
+                instructions=instructions,
+                next_inspection_date=next_inspection_date,
+                rental_fee=rental_fee,
+                condition=condition,
+                material_type=material_type,
+                purchase_details=purchase_details,
+            )
+            # image_urls is given, if no change has occurred
+            # (this means the client may send images from GET unchanged).
+            # So we only update images, if it is not given.
+            if not image_urls:
+                update_kwargs["images"] = images
+            material.update(**update_kwargs)
+        except Exception as e:
+            print(e)
+            return abort(500, "unknown error")
+        return self.serialize(material)
+
 
 class Materials(ModelListResource):
     url = "/materials"
