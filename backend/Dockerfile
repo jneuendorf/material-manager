@@ -10,7 +10,7 @@ COPY . .
 
 RUN pip install --src /usr/pip/src/ --no-cache-dir -r requirements.txt
 # Not `make sample_data` because no venv
-RUN flask create-sample-data user material inspection rental
+RUN flask create-sample-data user material inspection rental legal
 
 EXPOSE 8000
 CMD ["./start-gunicorn.sh"]
