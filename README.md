@@ -47,6 +47,14 @@ Therefore, there will be a root user with the following credentials:
 - Password: `root`
 
 
+### URLs
+
+After the container `frontend` has finished compiling Flutter and stopped running,
+the following URLs can be accessed (assuming local deployment).
+
+- Frontend: http://localhost
+- API UI (Swagger): http://localhost:8000
+
 
 ## Authors and acknowledgment
 
